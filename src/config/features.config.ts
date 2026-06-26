@@ -1,0 +1,81 @@
+export const FEATURE_IDS = [
+  // CORE — resources & engagement
+  "training",
+  "dopamine",
+  "scale-upsell",
+  // CORE — workflow modules (enable per product)
+  "core-workflow",
+  "image-forge",
+  "money-links-vault",
+  "launchpad",
+  "article-wizard",
+  "article-images",
+  "article-publish",
+  "portfolio",
+  "b2b-outreach",
+  "wealth-sync",
+  "traffic-hub",
+  "income-calculator",
+  "product-wizard",
+  "niche-finder",
+  // PREMIUM — upsell modules
+  "premium-dfy",
+  "premium-instant",
+  "premium-autopilot",
+  "premium-10x",
+  "premium-infinite",
+  "premium-automation",
+  "premium-recurring",
+  "protector",
+] as const;
+
+export type FeatureId = (typeof FEATURE_IDS)[number];
+
+export type FeatureTier = "core" | "premium";
+
+export interface FeatureMeta {
+  id: FeatureId;
+  tier: FeatureTier;
+  description: string;
+  guide: string;
+}
+
+/** Catalog metadata — see .cursor/skills/product-feature-catalog/ */
+export const FEATURE_CATALOG: FeatureMeta[] = [
+  { id: "training", tier: "core", description: "Training page with videos, FAQ, workflow guide, and launch checklist.", guide: "training-support" },
+  { id: "dopamine", tier: "core", description: "Engagement widgets: social proof toasts, earnings counters, popups, trust bar.", guide: "dopamine-engagement" },
+  { id: "scale-upsell", tier: "core", description: "External scale-training sales page with video and checkout link.", guide: "scale-training-upsell" },
+  { id: "core-workflow", tier: "core", description: "Four-step affiliate workflow: search → analysis → radar → AI replies.", guide: "core-workflow" },
+  { id: "image-forge", tier: "core", description: "AI image generator for prompts and marketing visuals.", guide: "image-forge" },
+  { id: "money-links-vault", tier: "core", description: "Save and manage affiliate links with labels and niches.", guide: "money-links-vault" },
+  { id: "launchpad", tier: "core", description: "Step-by-step launch checklist to publish and monetize.", guide: "launchpad" },
+  { id: "article-wizard", tier: "core", description: "AI article creation: niche → headlines → full SEO article.", guide: "article-wizard" },
+  { id: "article-images", tier: "core", description: "Generate hero and social images for article drafts.", guide: "article-images" },
+  { id: "article-publish", tier: "core", description: "Preview, SEO meta, and publish or export article HTML.", guide: "article-publish" },
+  { id: "portfolio", tier: "core", description: "Library of saved drafts and published articles.", guide: "portfolio" },
+  { id: "b2b-outreach", tier: "core", description: "B2B stack: offers library → lead finder → AI email builder.", guide: "b2b-outreach" },
+  { id: "wealth-sync", tier: "core", description: "Paste affiliate URL → AI builds a hosted bridge/review page.", guide: "wealth-sync" },
+  { id: "traffic-hub", tier: "core", description: "Outreach targets and AI comments to drive visitors to bridge pages.", guide: "traffic-hub" },
+  { id: "income-calculator", tier: "core", description: "Interactive income projection from traffic and commission inputs.", guide: "income-calculator" },
+  { id: "product-wizard", tier: "core", description: "Multi-step digital product wizard: niche → ebook → sales page → publish.", guide: "product-wizard" },
+  { id: "niche-finder", tier: "core", description: "Discover sub-niches and jump into product creation.", guide: "niche-finder" },
+  { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
+  { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
+  { id: "premium-autopilot", tier: "premium", description: "Curated traffic sources checklist with promotion URL tracking.", guide: "premium-autopilot" },
+  { id: "premium-10x", tier: "premium", description: "Bulk-generate many Facebook post variants from one article.", guide: "premium-10x" },
+  { id: "premium-infinite", tier: "premium", description: "Batch-generate multiple full articles from one niche.", guide: "premium-infinite" },
+  { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
+  { id: "premium-recurring", tier: "premium", description: "Browse recurring-commission affiliate offers with income stats.", guide: "premium-recurring" },
+  { id: "protector", tier: "premium", description: "Account security score and verification trust UI.", guide: "protector" },
+];
+
+/** Skeleton ships with training only. Enable modules per product. */
+export const enabledFeatures: FeatureId[] = ["training"];
+
+export function isFeatureEnabled(id: FeatureId): boolean {
+  return enabledFeatures.includes(id);
+}
+
+export function getFeatureMeta(id: FeatureId): FeatureMeta | undefined {
+  return FEATURE_CATALOG.find((f) => f.id === id);
+}

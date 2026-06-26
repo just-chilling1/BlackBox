@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-page: var(--bg-page);
+  --color-sidebar: var(--bg-sidebar);
+  --color-surface: var(--bg-panel);
+  --color-border-dim: var(--bg-border);
+  --color-glass: var(--bg-glass);
+
+  --font-sans: var(--font-ui);
+  --font-heading: var(--font-brand);
+
+  --color-accent: var(--brand-primary);
+  --color-accent-muted: var(--brand-secondary);
+  --color-brand-tint: var(--brand-tint);
+
+  --shadow-gold: 0 0 20px rgba(234, 179, 8, 0.15);
+
+  --color-success: #10B981;
+  --color-error: #EF4444;
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-on-accent: #000000;
+}
+
+:root {
+  /* Colors - Modern Professional Deep Dark */
+  --bg-page: #0A0A0B;
+  --bg-sidebar: #0F0F11;
+  --bg-panel: #161618;
+  --bg-border: #242427;
+  --bg-glass: rgba(22, 22, 24, 0.8);
+
+  /* Brand Colors - Sophisticated Gold & Indigo */
+  --brand-primary: #EAB308;
+  --brand-secondary: #6366F1;
+  --brand-tint: rgba(234, 179, 8, 0.1);
+
+  --promo-accent: #0cbda0;
+  --promo-cta: #FFBA00;
+
+  /* Fonts */
+  --font-brand: 'Outfit', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+
+  /* Legacy/Semantic fallback */
+  --text-primary: #F8FAFC;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    @apply antialiased min-h-screen;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.03) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(234, 179, 8, 0.03) 0px, transparent 50%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .brand-font {
+    font-family: var(--font-brand);
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+
+  /* Professional Cards */
+  .card-base {
+    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200;
+  }
+
+  .glass-card {
+    @apply bg-white/3 border border-white/5 rounded-2xl backdrop-blur-md transition-all duration-300;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glass-card:hover {
+    @apply border-accent/20 bg-white/5;
+  }
+
+  .card-interactive {
+    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200 hover:border-accent/40 hover:shadow-gold cursor-pointer;
+  }
+
+  /* Refined Buttons */
+  .btn-primary {
+    @apply bg-accent text-text-on-accent px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply bg-surface border border-border-dim text-text-primary px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-border-dim active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply text-text-secondary hover:text-text-primary hover:bg-surface/50 px-4 py-2 rounded-lg transition-all flex items-center gap-2;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-text-secondary hover:text-text-primary hover:bg-surface/50 relative;
+  }
+
+  .nav-link-active {
+    @apply text-accent bg-brand-tint border-r-2 border-accent rounded-r-none;
+  }
+
+  .command-nav-link {
+    @apply flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 rounded-xl text-sm transition-all duration-300 relative overflow-hidden;
+    @apply text-text-secondary hover:text-text-primary hover:bg-white/3;
+  }
+
+  .command-nav-link.active {
+    @apply text-accent bg-accent/5;
+  }
+
+  /* Inputs */
+  .input-base {
+    @apply bg-page border border-border-dim rounded-lg px-4 py-3 text-sm text-text-primary outline-none transition-all placeholder:text-text-muted focus:border-accent/50 focus:ring-1 focus:ring-accent/20;
+  }
+
+  /* Typography Utilities */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-linear-to-r from-white to-gray-400;
+  }
+
+  .subtitle {
+    @apply text-text-secondary text-base leading-relaxed;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-page;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border-dim rounded-full hover:bg-text-muted;
+}
+
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.safe-top {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
