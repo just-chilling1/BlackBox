@@ -10,6 +10,16 @@ export async function proxy(request: NextRequest) {
         },
     })
 
+    const { pathname } = request.nextUrl
+    const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/forgot-password') || pathname.startsWith('/reset-password') || pathname.startsWith('/auth/callback')
+
+    if (isDevAuthBypassEnabled()) {
+        if (isAuthRoute && !pathname.startsWith('/auth/callback')) {
+            return NextResponse.redirect(new URL('/dashboard', request.url))
+        }
+        return response
+    }
+
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -58,18 +68,8 @@ export async function proxy(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
 
-    const { pathname } = request.nextUrl
-
-    const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/forgot-password') || pathname.startsWith('/reset-password') || pathname.startsWith('/auth/callback')
     const isPublicRoute = pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname === '/favicon.ico'
     const isOnboardingRoute = pathname === '/onboarding' || pathname.startsWith('/onboarding/')
-
-    if (isDevAuthBypassEnabled()) {
-        if (isAuthRoute && !pathname.startsWith('/auth/callback')) {
-            return NextResponse.redirect(new URL('/dashboard', request.url))
-        }
-        return response
-    }
 
     if (pathname.startsWith('/api')) {
         return response
