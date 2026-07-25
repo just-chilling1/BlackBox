@@ -8,46 +8,8 @@ import { supabase } from "@/lib/supabase";
 import {
   onboardingContent,
   ONBOARDING_DASHBOARD_ROUTE,
-  ONBOARDING_META_KEY,
   ONBOARDING_PRODUCT_NAME,
 } from "@/config/onboarding-content";
-
-async function persistActivation(firstName: string): Promise<void> {
-  let userId: string | null = null;
-  let existingMeta: Record<string, unknown> = {};
-
-  try {
-    const { data } = await supabase.auth.getUser();
-    userId = data.user?.id ?? null;
-    existingMeta = (data.user?.user_metadata ?? {}) as Record<string, unknown>;
-  } catch {
-    // ignore
-  }
-
-  if (userId) {
-    try {
-      await supabase
-        .from("users")
-        .update({ onboarding_completed_at: new Date().toISOString() })
-        .eq("id", userId);
-    } catch {
-      // ignore
-    }
-  }
-
-  try {
-    await supabase.auth.updateUser({
-      data: {
-        ...existingMeta,
-        [ONBOARDING_META_KEY]: true,
-        first_name: firstName,
-        full_name: firstName,
-      },
-    });
-  } catch {
-    // ignore
-  }
-}
 
 function OnboardingBrand() {
   const Icon = getNavIcon(brand.logo.icon);
@@ -83,6 +45,7 @@ export function OnboardingFlow() {
 
   const [firstName, setFirstName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activationStep, setActivationStep] = useState(0);
 
   useEffect(() => {
@@ -97,6 +60,8 @@ export function OnboardingFlow() {
     if (!trimmed || submitting) return;
 
     setSubmitting(true);
+    setError(null);
+
     try {
       const {
         data: { user },
@@ -107,9 +72,22 @@ export function OnboardingFlow() {
         return;
       }
 
-      await persistActivation(trimmed);
-      router.replace(ONBOARDING_DASHBOARD_ROUTE);
-      router.refresh();
+      const res = await fetch("/api/onboarding/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: trimmed }),
+      });
+
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+
+      if (!res.ok) {
+        setError(data.error ?? "Could not activate your account. Please try again.");
+        return;
+      }
+
+      window.location.href = ONBOARDING_DASHBOARD_ROUTE;
+    } catch {
+      setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -128,7 +106,10 @@ export function OnboardingFlow() {
 
           <input
             value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) => {
+              setFirstName(e.target.value);
+              if (error) setError(null);
+            }}
             placeholder={cfg.inputPlaceholder}
             aria-label={`Your first name for ${ONBOARDING_PRODUCT_NAME}`}
             autoComplete="given-name"
@@ -165,6 +146,12 @@ export function OnboardingFlow() {
           </div>
 
           <p className="mt-5 text-sm font-medium text-amber-700">{cfg.note}</p>
+
+          {error && (
+            <p className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </p>
+          )}
 
           <button
             type="button"
