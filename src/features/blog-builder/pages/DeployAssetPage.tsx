@@ -534,8 +534,10 @@ export default function DeployAssetPage() {
         const failures = Array.isArray(batchData.failures) ? batchData.failures : [];
         if (failures.length > 0) {
           clearSlotProgressTimer();
+          const firstReason =
+            typeof failures[0]?.error === "string" ? failures[0].error : "Generation failed";
           throw new Error(
-            `${failures.length} article${failures.length === 1 ? "" : "s"} failed in this batch. Click Try Deploy Again to resume.`
+            `${failures.length} article${failures.length === 1 ? "" : "s"} failed in this batch (${firstReason}). Click Try Deploy Again to resume.`
           );
         }
       }
@@ -594,6 +596,8 @@ export default function DeployAssetPage() {
       deployRunning.current = false;
       return;
     }
+
+    let resumeSiteId: string | null = site?.id ?? null;
 
     try {
       let activeSite = site;
@@ -687,6 +691,7 @@ export default function DeployAssetPage() {
 
       activeSite = createData.site as BlogSite;
       setSite(activeSite);
+      resumeSiteId = activeSite.id;
       bumpProgress(15);
 
       const deployTerritory = getSiteTerritory(activeSite);
@@ -745,8 +750,16 @@ export default function DeployAssetPage() {
         msg = "Not signed in. Please log in at /login and try again.";
       } else if (msg.toLowerCase().includes("row-level security")) {
         msg = "Database blocked the save. Contact support if this persists after logging in.";
+      } else if (msg.toLowerCase().includes("rapidapi_key")) {
+        msg = "AI generation is not configured on the server. Using template articles — click Try Deploy Again.";
       }
       appendLog(`Error: ${msg}`);
+
+      if (resumeSiteId) {
+        setCanResume(true);
+        setResumeLabel("Continue deployment — pick up where you left off");
+      }
+
       setError(msg);
       setPhase("error");
       setGenerating(false);

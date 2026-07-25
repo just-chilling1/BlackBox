@@ -6,6 +6,7 @@ import {
   normalizeArticleContent,
 } from "./prompts";
 import { localTerritorySuggestions } from "./local-territory-suggestions";
+import { buildLocalArticleContent } from "./local-article-content";
 import type { ArticleAngle, ContentTier, GeneratedPostContent } from "../types";
 
 export async function generateBlogPostContent(params: {
@@ -20,6 +21,12 @@ export async function generateBlogPostContent(params: {
 }): Promise<GeneratedPostContent> {
   const angle = params.angle ?? "pillar-guide";
   const tier = params.contentTier ?? "full";
+  const hasAiKey = Boolean(process.env.RAPIDAPI_KEY?.trim());
+
+  if (!hasAiKey) {
+    return buildLocalArticleContent(params);
+  }
+
   const userPrompt = buildArticleUserPrompt({
     topic: params.topic,
     territory: params.territory,
@@ -31,23 +38,31 @@ export async function generateBlogPostContent(params: {
     contentTier: tier,
   });
 
-  return generateStructuredJSON<GeneratedPostContent>({
-    systemPrompt: ARTICLE_SYSTEM_PROMPT,
-    userPrompt,
-    validate: (raw) => {
-      if (!raw || typeof raw !== "object") return null;
-      return normalizeArticleContent(
-        raw as Partial<GeneratedPostContent>,
-        params.topic,
-        params.territory
-      );
-    },
-    options: {
-      temperature: 0.3,
-      maxRetries: tier === "deploy" ? 2 : 3,
-      maxRepairAttempts: tier === "deploy" ? 1 : 2,
-    },
-  });
+  try {
+    return await generateStructuredJSON<GeneratedPostContent>({
+      systemPrompt: ARTICLE_SYSTEM_PROMPT,
+      userPrompt,
+      validate: (raw) => {
+        if (!raw || typeof raw !== "object") return null;
+        return normalizeArticleContent(
+          raw as Partial<GeneratedPostContent>,
+          params.topic,
+          params.territory
+        );
+      },
+      options: {
+        temperature: 0.3,
+        maxRetries: tier === "deploy" ? 2 : 3,
+        maxRepairAttempts: tier === "deploy" ? 1 : 2,
+      },
+    });
+  } catch (err) {
+    if (tier === "deploy") {
+      console.warn("[generate-content] AI failed during deploy — using local fallback", err);
+      return buildLocalArticleContent(params);
+    }
+    throw err;
+  }
 }
 
 export async function suggestTerritories(hobby: string): Promise<string[]> {
