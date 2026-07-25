@@ -1,28 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Check, Sparkles, Smartphone, Globe, CheckCircle2, Target } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
+import { getNavIcon } from "@/lib/nav-icons";
+import { supabase } from "@/lib/supabase";
 import {
   onboardingContent,
-  ONBOARDING_BETA_QUALIFICATION_CTA_URL,
   ONBOARDING_DASHBOARD_ROUTE,
   ONBOARDING_META_KEY,
   ONBOARDING_PRODUCT_NAME,
 } from "@/config/onboarding-content";
 
-const PAGE_BG = brand.colors.page;
-
-interface PreparingRow {
-  label: string;
-  description: string;
-  completed: boolean;
-}
-
-async function persistCompletion(): Promise<void> {
+async function persistActivation(firstName: string): Promise<void> {
   let userId: string | null = null;
   let existingMeta: Record<string, unknown> = {};
 
@@ -47,145 +37,41 @@ async function persistCompletion(): Promise<void> {
 
   try {
     await supabase.auth.updateUser({
-      data: { ...existingMeta, [ONBOARDING_META_KEY]: true },
+      data: {
+        ...existingMeta,
+        [ONBOARDING_META_KEY]: true,
+        first_name: firstName,
+        full_name: firstName,
+      },
     });
   } catch {
     // ignore
   }
 }
 
-function PreparingStep({ onContinue }: { onContinue: () => void }) {
-  const [rows, setRows] = useState<PreparingRow[]>(
-    onboardingContent.preparing.rows.map((r) => ({ ...r, completed: false }))
-  );
-  const generationRef = useRef(0);
-
-  useEffect(() => {
-    generationRef.current += 1;
-    const myGen = generationRef.current;
-    const delays = [400, 500, 600];
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    let cumulative = 0;
-
-    onboardingContent.preparing.rows.forEach((_, idx) => {
-      cumulative += delays[Math.min(idx, delays.length - 1)];
-      const t = setTimeout(() => {
-        if (generationRef.current !== myGen) return;
-        setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, completed: true } : r)));
-      }, cumulative);
-      timeouts.push(t);
-    });
-
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
-
-  const allDone = rows.every((r) => r.completed);
+function OnboardingBrand() {
+  const Icon = getNavIcon(brand.logo.icon);
+  const useImage = brand.logo.type === "image";
 
   return (
-    <section className="flex flex-col min-h-0 flex-1 justify-center w-full max-w-2xl mx-auto gap-4">
-      <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white text-center">
-        {onboardingContent.preparing.title}
-      </h1>
-      <div className="flex flex-col gap-3">
-        {rows.map((row, idx) => (
-          <div
-            key={idx}
-            className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4"
-          >
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                row.completed ? "bg-emerald-500/20 text-emerald-300" : "bg-indigo-500/20 text-indigo-200"
-              }`}
-            >
-              {row.completed ? <Check size={18} /> : <Loader2 size={18} className="animate-spin" />}
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">{row.label}</p>
-              <p className="text-xs text-slate-400">{row.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="text-xs text-amber-200 bg-amber-500/10 border border-amber-400/25 rounded-xl p-3">
-        <strong className="text-amber-300">Tip:</strong> {onboardingContent.preparing.tip}
-      </p>
-      <button
-        type="button"
-        disabled={!allDone}
-        onClick={onContinue}
-        className="btn-primary w-full disabled:opacity-50"
-      >
-        {onboardingContent.preparing.continueCta}
-      </button>
-    </section>
-  );
-}
-
-function WelcomeCompleteStep({ onContinue, busy }: { onContinue: () => void; busy: boolean }) {
-  return (
-    <section className="flex flex-col min-h-0 flex-1 justify-center w-full max-w-2xl mx-auto gap-6 text-center">
-      <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center">
-        <CheckCircle2 size={32} className="text-emerald-300" />
-      </div>
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-white">{onboardingContent.welcome.title}</h1>
-      <p className="text-slate-400 leading-relaxed">{onboardingContent.welcome.body}</p>
-      <button type="button" disabled={busy} onClick={onContinue} className="btn-primary w-full">
-        {busy ? "Saving..." : onboardingContent.welcome.continueCta}
-      </button>
-    </section>
-  );
-}
-
-function PartnerOfferModal({
-  onClaim,
-  onSkip,
-  busy,
-}: {
-  onClaim: () => void;
-  onSkip: () => void;
-  busy: boolean;
-}) {
-  const { partnerOffer } = onboardingContent;
-  const reqIcons = [Smartphone, Globe, CheckCircle2];
-
-  return (
-    <div className="fixed inset-0 z-[400] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85">
-      <div className="max-w-lg w-full max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-white/10 bg-[#111] p-5 sm:p-8 shadow-2xl safe-bottom">
-        <span className="text-xs font-black text-accent uppercase tracking-widest">
-          {partnerOffer.badge}
-        </span>
-        <h2 className="text-2xl font-bold text-white mt-2">{partnerOffer.headline}</h2>
-        <p className="text-sm text-slate-400 mt-2">{partnerOffer.subcopy}</p>
-        <div className="mt-6 space-y-3">
-          {partnerOffer.qualification.requirements.map((req, idx) => {
-            const Icon = reqIcons[idx] ?? CheckCircle2;
-            return (
-              <div key={req} className="flex items-center gap-3 text-sm text-white">
-                <Icon size={16} className="text-emerald-400" />
-                {req}
-              </div>
-            );
-          })}
+    <div className="flex items-center gap-3">
+      {useImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={brand.logo.src}
+          alt={brand.logo.alt}
+          width={40}
+          height={40}
+          className="h-10 w-auto shrink-0 object-contain"
+        />
+      ) : (
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent shadow-sm">
+          <Icon size={20} className="text-black" />
         </div>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onClaim}
-          className="btn-primary w-full mt-6"
-        >
-          {partnerOffer.qualification.primaryCta}
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onSkip}
-          className="w-full mt-3 text-sm text-slate-400 underline"
-        >
-          {partnerOffer.qualification.noThanksCta}
-        </button>
-        <p className="text-[10px] text-slate-500 mt-4 text-center">
-          {partnerOffer.qualification.finePrint}
-        </p>
+      )}
+      <div className="min-w-0">
+        <p className="truncate font-bold text-slate-900">{brand.productName}</p>
+        <p className="truncate text-sm text-slate-500">{brand.tagline}</p>
       </div>
     </div>
   );
@@ -193,73 +79,103 @@ function PartnerOfferModal({
 
 export function OnboardingFlow() {
   const router = useRouter();
-  const [step, setStep] = useState<0 | 1>(0);
-  const [busy, setBusy] = useState(false);
-  const [showPartnerOffer, setShowPartnerOffer] = useState(false);
+  const cfg = onboardingContent.activation;
 
-  const goToDashboard = () => {
-    router.replace(ONBOARDING_DASHBOARD_ROUTE);
-  };
+  const [firstName, setFirstName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [activationStep, setActivationStep] = useState(0);
 
-  const finishOnboarding = async () => {
-    if (busy) return;
-    setBusy(true);
-    await persistCompletion();
-    if (onboardingContent.partnerOffer.enabled) {
-      setShowPartnerOffer(true);
-      setBusy(false);
-      return;
+  useEffect(() => {
+    const timers = cfg.infoSteps.map((_, i) =>
+      window.setTimeout(() => setActivationStep(i + 1), 600 * (i + 1))
+    );
+    return () => timers.forEach(window.clearTimeout);
+  }, [cfg.infoSteps]);
+
+  const handleActivate = async () => {
+    const trimmed = firstName.trim();
+    if (!trimmed || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+
+      await persistActivation(trimmed);
+      router.replace(ONBOARDING_DASHBOARD_ROUTE);
+      router.refresh();
+    } finally {
+      setSubmitting(false);
     }
-    goToDashboard();
-  };
-
-  const handlePartnerClaim = async () => {
-    if (busy) return;
-    setBusy(true);
-    if (ONBOARDING_BETA_QUALIFICATION_CTA_URL) {
-      window.open(ONBOARDING_BETA_QUALIFICATION_CTA_URL, "_blank", "noopener,noreferrer");
-    }
-    goToDashboard();
   };
 
   return (
-    <div className="fixed inset-0 z-[300] h-[100dvh] max-h-[100dvh] overflow-y-auto" style={{ backgroundColor: PAGE_BG }}>
-      <div className="relative z-10 flex flex-col min-h-[100dvh] px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-7 safe-top safe-bottom">
-        <header className="flex flex-col items-center gap-1.5 shrink-0">
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: brand.colors.primary }}
-          >
-            <Target size={24} className="text-black" strokeWidth={2.5} />
+    <div className="fixed inset-0 z-[300] flex min-h-[100dvh] bg-gradient-to-br from-slate-50 via-white to-fuchsia-50">
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-6 py-12 sm:px-10">
+          <div className="mb-8">
+            <OnboardingBrand />
           </div>
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
-            {ONBOARDING_PRODUCT_NAME}
-          </span>
-        </header>
 
-        <div className="flex flex-col min-h-0 flex-1 mt-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex flex-col min-h-0 flex-1"
-            >
-              {step === 0 && <PreparingStep onContinue={() => setStep(1)} />}
-              {step === 1 && <WelcomeCompleteStep onContinue={finishOnboarding} busy={busy} />}
-            </motion.div>
-          </AnimatePresence>
+          <h1 className="text-3xl font-black text-slate-900 sm:text-4xl">{cfg.headline}</h1>
+          <p className="mt-3 text-lg text-slate-600">{cfg.subheadline}</p>
+
+          <input
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder={cfg.inputPlaceholder}
+            aria-label={`Your first name for ${ONBOARDING_PRODUCT_NAME}`}
+            autoComplete="given-name"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && firstName.trim() && !submitting) {
+                void handleActivate();
+              }
+            }}
+            className="mt-8 h-16 w-full rounded-2xl border-2 border-slate-200 bg-white px-5 text-xl text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-[#d946ef] focus:ring-4 focus:ring-[#d946ef]/15"
+          />
+
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="mb-4 text-sm font-bold text-slate-900">{cfg.infoTitle}</p>
+            <ol className="space-y-3">
+              {cfg.infoSteps.map((step, i) => (
+                <li
+                  key={step}
+                  className={`flex items-start gap-3 text-sm transition-all duration-500 ${
+                    activationStep > i ? "text-slate-700 opacity-100" : "text-slate-300 opacity-50"
+                  }`}
+                >
+                  <span
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                      activationStep > i ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400"
+                    }`}
+                  >
+                    {activationStep > i ? "✓" : i + 1}
+                  </span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <p className="mt-5 text-sm font-medium text-amber-700">{cfg.note}</p>
+
+          <button
+            type="button"
+            onClick={() => void handleActivate()}
+            disabled={!firstName.trim() || submitting}
+            className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#9333ea] text-xl font-extrabold text-white shadow-lg shadow-fuchsia-200 transition-all hover:-translate-y-0.5 hover:from-[#c026d3] hover:to-[#7e22ce] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+          >
+            {submitting ? "Activating…" : cfg.ctaLabel}
+          </button>
         </div>
-      </div>
-
-      {showPartnerOffer && (
-        <PartnerOfferModal
-          onClaim={handlePartnerClaim}
-          onSkip={goToDashboard}
-          busy={busy}
-        />
-      )}
+      </main>
     </div>
   );
 }

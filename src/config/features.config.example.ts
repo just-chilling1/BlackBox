@@ -5,7 +5,7 @@ import type { FeatureId } from "./features.config";
  * Pick the stack that matches the product you are building.
  */
 
-/** Affiliate reply workflow product */
+/** Affiliate reply workflow product (CashTap AI style) */
 export const affiliateWorkflowFeatures: FeatureId[] = [
   "training",
   "core-workflow",
@@ -16,7 +16,41 @@ export const affiliateWorkflowFeatures: FeatureId[] = [
   "premium-autopilot",
 ];
 
-/** SEO article / content site product */
+/** Secret Millionaire Society — blog builder + premium stack */
+export const blogBuilderFeatures: FeatureId[] = [
+  "training",
+  "blog-builder",
+  "dopamine",
+  "premium-accelerator",
+  "premium-recurring",
+  "premium-social",
+  "protector",
+];
+
+/** Extraction / connect dashboard product */
+export const extractionWorkflowFeatures: FeatureId[] = [
+  "training",
+  "extraction-workflow",
+  "dopamine",
+  "premium-dfy",
+  "premium-instant",
+  "premium-autopilot",
+  "protector",
+];
+
+/** Digital product launcher (Click Clone Profits style) */
+export const digitalProductFeatures: FeatureId[] = [
+  "training",
+  "product-wizard",
+  "niche-finder",
+  "dopamine",
+  "premium-dfy",
+  "premium-instant",
+  "premium-autopilot",
+  "protector",
+];
+
+/** SEO article / content site product (Battery Profits style) */
 export const contentSiteFeatures: FeatureId[] = [
   "training",
   "article-wizard",
@@ -30,7 +64,7 @@ export const contentSiteFeatures: FeatureId[] = [
   "premium-dfy",
 ];
 
-/** Image + link affiliate product */
+/** Image + link affiliate product (Q-Labs style) */
 export const imageLinkFeatures: FeatureId[] = [
   "training",
   "image-forge",
@@ -41,18 +75,7 @@ export const imageLinkFeatures: FeatureId[] = [
   "premium-autopilot",
 ];
 
-/** B2B outreach product */
-export const b2bOutreachFeatures: FeatureId[] = [
-  "training",
-  "b2b-outreach",
-  "dopamine",
-  "premium-dfy",
-  "premium-instant",
-  "premium-autopilot",
-  "protector",
-];
-
-/** Bridge page + traffic product */
+/** Bridge page + traffic product (AI Wealth style) */
 export const bridgeTrafficFeatures: FeatureId[] = [
   "training",
   "wealth-sync",
@@ -65,11 +88,10 @@ export const bridgeTrafficFeatures: FeatureId[] = [
   "protector",
 ];
 
-/** Digital product launcher */
-export const digitalProductFeatures: FeatureId[] = [
+/** Gold Rush / comment pack product (Robinhood style) */
+export const commentPackFeatures: FeatureId[] = [
   "training",
-  "product-wizard",
-  "niche-finder",
+  "comment-pack",
   "dopamine",
   "premium-dfy",
   "premium-instant",
@@ -83,6 +105,8 @@ export const allFeaturesExample: FeatureId[] = [
   "dopamine",
   "scale-upsell",
   "core-workflow",
+  "extraction-workflow",
+  "blog-builder",
   "image-forge",
   "money-links-vault",
   "launchpad",
@@ -96,9 +120,12 @@ export const allFeaturesExample: FeatureId[] = [
   "income-calculator",
   "product-wizard",
   "niche-finder",
+  "comment-pack",
   "premium-dfy",
   "premium-instant",
   "premium-autopilot",
+  "premium-accelerator",
+  "premium-social",
   "premium-10x",
   "premium-infinite",
   "premium-automation",

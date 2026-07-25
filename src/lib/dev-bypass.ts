@@ -5,3 +5,8 @@ export function isDevAuthBypassEnabled(): boolean {
     process.env.DEV_BYPASS_AUTH === "true"
   );
 }
+
+export const DEV_BYPASS_EMAIL =
+  process.env.DEV_BYPASS_EMAIL ?? "dev-local@product-skeleton.local";
+
+export const DEV_BYPASS_PASSWORD = process.env.DEV_BYPASS_PASSWORD ?? "";

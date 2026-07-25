@@ -5,6 +5,8 @@ export const FEATURE_IDS = [
   "scale-upsell",
   // CORE — workflow modules (enable per product)
   "core-workflow",
+  "extraction-workflow",
+  "blog-builder",
   "image-forge",
   "money-links-vault",
   "launchpad",
@@ -18,10 +20,13 @@ export const FEATURE_IDS = [
   "income-calculator",
   "product-wizard",
   "niche-finder",
+  "comment-pack",
   // PREMIUM — upsell modules
   "premium-dfy",
   "premium-instant",
   "premium-autopilot",
+  "premium-accelerator",
+  "premium-social",
   "premium-10x",
   "premium-infinite",
   "premium-automation",
@@ -46,6 +51,8 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "dopamine", tier: "core", description: "Engagement widgets: social proof toasts, earnings counters, popups, trust bar.", guide: "dopamine-engagement" },
   { id: "scale-upsell", tier: "core", description: "External scale-training sales page with video and checkout link.", guide: "scale-training-upsell" },
   { id: "core-workflow", tier: "core", description: "Four-step affiliate workflow: search → analysis → radar → AI replies.", guide: "core-workflow" },
+  { id: "extraction-workflow", tier: "core", description: "Connect → scan → extract dashboard with live connection status.", guide: "extraction-workflow" },
+  { id: "blog-builder", tier: "core", description: "AI money-site builder: territory → links → deploy → hosted sites.", guide: "blog-builder" },
   { id: "image-forge", tier: "core", description: "AI image generator for prompts and marketing visuals.", guide: "image-forge" },
   { id: "money-links-vault", tier: "core", description: "Save and manage affiliate links with labels and niches.", guide: "money-links-vault" },
   { id: "launchpad", tier: "core", description: "Step-by-step launch checklist to publish and monetize.", guide: "launchpad" },
@@ -59,9 +66,12 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "income-calculator", tier: "core", description: "Interactive income projection from traffic and commission inputs.", guide: "income-calculator" },
   { id: "product-wizard", tier: "core", description: "Multi-step digital product wizard: niche → ebook → sales page → publish.", guide: "product-wizard" },
   { id: "niche-finder", tier: "core", description: "Discover sub-niches and jump into product creation.", guide: "niche-finder" },
+  { id: "comment-pack", tier: "core", description: "Gold Rush workflow: find videos → generate viral comment packs → share vault.", guide: "comment-pack" },
   { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
   { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
   { id: "premium-autopilot", tier: "premium", description: "Curated traffic sources checklist with promotion URL tracking.", guide: "premium-autopilot" },
+  { id: "premium-accelerator", tier: "premium", description: "Bulk-generate websites and ready-to-post content.", guide: "premium-accelerator" },
+  { id: "premium-social", tier: "premium", description: "Pre-made Facebook posts with images for quick promotion.", guide: "premium-social" },
   { id: "premium-10x", tier: "premium", description: "Bulk-generate many Facebook post variants from one article.", guide: "premium-10x" },
   { id: "premium-infinite", tier: "premium", description: "Batch-generate multiple full articles from one niche.", guide: "premium-infinite" },
   { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
@@ -70,7 +80,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
 ];
 
 /** Skeleton ships with training only. Enable modules per product. */
-export const enabledFeatures: FeatureId[] = ["training"];
+export const enabledFeatures: FeatureId[] = ["training", "blog-builder", "dopamine"];
 
 export function isFeatureEnabled(id: FeatureId): boolean {
   return enabledFeatures.includes(id);

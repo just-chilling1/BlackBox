@@ -3,6 +3,7 @@ import { brand } from "@/config/brand.config";
 const prefix = brand.storagePrefix;
 
 export const storageKeys = {
+  sidebarCollapsed: `${prefix}_sidebar_collapsed`,
   workflowKeyword: `${prefix}_current_keyword`,
   workflowVariations: `${prefix}_current_variations`,
   workflowChip: `${prefix}_current_chip`,

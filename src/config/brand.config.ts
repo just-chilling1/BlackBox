@@ -6,8 +6,11 @@ export const brand = {
   authTagline: "Secure member access",
   signupTagline: "Create your account",
   logo: {
-    type: "icon" as const,
+    /** "icon" uses lucide icon; "image" uses public/logo.png */
+    type: "icon" as "icon" | "image",
     icon: "Target",
+    src: "/logo.png",
+    alt: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "Product Skeleton",
   },
   colors: {
     primary: "#EAB308",
@@ -18,6 +21,15 @@ export const brand = {
     sidebar: "#0F0F11",
     panel: "#161618",
     authPage: "#0A0A0B",
+    /** Extended tokens for glass UI */
+    textHeading: "#F8FAFC",
+    textPrimary: "#E2E8F0",
+    textMuted: "#64748B",
+    panelGlass: "rgba(22, 22, 24, 0.65)",
+    borderGlow: "rgba(255, 255, 255, 0.08)",
+    borderTeal: "rgba(12, 189, 160, 0.12)",
+    encryptedGreen: "#34D399",
+    vaultGold: "#EAB308",
   },
   fonts: {
     brand: "Outfit",

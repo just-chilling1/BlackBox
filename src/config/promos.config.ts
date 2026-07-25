@@ -49,7 +49,7 @@ export interface PromoSlot {
 export const promoSlots: PromoSlot[] = [
   {
     id: "global-top",
-    enabled: true,
+    enabled: false,
     template: "horizontal-banner",
     placement: "global-top",
     content: {
@@ -65,7 +65,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "global-footer",
-    enabled: true,
+    enabled: false,
     template: "footer-card",
     placement: "global-footer",
     content: {
@@ -83,7 +83,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-1",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -94,7 +94,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-2",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -105,7 +105,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-3",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {

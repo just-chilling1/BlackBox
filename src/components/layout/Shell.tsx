@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { BrandLogo } from "./BrandLogo";
-import {
-  GlobalTopPromo,
-  GlobalFooterPromo,
-  PromoOrchestrator,
-} from "./PromoOrchestrator";
+import { PromoOrchestrator } from "./PromoOrchestrator";
+import { BottomNav } from "./BottomNav";
+
+/** Route prefixes that render without the app shell (public hosted pages). */
+const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isAuthPage =
     pathname === "/login" ||
@@ -25,63 +22,39 @@ export function Shell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/onboarding/") ||
     pathname.startsWith("/auth/");
 
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+  const isPublicPage = PUBLIC_SHELL_BYPASS_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
-  useEffect(() => {
-    if (!sidebarOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [sidebarOpen]);
-
-  if (isAuthPage) {
+  if (isAuthPage || isPublicPage) {
     return <>{children}</>;
   }
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden w-full bg-page">
-      {sidebarOpen && (
-        <button
-          type="button"
-          aria-label="Close menu"
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px] lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <div className="app-bg flex min-h-dvh min-w-0 overflow-x-clip">
+      <Sidebar />
 
-      <Sidebar mobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
-
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <header className="lg:hidden sticky top-0 z-30 flex items-center gap-3 px-4 py-3 border-b border-border-dim bg-page/95 backdrop-blur-md shrink-0">
-          <button
-            type="button"
-            aria-label="Open menu"
-            onClick={() => setSidebarOpen(true)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-primary hover:bg-white/5"
-          >
-            <Menu size={20} />
-          </button>
-          <Link href="/dashboard" className="min-w-0 flex-1" onClick={() => setSidebarOpen(false)}>
-            <BrandLogo size="sm" showTagline={false} compact />
-          </Link>
-          <div className="w-10 shrink-0" aria-hidden />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header
+          className="mobile-header-glass fixed inset-x-0 top-0 z-40 shrink-0 lg:hidden"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <div className="flex items-center justify-center px-4 pb-3 pt-2">
+            <Link href="/dashboard" className="min-w-0">
+              <BrandLogo size="sm" showTagline={false} />
+            </Link>
+          </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth relative">
-          <div className="px-4 sm:px-6 md:px-10 lg:px-12 pt-4 sm:pt-6 lg:pt-10 pb-10 sm:pb-12 lg:pb-16 max-w-7xl mx-auto min-h-full flex flex-col w-full">
-            <GlobalTopPromo />
+        <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
+          <div className="app-glow-orb app-glow-orb-teal" aria-hidden />
+          <div className="app-glow-orb app-glow-orb-gold" aria-hidden />
+
+          <div className="app-content-layer mx-auto flex min-h-full w-full min-w-0 max-w-7xl flex-col">
             {children}
-            <div className="mt-auto pt-10 sm:pt-16">
-              <GlobalFooterPromo />
-            </div>
           </div>
         </main>
       </div>
 
+      <BottomNav />
       <PromoOrchestrator />
     </div>
   );

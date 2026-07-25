@@ -58,7 +58,9 @@ Add API keys **only for features you enable** (see Step 7 and catalog appendix).
 Apply once per Supabase project:
 
 - **CLI:** `supabase db push` (linked to your project), or  
-- **SQL Editor:** paste `supabase/migrations/20260617000000_skeleton_core.sql`
+- **SQL Editor:** paste migrations from `supabase/migrations/` in order
+
+For **blog-builder** kickoff, also apply `20260702000000_blog_builder_kickoff.sql` (creates `blog_builder_sessions` and `link_vault`).
 
 Confirm a `users` profile table exists (id = `auth.users.id`).
 
@@ -98,6 +100,7 @@ Edit these in order. Product **name** comes from `NEXT_PUBLIC_PRODUCT_NAME` (not
 | `src/config/onboarding-content.ts` | Onboarding slides, partner CTA |
 | `src/config/navigation.config.ts` | Sidebar labels |
 | `src/config/promos.config.ts` | Ad slots (URLs + copy) — see Step 9 |
+| `src/config/offers.config.ts` | Exclusive partner offer URLs (sidebar + mobile More sheet) |
 | `src/config/dopamine.config.ts` | Engagement widgets (if `dopamine` enabled) |
 | `src/config/social-proof.config.ts` | Keep `enabled: false` unless client approves |
 | `public/` | Logo, favicon |
@@ -229,14 +232,14 @@ Optional: use repo `Dockerfile` instead of Node buildpack.
 ```
 src/
   app/           # Routes (thin wrappers)
-  components/    # Shell, Sidebar, promos
-  config/        # Branding, features, nav, promos — EDIT THESE
+  components/    # Shell, Sidebar, BottomNav, promos, dashboard widgets, ui/
+  config/        # Branding, features, nav, promos, offers — EDIT THESE
   features/      # Feature modules (pages + logic)
-  lib/           # Supabase, auth helpers
-  proxy.ts       # Auth + onboarding gate
+  lib/           # Supabase, auth helpers, premium-features, premium-settings
+  proxy.ts       # Auth + onboarding gate (wired via root middleware.ts)
 ```
 
-**Flow:** `proxy.ts` → login if needed → `Shell` → `Sidebar` reads `navigation.config.ts` + `features.config.ts` → promos from `promos.config.ts`.
+**Flow:** `middleware.ts` → `proxy.ts` → login if needed → `Shell` (desktop sidebar + mobile BottomNav) → `Sidebar` reads `navigation.config.ts` + `premium-features.ts` → promos from `promos.config.ts`.
 
 **Promo slots:** `global-top`, `global-footer`, `sidebar-promo-1…3`, `modal-training`, `toast-withdraw`, `toast-social`. Custom ad components live in `src/features/dopamine/components/` — see catalog guide `dopamine-engagement.md` if config slots are not enough.
 
@@ -253,6 +256,7 @@ src/config/
   training.config.ts
   training-content.config.ts
   promos.config.ts
+  offers.config.ts
   dopamine.config.ts
   onboarding-content.ts
   navigation.config.ts
@@ -267,13 +271,14 @@ src/config/
 
 ```
 Home
-Workflow          ← if core-workflow (or other workflow) enabled
+Workflow          ← if core-workflow, blog-builder, or extraction-workflow enabled
 Resources
   Training        ← if training enabled
   Support         ← always
 Scale Training    ← if scale-upsell enabled
-Premium Features  ← if premium-* enabled
-[Sidebar promos]
+Premium Features  ← if premium-* enabled (via premiumNav)
+[Sidebar promos + exclusive offers from offers.config.ts]
+[Mobile BottomNav on lg:hidden]
 ```
 
 ---

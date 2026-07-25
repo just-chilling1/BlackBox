@@ -6,6 +6,8 @@ import { brand } from "@/config/brand.config";
 import { getVisibleWorkflowSteps } from "@/lib/features";
 import { isFeatureEnabled } from "@/config/features.config";
 import { DopamineDashboard } from "@/features/dopamine/DopamineDashboard";
+import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
+import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 
 const SETUP_STEPS = [
   {
@@ -14,7 +16,7 @@ const SETUP_STEPS = [
   },
   {
     title: "Customize branding",
-    body: "Edit brand.config.ts, promos.config.ts, support.config.ts, and training.config.ts.",
+    body: "Edit brand.config.ts, promos.config.ts, offers.config.ts, support.config.ts, and training.config.ts.",
   },
   {
     title: "Add client links",
@@ -22,11 +24,11 @@ const SETUP_STEPS = [
   },
   {
     title: "Enable product workflow",
-    body: "Add core-workflow or your custom feature id to enabledFeatures in features.config.ts.",
+    body: "Add your feature ids to enabledFeatures in features.config.ts (e.g. core-workflow, blog-builder, product-wizard).",
   },
   {
     title: "Review Training page",
-    body: "Add Vimeo video IDs and copy in training.config.ts. Always visible in the sidebar.",
+    body: "Add Vimeo video IDs and copy in training.config.ts. Always visible when training is enabled.",
     href: "/training",
   },
   {
@@ -39,7 +41,13 @@ const SETUP_STEPS = [
 export default function DashboardPage() {
   const workflowSteps = getVisibleWorkflowSteps();
   const firstStep = workflowSteps[0];
-  const hasWorkflow = isFeatureEnabled("core-workflow");
+  const hasWorkflow = workflowSteps.length > 0;
+  const hasPremium = isFeatureEnabled("premium-dfy") ||
+    isFeatureEnabled("premium-instant") ||
+    isFeatureEnabled("premium-autopilot") ||
+    isFeatureEnabled("premium-accelerator") ||
+    isFeatureEnabled("premium-social") ||
+    isFeatureEnabled("protector");
 
   return (
     <div className="flex flex-col gap-8 sm:gap-10 max-w-3xl w-full">
@@ -75,6 +83,11 @@ export default function DashboardPage() {
             <ArrowRight size={18} />
           </Link>
         ) : null}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DashboardTipsWidget />
+        {hasPremium ? <PremiumUpgradesWidget /> : null}
       </div>
 
       <div className="card-base border-dashed border-accent/30 flex flex-col gap-4">

@@ -1,8 +1,11 @@
-import { brand } from "./brand.config";
+export const trainingRoutes = {
+  videos: "/training",
+  faq: "/training/faq",
+} as const;
 
 export const trainingContent = {
   pageTitle: "Training",
-  pageSubtitle: `Video guides, walkthroughs, and FAQ for ${brand.productName} — populate before launch`,
+  pageSubtitle: "Video tutorials and frequently asked questions",
   /** Used by global-top banner, sidebar promos, and modal-training */
   externalTrainingUrl: "https://example.com/training",
   videos: [

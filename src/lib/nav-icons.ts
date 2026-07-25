@@ -12,11 +12,28 @@ import {
   Target,
   Smartphone,
   Headphones,
+  Wifi,
+  Activity,
+  Wallet,
+  Globe,
+  Link2,
+  FileText,
+  MapPin,
+  ShieldCheck,
+  Repeat,
+  Megaphone,
+  Image,
+  PenLine,
+  FolderOpen,
+  Send,
+  Calculator,
+  Users,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import type { NavIconName } from "@/config/navigation.config";
 
-const ICON_MAP: Record<NavIconName | "Target" | "Smartphone" | "Headphones", LucideIcon> = {
+const ICON_MAP: Record<NavIconName | "Target" | "Smartphone", LucideIcon> = {
   LayoutGrid,
   Search,
   Brain,
@@ -30,6 +47,23 @@ const ICON_MAP: Record<NavIconName | "Target" | "Smartphone" | "Headphones", Luc
   Target,
   Smartphone,
   Headphones,
+  Wifi,
+  Activity,
+  Wallet,
+  Globe,
+  Link2,
+  FileText,
+  MapPin,
+  ShieldCheck,
+  Repeat,
+  Megaphone,
+  Image,
+  PenLine,
+  FolderOpen,
+  Send,
+  Calculator,
+  Users,
+  Zap,
 };
 
 export function getNavIcon(name: string): LucideIcon {

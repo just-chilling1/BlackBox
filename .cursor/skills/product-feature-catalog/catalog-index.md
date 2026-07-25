@@ -23,6 +23,16 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | Feature ID | Tier | Description | Guide |
 |------------|------|-------------|-------|
 | `core-workflow` | CORE | Search → analysis → radar → AI-generated replies | [core-workflow](features/core-workflow.md) |
+| `extraction-workflow` | CORE | Connect → scan → extract dashboard with live status | [extraction-workflow](features/extraction-workflow.md) |
+| `comment-pack` | CORE | Gold Rush: find videos → generate comment packs → share vault | [comment-pack](features/comment-pack.md) |
+
+---
+
+## Blog builder (money sites)
+
+| Feature ID | Tier | Description | Guide |
+|------------|------|-------------|-------|
+| `blog-builder` | CORE | Link → niche → theme → deploy (kickoff: first 3 steps) → hosted sites at `/sites/[slug]` | [blog-builder](features/blog-builder.md) |
 
 ---
 
@@ -85,6 +95,8 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | `premium-dfy` | PREMIUM | Done-for-you vault (keywords, articles, images, leads, products) | [premium-dfy](features/premium-dfy.md) |
 | `premium-instant` | PREMIUM | Pre-written social posts with images | [premium-instant](features/premium-instant.md) |
 | `premium-autopilot` | PREMIUM | Traffic source checklist with promotion URL | [premium-autopilot](features/premium-autopilot.md) |
+| `premium-accelerator` | PREMIUM | Bulk-generate websites and ready-to-post content | [premium-accelerator](features/premium-accelerator.md) |
+| `premium-social` | PREMIUM | Pre-made Facebook posts with images | [premium-social](features/premium-social.md) |
 | `protector` | PREMIUM | Account security score and trust UI | [protector](features/protector.md) |
 
 ---
@@ -93,11 +105,13 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 
 | Building… | Enable these CORE features |
 |-----------|------------------------------|
-| Affiliate / reply app | `core-workflow`, `dopamine`, `training` |
-| SEO / content site | `article-wizard`, `article-images`, `article-publish`, `portfolio` |
-| Image + link affiliate | `image-forge`, `money-links-vault`, `launchpad` |
-| B2B outreach SaaS | `b2b-outreach`, `training` |
-| Bridge + traffic app | `wealth-sync`, `traffic-hub`, `income-calculator` |
+| Affiliate / reply app (CashTap AI) | `core-workflow`, `dopamine`, `training` |
+| Blog / money site (Secret Millionaire) | `blog-builder`, `training`, `premium-accelerator`, `premium-recurring`, `premium-social` |
+| Digital product (Click Clone Profits) | `product-wizard`, `niche-finder`, `training` |
+| Comment pack / Gold Rush (Robinhood) | `comment-pack`, `training` |
+| SEO / content site (Battery Profits) | `article-wizard`, `article-images`, `article-publish`, `portfolio` |
+| Image + link affiliate (Q-Labs) | `image-forge`, `money-links-vault`, `launchpad` |
+| Bridge + traffic (AI Wealth) | `wealth-sync`, `traffic-hub`, `income-calculator` |
 | Digital product launcher | `product-wizard`, `niche-finder` |
 | Monetized app (any) | Add `premium-dfy`, `premium-instant`, `premium-autopilot` as needed |
 
@@ -119,6 +133,10 @@ Copy **names** into `.env.local`. Never commit real keys.
 | `NEXT_PUBLIC_APP_URL` | App domain |
 | `NEXT_PUBLIC_PRODUCT_NAME` | Software name → `brand.productName` |
 | `WEBHOOK_SIGNUP_URL` | Optional signup webhook |
+| `FRESHDESK_DOMAIN` | Support API (Freshdesk tickets) |
+| `FRESHDESK_API_KEY` | Support API |
+| `RESEND_API_KEY` | Support API fallback |
+| `RESEND_FROM_EMAIL` | Support API sender |
 
 ### AI text (RapidAPI)
 
@@ -147,6 +165,8 @@ Vimeo IDs → `training.config.ts`, not env.
 
 ### Supabase tables
 
-Add migrations when implementing: `articles`, `bridges`, `offers`, `leads`, `projects`, `dfy_*`, `instant_income_posts`, `autopilot_sources`, etc. Each feature guide lists its tables.
+Add migrations when implementing: `articles`, `bridges`, `sites`, `posts`, `projects`, `user_premium_settings`, `user_training_completions`, etc. Each feature guide lists its tables.
+
+Skeleton ships migrations for: onboarding, core-workflow user scoping, premium settings, training completions.
 
 API routes: use `getApiUser` + `featureApiGuard(featureId)` from `src/lib/`.

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { brand } from "@/config/brand.config";
 import { BrandLogo } from "./BrandLogo";
+import { FloatingSupportButton } from "@/components/support/FloatingSupportButton";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
           {children}
         </div>
       </motion.div>
+      <FloatingSupportButton />
     </div>
   );
 }
