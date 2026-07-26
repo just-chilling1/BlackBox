@@ -21,8 +21,7 @@ const LEGACY_CONTRAST_FIXES = `
   background: var(--surface);
 }
 .product-sales-page-root .title,
-.product-sales-page-root h2,
-.product-sales-page-root h3 {
+.product-sales-page-root h2 {
   color: var(--text) !important;
 }
 .product-sales-page-root .label {
@@ -32,17 +31,44 @@ const LEGACY_CONTRAST_FIXES = `
 .product-sales-page-root .card,
 .product-sales-page-root .list li,
 .product-sales-page-root .faq,
-.product-sales-page-root .problem-item {
+.product-sales-page-root .problem-item,
+.product-sales-page-root .numbered-item,
+.product-sales-page-root .card-bento {
   color: var(--card-text, var(--text));
 }
 .product-sales-page-root .content-item span:last-child,
 .product-sales-page-root .faq-q,
-.product-sales-page-root .card h3 {
-  color: var(--card-text, var(--text));
+.product-sales-page-root .card h3,
+.product-sales-page-root .card-bento h3,
+.product-sales-page-root .numbered-item h3,
+.product-sales-page-root .luxury-item h3,
+.product-sales-page-root .stack-item strong {
+  color: var(--card-text, #1c1917) !important;
 }
 .product-sales-page-root .faq-a,
 .product-sales-page-root .card p {
   color: var(--card-muted, var(--muted));
+}
+.product-sales-page-root .benefits-grid,
+.product-sales-page-root .grid,
+.product-sales-page-root .bento-grid,
+.product-sales-page-root section.alt .container > div:has(> .card) {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 32px !important;
+}
+@media (min-width: 640px) {
+  .product-sales-page-root .benefits-grid,
+  .product-sales-page-root section.alt .container > div:has(> .card).grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 32px !important;
+  }
+}
+@media (min-width: 960px) {
+  .product-sales-page-root .benefits-grid.benefits-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 32px !important;
+  }
 }
 `;
 

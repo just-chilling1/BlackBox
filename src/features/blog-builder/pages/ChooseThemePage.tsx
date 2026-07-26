@@ -46,8 +46,12 @@ export default function ChooseThemePage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState(() =>
     findMatchingReadyTemplateId(initialConfig)
   );
-  const [finished, setFinished] = useState(themeChosen);
+  const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (themeChosen) setFinished(true);
+  }, [themeChosen]);
 
   useEffect(() => {
     if (!sessionLoaded) return;
@@ -81,7 +85,6 @@ export default function ChooseThemePage() {
     chooseTheme(config);
     setFinished(true);
     setLoading(false);
-    router.push("/deploy");
   };
 
   if (!sessionLoaded) {
@@ -93,10 +96,19 @@ export default function ChooseThemePage() {
 
     return (
       <div className="page-stack w-full max-w-2xl mx-auto">
+        <div className="sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-white/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
+              Site Builder / Wrap-up
+            </p>
+            <span className="text-xs text-text-muted">Step 3 of 4</span>
+          </div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="card-base text-center space-y-6 py-10"
+          className="card-base space-y-6 py-10 text-center"
         >
           <CheckCircle2 size={48} className="text-promo-accent mx-auto" />
           <div>
@@ -145,6 +157,15 @@ export default function ChooseThemePage() {
 
   return (
     <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-white/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
+            Site Builder / Template
+          </p>
+          <span className="text-xs text-text-muted">Step 3 of 4</span>
+        </div>
+      </div>
+
       <PageHeader
         eyebrow="Step 3"
         title="Choose a Template"

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FolderOpen, Globe, MousePointerClick, FileText, Facebook, Eye } from "lucide-react";
+import { FolderOpen, Globe, MousePointerClick, FileText, Facebook, Eye, Trash2, Loader2 } from "lucide-react";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { BlogSite } from "../types";
 
@@ -17,6 +17,8 @@ interface AssetFolderCardProps {
   summary: SiteVaultSummary;
   isActive: boolean;
   onOpen: () => void;
+  onDelete: () => void;
+  deleting?: boolean;
 }
 
 function formatCreatedAt(iso: string): string {
@@ -27,7 +29,7 @@ function formatCreatedAt(iso: string): string {
   });
 }
 
-export function AssetFolderCard({ summary, isActive, onOpen }: AssetFolderCardProps) {
+export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting = false }: AssetFolderCardProps) {
   const { site, postCount, livePostCount, clickCount, facebookPostCount = 0 } = summary;
   const territory = getSiteTerritory(site);
   const isLive = site.status === "live";
@@ -109,26 +111,39 @@ export function AssetFolderCard({ summary, isActive, onOpen }: AssetFolderCardPr
           </div>
         </button>
 
-        {isLive ? (
-          <Link
-            href={viewHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="View website"
-            aria-label={`View ${site.title}`}
-            className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#45A29E]/35 bg-[#45A29E]/10 text-[#45A29E] hover:bg-[#45A29E]/20 hover:border-[#45A29E]/50 transition-colors"
+        <div className="flex flex-col gap-1 shrink-0">
+          {isLive ? (
+            <Link
+              href={viewHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="View website"
+              aria-label={`View ${site.title}`}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#45A29E]/35 bg-[#45A29E]/10 text-[#45A29E] hover:bg-[#45A29E]/20 hover:border-[#45A29E]/50 transition-colors"
+            >
+              <Eye size={18} strokeWidth={2} />
+            </Link>
+          ) : (
+            <span
+              title="Publish your site to view it live"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/10 bg-white/5 text-text-muted opacity-50 cursor-not-allowed"
+              aria-hidden
+            >
+              <Eye size={18} strokeWidth={2} />
+            </span>
+          )}
+
+          <button
+            type="button"
+            onClick={onDelete}
+            disabled={deleting}
+            title="Delete website"
+            aria-label={`Delete ${site.title}`}
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-red-500/25 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:border-red-500/40 transition-colors disabled:opacity-50"
           >
-            <Eye size={18} strokeWidth={2} />
-          </Link>
-        ) : (
-          <span
-            title="Publish your site to view it live"
-            className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/10 bg-white/5 text-text-muted opacity-50 cursor-not-allowed"
-            aria-hidden
-          >
-            <Eye size={18} strokeWidth={2} />
-          </span>
-        )}
+            {deleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} strokeWidth={2} />}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -125,3 +125,46 @@ export async function GET(request: Request) {
     { headers: NO_STORE_HEADERS }
   );
 }
+
+export async function DELETE(request: Request) {
+  const guard = featureApiGuard("blog-builder");
+  if (guard) return guard;
+
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
+  const siteId = new URL(request.url).searchParams.get("siteId")?.trim() ?? "";
+  if (!siteId) {
+    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
+  }
+
+  const { data: site } = await supabase
+    .from("sites")
+    .select("id, title")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .eq("is_template", false)
+    .maybeSingle();
+
+  if (!site) {
+    return NextResponse.json({ error: "Site not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  await supabase
+    .from("blog_builder_sessions")
+    .update({ site_id: null, site_slug: null, deployed: false })
+    .eq("user_id", user.id)
+    .eq("site_id", siteId);
+
+  await supabase.from("site_facebook_posts").delete().eq("user_id", user.id).eq("site_id", siteId);
+
+  const { error } = await supabase.from("sites").delete().eq("id", siteId).eq("user_id", user.id);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500, headers: NO_STORE_HEADERS });
+  }
+
+  return NextResponse.json({ ok: true, deletedSiteId: siteId }, { headers: NO_STORE_HEADERS });
+}

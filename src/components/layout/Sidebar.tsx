@@ -264,11 +264,14 @@ function applySidebarLayout(collapsed: boolean) {
 }
 
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
+  // Always start expanded so SSR and the first client render match (localStorage is read after mount).
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    applySidebarLayout(collapsed);
-  }, [collapsed]);
+    const stored = readSidebarCollapsed();
+    setCollapsed(stored);
+    applySidebarLayout(stored);
+  }, []);
 
   const toggleCollapse = () => {
     setCollapsed((prev) => {

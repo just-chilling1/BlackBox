@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { Check } from "lucide-react";
 import { clsx } from "clsx";
 import { WIZARD_STEPS } from "../types";
@@ -11,43 +12,53 @@ interface WizardStepperProps {
 
 export function WizardStepper({ currentStep, className }: WizardStepperProps) {
   return (
-    <div className={clsx("flex items-center gap-2 mb-8", className)}>
-      {WIZARD_STEPS.map((step, index) => (
-        <div key={step.number} className="flex items-center flex-1 min-w-0">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div
-              className={clsx(
-                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all shrink-0",
-                currentStep === step.number &&
-                  "bg-accent text-text-on-accent shadow-[0_0_20px_rgba(234,179,8,0.25)]",
-                currentStep > step.number && "bg-accent/20 text-accent border border-accent/30",
-                currentStep < step.number && "bg-surface border border-border-dim text-text-muted"
+    <nav aria-label="Site builder progress" className={clsx("mb-8", className)}>
+      <ol className="flex w-full items-start">
+        {WIZARD_STEPS.map((step, index) => {
+          const isComplete = currentStep > step.number;
+          const isActive = currentStep === step.number;
+
+          return (
+            <Fragment key={step.number}>
+              <li className="flex min-w-0 flex-1 flex-col items-center px-0.5 text-center sm:px-1">
+                <div
+                  className={clsx(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all",
+                    isActive &&
+                      "bg-accent text-text-on-accent shadow-[0_0_20px_rgba(234,179,8,0.25)]",
+                    isComplete && "border border-accent/30 bg-accent/20 text-accent",
+                    !isComplete && !isActive && "border border-border-dim bg-surface text-text-muted"
+                  )}
+                  aria-current={isActive ? "step" : undefined}
+                >
+                  {isComplete ? <Check size={16} aria-hidden /> : step.number}
+                </div>
+                <p
+                  className={clsx(
+                    "mt-2 text-xs font-medium leading-snug sm:text-sm",
+                    currentStep >= step.number ? "text-text-primary" : "text-text-muted"
+                  )}
+                >
+                  {step.title}
+                </p>
+                <p className="mt-0.5 text-[10px] leading-snug text-text-muted sm:text-xs">
+                  {step.description}
+                </p>
+              </li>
+
+              {index < WIZARD_STEPS.length - 1 && (
+                <li
+                  aria-hidden
+                  className={clsx(
+                    "mt-5 h-px w-3 shrink-0 sm:w-6 md:w-10",
+                    currentStep > step.number ? "bg-accent/50" : "bg-border-dim"
+                  )}
+                />
               )}
-            >
-              {currentStep > step.number ? <Check size={16} /> : step.number}
-            </div>
-            <div className="hidden sm:block min-w-0">
-              <p
-                className={clsx(
-                  "text-sm font-medium truncate",
-                  currentStep >= step.number ? "text-text-primary" : "text-text-muted"
-                )}
-              >
-                {step.title}
-              </p>
-              <p className="text-xs text-text-muted truncate">{step.description}</p>
-            </div>
-          </div>
-          {index < WIZARD_STEPS.length - 1 && (
-            <div
-              className={clsx(
-                "h-px flex-1 mx-3 transition-colors",
-                currentStep > step.number ? "bg-accent/50" : "bg-border-dim"
-              )}
-            />
-          )}
-        </div>
-      ))}
-    </div>
+            </Fragment>
+          );
+        })}
+      </ol>
+    </nav>
   );
 }

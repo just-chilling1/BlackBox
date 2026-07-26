@@ -9,27 +9,27 @@ import {
   FolderOpen,
   Globe,
   Plus,
+  Trash2,
+  Loader2,
+  MousePointerClick,
 } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
+import { PageHeader } from "@/components/ui/page-header";
 import { AssetFolderCard, type SiteVaultSummary } from "../components/AssetFolderCard";
-import { PostCard } from "../components/PostCard";
-import { FacebookPostCard } from "../components/FacebookPostCard";
 import { getSiteTerritory } from "../lib/site-territory";
-import type { SavedFacebookPost } from "../lib/facebook-posts-vault";
-import type { BlogPost, BlogSite, GenerationQuota } from "../types";
+import type { BlogSite, GenerationQuota } from "../types";
 
 export default function AssetCommandPage() {
   const [summaries, setSummaries] = useState<SiteVaultSummary[]>([]);
   const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
   const [selectedSite, setSelectedSite] = useState<BlogSite | null>(null);
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [facebookPosts, setFacebookPosts] = useState<SavedFacebookPost[]>([]);
   const [clicks, setClicks] = useState(0);
   const [quota, setQuota] = useState<GenerationQuota | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [openSiteId, setOpenSiteId] = useState<string | null>(null);
+  const [deletingSiteId, setDeletingSiteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/blog/site", { cache: "no-store" })
@@ -46,8 +46,6 @@ export default function AssetCommandPage() {
     setOpenSiteId(siteId);
     setDetailLoading(true);
     setSelectedSite(null);
-    setPosts([]);
-    setFacebookPosts([]);
 
     try {
       const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, {
@@ -57,8 +55,6 @@ export default function AssetCommandPage() {
       if (!res.ok) throw new Error(data.error || "Failed to load site");
 
       setSelectedSite(data.site as BlogSite);
-      setPosts(data.posts ?? []);
-      setFacebookPosts(Array.isArray(data.facebookPosts) ? data.facebookPosts : []);
       setClicks(data.clicks ?? 0);
       if (Array.isArray(data.summaries)) setSummaries(data.summaries);
     } finally {
@@ -69,8 +65,6 @@ export default function AssetCommandPage() {
   const closeFolder = () => {
     setOpenSiteId(null);
     setSelectedSite(null);
-    setPosts([]);
-    setFacebookPosts([]);
     setClicks(0);
   };
 
@@ -78,14 +72,36 @@ export default function AssetCommandPage() {
     ? `${typeof window !== "undefined" ? window.location.origin : getAppUrl()}/sites/${selectedSite.slug}`
     : "";
 
-  const resolveFacebookPost = (body: string) =>
-    publicUrl ? body.split("[LINK]").join(publicUrl) : body;
-
   const copyUrl = () => {
     if (!publicUrl) return;
     navigator.clipboard.writeText(publicUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const deleteSite = async (siteId: string, siteTitle: string) => {
+    const confirmed = window.confirm(
+      `Delete "${siteTitle}"?\n\nThis removes the website, all its articles, and saved posts. This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDeletingSiteId(siteId);
+    try {
+      const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to delete website");
+
+      setSummaries((prev) => prev.filter((s) => s.site.id !== siteId));
+      if (openSiteId === siteId) closeFolder();
+      if (activeSiteId === siteId) setActiveSiteId(null);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Failed to delete website";
+      window.alert(msg);
+    } finally {
+      setDeletingSiteId(null);
+    }
   };
 
   if (loading) {
@@ -118,124 +134,104 @@ export default function AssetCommandPage() {
   }
 
   if (openSiteId) {
-    const summary = summaries.find((s) => s.site.id === openSiteId);
-
     return (
-      <div className="page-stack w-full">
+      <div className="page-stack w-full max-w-3xl mx-auto">
         <button
           type="button"
           onClick={closeFolder}
-          className="inline-flex items-center gap-2 text-sm text-[#45A29E] hover:underline w-fit"
+          className="inline-flex items-center gap-2 text-sm text-promo-accent hover:underline w-fit"
         >
           <ArrowLeft size={16} />
           Back to My Websites
         </button>
 
         {detailLoading || !selectedSite ? (
-          <p className="text-[#6b7280] text-sm animate-pulse">Opening folder...</p>
+          <p className="text-text-muted text-sm animate-pulse">Opening website...</p>
         ) : (
           <>
-            <div className="flex flex-col gap-2">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
-                Site folder
-              </p>
-              <h1 className="brand-font text-2xl sm:text-3xl text-[#C5C6C7] tracking-tight">
-                {selectedSite.title}
-              </h1>
-              <p className="text-[#6b7280] text-sm">{getSiteTerritory(selectedSite)}</p>
-            </div>
-
-            <div className="rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/5 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold mb-1">
-                  Public website
-                </p>
-                <p className="text-sm text-[#C5C6C7] break-all">{publicUrl}</p>
-              </div>
-              <div className="flex gap-2 shrink-0">
+            <PageHeader
+              eyebrow="Site folder"
+              title={selectedSite.title}
+              subtitle={getSiteTerritory(selectedSite)}
+              actions={
                 <button
                   type="button"
-                  onClick={copyUrl}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#45A29E]/40 text-[#45A29E] text-sm font-medium"
+                  onClick={() => void deleteSite(selectedSite.id, selectedSite.title)}
+                  disabled={deletingSiteId === selectedSite.id}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 hover:bg-red-500/20 disabled:opacity-50"
                 >
-                  <Copy size={16} />
-                  {copied ? "Copied!" : "Copy URL"}
+                  {deletingSiteId === selectedSite.id ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
+                  Delete website
                 </button>
-                <Link
-                  href={`/sites/${selectedSite.slug}`}
-                  target="_blank"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#45A29E] text-[#0B0C10] text-sm font-bold"
-                >
-                  View <ExternalLink size={16} />
-                </Link>
-              </div>
-            </div>
+              }
+            />
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              <div className="glass-tile text-center">
-                <p className="text-[10px] uppercase tracking-widest text-text-muted">Posts</p>
-                <p className="brand-font text-2xl text-text-heading">{posts.length}</p>
-              </div>
-              <div className="glass-tile text-center">
-                <p className="text-[10px] uppercase tracking-widest text-text-muted">Clicks</p>
-                <p className="brand-font text-2xl text-accent-muted">{clicks}</p>
-              </div>
-              <div className="glass-tile text-center col-span-2 sm:col-span-1">
-                <p className="text-[10px] uppercase tracking-widest text-text-muted">Status</p>
-                <p className="brand-font text-lg text-accent capitalize">{selectedSite.status}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h2 className="brand-font text-lg text-text-heading">Published articles</h2>
-              {posts.length === 0 ? (
-                <p className="text-sm text-text-muted">No articles in this folder yet.</p>
-              ) : (
-                posts.map((post) => (
-                  <PostCard key={post.id} post={post} siteSlug={selectedSite.slug} />
-                ))
-              )}
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <h2 className="brand-font text-lg text-text-heading">Facebook posts (Accelerator)</h2>
-                {facebookPosts.length > 0 && (
-                  <Link
-                    href="/accelerator"
-                    className="text-xs font-semibold text-[#45A29E] hover:underline"
-                  >
-                    Generate more →
-                  </Link>
-                )}
-              </div>
-              {facebookPosts.length === 0 ? (
-                <p className="text-sm text-text-muted">
-                  No Facebook posts saved yet. Generate posts in{" "}
-                  <Link href="/accelerator" className="text-[#45A29E] hover:underline">
-                    Accelerator
-                  </Link>{" "}
-                  — each batch is saved here automatically.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {facebookPosts.map((post) => (
-                    <FacebookPostCard
-                      key={post.id}
-                      post={post}
-                      resolvedText={resolveFacebookPost(post.body)}
-                    />
-                  ))}
+            <div className="rounded-2xl border border-accent/30 bg-accent/5 p-5 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-accent">
+                    Public website
+                  </p>
+                  <p className="break-all text-sm text-text-primary">{publicUrl}</p>
+                  <p className="mt-2 text-xs text-text-muted">
+                    Created {new Date(selectedSite.created_at).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
-              )}
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={copyUrl}
+                    className="inline-flex items-center gap-2 rounded-lg border border-promo-accent/40 px-4 py-2 text-sm font-medium text-promo-accent"
+                  >
+                    <Copy size={16} />
+                    {copied ? "Copied!" : "Copy URL"}
+                  </button>
+                  <Link
+                    href={`/sites/${selectedSite.slug}`}
+                    target="_blank"
+                    className="inline-flex items-center gap-2 rounded-lg bg-promo-accent px-4 py-2 text-sm font-bold text-text-on-accent"
+                  >
+                    View
+                    <ExternalLink size={16} />
+                  </Link>
+                </div>
+              </div>
             </div>
 
-            {summary && (
-              <p className="text-xs text-text-muted">
-                Created {new Date(selectedSite.created_at).toLocaleString()} ·{" "}
-                {summary.livePostCount} live of {summary.postCount} posts
-              </p>
-            )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="glass-tile flex items-center gap-3 px-4 py-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-muted/15 text-accent-muted">
+                  <MousePointerClick size={18} />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-text-muted">Clicks</p>
+                  <p className="brand-font text-2xl text-text-heading">{clicks}</p>
+                </div>
+              </div>
+              <div className="glass-tile flex items-center gap-3 px-4 py-4">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                    selectedSite.status === "live"
+                      ? "bg-promo-accent/15 text-promo-accent"
+                      : "bg-accent/15 text-accent"
+                  }`}
+                >
+                  <Globe size={18} />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-text-muted">Status</p>
+                  <p className="brand-font text-2xl capitalize text-text-heading">{selectedSite.status}</p>
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -255,6 +251,8 @@ export default function AssetCommandPage() {
             summary={summary}
             isActive={summary.site.id === latestSiteId}
             onOpen={() => openFolder(summary.site.id)}
+            onDelete={() => void deleteSite(summary.site.id, summary.site.title)}
+            deleting={deletingSiteId === summary.site.id}
           />
         ))}
 

@@ -70,6 +70,7 @@ export const blogBuilderWorkflowSteps: NavItem[] = [
 
 export const blogBuilderResourceNav: NavItem[] = [
   { path: "/asset", label: "My Websites", icon: "Globe", feature: "blog-builder" },
+  { path: "/promote", label: "Promotion Kit", icon: "Send", feature: "article-publish" },
   { path: "/link-vault", label: "Link Vault", icon: "FileText", feature: "blog-builder" },
 ];
 

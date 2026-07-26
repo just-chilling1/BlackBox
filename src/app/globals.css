@@ -320,6 +320,53 @@ html[data-sidebar="collapsed"] {
   animation: sparkle-pulse 2s ease-in-out infinite;
 }
 
+/* Deploy site loader — CSS-only animations (GPU-friendly) */
+@keyframes deploy-block-pulse {
+  0%, 100% { opacity: 0.32; }
+  50% { opacity: 0.72; }
+}
+
+@keyframes deploy-scan {
+  from { transform: translateY(0); }
+  to { transform: translateY(168px); }
+}
+
+@keyframes deploy-progress-slide {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(340%); }
+}
+
+.deploy-site-loader .deploy-block {
+  animation: deploy-block-pulse 2.2s ease-in-out infinite;
+  will-change: opacity;
+}
+
+.deploy-site-loader .deploy-block:nth-child(1) { animation-delay: 0s; }
+.deploy-site-loader .deploy-block:nth-child(2) { animation-delay: 0.2s; }
+.deploy-site-loader .deploy-block:nth-child(3) { animation-delay: 0.4s; }
+.deploy-site-loader .deploy-block:nth-child(4) { animation-delay: 0.55s; }
+.deploy-site-loader .deploy-block:nth-child(5) { animation-delay: 0.7s; }
+.deploy-site-loader .deploy-block:nth-child(6) { animation-delay: 0.85s; }
+
+.deploy-site-loader .deploy-scan {
+  animation: deploy-scan 2.4s linear infinite;
+  will-change: transform;
+}
+
+.deploy-site-loader .deploy-progress-bar {
+  animation: deploy-progress-slide 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deploy-site-loader .deploy-block,
+  .deploy-site-loader .deploy-scan,
+  .deploy-site-loader .deploy-progress-bar {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -51,7 +51,7 @@ export default function ChooseTerritoryPage() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
             Site Builder / Niche
           </p>
-          <span className="text-xs text-text-muted">Step 2 of 3</span>
+          <span className="text-xs text-text-muted">Step 2 of 4</span>
         </div>
       </div>
 

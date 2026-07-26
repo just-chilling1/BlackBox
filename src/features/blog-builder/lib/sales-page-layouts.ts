@@ -64,7 +64,7 @@ function buildEditorialLayout(ctx: SalesPageLayoutContext): string {
       <p class="subtitle">${esc(copy.productIntro)}</p>
     </div>
   </section>
-  ${benefitsSection(copy, esc, "grid")}
+  ${benefitsSection(copy, esc, "benefits-grid")}
   ${differentiatorsSection(copy, esc)}
   ${audienceSection(copy, esc)}
   ${contentsSection(copy, esc, "Everything Included")}
@@ -88,7 +88,15 @@ function buildMagazineLayout(ctx: SalesPageLayoutContext): string {
   <section class="alt">
     <div class="container">
       <div class="bento-grid">
-        ${copy.benefits.map((b) => `<div class="card card-bento"><h3>${esc(b.title)}</h3><p>${esc(b.description)}</p></div>`).join("")}
+        ${copy.benefits
+          .map(
+            (b, i) => `<div class="card card-bento benefit-card">
+        <span class="benefit-index">${String(i + 1).padStart(2, "0")}</span>
+        <h3>${esc(b.title)}</h3>
+        <p>${esc(b.description)}</p>
+      </div>`
+          )
+          .join("")}
       </div>
     </div>
   </section>
@@ -227,7 +235,7 @@ function buildConversionLayout(ctx: SalesPageLayoutContext): string {
       <p class="subtitle">${esc(copy.productIntro)}</p>
     </div>
   </section>
-  ${benefitsSection(copy, esc, "grid-3")}
+  ${benefitsSection(copy, esc, "benefits-grid benefits-grid-3")}
   ${contentsSection(copy, esc, "You Get Everything")}
   ${audienceSection(copy, esc)}
   ${faqSection(copy, esc)}
@@ -277,12 +285,23 @@ function buildLuxuryLayout(ctx: SalesPageLayoutContext): string {
   ${footerSection(productName, esc)}`;
 }
 
-function benefitsSection(copy: ProductSalesCopy, esc: (v: string) => string, gridClass = "grid") {
+function benefitsSection(copy: ProductSalesCopy, esc: (v: string) => string, gridClass = "benefits-grid") {
   return `
-  <section class="alt">
+  <section class="alt benefits-section">
     <div class="container">
-      <div class="center"><span class="label">Benefits</span><h2 class="title">What You Get</h2></div>
-      <div class="${gridClass}" style="margin-top:28px;">${copy.benefits.map((b) => `<div class="card"><h3>${esc(b.title)}</h3><p>${esc(b.description)}</p></div>`).join("")}</div>
+      <div class="center benefits-header">
+        <span class="label">Benefits</span>
+        <h2 class="title">What You Get</h2>
+      </div>
+      <div class="${gridClass}">${copy.benefits
+        .map(
+          (b, i) => `<div class="card benefit-card">
+        <span class="benefit-index">${String(i + 1).padStart(2, "0")}</span>
+        <h3>${esc(b.title)}</h3>
+        <p>${esc(b.description)}</p>
+      </div>`
+        )
+        .join("")}</div>
     </div>
   </section>`;
 }
@@ -377,8 +396,10 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .hero-magazine { min-height: 70vh; text-align: left; }
     .product-sales-page-root .title-magazine { font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 1; }
     .product-sales-page-root .badge-hot { background: color-mix(in srgb, var(--accent) 22%, #000); }
-    .product-sales-page-root .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .product-sales-page-root .card-bento { min-height: 140px; }
+    .product-sales-page-root .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+    .product-sales-page-root .card-bento { min-height: 160px; }
+    .product-sales-page-root .card-bento h3 { color: var(--card-text); font-size: 1.05rem; margin-bottom: 8px; }
+    .product-sales-page-root .card-bento p { color: var(--card-muted); font-size: 0.92rem; line-height: 1.55; }
     .product-sales-page-root .cta-wide { width: 100%; max-width: 420px; justify-content: center; }`;
     case "minimal":
       return `
@@ -389,7 +410,8 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .list-minimal li { background: transparent; border: none; border-bottom: 1px solid var(--border); border-radius: 0; padding: 12px 0; }
     .product-sales-page-root .stack-list { display: grid; gap: 20px; margin-top: 28px; }
     .product-sales-page-root .stack-item { display: grid; gap: 6px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .product-sales-page-root .stack-item span { color: var(--muted); font-size: 0.95rem; }`;
+    .product-sales-page-root .stack-item strong { color: var(--card-text); font-size: 1rem; }
+    .product-sales-page-root .stack-item span { color: var(--card-muted); font-size: 0.95rem; }`;
     case "authority":
       return `
     .product-sales-page-root .hero-authority { text-align: left; min-height: 75vh; }
@@ -423,7 +445,8 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .pull-quote-luxury { font-family: var(--heading-font); font-size: 1.35rem; line-height: 1.6; font-style: italic; }
     .product-sales-page-root .luxury-columns { display: grid; gap: 0; margin-top: 36px; border-top: 1px solid var(--border); }
     .product-sales-page-root .luxury-item { padding: 28px 0; border-bottom: 1px solid var(--border); }
-    .product-sales-page-root .luxury-item h3 { font-family: var(--heading-font); margin-bottom: 8px; }
+    .product-sales-page-root .luxury-item h3 { font-family: var(--heading-font); margin-bottom: 8px; color: var(--text); }
+    .product-sales-page-root .luxury-item p { color: var(--muted); }
     .product-sales-page-root .list-luxury li { background: transparent; border: none; padding: 10px 0; }
     .product-sales-page-root .guarantee-luxury { border-radius: 4px; }`;
     case "editorial":

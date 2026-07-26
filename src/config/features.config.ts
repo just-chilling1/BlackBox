@@ -80,7 +80,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
 ];
 
 /** Skeleton ships with training only. Enable modules per product. */
-export const enabledFeatures: FeatureId[] = ["training", "blog-builder", "dopamine"];
+export const enabledFeatures: FeatureId[] = ["training", "blog-builder", "article-publish", "dopamine"];
 
 export function isFeatureEnabled(id: FeatureId): boolean {
   return enabledFeatures.includes(id);

@@ -290,6 +290,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       niche,
       territory: label,
       territoryChosen: true,
+      themeChosen: false,
       step: 2,
     }));
   }, []);

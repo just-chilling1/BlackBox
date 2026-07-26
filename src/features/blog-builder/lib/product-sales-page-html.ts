@@ -196,7 +196,7 @@ export function buildThemedProductSalesPage(
       font-family: var(--heading-font); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700;
       margin-bottom: 16px; color: var(--text);
     }
-    .product-sales-page-root h3 { color: var(--text); }
+    .product-sales-page-root .split h3 { color: var(--text); }
     .product-sales-page-root .subtitle { font-size: 1.1rem; color: var(--muted); max-width: 620px; margin-bottom: 36px; }
     .product-sales-page-root .center { text-align: center; }
     .product-sales-page-root .center .subtitle { margin-left: auto; margin-right: auto; }
@@ -211,14 +211,63 @@ export function buildThemedProductSalesPage(
       margin-top: 36px; padding: 28px; border-left: 4px solid var(--label);
       background: var(--accent-soft); border-radius: 0 14px 14px 0; font-style: italic; color: var(--muted);
     }
-    .product-sales-page-root .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .product-sales-page-root .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; }
+    .product-sales-page-root .benefits-section { padding-top: 72px; padding-bottom: 72px; }
+    .product-sales-page-root .benefits-header { margin-bottom: 36px; }
+    .product-sales-page-root .benefits-header .title { margin-bottom: 0; }
+    .product-sales-page-root .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    @media (min-width: 640px) {
+      .product-sales-page-root .benefits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+    }
+    @media (min-width: 960px) {
+      .product-sales-page-root .benefits-grid.benefits-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    }
+    .product-sales-page-root section.alt .container > div:has(> .card) {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
     .product-sales-page-root .card {
       padding: 28px; background: var(--elevated); color: var(--card-text); border-radius: 18px;
-      border: 1px solid var(--border); transition: border-color 0.2s;
+      border: 1px solid var(--border); transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--card-text) 6%, transparent);
     }
-    .product-sales-page-root .card:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-    .product-sales-page-root .card h3 { font-family: var(--heading-font); font-size: 1.15rem; margin-bottom: 10px; color: var(--card-text); }
-    .product-sales-page-root .card p { color: var(--card-muted); font-size: 0.95rem; }
+    .product-sales-page-root .card:hover {
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    .product-sales-page-root .benefit-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      min-height: 148px;
+    }
+    .product-sales-page-root .benefit-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-width: 2rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--label);
+      background: color-mix(in srgb, var(--accent) 12%, var(--elevated));
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+    .product-sales-page-root .card h3 {
+      font-family: var(--heading-font); font-size: 1.12rem; line-height: 1.35;
+      margin-bottom: 4px; color: var(--card-text); font-weight: 700;
+    }
+    .product-sales-page-root .card p { color: var(--card-muted); font-size: 0.95rem; line-height: 1.6; margin: 0; }
     .product-sales-page-root .split { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
     @media (max-width: 768px) { .product-sales-page-root .split { grid-template-columns: 1fr; } }
     .product-sales-page-root .list { list-style: none; display: grid; gap: 10px; }
