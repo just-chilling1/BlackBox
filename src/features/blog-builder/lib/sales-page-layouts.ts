@@ -1,6 +1,64 @@
 import type { TemplateStructureId } from "../themes/ready-templates";
 import type { ProductSalesCopy } from "./product-sales-copy";
 
+const SECTION_LABELS: Record<
+  TemplateStructureId,
+  {
+    benefits: string;
+    faq: string;
+    audience: string;
+    differentiators: string;
+    guarantee: string;
+  }
+> = {
+  editorial: {
+    benefits: "What You Get",
+    faq: "Common Questions",
+    audience: "Is This For You?",
+    differentiators: "What Makes It Different",
+    guarantee: "Our Recommendation",
+  },
+  magazine: {
+    benefits: "Why People Love It",
+    faq: "Quick Answers",
+    audience: "Perfect If You…",
+    differentiators: "Why It Stands Out",
+    guarantee: "The Bottom Line",
+  },
+  minimal: {
+    benefits: "Key Benefits",
+    faq: "Questions",
+    audience: "Good Fit If…",
+    differentiators: "What Sets It Apart",
+    guarantee: "Honest Take",
+  },
+  authority: {
+    benefits: "What We Found",
+    faq: "Buyer Questions",
+    audience: "Who Should Consider This",
+    differentiators: "What Sets It Apart",
+    guarantee: "Our Verdict",
+  },
+  conversion: {
+    benefits: "Everything You Gain",
+    faq: "Got Questions?",
+    audience: "Built For People Who…",
+    differentiators: "Why Act Now",
+    guarantee: "Risk-Free Promise",
+  },
+  luxury: {
+    benefits: "The Experience",
+    faq: "Before You Decide",
+    audience: "Crafted For",
+    differentiators: "Distinctive Qualities",
+    guarantee: "Our Assurance",
+  },
+};
+
+function labelsFor(structureId: TemplateStructureId) {
+  return SECTION_LABELS[structureId] ?? SECTION_LABELS.editorial;
+}
+
 export interface SalesPageLayoutContext {
   structureId: TemplateStructureId;
   templateName: string;
@@ -8,7 +66,6 @@ export interface SalesPageLayoutContext {
   niche: string;
   copy: ProductSalesCopy;
   ctaHref: string;
-  price: string;
   escapeHtml: (value: string) => string;
 }
 
@@ -31,7 +88,7 @@ export function buildSalesPageBody(ctx: SalesPageLayoutContext): string {
 }
 
 function buildEditorialLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-editorial">
     <div class="container">
@@ -64,18 +121,19 @@ function buildEditorialLayout(ctx: SalesPageLayoutContext): string {
       <p class="subtitle">${esc(copy.productIntro)}</p>
     </div>
   </section>
-  ${benefitsSection(copy, esc, "benefits-grid")}
-  ${differentiatorsSection(copy, esc)}
-  ${audienceSection(copy, esc)}
+  ${benefitsSection(copy, esc, ctx.structureId, "benefits-grid")}
+  ${differentiatorsSection(copy, esc, ctx.structureId)}
+  ${audienceSection(copy, esc, ctx.structureId)}
   ${contentsSection(copy, esc, "Everything Included")}
-  ${faqSection(copy, esc)}
-  ${guaranteeSection(copy, esc)}
-  ${finalSection(copy, ctaHref, price, esc, "Ready to Take the Next Step?")}
+  ${faqSection(copy, esc, ctx.structureId)}
+  ${guaranteeSection(copy, esc, ctx.structureId)}
+  ${finalSection(copy, ctaHref, esc, "Ready to Take the Next Step?")}
+  ${mobileCtaBar(copy, ctaHref, esc)}
   ${footerSection(productName, esc)}`;
 }
 
 function buildMagazineLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-magazine">
     <div class="container">
@@ -114,17 +172,18 @@ function buildMagazineLayout(ctx: SalesPageLayoutContext): string {
       <p class="accent-text" style="font-size:1.15rem;font-weight:700;">${esc(copy.ahaMoment)}</p>
     </div>
   </section>
-  ${differentiatorsSection(copy, esc, "Why It Stands Out")}
-  ${audienceSection(copy, esc)}
+  ${differentiatorsSection(copy, esc, ctx.structureId, "Why It Stands Out")}
+  ${audienceSection(copy, esc, ctx.structureId)}
   ${contentsSection(copy, esc, "What's Inside")}
-  ${faqSection(copy, esc, "grid-2")}
-  ${guaranteeSection(copy, esc)}
-  ${finalSection(copy, ctaHref, price, esc, "Don't Wait — Check It Out")}
+  ${faqSection(copy, esc, ctx.structureId, "grid-2")}
+  ${guaranteeSection(copy, esc, ctx.structureId)}
+  ${finalSection(copy, ctaHref, esc, "Don't Wait — Check It Out")}
+  ${mobileCtaBar(copy, ctaHref, esc)}
   ${footerSection(productName, esc)}`;
 }
 
 function buildMinimalLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-minimal">
     <div class="container layout-minimal">
@@ -154,14 +213,15 @@ function buildMinimalLayout(ctx: SalesPageLayoutContext): string {
       <ul class="list list-minimal">${copy.forWho.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>
     </div>
   </section>
-  ${faqSection(copy, esc)}
-  ${guaranteeSection(copy, esc, "layout-minimal")}
-  ${finalSection(copy, ctaHref, price, esc, "Learn more", "layout-minimal", false)}
+  ${faqSection(copy, esc, ctx.structureId)}
+  ${guaranteeSection(copy, esc, ctx.structureId, "layout-minimal")}
+  ${finalSection(copy, ctaHref, esc, "Learn more", "layout-minimal")}
+  ${mobileCtaBar(copy, ctaHref, esc, "View offer →")}
   ${footerSection(productName, esc)}`;
 }
 
 function buildAuthorityLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-authority">
     <div class="container">
@@ -197,17 +257,18 @@ function buildAuthorityLayout(ctx: SalesPageLayoutContext): string {
       <div class="numbered-list">${copy.benefits.map((b, i) => `<div class="numbered-item"><span class="num">${i + 1}</span><div><h3>${esc(b.title)}</h3><p>${esc(b.description)}</p></div></div>`).join("")}</div>
     </div>
   </section>
-  ${differentiatorsSection(copy, esc, "What Sets It Apart")}
-  ${audienceSection(copy, esc)}
+  ${differentiatorsSection(copy, esc, ctx.structureId, "What Sets It Apart")}
+  ${audienceSection(copy, esc, ctx.structureId)}
   ${contentsSection(copy, esc, "Review Coverage")}
-  ${faqSection(copy, esc)}
-  ${guaranteeSection(copy, esc)}
-  ${finalSection(copy, ctaHref, price, esc, "See the Offer We Recommend")}
+  ${faqSection(copy, esc, ctx.structureId)}
+  ${guaranteeSection(copy, esc, ctx.structureId)}
+  ${finalSection(copy, ctaHref, esc, "See the Offer We Recommend")}
+  ${mobileCtaBar(copy, ctaHref, esc, "See offer →")}
   ${footerSection(productName, esc)}`;
 }
 
 function buildConversionLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-conversion">
     <div class="container center">
@@ -235,17 +296,18 @@ function buildConversionLayout(ctx: SalesPageLayoutContext): string {
       <p class="subtitle">${esc(copy.productIntro)}</p>
     </div>
   </section>
-  ${benefitsSection(copy, esc, "benefits-grid benefits-grid-3")}
+  ${benefitsSection(copy, esc, ctx.structureId, "benefits-grid benefits-grid-3")}
   ${contentsSection(copy, esc, "You Get Everything")}
-  ${audienceSection(copy, esc)}
-  ${faqSection(copy, esc)}
-  ${guaranteeSection(copy, esc)}
-  ${finalSection(copy, ctaHref, price, esc, "Claim Your Access Now", undefined, true)}
+  ${audienceSection(copy, esc, ctx.structureId)}
+  ${faqSection(copy, esc, ctx.structureId)}
+  ${guaranteeSection(copy, esc, ctx.structureId)}
+  ${finalSection(copy, ctaHref, esc, "Claim Your Access Now")}
+  ${mobileCtaBar(copy, ctaHref, esc, "Get Access →")}
   ${footerSection(productName, esc)}`;
 }
 
 function buildLuxuryLayout(ctx: SalesPageLayoutContext): string {
-  const { copy, productName, niche, ctaHref, price, escapeHtml: esc } = ctx;
+  const { copy, productName, niche, ctaHref, escapeHtml: esc } = ctx;
   return `
   <section class="hero hero-luxury">
     <div class="container layout-narrow center">
@@ -276,22 +338,29 @@ function buildLuxuryLayout(ctx: SalesPageLayoutContext): string {
       <ul class="list list-luxury">${copy.problemPoints.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
     </div>
   </section>
-  ${differentiatorsSection(copy, esc, "Distinctive Qualities")}
-  ${audienceSection(copy, esc, "layout-narrow")}
+  ${differentiatorsSection(copy, esc, ctx.structureId, "Distinctive Qualities")}
+  ${audienceSection(copy, esc, ctx.structureId, "layout-narrow")}
   ${contentsSection(copy, esc, "The Experience Includes", "layout-narrow")}
-  ${faqSection(copy, esc, undefined, "layout-narrow")}
-  ${guaranteeSection(copy, esc, "layout-narrow guarantee-luxury")}
-  ${finalSection(copy, ctaHref, price, esc, "Begin Your Transformation", "layout-narrow", false)}
+  ${faqSection(copy, esc, ctx.structureId, undefined, "layout-narrow")}
+  ${guaranteeSection(copy, esc, ctx.structureId, "layout-narrow guarantee-luxury")}
+  ${finalSection(copy, ctaHref, esc, "Begin Your Transformation", "layout-narrow")}
+  ${mobileCtaBar(copy, ctaHref, esc, "Discover →")}
   ${footerSection(productName, esc)}`;
 }
 
-function benefitsSection(copy: ProductSalesCopy, esc: (v: string) => string, gridClass = "benefits-grid") {
+function benefitsSection(
+  copy: ProductSalesCopy,
+  esc: (v: string) => string,
+  structureId: TemplateStructureId,
+  gridClass = "benefits-grid"
+) {
+  const labels = labelsFor(structureId);
   return `
   <section class="alt benefits-section">
     <div class="container">
       <div class="center benefits-header">
         <span class="label">Benefits</span>
-        <h2 class="title">What You Get</h2>
+        <h2 class="title">${labels.benefits}</h2>
       </div>
       <div class="${gridClass}">${copy.benefits
         .map(
@@ -306,22 +375,34 @@ function benefitsSection(copy: ProductSalesCopy, esc: (v: string) => string, gri
   </section>`;
 }
 
-function differentiatorsSection(copy: ProductSalesCopy, esc: (v: string) => string, title = "What Makes It Different") {
+function differentiatorsSection(
+  copy: ProductSalesCopy,
+  esc: (v: string) => string,
+  structureId: TemplateStructureId,
+  title?: string
+) {
+  const labels = labelsFor(structureId);
   return `
   <section>
     <div class="container center">
       <span class="label">Differentiators</span>
-      <h2 class="title">${title}</h2>
+      <h2 class="title">${title ?? labels.differentiators}</h2>
       <div class="contents" style="margin-top:28px;max-width:720px;margin-left:auto;margin-right:auto;">${copy.differentiators.map((d) => `<div class="content-item"><span class="accent-text">★</span><span>${esc(d)}</span></div>`).join("")}</div>
     </div>
   </section>`;
 }
 
-function audienceSection(copy: ProductSalesCopy, esc: (v: string) => string, containerClass = "container") {
+function audienceSection(
+  copy: ProductSalesCopy,
+  esc: (v: string) => string,
+  structureId: TemplateStructureId,
+  containerClass = "container"
+) {
+  const labels = labelsFor(structureId);
   return `
   <section class="alt">
     <div class="${containerClass}">
-      <div class="center"><span class="label">Fit</span><h2 class="title">Is This For You?</h2></div>
+      <div class="center"><span class="label">Fit</span><h2 class="title">${labels.audience}</h2></div>
       <div class="split" style="margin-top:32px;">
         <div><h3 class="accent-text" style="margin-bottom:16px;">This IS for you if…</h3><ul class="list">${copy.forWho.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
         <div><h3 style="margin-bottom:16px;">Not for you if…</h3><ul class="list">${copy.notForWho.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
@@ -341,23 +422,36 @@ function contentsSection(copy: ProductSalesCopy, esc: (v: string) => string, tit
   </section>`;
 }
 
-function faqSection(copy: ProductSalesCopy, esc: (v: string) => string, layoutClass?: string, containerClass = "container") {
+function faqSection(
+  copy: ProductSalesCopy,
+  esc: (v: string) => string,
+  structureId: TemplateStructureId,
+  layoutClass?: string,
+  containerClass = "container"
+) {
+  const labels = labelsFor(structureId);
   const listClass = layoutClass === "grid-2" ? "faq-list faq-grid-2" : "faq-list";
   return `
   <section class="alt">
     <div class="${containerClass}">
-      <div class="center"><span class="label">FAQ</span><h2 class="title">Common Questions</h2></div>
+      <div class="center"><span class="label">FAQ</span><h2 class="title">${labels.faq}</h2></div>
       <div class="${listClass}" style="margin-top:32px;">${copy.faqs.map((f) => `<div class="faq"><div class="faq-q">${esc(f.question)}</div><div class="faq-a">${esc(f.answer)}</div></div>`).join("")}</div>
     </div>
   </section>`;
 }
 
-function guaranteeSection(copy: ProductSalesCopy, esc: (v: string) => string, extraClass = "") {
+function guaranteeSection(
+  copy: ProductSalesCopy,
+  esc: (v: string) => string,
+  structureId: TemplateStructureId,
+  extraClass = ""
+) {
+  const labels = labelsFor(structureId);
   return `
   <section>
     <div class="container">
       <div class="guarantee ${extraClass}">
-        <h3 class="title" style="font-size:1.5rem;">Our Recommendation</h3>
+        <h3 class="title" style="font-size:1.5rem;">${labels.guarantee}</h3>
         <p class="subtitle" style="margin:0 auto;">${esc(copy.guarantee)}</p>
       </div>
     </div>
@@ -367,22 +461,31 @@ function guaranteeSection(copy: ProductSalesCopy, esc: (v: string) => string, ex
 function finalSection(
   copy: ProductSalesCopy,
   ctaHref: string,
-  price: string,
   esc: (v: string) => string,
   title: string,
-  containerClass = "container",
-  showPrice = true
+  containerClass = "container"
 ) {
   return `
   <section class="final" id="buy">
     <div class="${containerClass} center">
       <h2 class="title">${title}</h2>
       <p class="subtitle">${esc(copy.finalCta)}</p>
-      ${showPrice ? `<div class="price-box"><span class="old-price">$97</span><span class="new-price">$${esc(price)}</span></div>` : ""}
-      <a href="${ctaHref}" class="cta">${showPrice ? "Get Instant Access Now →" : "View the Offer →"}</a>
+      <a href="${ctaHref}" class="cta">View the Offer →</a>
       <p class="subtitle" style="margin-top:24px;font-size:0.95rem;">${esc(copy.urgency)}</p>
     </div>
   </section>`;
+}
+
+function mobileCtaBar(
+  _copy: ProductSalesCopy,
+  ctaHref: string,
+  esc: (v: string) => string,
+  label = "View Offer →"
+) {
+  return `
+  <div class="mobile-cta-bar">
+    <a href="${ctaHref}" class="cta cta-mobile">${esc(label)}</a>
+  </div>`;
 }
 
 function footerSection(productName: string, esc: (v: string) => string) {
@@ -393,7 +496,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
   switch (structureId) {
     case "magazine":
       return `
-    .product-sales-page-root .hero-magazine { min-height: 70vh; text-align: left; }
+    .product-sales-page-root .hero-magazine { min-height: clamp(380px, 68vh, 680px); text-align: left; }
     .product-sales-page-root .title-magazine { font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 1; }
     .product-sales-page-root .badge-hot { background: color-mix(in srgb, var(--accent) 22%, #000); }
     .product-sales-page-root .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
@@ -404,7 +507,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     case "minimal":
       return `
     .product-sales-page-root .layout-minimal { max-width: 640px; }
-    .product-sales-page-root .hero-minimal { min-height: 55vh; text-align: left; padding-top: 64px; }
+    .product-sales-page-root .hero-minimal { min-height: clamp(320px, 52vh, 520px); text-align: left; padding-top: 64px; }
     .product-sales-page-root .title-minimal { font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; }
     .product-sales-page-root .cta-minimal { background: var(--accent); box-shadow: none; border-radius: 8px; padding: 14px 28px; }
     .product-sales-page-root .list-minimal li { background: transparent; border: none; border-bottom: 1px solid var(--border); border-radius: 0; padding: 12px 0; }
@@ -414,7 +517,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .stack-item span { color: var(--card-muted); font-size: 0.95rem; }`;
     case "authority":
       return `
-    .product-sales-page-root .hero-authority { text-align: left; min-height: 75vh; }
+    .product-sales-page-root .hero-authority { text-align: left; min-height: clamp(360px, 65vh, 640px); }
     .product-sales-page-root .trust-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
     .product-sales-page-root .trust-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--label); }
     .product-sales-page-root .numbered-list { display: grid; gap: 16px; margin-top: 28px; }
@@ -424,7 +527,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .numbered-item p { color: var(--card-muted); font-size: 0.92rem; }`;
     case "conversion":
       return `
-    .product-sales-page-root .hero-conversion { min-height: 85vh; }
+    .product-sales-page-root .hero-conversion { min-height: clamp(400px, 70vh, 720px); }
     .product-sales-page-root .badge-urgent { animation: pulse 2s infinite; }
     .product-sales-page-root .cta-large { padding: 22px 48px; font-size: 1.1rem; }
     .product-sales-page-root .cta-row { display: flex; justify-content: center; margin-top: 8px; }
@@ -436,7 +539,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }`;
     case "luxury":
       return `
-    .product-sales-page-root .hero-luxury { min-height: 80vh; }
+    .product-sales-page-root .hero-luxury { min-height: clamp(380px, 68vh, 680px); }
     .product-sales-page-root .title-luxury { font-weight: 600; letter-spacing: -0.02em; }
     .product-sales-page-root .label-luxury { letter-spacing: 0.3em; }
     .product-sales-page-root .hero-sub-luxury { font-size: 1.2rem; line-height: 1.8; }
@@ -453,7 +556,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     default:
       return `
     .product-sales-page-root .layout-narrow { max-width: 760px; }
-    .product-sales-page-root .hero-editorial { min-height: 85vh; }
+    .product-sales-page-root .hero-editorial { min-height: clamp(400px, 70vh, 720px); }
     .product-sales-page-root .pull-quote { font-family: var(--heading-font); font-size: 1.25rem; line-height: 1.55; max-width: 620px; margin: 0 auto; }`;
   }
 }

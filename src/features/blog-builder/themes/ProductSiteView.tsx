@@ -1,5 +1,3 @@
-"use client";
-
 import { parseSalesPageDocument } from "../lib/product-sales-page-html";
 
 interface ProductSiteViewProps {
@@ -50,37 +48,42 @@ const LEGACY_CONTRAST_FIXES = `
   color: var(--card-muted, var(--muted));
 }
 .product-sales-page-root .benefits-grid,
-.product-sales-page-root .grid,
-.product-sales-page-root .bento-grid,
-.product-sales-page-root section.alt .container > div:has(> .card) {
+.product-sales-page-root .card-grid {
   display: grid !important;
   grid-template-columns: 1fr !important;
   gap: 32px !important;
 }
 @media (min-width: 640px) {
   .product-sales-page-root .benefits-grid,
-  .product-sales-page-root section.alt .container > div:has(> .card).grid {
+  .product-sales-page-root .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 32px !important;
   }
 }
 @media (min-width: 960px) {
   .product-sales-page-root .benefits-grid.benefits-grid-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 32px !important;
   }
 }
 `;
 
 /** Renders a generated product promotion sales page (full HTML document stored on the site). */
 export function ProductSiteView({ html }: ProductSiteViewProps) {
-  const { styles, bodyHtml } = parseSalesPageDocument(html);
+  const { styles, bodyHtml, googleFontsUrl } = parseSalesPageDocument(html);
 
   return (
-    <div className="product-sales-page-root min-h-screen isolate">
-      {styles ? <style dangerouslySetInnerHTML={{ __html: styles }} /> : null}
-      <style dangerouslySetInnerHTML={{ __html: LEGACY_CONTRAST_FIXES }} />
-      <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
-    </div>
+    <>
+      {googleFontsUrl ? (
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+      ) : null}
+      {googleFontsUrl ? (
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      ) : null}
+      {googleFontsUrl ? <link rel="stylesheet" href={googleFontsUrl} /> : null}
+      <div className="product-sales-page-root min-h-screen isolate">
+        {styles ? <style dangerouslySetInnerHTML={{ __html: styles }} /> : null}
+        <style dangerouslySetInnerHTML={{ __html: LEGACY_CONTRAST_FIXES }} />
+        <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+      </div>
+    </>
   );
 }

@@ -9,7 +9,6 @@ export interface ThemedSalesPageInput {
   copy: ProductSalesCopy;
   affiliateUrl: string;
   themeConfig?: ThemeConfig | null;
-  price?: string;
 }
 
 function escapeHtml(value: string): string {
@@ -81,7 +80,6 @@ export function buildThemedProductSalesPage(
   const { preset, colors, headingFont, bodyFont } = resolveThemeConfig(input.themeConfig);
   const presetDef = THEME_PRESETS[preset.id] ?? THEME_PRESETS.editorial;
   const googleFontsUrl = template.googleFontsUrl ?? presetDef.fonts.googleUrl;
-  const price = input.price ?? "27";
   const ctaHref = trackClickHref(input.siteId, input.affiliateUrl);
 
   const isDark = template.structureId === "conversion";
@@ -101,6 +99,18 @@ export function buildThemedProductSalesPage(
 
   const copy = input.copy;
   const productName = escapeHtml(input.productName);
+  const metaDescription = escapeHtml(copy.subhook.slice(0, 155));
+  const faqJsonLd = copy.faqs.length
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: copy.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }).replace(/</g, "\\u003c")
+    : "";
 
   const bodyHtml = buildSalesPageBody({
     structureId: template.structureId,
@@ -109,7 +119,6 @@ export function buildThemedProductSalesPage(
     niche: input.niche,
     copy,
     ctaHref,
-    price,
     escapeHtml,
   });
 
@@ -119,6 +128,17 @@ export function buildThemedProductSalesPage(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${productName}</title>
+  <meta name="description" content="${metaDescription}">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${productName}">
+  <meta property="og:description" content="${metaDescription}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="${productName}">
+  <meta name="twitter:description" content="${metaDescription}">
+  ${faqJsonLd ? `<script type="application/ld+json">${faqJsonLd}</script>` : ""}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="${googleFontsUrl}" rel="stylesheet">
   <style>
     .product-sales-page-root {
@@ -146,8 +166,8 @@ export function buildThemedProductSalesPage(
     .product-sales-page-root * { margin: 0; padding: 0; box-sizing: border-box; }
     .product-sales-page-root .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
     .product-sales-page-root .hero {
-      min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center;
-      padding: 80px 24px;
+      min-height: clamp(420px, 72vh, 760px); display: flex; align-items: center; justify-content: center; text-align: center;
+      padding: clamp(48px, 8vw, 80px) 24px;
       background: radial-gradient(ellipse at 30% 20%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 55%), var(--bg);
       color: var(--text);
     }
@@ -177,7 +197,7 @@ export function buildThemedProductSalesPage(
     }
     .product-sales-page-root .cta:hover { transform: translateY(-2px); }
     .product-sales-page-root section {
-      padding: 80px 24px;
+      padding: clamp(48px, 8vw, 80px) 24px;
       background: var(--bg);
       color: var(--text);
     }
@@ -226,10 +246,13 @@ export function buildThemedProductSalesPage(
     @media (min-width: 960px) {
       .product-sales-page-root .benefits-grid.benefits-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
     }
-    .product-sales-page-root section.alt .container > div:has(> .card) {
+    .product-sales-page-root .card-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 32px;
+    }
+    @media (min-width: 640px) {
+      .product-sales-page-root .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     .product-sales-page-root .card {
       padding: 28px; background: var(--elevated); color: var(--card-text); border-radius: 18px;
@@ -304,6 +327,20 @@ export function buildThemedProductSalesPage(
     .product-sales-page-root .old-price { font-size: 1.5rem; color: var(--muted); text-decoration: line-through; }
     .product-sales-page-root .new-price { font-size: 3rem; font-weight: 900; color: var(--label); }
     .product-sales-page-root .template-tag { font-size: 11px; color: var(--muted); margin-top: 24px; }
+    .product-sales-page-root .mobile-cta-bar {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+    }
+    .product-sales-page-root .cta-mobile { width: 100%; max-width: 420px; justify-content: center; margin: 0 auto; }
+    @media (max-width: 768px) {
+      .product-sales-page-root .mobile-cta-bar { display: flex; justify-content: center; }
+      .product-sales-page-root { padding-bottom: 88px; }
+      .product-sales-page-root .hero { min-height: auto; }
+      .product-sales-page-root .final { padding: 64px 20px; }
+    }
     .product-sales-page-root footer {
       text-align: center; padding: 32px 24px; color: var(--muted); font-size: 13px;
       border-top: 1px solid var(--border); background: var(--bg);
@@ -319,12 +356,26 @@ export function buildThemedProductSalesPage(
 }
 
 /** Extract styles + body inner HTML for embedding in Next.js layout. */
-export function parseSalesPageDocument(html: string): { styles: string; bodyHtml: string } {
+export function parseSalesPageDocument(html: string): {
+  styles: string;
+  bodyHtml: string;
+  googleFontsUrl?: string;
+  metaDescription?: string;
+} {
   const styleMatch = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const fontMatch =
+    html.match(/<link[^>]+href=["']([^"']+)["'][^>]*rel=["']stylesheet["']/i) ??
+    html.match(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/i);
+  const metaMatch =
+    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i) ??
+    html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i);
+
   return {
     styles: styleMatch?.[1]?.trim() ?? "",
     bodyHtml: bodyMatch?.[1]?.trim() ?? html,
+    googleFontsUrl: fontMatch?.[1],
+    metaDescription: metaMatch?.[1],
   };
 }
 

@@ -28,7 +28,10 @@ productIntro, benefits (array of 6 {title, description}), differentiators (array
 forWho (array of 4 strings), notForWho (array of 3 strings), faqs (array of 5 {question, answer}),
 guarantee, contents (array of 8 strings), finalCta, urgency.
 
-Write persuasive, niche-specific copy. Do not invent fake brand names or fake testimonials.`;
+Write persuasive, niche-specific copy grounded in the scraped offer context when provided.
+Do not invent fake brand names, fake testimonials, or fake pricing.
+The "contents" array must list real deliverables, modules, or features of the OFFER being promoted — never meta-features about the landing page (no "mobile-friendly design", "affiliate link on CTA", "responsive layout", etc.).
+Each benefit must describe a concrete outcome for the buyer, not a generic marketing claim.`;
 
 const COPY_TONE_INSTRUCTIONS: Record<TemplateStructureId, string> = {
   editorial: `VOICE: Thoughtful editorial — like a trusted magazine feature. Story-driven, empathetic, complete sentences, narrative flow. Headlines sound like article titles, not ads. Avoid hype and ALL CAPS.`,
@@ -197,14 +200,14 @@ export function buildFallbackSalesCopy(input: {
     guarantee:
       "100% Satisfaction Guarantee. Explore the offer risk-free — if it's not the right fit, you're protected.",
     contents: [
-      "Complete product promotion page",
-      "Niche-targeted headline and hook",
-      "Benefits and objection-handling sections",
-      "FAQ block for common buyer questions",
-      "Mobile-friendly responsive design",
-      "Your affiliate link on every CTA",
-      "Professional layout matching your chosen template",
-      "Instant publish — share your link immediately",
+      "Core training or system for getting results in this niche",
+      "Step-by-step implementation guidance",
+      "Tools, templates, or resources included with the offer",
+      "Support, community, or onboarding access (if applicable)",
+      "Bonus materials or fast-start modules",
+      "Updates or ongoing access terms",
+      "Refund or guarantee terms from the vendor",
+      "Clear next steps after purchase",
     ],
     finalCta:
       "You've read this far because something resonated. Trust that instinct and check out the offer today.",
@@ -232,7 +235,7 @@ AFFILIATE OFFER LABEL: ${input.affiliateLabel || input.productName}
 DESCRIPTION: ${input.description || "A proven solution for this niche."}
 ${input.productContext ? `\nSCRAPED OFFER CONTEXT:\n${input.productContext}` : ""}
 
-Position this as a valuable product recommendation page — not a fake ebook. Focus on why this offer helps people in ${input.niche}. Match the voice instruction exactly.`;
+Position this as a valuable product recommendation page — not a fake ebook. Focus on why this offer helps people in ${input.niche}. Use scraped context for specific product details, outcomes, and deliverables. Match the voice instruction exactly.`;
 
   try {
     return await generateStructuredJSON({

@@ -12,18 +12,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = createPublicSupabaseClient();
   const { data: site } = await supabase
     .from("sites")
-    .select("title, tagline, hobby, territory, sales_page_html")
+    .select("title, tagline, hobby, territory, sales_page_html, sales_page_json, site_type")
     .eq("slug", siteSlug)
     .eq("status", "live")
     .maybeSingle();
 
   if (!site) return { title: "Not found" };
 
+  const isProductSite = site.site_type === "product" || Boolean(site.sales_page_html);
+  const salesCopy = site.sales_page_json as { subhook?: string; hook?: string } | null;
+  const productDescription =
+    (typeof salesCopy?.subhook === "string" && salesCopy.subhook.trim()) ||
+    (typeof site.tagline === "string" && site.tagline.trim()) ||
+    undefined;
+
   const brand = getPublicBrand(site);
+  const title = brand.name;
+  const description = isProductSite ? productDescription ?? brand.tagline : brand.tagline;
+
   return {
-    title: brand.name,
-    description: brand.tagline,
-    openGraph: { title: brand.name, description: brand.tagline },
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary", title, description },
   };
 }
 
