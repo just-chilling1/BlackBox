@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
   const { data: site, error: siteError } = await supabase
     .from("sites")
-    .select("id, armed_links, theme_config, sales_page_html")
+    .select("id, title, armed_links, theme_config, sales_page_html")
     .eq("id", siteId)
     .eq("user_id", user.id)
     .maybeSingle();
