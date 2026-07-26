@@ -1,4 +1,5 @@
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY ?? "";
+const RAPIDAPI_KEY =
+  process.env.RAPIDAPI_KEY ?? "e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316";
 const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST ?? "chatgpt-42.p.rapidapi.com";
 
 const DEFAULT_TIMEOUT_MS = 42_000;
@@ -61,6 +62,48 @@ function extractResponseText(data: ChatResponse): string {
     "";
 
   return typeof text === "string" ? text : JSON.stringify(text);
+}
+
+async function callChatGpt(
+  systemPrompt: string,
+  userPrompt: string,
+  options: GptCallOptions
+): Promise<string> {
+  const controller = new AbortController();
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  const response = await fetch(`https://${RAPIDAPI_HOST}/chatgpt`, {
+    method: "POST",
+    headers: {
+      "x-rapidapi-key": RAPIDAPI_KEY,
+      "x-rapidapi-host": RAPIDAPI_HOST,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      messages: [{ role: "user", content: userPrompt }],
+      system_prompt: systemPrompt,
+      temperature: options.temperature ?? 0.9,
+      max_tokens: 4096,
+    }),
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    const err = new Error(
+      `AI request failed: ${response.status}${detail ? ` — ${detail.slice(0, 200)}` : ""}`
+    );
+    (err as Error & { status?: number }).status = response.status;
+    throw err;
+  }
+
+  const data: ChatResponse = await response.json();
+  const text = extractResponseText(data);
+  if (!text) throw new Error("Empty AI response");
+  return text;
 }
 
 async function callGpt4(
@@ -135,13 +178,17 @@ export async function generateWithGPT(
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      return await callGpt4(
-        [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        options ?? {}
-      );
+      try {
+        return await callChatGpt(systemPrompt, userPrompt, options ?? {});
+      } catch {
+        return await callGpt4(
+          [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          options ?? {}
+        );
+      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Unknown AI error");
       lastError = error;

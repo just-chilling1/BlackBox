@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createPublicSupabaseClient } from "@/lib/supabase-public";
-import { SiteHomeView, getPublicBrand } from "@/features/blog-builder/themes";
+import { SiteHomeView, ProductSiteView, getPublicBrand } from "@/features/blog-builder/themes";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = createPublicSupabaseClient();
   const { data: site } = await supabase
     .from("sites")
-    .select("title, tagline, hobby, territory")
+    .select("title, tagline, hobby, territory, sales_page_html")
     .eq("slug", siteSlug)
     .eq("status", "live")
     .maybeSingle();
@@ -33,12 +33,21 @@ export default async function SiteHomePage({ params }: Props) {
 
   const { data: site } = await supabase
     .from("sites")
-    .select("id, title, tagline, slug, hobby, territory, theme, theme_config, template_key")
+    .select(
+      "id, title, tagline, slug, hobby, territory, theme, theme_config, template_key, site_type, sales_page_html"
+    )
     .eq("slug", siteSlug)
     .eq("status", "live")
     .maybeSingle();
 
   if (!site) notFound();
+
+  const isProductSite =
+    site.site_type === "product" || Boolean(site.sales_page_html);
+
+  if (isProductSite && site.sales_page_html) {
+    return <ProductSiteView html={site.sales_page_html} />;
+  }
 
   const { data: posts } = await supabase
     .from("posts")

@@ -6,15 +6,13 @@ import { ArmedLinkInput } from "../components/ArmedLinkInput";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import type { ArmedLink } from "../types";
 
-const emptyLink = (): ArmedLink => ({
-  label: "Promotional Offer",
-  url: "",
-  network: "other",
-});
+function hasValidLink(links: ArmedLink[]): boolean {
+  return links.some((l) => l.url.trim().startsWith("http"));
+}
 
 export default function LinkVaultPage() {
   const { sessionLoaded, saveLinksToVault } = useBlogBuilder();
-  const [links, setLinks] = useState<ArmedLink[]>([emptyLink()]);
+  const [links, setLinks] = useState<ArmedLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +29,7 @@ export default function LinkVaultPage() {
       })
       .then((data) => {
         const stored = Array.isArray(data.links) ? (data.links as ArmedLink[]) : [];
-        setLinks(stored.length > 0 ? stored : [emptyLink()]);
+        setLinks(stored);
       })
       .catch(() => setError("Could not load Content Reserve"))
       .finally(() => {
@@ -44,8 +42,8 @@ export default function LinkVaultPage() {
   useEffect(() => {
     if (!sessionLoaded || loading || skipAutoSave.current) return;
 
-    const hasValidLink = links.some((l) => l.url.trim().startsWith("http"));
-    if (!hasValidLink) return;
+    const shouldSave = links.length === 0 || hasValidLink(links);
+    if (!shouldSave) return;
 
     const timer = setTimeout(() => {
       void saveLinksToVault(links)

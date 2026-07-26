@@ -41,11 +41,23 @@ export async function GET() {
 
   const completedCount = slots.filter((s) => s.status === "complete").length;
   const totalCount = slots.length;
+  const isProductSite =
+    site?.site_type === "product" || Boolean((site as { sales_page_html?: string })?.sales_page_html);
+
   const canResume =
     Boolean(site) &&
     Boolean(session?.site_id) &&
     session.site_id === site?.id &&
     !session?.deployed &&
+    isProductSite &&
+    !(site as { sales_page_html?: string })?.sales_page_html;
+
+  const blogCanResume =
+    Boolean(site) &&
+    Boolean(session?.site_id) &&
+    session.site_id === site?.id &&
+    !session?.deployed &&
+    !isProductSite &&
     completedCount > 0 &&
     completedCount < totalCount;
 
@@ -57,7 +69,8 @@ export async function GET() {
       slots,
       completedCount,
       totalCount,
-      canResume,
+      canResume: canResume || blogCanResume,
+      isProductSite,
       quota,
     },
     { headers: NO_STORE_HEADERS }

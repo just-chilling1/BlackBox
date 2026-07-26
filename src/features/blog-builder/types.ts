@@ -5,6 +5,7 @@ export interface ArmedLink {
 }
 
 export interface ThemeConfig {
+  templateId?: string;
   presetId: string;
   accentOverride?: string;
   headingFont?: string;
@@ -23,6 +24,9 @@ export interface BlogSite {
   theme_config?: ThemeConfig | null;
   armed_links: ArmedLink[];
   status: "draft" | "live";
+  site_type?: "product" | "blog";
+  sales_page_html?: string | null;
+  sales_page_json?: Record<string, unknown> | null;
   created_at: string;
   is_template?: boolean;
   template_key?: string | null;
@@ -114,6 +118,6 @@ export const NICHE_OPTIONS: NicheOption[] = [
 export const WIZARD_STEPS = [
   { number: 1, title: "Add Your Link", description: "Save your promotional or affiliate link" },
   { number: 2, title: "Pick Your Niche", description: "Choose the niche for your money site" },
-  { number: 3, title: "Choose Template", description: "Pick layout, colors, and fonts" },
-  { number: 4, title: "Launch Website", description: "Generate and publish your money site" },
+  { number: 3, title: "Choose Template", description: "Pick a ready-made template" },
+  { number: 4, title: "Launch Website", description: "Generate and publish your product promotion site" },
 ] as const;

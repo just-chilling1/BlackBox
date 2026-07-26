@@ -146,12 +146,10 @@ export default function ArmLinksPage() {
     };
 
     try {
-      const existing = armedLinks.filter((l) => l.url !== url);
-      await saveLinksToVault([link, ...existing]);
       armLinks([link]);
       router.push("/territory");
     } catch {
-      setError("Could not save your link. Try again.");
+      setError("Could not continue. Try again.");
       setLoading(false);
     }
   };
@@ -169,8 +167,8 @@ export default function ArmLinksPage() {
             Add Your Link
           </h1>
           <p className="text-base text-text-secondary font-medium leading-relaxed max-w-xl mx-auto">
-            Paste any promotional or affiliate link below. We&apos;ll save it to your Content Reserve
-            and place it on your generated website.
+            Paste any promotional or affiliate link below. It will be placed on your generated
+            website. Use &quot;Save to Content Reserve&quot; if you want to reuse it later.
           </p>
         </div>
 

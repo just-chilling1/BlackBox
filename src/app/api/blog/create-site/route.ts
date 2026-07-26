@@ -77,6 +77,7 @@ export async function POST(request: Request) {
       theme_config: themeConfig ?? {},
       armed_links: armedLinks,
       status: "draft",
+      site_type: "product",
     })
     .select()
     .single();

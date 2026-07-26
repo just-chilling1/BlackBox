@@ -130,14 +130,16 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           >
             <BrandLogo size="sm" compact={collapsed} splitTitle showTagline={!collapsed} />
           </Link>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-text-muted transition-colors hover:bg-white/5 hover:text-text-primary lg:flex"
-          >
-            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-          </button>
+          {!collapsed ? (
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Collapse sidebar"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-text-muted transition-colors hover:bg-white/5 hover:text-text-primary"
+            >
+              <PanelLeftClose size={16} />
+            </button>
+          ) : null}
         </div>
       </div>
 
@@ -221,6 +223,17 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             <LiveActivityTicker />
           </div>
         ) : null}
+        {collapsed ? (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label="Expand sidebar"
+            title="Expand sidebar"
+            className="command-nav-link mb-2 justify-center px-2 py-3 sm:py-4 text-text-muted hover:text-text-primary"
+          >
+            <PanelLeftOpen size={18} className="shrink-0" />
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={() => void handleLogout()}
@@ -240,21 +253,28 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   );
 }
 
+function readSidebarCollapsed(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(storageKeys.sidebarCollapsed) === "1";
+}
+
+function applySidebarLayout(collapsed: boolean) {
+  document.documentElement.dataset.sidebar = collapsed ? "collapsed" : "expanded";
+  document.documentElement.style.setProperty("--sidebar-w", collapsed ? "76px" : "280px");
+}
+
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
 
   useEffect(() => {
-    const stored = localStorage.getItem(storageKeys.sidebarCollapsed);
-    const isCollapsed = stored === "1";
-    setCollapsed(isCollapsed);
-    document.documentElement.dataset.sidebar = isCollapsed ? "collapsed" : "expanded";
-  }, []);
+    applySidebarLayout(collapsed);
+  }, [collapsed]);
 
   const toggleCollapse = () => {
     setCollapsed((prev) => {
       const next = !prev;
       localStorage.setItem(storageKeys.sidebarCollapsed, next ? "1" : "0");
-      document.documentElement.dataset.sidebar = next ? "collapsed" : "expanded";
+      applySidebarLayout(next);
       return next;
     });
   };

@@ -19,7 +19,6 @@ export function getBrandCssVars(): Record<string, string> {
     "--text-heading": brand.colors.textHeading,
     "--text-primary": brand.colors.textPrimary,
     "--text-muted": brand.colors.textMuted,
-    "--sidebar-w": "280px",
     "--sidebar-gap": "2rem",
     "--mobile-header-h": "3.5rem",
   };

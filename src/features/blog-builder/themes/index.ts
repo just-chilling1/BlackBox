@@ -1,13 +1,25 @@
 import type { ThemeConfig } from "../types";
 import type { ThemeColors, ThemePresetDef, ResolvedTheme } from "./types";
 import { THEME_PRESETS, PRESET_IDS } from "./presets";
+import { defaultThemeConfigFromTemplates } from "./ready-templates";
 
 export { THEME_PRESETS, PRESET_IDS };
+export {
+  READY_TEMPLATES,
+  readyTemplateAccent,
+  readyTemplateToConfig,
+  findMatchingReadyTemplateId,
+  getReadyTemplate,
+  getReadyTemplateFromConfig,
+  defaultThemeConfigFromTemplates,
+} from "./ready-templates";
+export type { ReadyTemplate, TemplateStructureId } from "./ready-templates";
 export { resolveTheme, resolvePublicSiteTheme, isRecurringWealthSite, RECURRING_PREMIUM_THEME_KEY } from "./resolve-theme";
 export { pickThemeForSite, pickThemeForRecurringSite } from "./pick-theme";
 export { buildSiteTitle, buildSiteTagline, getPublicBrand } from "./public-branding";
 export { SiteHomeView } from "./SiteHomeView";
 export { SitePostView } from "./SitePostView";
+export { ProductSiteView } from "./ProductSiteView";
 export type {
   ThemePreset,
   ResolvedTheme,
@@ -90,11 +102,7 @@ export function applyThemeConfig(base: ResolvedTheme, config?: ThemeConfig | nul
 }
 
 export function defaultThemeConfig(): ThemeConfig {
-  return {
-    presetId: "editorial",
-    headingFont: THEME_PRESETS.editorial.fonts.heading,
-    bodyFont: THEME_PRESETS.editorial.fonts.body,
-  };
+  return defaultThemeConfigFromTemplates();
 }
 
 export function themeFromConfig(config: ThemeConfig | null | undefined): string {

@@ -38,12 +38,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: postsError.message }, { status: 500 });
   }
 
-  // Server-side safety net: make sure every post has a persisted hero image,
-  // rather than relying on the browser finishing the background attach.
-  try {
-    await backfillMissingPostImages(supabase, user.id, siteId);
-  } catch (err) {
-    console.error("[publish] image backfill failed", err);
+  const isProductSite = site.site_type === "product" || Boolean(site.sales_page_html);
+
+  if (!isProductSite) {
+    // Server-side safety net: make sure every post has a persisted hero image,
+    // rather than relying on the browser finishing the background attach.
+    try {
+      await backfillMissingPostImages(supabase, user.id, siteId);
+    } catch (err) {
+      console.error("[publish] image backfill failed", err);
+    }
   }
 
   await supabase

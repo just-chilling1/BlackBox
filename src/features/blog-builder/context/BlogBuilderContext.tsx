@@ -267,8 +267,6 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
   const saveLinksToVault = useCallback(
     async (links: ArmedLink[]) => {
       const cleaned = vaultReadyLinks(links);
-      if (cleaned.length === 0) return;
-
       setState((s) => ({ ...s, armedLinks: cleaned }));
       await persistVault(cleaned);
     },

@@ -16,13 +16,7 @@ import { PostCard } from "../components/PostCard";
 import { FacebookPostCard } from "../components/FacebookPostCard";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { SavedFacebookPost } from "../lib/facebook-posts-vault";
-import type { BlogPost, BlogSite } from "../types";
-
-interface GenerationQuota {
-  limit: number;
-  usedToday: number;
-  remaining: number;
-}
+import type { BlogPost, BlogSite, GenerationQuota } from "../types";
 
 export default function AssetCommandPage() {
   const [summaries, setSummaries] = useState<SiteVaultSummary[]>([]);
@@ -264,7 +258,7 @@ export default function AssetCommandPage() {
           />
         ))}
 
-        {quota && quota.remaining > 0 && (
+        {(quota?.unlimited || (quota?.remaining ?? 0) > 0) && (
           <Link
             href="/territory"
             className="rounded-xl border border-dashed border-[#45A29E]/35 p-4 sm:p-5 flex flex-col items-center justify-center gap-3 min-h-[140px] text-center hover:border-[#45A29E]/55 hover:bg-[#45A29E]/5 transition-colors"
@@ -274,7 +268,9 @@ export default function AssetCommandPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-text-heading">New website</p>
-              <p className="text-xs text-text-muted mt-1">{quota.remaining} generations left today</p>
+              <p className="text-xs text-text-muted mt-1">
+                {quota?.unlimited ? "Unlimited generations" : `${quota?.remaining} generations left today`}
+              </p>
             </div>
           </Link>
         )}
@@ -310,7 +306,9 @@ function VaultHeader({
         </p>
         {quota && (
           <p className="text-xs text-[#45A29E]/90">
-            {quota.remaining} of {quota.limit} new sites remaining today
+            {quota.unlimited
+              ? `Unlimited new sites · ${quota.usedToday} generated today`
+              : `${quota.remaining} of ${quota.limit} new sites remaining today`}
           </p>
         )}
       </div>

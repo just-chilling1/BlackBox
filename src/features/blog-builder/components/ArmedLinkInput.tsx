@@ -23,10 +23,6 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
   };
 
   const removeLink = (index: number) => {
-    if (links.length <= 1) {
-      onChange([{ label: "Promotional Offer", url: "", network: "other" }]);
-      return;
-    }
     onChange(links.filter((_, i) => i !== index));
   };
 
@@ -38,16 +34,14 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
               Link {index + 1}
             </span>
-            {links.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeLink(index)}
-                className="text-text-muted hover:text-error transition-colors p-1"
-                aria-label="Remove link"
-              >
-                <Trash2 size={16} />
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => removeLink(index)}
+              className="text-text-muted hover:text-error transition-colors p-1"
+              aria-label="Remove link"
+            >
+              <Trash2 size={16} />
+            </button>
           </div>
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">Link Name</label>
