@@ -86,7 +86,11 @@ export async function POST(request: Request) {
 
   await linkSiteToSession(supabase, user.id, data.id, data.slug);
 
-  const quotaAfter = await getDailyGenerationQuota(supabase, user.id);
+  const quotaAfter = {
+    ...quota,
+    usedToday: quota.usedToday + 1,
+    remaining: quota.unlimited ? null : Math.max(0, (quota.remaining ?? 0) - 1),
+  };
 
   return NextResponse.json({ site: data, quota: quotaAfter });
 }

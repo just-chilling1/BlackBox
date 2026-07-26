@@ -17,7 +17,7 @@ export function FeatureStubPage({ feature, eyebrow, title, subtitle }: FeatureSt
   const meta = getFeatureMeta(feature);
 
   return (
-    <div className="flex flex-col gap-8 max-w-2xl w-full">
+    <div className="page-stack w-full max-w-2xl">
       <PageHeader
         eyebrow={eyebrow ?? "Coming soon"}
         title={title ?? meta?.description.split(".")[0] ?? feature}

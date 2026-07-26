@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { DeploySiteLoader } from "../components/DeploySiteLoader";
 import { PageHeader } from "@/components/ui/page-header";
+import { WizardStepBar } from "@/components/ui/wizard-step-bar";
+import { PageLoading } from "@/components/ui/page-loading";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import { DeployCompletePanel } from "../components/DeployCompletePanel";
 import { DeployLaunchPanel } from "../components/DeployLaunchPanel";
@@ -216,8 +218,15 @@ export default function DeployAssetPage() {
 
       const affiliateUrl = deployArmedLinks[0]?.url;
 
-      if (affiliateUrl) {
-        appendLog("Scanning affiliate offer page...");
+      if (resume && activeSite?.sales_page_html) {
+        setPhase("generating");
+        await publishSite(activeSite.id, activeSite.slug);
+        deployRunning.current = false;
+        return;
+      }
+
+      async function scrapeAffiliateOffer() {
+        if (!affiliateUrl) return;
         try {
           const scrapeRes = await fetch("/api/blog/scrape", {
             method: "POST",
@@ -236,30 +245,25 @@ export default function DeployAssetPage() {
         }
       }
 
-      if (resume && activeSite?.sales_page_html) {
-        setPhase("generating");
-        await publishSite(activeSite.id, activeSite.slug);
-        deployRunning.current = false;
-        return;
-      }
-
       if (!resume || !activeSite) {
         setPhase("setup");
         setSite(null);
         setProductName(null);
         beginNewSiteGeneration();
 
-        appendLog("Creating your product website record...");
+        appendLog("Creating your product website and scanning the offer page...");
 
-        const { ok: createOk, status: createStatus, data: createData } = await postJson(
-          "/api/blog/create-site",
-          {
-            hobby: deployNicheLabel,
-            territory: deployNicheLabel,
-            armedLinks: deployArmedLinks,
-            themeConfig,
-          }
-        );
+        const scrapeTask = scrapeAffiliateOffer();
+        const createTask = postJson("/api/blog/create-site", {
+          hobby: deployNicheLabel,
+          territory: deployNicheLabel,
+          armedLinks: deployArmedLinks,
+          themeConfig,
+        });
+
+        const [, createResult] = await Promise.all([scrapeTask, createTask]);
+        const { ok: createOk, status: createStatus, data: createData } = createResult;
+
         if (!createOk || !createData) {
           throw new Error((createData?.error as string) || busyError(createStatus));
         }
@@ -268,6 +272,9 @@ export default function DeployAssetPage() {
         activeSite = createData.site as BlogSite;
         setSite(activeSite);
         resumeSiteId = activeSite.id;
+      } else if (affiliateUrl && !productContext) {
+        appendLog("Scanning affiliate offer page...");
+        await scrapeAffiliateOffer();
       }
 
       if (!activeSite) throw new Error("Site record missing");
@@ -321,7 +328,7 @@ export default function DeployAssetPage() {
   };
 
   if (!sessionLoaded || !deployLoaded) {
-    return <p className="text-text-muted text-sm animate-pulse">Loading your deploy session...</p>;
+    return <PageLoading message="Loading your deploy session..." />;
   }
 
   const isLoading = phase === "setup" || phase === "generating" || phase === "publishing";
@@ -337,14 +344,7 @@ export default function DeployAssetPage() {
 
   return (
     <div className="page-stack w-full max-w-2xl mx-auto">
-      <div className="sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-white/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
-            Site Builder / Launch
-          </p>
-          <span className="text-xs text-text-muted">Step 4 of 4</span>
-        </div>
-      </div>
+      <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />
 
       <PageHeader
         eyebrow="Step 4"

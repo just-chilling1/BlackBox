@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, GraduationCap, Headphones, CheckCircle2 } from "l
 import { brand } from "@/config/brand.config";
 import { getVisibleWorkflowSteps } from "@/lib/features";
 import { isFeatureEnabled } from "@/config/features.config";
+import { PageHeader } from "@/components/ui/page-header";
 import { DopamineDashboard } from "@/features/dopamine/DopamineDashboard";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
@@ -49,18 +50,18 @@ export default function DashboardPage() {
     isFeatureEnabled("premium-social") ||
     isFeatureEnabled("protector");
 
+  const showDevChecklist = process.env.NODE_ENV === "development";
+
   return (
-    <div className="flex flex-col gap-8 sm:gap-10 max-w-3xl w-full">
-      <div className="flex flex-col gap-2 sm:gap-3">
-        <h1 className="brand-font text-2xl sm:text-3xl lg:text-4xl text-text-primary tracking-tight">
-          Welcome to {brand.productName}
-        </h1>
-        <p className="text-text-secondary text-base sm:text-lg leading-relaxed">
-          {hasWorkflow
+    <div className="page-stack w-full max-w-4xl">
+      <PageHeader
+        title={`Welcome to ${brand.productName}`}
+        subtitle={
+          hasWorkflow
             ? "Your workspace is ready. Use the sidebar to run the workflow, open Training, or contact Support."
-            : "Skeleton is running with Training and Support in the sidebar. Enable your product workflow when branding and links are ready."}
-        </p>
-      </div>
+            : "Skeleton is running with Training and Support in the sidebar. Enable your product workflow when branding and links are ready."
+        }
+      />
 
       <div className="flex flex-wrap gap-3">
         <Link href="/training" className="btn-primary inline-flex items-center gap-2 px-5 sm:px-6">
@@ -90,6 +91,7 @@ export default function DashboardPage() {
         {hasPremium ? <PremiumUpgradesWidget /> : null}
       </div>
 
+      {showDevChecklist ? (
       <div className="card-base border-dashed border-accent/30 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <Sparkles className="text-accent shrink-0" size={20} />
@@ -115,6 +117,7 @@ export default function DashboardPage() {
           Full handoff guide: <code className="text-accent">DEVELOPER-SETUP.md</code> in the project root.
         </p>
       </div>
+      ) : null}
 
       {isFeatureEnabled("dopamine") ? <DopamineDashboard /> : null}
     </div>

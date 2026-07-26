@@ -396,12 +396,12 @@ function audienceSection(
   copy: ProductSalesCopy,
   esc: (v: string) => string,
   structureId: TemplateStructureId,
-  containerClass = "container"
+  containerClass = ""
 ) {
   const labels = labelsFor(structureId);
   return `
   <section class="alt">
-    <div class="${containerClass}">
+    <div class="container ${containerClass}">
       <div class="center"><span class="label">Fit</span><h2 class="title">${labels.audience}</h2></div>
       <div class="split" style="margin-top:32px;">
         <div><h3 class="accent-text" style="margin-bottom:16px;">This IS for you if…</h3><ul class="list">${copy.forWho.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
@@ -411,10 +411,10 @@ function audienceSection(
   </section>`;
 }
 
-function contentsSection(copy: ProductSalesCopy, esc: (v: string) => string, title: string, containerClass = "container") {
+function contentsSection(copy: ProductSalesCopy, esc: (v: string) => string, title: string, containerClass = "") {
   return `
   <section>
-    <div class="${containerClass} center">
+    <div class="container ${containerClass} center">
       <span class="label">Included</span>
       <h2 class="title">${title}</h2>
       <div class="contents" style="margin-top:28px;">${copy.contents.map((c) => `<div class="content-item"><span class="accent-text">✓</span><span>${esc(c)}</span></div>`).join("")}</div>
@@ -427,13 +427,13 @@ function faqSection(
   esc: (v: string) => string,
   structureId: TemplateStructureId,
   layoutClass?: string,
-  containerClass = "container"
+  containerClass = ""
 ) {
   const labels = labelsFor(structureId);
   const listClass = layoutClass === "grid-2" ? "faq-list faq-grid-2" : "faq-list";
   return `
   <section class="alt">
-    <div class="${containerClass}">
+    <div class="container ${containerClass}">
       <div class="center"><span class="label">FAQ</span><h2 class="title">${labels.faq}</h2></div>
       <div class="${listClass}" style="margin-top:32px;">${copy.faqs.map((f) => `<div class="faq"><div class="faq-q">${esc(f.question)}</div><div class="faq-a">${esc(f.answer)}</div></div>`).join("")}</div>
     </div>
@@ -463,11 +463,11 @@ function finalSection(
   ctaHref: string,
   esc: (v: string) => string,
   title: string,
-  containerClass = "container"
+  containerClass = ""
 ) {
   return `
   <section class="final" id="buy">
-    <div class="${containerClass} center">
+    <div class="container ${containerClass} center">
       <h2 class="title">${title}</h2>
       <p class="subtitle">${esc(copy.finalCta)}</p>
       <a href="${ctaHref}" class="cta">View the Offer →</a>
@@ -506,7 +506,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     .product-sales-page-root .cta-wide { width: 100%; max-width: 420px; justify-content: center; }`;
     case "minimal":
       return `
-    .product-sales-page-root .layout-minimal { max-width: 640px; }
+    .product-sales-page-root .container.layout-minimal { max-width: 640px; }
     .product-sales-page-root .hero-minimal { min-height: clamp(320px, 52vh, 520px); text-align: left; padding-top: 64px; }
     .product-sales-page-root .title-minimal { font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; }
     .product-sales-page-root .cta-minimal { background: var(--accent); box-shadow: none; border-radius: 8px; padding: 14px 28px; }
@@ -555,7 +555,7 @@ export function structureLayoutCss(structureId: TemplateStructureId): string {
     case "editorial":
     default:
       return `
-    .product-sales-page-root .layout-narrow { max-width: 760px; }
+    .product-sales-page-root .container.layout-narrow { max-width: 760px; }
     .product-sales-page-root .hero-editorial { min-height: clamp(400px, 70vh, 720px); }
     .product-sales-page-root .pull-quote { font-family: var(--heading-font); font-size: 1.25rem; line-height: 1.55; max-width: 620px; margin: 0 auto; }`;
   }

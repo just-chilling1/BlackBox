@@ -242,7 +242,7 @@ Position this as a valuable product recommendation page — not a fake ebook. Fo
       systemPrompt,
       userPrompt,
       validate: validateSalesCopy,
-      options: { temperature: 0.75, maxRetries: 3, maxRepairAttempts: 2 },
+      options: { temperature: 0.65, maxRetries: 2, maxRepairAttempts: 1 },
     });
   } catch {
     try {

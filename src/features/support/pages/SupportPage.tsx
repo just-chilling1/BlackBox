@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Clock, Star, Shield, Headphones, Mail, ExternalLink } from "lucide-react";
 import { support } from "@/config/support.config";
+import { PageHeader } from "@/components/ui/page-header";
 
 const STAT_ICONS = {
   clock: Clock,
@@ -14,15 +15,8 @@ export default function SupportPage() {
   const contactHref = support.contactUrl || `mailto:${support.email}`;
 
   return (
-    <div className="flex flex-col gap-8 sm:gap-10 max-w-3xl w-full">
-      <div className="flex flex-col gap-2 sm:gap-3">
-        <h1 className="brand-font text-2xl sm:text-3xl lg:text-4xl text-text-primary tracking-tight">
-          {support.pageTitle}
-        </h1>
-        <p className="text-text-secondary text-base sm:text-lg leading-relaxed">
-          {support.pageSubtitle}
-        </p>
-      </div>
+    <div className="page-stack w-full max-w-4xl">
+      <PageHeader title={support.pageTitle} subtitle={support.pageSubtitle} />
 
       <div className="card-base flex flex-col gap-6">
         <div className="flex items-start gap-4">

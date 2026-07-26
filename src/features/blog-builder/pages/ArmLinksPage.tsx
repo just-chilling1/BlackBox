@@ -18,13 +18,25 @@ import {
   MousePointerClick,
   Copy,
   ClipboardPaste,
-  AlertCircle,
 } from "lucide-react";
 import { GlassInput } from "@/components/ui/glass-input";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageLoading } from "@/components/ui/page-loading";
+import { ErrorBanner } from "@/components/ui/error-banner";
+import { WizardStepBar } from "@/components/ui/wizard-step-bar";
 import { ContentReservePicker } from "../components/ContentReservePicker";
+import { WizardStepper } from "../components/WizardStepper";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import type { ArmedLink } from "../types";
 import { detectLinkNetwork, isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
+
+function warmScrapeCache(url: string) {
+  void fetch("/api/blog/scrape", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  }).catch(() => {});
+}
 
 const INSTRUCTION_STEPS = [
   {
@@ -83,6 +95,7 @@ export default function ArmLinksPage() {
     setLinkLabel(link.label);
     setLinkSaved(true);
     setError(null);
+    warmScrapeCache(link.url);
   };
 
   const clearVaultSelectionIfEdited = (nextUrl: string, nextLabel: string) => {
@@ -122,6 +135,7 @@ export default function ArmLinksPage() {
     try {
       await saveLinksToVault(nextLinks);
       setLinkSaved(true);
+      warmScrapeCache(url);
     } catch {
       setError("Could not save to Content Reserve. Try again.");
     } finally {
@@ -147,6 +161,7 @@ export default function ArmLinksPage() {
 
     try {
       armLinks([link]);
+      warmScrapeCache(url);
       router.push("/territory");
     } catch {
       setError("Could not continue. Try again.");
@@ -155,24 +170,20 @@ export default function ArmLinksPage() {
   };
 
   if (!sessionLoaded) {
-    return <p className="text-text-muted text-sm animate-pulse">Loading your session...</p>;
+    return <PageLoading message="Loading your session..." />;
   }
 
   return (
-    <div className="flex flex-col items-center justify-start py-10 md:py-16">
-      <div className="w-full max-w-3xl mx-auto px-4">
-        <div className="text-center space-y-3 mb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">Step 1 of 3</p>
-          <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-linear-to-b from-white to-gray-400 tracking-tighter uppercase">
-            Add Your Link
-          </h1>
-          <p className="text-base text-text-secondary font-medium leading-relaxed max-w-xl mx-auto">
-            Paste any promotional or affiliate link below. It will be placed on your generated
-            website. Use &quot;Save to Content Reserve&quot; if you want to reuse it later.
-          </p>
-        </div>
+    <div className="page-stack w-full max-w-3xl mx-auto">
+      <WizardStepBar breadcrumb="Site Builder / Link" step={1} />
+      <PageHeader
+        eyebrow="Step 1"
+        title="Add Your Link"
+        subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Content Reserve" if you want to reuse it later.'
+      />
+      <WizardStepper currentStep={1} />
 
-        <div className="glass-card mb-8 border-white/5 overflow-hidden">
+        <div className="glass-card mb-2 border-white/5 overflow-hidden">
           <button
             type="button"
             onClick={() => setInstructionsOpen(!instructionsOpen)}
@@ -321,12 +332,7 @@ export default function ArmLinksPage() {
               )}
             </div>
 
-            {error && (
-              <div className="flex items-start gap-2.5 rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-red-300">
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
+            {error && <ErrorBanner message={error} />}
 
             <button
               type="button"
@@ -340,7 +346,6 @@ export default function ArmLinksPage() {
             </button>
           </div>
         </motion.div>
-      </div>
     </div>
   );
 }

@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageLoading } from "@/components/ui/page-loading";
+import { EmptyState } from "@/components/ui/empty-state";
 import { AssetFolderCard, type SiteVaultSummary } from "../components/AssetFolderCard";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { BlogSite, GenerationQuota } from "../types";
@@ -105,30 +107,23 @@ export default function AssetCommandPage() {
   };
 
   if (loading) {
-    return (
-      <div className="page-stack w-full">
-        <p className="text-[#9fb0b5] text-base animate-pulse">Loading your websites...</p>
-      </div>
-    );
+    return <PageLoading message="Loading your websites..." />;
   }
 
   if (summaries.length === 0) {
     return (
-      <div className="page-stack w-full">
-        <VaultHeader quota={quota} siteCount={0} />
-        <div className="rounded-xl border border-dashed border-white/15 p-10 text-center flex flex-col items-center gap-4">
-          <FolderOpen className="text-[#6b7280]" size={40} strokeWidth={1.25} />
-          <p className="text-[#6b7280] text-sm max-w-md">
-            Your vault is empty. Deploy a website and it will appear here as a saved folder.
-          </p>
-          <Link
-            href="/territory"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#45A29E] text-[#0B0C10] text-sm font-bold"
-          >
-            <Globe size={16} />
-            Pick Your Topic
-          </Link>
-        </div>
+      <div className="page-stack w-full max-w-5xl mx-auto">
+        <PageHeader
+          eyebrow="My Websites"
+          title="Your websites"
+          subtitle="Every website you launch is saved here. Open one to see visitor clicks and its public link."
+        />
+        <EmptyState
+          icon={FolderOpen}
+          title="No websites yet"
+          description="Deploy a website and it will appear here as a saved folder you can open anytime."
+          action={{ label: "Start building", href: "/arm-links" }}
+        />
       </div>
     );
   }
@@ -146,7 +141,7 @@ export default function AssetCommandPage() {
         </button>
 
         {detailLoading || !selectedSite ? (
-          <p className="text-text-muted text-sm animate-pulse">Opening website...</p>
+          <PageLoading message="Opening website..." className="max-w-none" />
         ) : (
           <>
             <PageHeader
@@ -241,8 +236,25 @@ export default function AssetCommandPage() {
   const latestSiteId = activeSiteId ?? summaries[0]?.site.id ?? null;
 
   return (
-    <div className="page-stack w-full">
-      <VaultHeader quota={quota} siteCount={summaries.length} />
+    <div className="page-stack w-full max-w-5xl mx-auto">
+      <PageHeader
+        eyebrow="My Websites"
+        title="Your websites"
+        subtitle="Every website you launch is saved here. Open one to see visitor clicks and its public link."
+        actions={
+          quota ? (
+            <p className="text-xs text-promo-accent text-right max-w-[220px]">
+              {quota.unlimited
+                ? `Unlimited new sites · ${quota.usedToday} generated today`
+                : `${quota.remaining} of ${quota.limit} new sites remaining today`}
+            </p>
+          ) : (
+            <p className="text-xs text-text-muted">
+              {summaries.length} {summaries.length === 1 ? "site" : "sites"} saved
+            </p>
+          )
+        }
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {summaries.map((summary) => (
@@ -258,10 +270,10 @@ export default function AssetCommandPage() {
 
         {(quota?.unlimited || (quota?.remaining ?? 0) > 0) && (
           <Link
-            href="/territory"
-            className="rounded-xl border border-dashed border-[#45A29E]/35 p-4 sm:p-5 flex flex-col items-center justify-center gap-3 min-h-[140px] text-center hover:border-[#45A29E]/55 hover:bg-[#45A29E]/5 transition-colors"
+            href="/arm-links"
+            className="rounded-xl border border-dashed border-promo-accent/35 p-4 sm:p-5 flex flex-col items-center justify-center gap-3 min-h-[140px] text-center hover:border-promo-accent/55 hover:bg-promo-accent/5 transition-colors"
           >
-            <div className="w-11 h-11 rounded-lg bg-[#45A29E]/10 text-[#45A29E] flex items-center justify-center">
+            <div className="w-11 h-11 rounded-lg bg-promo-accent/10 text-promo-accent flex items-center justify-center">
               <Plus size={22} />
             </div>
             <div>
@@ -271,43 +283,6 @@ export default function AssetCommandPage() {
               </p>
             </div>
           </Link>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function VaultHeader({
-  quota,
-  siteCount,
-}: {
-  quota: GenerationQuota | null;
-  siteCount: number;
-}) {
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
-          My Websites
-        </p>
-        <h1 className="brand-font text-2xl sm:text-3xl text-[#C5C6C7] tracking-tight">
-          Your websites
-        </h1>
-        <p className="text-[#9fb0b5] text-base max-w-2xl leading-relaxed">
-          Every website you launch is saved here. Open one to see its articles, visitor clicks, and
-          public link.
-        </p>
-      </div>
-      <div className="flex flex-col items-start sm:items-end gap-1 shrink-0">
-        <p className="text-xs text-text-muted">
-          {siteCount} {siteCount === 1 ? "site" : "sites"} saved
-        </p>
-        {quota && (
-          <p className="text-xs text-[#45A29E]/90">
-            {quota.unlimited
-              ? `Unlimited new sites · ${quota.usedToday} generated today`
-              : `${quota.remaining} of ${quota.limit} new sites remaining today`}
-          </p>
         )}
       </div>
     </div>

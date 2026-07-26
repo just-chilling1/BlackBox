@@ -288,6 +288,40 @@ html[data-sidebar="collapsed"] {
     right: -3rem;
     background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
   }
+
+  /* Page layout utilities */
+  .page-stack {
+    @apply flex w-full flex-col gap-6 sm:gap-8;
+  }
+
+  .glass-tile {
+    @apply rounded-xl border border-white/[0.08] bg-surface/60 backdrop-blur-sm;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  }
+
+  .page-loading {
+    @apply flex flex-col items-center justify-center gap-3 rounded-2xl border border-border-dim/50 bg-surface/40 px-6 py-14 text-center;
+  }
+
+  .page-loading p {
+    @apply text-sm text-text-muted;
+  }
+
+  .empty-state-panel {
+    @apply flex flex-col items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-surface/30 px-6 py-12 text-center;
+  }
+
+  .empty-state-icon {
+    @apply flex h-14 w-14 items-center justify-center rounded-2xl border border-promo-accent/20 bg-promo-accent/10 text-promo-accent;
+  }
+
+  .empty-state-copy {
+    @apply max-w-md text-sm leading-relaxed text-text-muted;
+  }
+
+  .page-section-card {
+    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200 space-y-5;
+  }
 }
 
 /* Custom Scrollbar */
@@ -322,48 +356,135 @@ html[data-sidebar="collapsed"] {
 
 /* Deploy site loader — CSS-only animations (GPU-friendly) */
 @keyframes deploy-block-pulse {
-  0%, 100% { opacity: 0.32; }
-  50% { opacity: 0.72; }
+  0%, 100% { opacity: 0.38; }
+  50% { opacity: 0.82; }
+}
+
+@keyframes deploy-block-shimmer {
+  0% { transform: translateX(-120%) skewX(-12deg); opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { transform: translateX(220%) skewX(-12deg); opacity: 0; }
 }
 
 @keyframes deploy-scan {
-  from { transform: translateY(0); }
-  to { transform: translateY(168px); }
+  from { transform: translateY(0); opacity: 0.4; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { transform: translateY(168px); opacity: 0.4; }
 }
 
-@keyframes deploy-progress-slide {
-  from { transform: translateX(-120%); }
-  to { transform: translateX(340%); }
+@keyframes deploy-scan-glow {
+  from { transform: translateY(0); opacity: 0.15; }
+  to { transform: translateY(168px); opacity: 0.35; }
 }
 
-.deploy-site-loader .deploy-block {
-  animation: deploy-block-pulse 2.2s ease-in-out infinite;
+@keyframes deploy-rocket-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-3px) rotate(4deg); }
+}
+
+@keyframes deploy-globe-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes deploy-sparkle-twinkle {
+  0%, 100% { opacity: 0.45; transform: scale(0.9) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(180deg); }
+}
+
+@keyframes deploy-dot-bounce {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+  40% { opacity: 0.9; transform: scale(1); }
+}
+
+@keyframes deploy-url-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+@keyframes deploy-typing-dot {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes deploy-activity-pulse {
+  0%, 100% { opacity: 0.35; box-shadow: 0 0 0 0 rgba(12, 189, 160, 0); }
+  50% { opacity: 1; box-shadow: 0 0 8px 2px rgba(12, 189, 160, 0.45); }
+}
+
+.deploy-site-loader .deploy-block--live {
+  animation: deploy-block-pulse 2s ease-in-out infinite;
   will-change: opacity;
 }
 
-.deploy-site-loader .deploy-block:nth-child(1) { animation-delay: 0s; }
-.deploy-site-loader .deploy-block:nth-child(2) { animation-delay: 0.2s; }
-.deploy-site-loader .deploy-block:nth-child(3) { animation-delay: 0.4s; }
-.deploy-site-loader .deploy-block:nth-child(4) { animation-delay: 0.55s; }
-.deploy-site-loader .deploy-block:nth-child(5) { animation-delay: 0.7s; }
-.deploy-site-loader .deploy-block:nth-child(6) { animation-delay: 0.85s; }
-
-.deploy-site-loader .deploy-scan {
-  animation: deploy-scan 2.4s linear infinite;
+.deploy-site-loader .deploy-block-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(234, 179, 8, 0.12) 45%,
+    rgba(12, 189, 160, 0.18) 55%,
+    transparent 65%
+  );
+  animation: deploy-block-shimmer 2.4s ease-in-out infinite;
   will-change: transform;
 }
 
-.deploy-site-loader .deploy-progress-bar {
-  animation: deploy-progress-slide 1.8s ease-in-out infinite;
+.deploy-site-loader .deploy-scan {
+  animation: deploy-scan 2.2s linear infinite;
+  will-change: transform, opacity;
+}
+
+.deploy-site-loader .deploy-scan-glow {
+  animation: deploy-scan-glow 2.2s linear infinite;
+  will-change: transform, opacity;
+}
+
+.deploy-site-loader .deploy-rocket-wrap {
+  animation: deploy-rocket-float 2.4s ease-in-out infinite;
   will-change: transform;
+}
+
+.deploy-site-loader .deploy-globe {
+  animation: deploy-globe-spin 14s linear infinite;
+  will-change: transform;
+}
+
+.deploy-site-loader .deploy-sparkle {
+  animation: deploy-sparkle-twinkle 2.2s ease-in-out infinite;
+}
+
+.deploy-site-loader .deploy-browser-dot {
+  animation: deploy-dot-bounce 1.4s ease-in-out infinite;
+}
+
+.deploy-site-loader .deploy-url-shimmer {
+  animation: deploy-url-shimmer 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.deploy-site-loader .deploy-typing-dot {
+  animation: deploy-typing-dot 1.2s ease-in-out infinite;
+}
+
+.deploy-site-loader .deploy-activity-pulse {
+  animation: deploy-activity-pulse 1.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .deploy-site-loader .deploy-block,
+  .deploy-site-loader .deploy-block--live,
+  .deploy-site-loader .deploy-block-shimmer,
   .deploy-site-loader .deploy-scan,
-  .deploy-site-loader .deploy-progress-bar {
+  .deploy-site-loader .deploy-scan-glow,
+  .deploy-site-loader .deploy-rocket-wrap,
+  .deploy-site-loader .deploy-globe,
+  .deploy-site-loader .deploy-sparkle,
+  .deploy-site-loader .deploy-browser-dot,
+  .deploy-site-loader .deploy-url-shimmer,
+  .deploy-site-loader .deploy-typing-dot,
+  .deploy-site-loader .deploy-activity-pulse {
     animation: none;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 }
 

@@ -180,7 +180,9 @@ export async function generateWithGPT(
     try {
       try {
         return await callChatGpt(systemPrompt, userPrompt, options ?? {});
-      } catch {
+      } catch (chatErr) {
+        const chatError = chatErr instanceof Error ? chatErr : new Error("ChatGPT call failed");
+        if (isRateLimitError(chatError)) throw chatError;
         return await callGpt4(
           [
             { role: "system", content: systemPrompt },

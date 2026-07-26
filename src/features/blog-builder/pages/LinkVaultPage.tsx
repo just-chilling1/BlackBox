@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { Link2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageLoading } from "@/components/ui/page-loading";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorBanner } from "@/components/ui/error-banner";
 import { ArmedLinkInput } from "../components/ArmedLinkInput";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import type { ArmedLink } from "../types";
@@ -59,7 +64,7 @@ export default function LinkVaultPage() {
   }, [links, sessionLoaded, loading, saveLinksToVault]);
 
   if (loading) {
-    return <p className="text-text-muted text-sm animate-pulse">Loading Content Reserve...</p>;
+    return <PageLoading message="Loading Content Reserve..." />;
   }
 
   return (
@@ -68,12 +73,30 @@ export default function LinkVaultPage() {
         eyebrow="Content Reserve"
         title="Link Vault"
         subtitle="Your promotional links are saved here automatically whenever you add or edit them in Step 1 or on this page."
+        actions={
+          <Link href="/arm-links" className="btn-secondary text-sm">
+            Add link in wizard
+          </Link>
+        }
       />
 
-      <ArmedLinkInput links={links} onChange={setLinks} />
+      {links.length === 0 ? (
+        <EmptyState
+          icon={Link2}
+          title="No links saved yet"
+          description="Add your first affiliate or promotional link in Step 1, or enter one below to start building your Content Reserve."
+          action={{ label: "Go to Step 1", href: "/arm-links" }}
+        />
+      ) : null}
 
-      {error && <p className="text-sm text-error">{error}</p>}
-      {saved && !error && <p className="text-xs text-promo-accent">Saved to Content Reserve</p>}
+      <div className="page-section-card">
+        <ArmedLinkInput links={links} onChange={setLinks} />
+      </div>
+
+      {error && <ErrorBanner message={error} />}
+      {saved && !error && (
+        <p className="text-xs font-medium text-promo-accent">Saved to Content Reserve</p>
+      )}
     </div>
   );
 }

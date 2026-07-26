@@ -24,6 +24,7 @@ export interface GenerateProductSiteResult {
   productName: string;
   salesPageHtml: string;
   salesPageJson: ProductSalesCopy;
+  site: Record<string, unknown>;
 }
 
 export async function generateProductSite(
@@ -62,7 +63,7 @@ export async function generateProductSite(
 
   const tagline = copy.subhook.slice(0, 160);
 
-  const { error } = await params.supabase
+  const { data: updatedSite, error } = await params.supabase
     .from("sites")
     .update({
       title: productName,
@@ -73,9 +74,11 @@ export async function generateProductSite(
       theme_config: params.themeConfig ?? {},
     })
     .eq("id", params.siteId)
-    .eq("user_id", params.userId);
+    .eq("user_id", params.userId)
+    .select()
+    .single();
 
   if (error) throw new Error(error.message);
 
-  return { productName, salesPageHtml, salesPageJson: copy };
+  return { productName, salesPageHtml, salesPageJson: copy, site: updatedSite };
 }

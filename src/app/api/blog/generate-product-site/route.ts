@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
-import { getApiUser } from "@/lib/api-auth";
+import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { generateProductSite } from "@/features/blog-builder/lib/product-generation";
+import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
 import type { ArmedLink, ThemeConfig } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +54,19 @@ export async function POST(request: Request) {
     armedLinks.length > 0 ? armedLinks : ((site.armed_links ?? []) as ArmedLink[]);
   const config = themeConfig ?? (site.theme_config as ThemeConfig | null);
 
+  let resolvedContext = productContext;
+  let resolvedTitle = scrapedTitle;
+  let resolvedDescription = scrapedDescription;
+
+  const affiliateUrl = links[0]?.url?.trim();
+  if (!resolvedContext && affiliateUrl) {
+    const admin = getServiceRoleClient();
+    const scraped = await scrapePageWithCache(affiliateUrl, admin);
+    resolvedContext = scraped.context;
+    resolvedTitle = resolvedTitle ?? scraped.data?.title;
+    resolvedDescription = resolvedDescription ?? scraped.data?.description;
+  }
+
   try {
     const result = await generateProductSite({
       supabase,
@@ -61,19 +75,13 @@ export async function POST(request: Request) {
       niche,
       armedLinks: links,
       themeConfig: config,
-      productContext,
-      scrapedTitle,
-      scrapedDescription,
+      productContext: resolvedContext,
+      scrapedTitle: resolvedTitle,
+      scrapedDescription: resolvedDescription,
     });
 
-    const { data: updatedSite } = await supabase
-      .from("sites")
-      .select("*")
-      .eq("id", siteId)
-      .single();
-
     return NextResponse.json({
-      site: updatedSite,
+      site: result.site,
       productName: result.productName,
       generated: true,
     });

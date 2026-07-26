@@ -37,24 +37,24 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
 
   return (
     <div
-      className={`group relative rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--glow-teal)] ${
+      className={`group relative rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(12,189,160,0.12)] ${
         isActive
-          ? "border-[#45A29E]/45 bg-[#45A29E]/8"
-          : "border-white/10 glass-tile hover:border-[#45A29E]/35"
+          ? "border-promo-accent/45 bg-promo-accent/8"
+          : "border-white/10 glass-tile hover:border-promo-accent/35"
       }`}
     >
       <div className="flex items-start gap-2">
         <button
           type="button"
           onClick={onOpen}
-          className="min-w-0 flex-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#45A29E]/50 rounded-lg -m-1 p-1"
+          className="min-w-0 flex-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-promo-accent/50 rounded-lg -m-1 p-1"
         >
           <div className="flex items-start gap-3">
             <div
               className={`shrink-0 w-11 h-11 rounded-lg flex items-center justify-center ${
                 isLive
-                  ? "bg-[#45A29E]/15 text-[#45A29E]"
-                  : "bg-[#D4AF37]/10 text-[#D4AF37]"
+                  ? "bg-promo-accent/15 text-promo-accent"
+                  : "bg-accent/10 text-accent"
               }`}
             >
               <FolderOpen size={22} strokeWidth={1.75} />
@@ -63,16 +63,16 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
               <div className="flex items-center gap-2 flex-wrap mb-1 pr-8 sm:pr-0">
                 <h3 className="brand-font text-base text-text-heading truncate">{site.title}</h3>
                 {site.template_key ? (
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-[#D4AF37] px-1.5 py-0.5 rounded border border-[#D4AF37]/30 bg-[#D4AF37]/5">
+                  <span className="text-[9px] uppercase tracking-wider font-bold text-accent px-1.5 py-0.5 rounded border border-accent/30 bg-accent/5">
                     Premium
                   </span>
                 ) : (
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-[#45A29E]/80 px-1.5 py-0.5 rounded border border-[#45A29E]/25">
+                  <span className="text-[9px] uppercase tracking-wider font-bold text-promo-accent/80 px-1.5 py-0.5 rounded border border-promo-accent/25">
                     Generated
                   </span>
                 )}
                 {isActive && (
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-[#45A29E] px-1.5 py-0.5 rounded border border-[#45A29E]/30">
+                  <span className="text-[9px] uppercase tracking-wider font-bold text-promo-accent px-1.5 py-0.5 rounded border border-promo-accent/30">
                     Latest
                   </span>
                 )}
@@ -119,7 +119,7 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
               rel="noopener noreferrer"
               title="View website"
               aria-label={`View ${site.title}`}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#45A29E]/35 bg-[#45A29E]/10 text-[#45A29E] hover:bg-[#45A29E]/20 hover:border-[#45A29E]/50 transition-colors"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-promo-accent/35 bg-promo-accent/10 text-promo-accent hover:bg-promo-accent/20 hover:border-promo-accent/50 transition-colors"
             >
               <Eye size={18} strokeWidth={2} />
             </Link>

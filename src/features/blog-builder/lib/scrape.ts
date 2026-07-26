@@ -12,39 +12,65 @@ export interface ScrapedPageInfo {
   bodySnippet: string;
 }
 
-const SCRAPE_TIMEOUT_MS = 30_000;
+const SCRAPER_API_TIMEOUT_MS = 30_000;
+const DIRECT_FETCH_TIMEOUT_MS = 10_000;
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
-/** Fetch raw HTML — via ScraperAPI (JS render) when configured, else a direct request. */
-async function fetchHtml(url: string): Promise<string | null> {
-  const scraperApiKey = process.env.SCRAPER_API_KEY;
-
+async function fetchDirectHtml(url: string): Promise<string | null> {
   try {
-    if (scraperApiKey) {
-      const scraperUrl = `https://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(
-        url
-      )}&render=true`;
-      const res = await fetch(scraperUrl, {
-        method: "GET",
-        signal: AbortSignal.timeout(SCRAPE_TIMEOUT_MS),
-      });
-      if (res.ok) return await res.text();
-    }
-
-    // Direct fallback (works for many offer/sales pages without JS gating).
     const res = await fetch(url, {
       method: "GET",
       headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(DIRECT_FETCH_TIMEOUT_MS),
       redirect: "follow",
     });
     if (res.ok) return await res.text();
   } catch {
     /* fall through */
   }
-
   return null;
+}
+
+async function fetchScraperApiHtml(url: string): Promise<string | null> {
+  const scraperApiKey = process.env.SCRAPER_API_KEY;
+  if (!scraperApiKey) return null;
+
+  try {
+    const scraperUrl = `https://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(
+      url
+    )}&render=true`;
+    const res = await fetch(scraperUrl, {
+      method: "GET",
+      signal: AbortSignal.timeout(SCRAPER_API_TIMEOUT_MS),
+    });
+    if (res.ok) return await res.text();
+  } catch {
+    /* fall through */
+  }
+  return null;
+}
+
+function htmlHasOfferSignals(html: string): boolean {
+  const lower = html.slice(0, 8000).toLowerCase();
+  return (
+    lower.includes("<title") &&
+    (lower.includes("og:title") ||
+      lower.includes('name="description"') ||
+      lower.includes("<h1") ||
+      lower.includes("application/ld+json"))
+  );
+}
+
+/** Fetch raw HTML — direct request first (fast), ScraperAPI with JS render as fallback. */
+async function fetchHtml(url: string): Promise<string | null> {
+  const direct = await fetchDirectHtml(url);
+  if (direct && htmlHasOfferSignals(direct)) return direct;
+
+  const rendered = await fetchScraperApiHtml(url);
+  if (rendered) return rendered;
+
+  return direct;
 }
 
 type JsonLdNode = Record<string, unknown>;

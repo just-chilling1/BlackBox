@@ -14,6 +14,8 @@ import {
 import Link from "next/link";
 import { clsx } from "clsx";
 import { PageHeader } from "@/components/ui/page-header";
+import { WizardStepBar } from "@/components/ui/wizard-step-bar";
+import { PageLoading } from "@/components/ui/page-loading";
 import { WizardStepper } from "../components/WizardStepper";
 import { ThemePreview } from "../components/ThemePreview";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
@@ -88,7 +90,7 @@ export default function ChooseThemePage() {
   };
 
   if (!sessionLoaded) {
-    return <p className="text-text-muted text-sm animate-pulse">Loading your session...</p>;
+    return <PageLoading message="Loading your session..." />;
   }
 
   if (finished) {
@@ -96,14 +98,7 @@ export default function ChooseThemePage() {
 
     return (
       <div className="page-stack w-full max-w-2xl mx-auto">
-        <div className="sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-white/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
-              Site Builder / Wrap-up
-            </p>
-            <span className="text-xs text-text-muted">Step 3 of 4</span>
-          </div>
-        </div>
+        <WizardStepBar breadcrumb="Site Builder / Wrap-up" step={3} />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
@@ -157,14 +152,7 @@ export default function ChooseThemePage() {
 
   return (
     <div className="page-stack w-full max-w-4xl mx-auto">
-      <div className="sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-white/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-promo-accent">
-            Site Builder / Template
-          </p>
-          <span className="text-xs text-text-muted">Step 3 of 4</span>
-        </div>
-      </div>
+      <WizardStepBar breadcrumb="Site Builder / Template" step={3} />
 
       <PageHeader
         eyebrow="Step 3"
