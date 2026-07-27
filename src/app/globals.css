@@ -405,11 +405,11 @@ html[data-sidebar="collapsed"] {
   }
 
   .collapsible-panel {
-    @apply overflow-hidden rounded-xl border border-border-dim bg-white;
+    @apply overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
   }
 
   .collapsible-item {
-    @apply overflow-hidden rounded-lg border border-border-dim/60 bg-page;
+    @apply overflow-hidden rounded-lg border border-slate-200 bg-white;
   }
 
   .alert-warning {

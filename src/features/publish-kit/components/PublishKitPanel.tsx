@@ -38,21 +38,21 @@ function CollapsibleResultSection({
   return (
     <details
       open={defaultOpen}
-      className="group collapsible-panel"
+      className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-2 bg-white px-4 py-3 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={16}
-          className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
+          className="shrink-0 text-slate-500 transition-transform group-open:rotate-180"
         />
-        <span className="min-w-0 flex-1 text-sm font-medium text-text-heading">{title}</span>
+        <span className="min-w-0 flex-1 text-sm font-semibold text-slate-900">{title}</span>
         {count !== undefined && (
-          <span className="chip-muted shrink-0 px-2 py-0.5 text-[11px]">
+          <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
             {count}
           </span>
         )}
       </summary>
-      <div className="space-y-1.5 border-t border-divider p-2">{children}</div>
+      <div className="space-y-2 border-t border-slate-200 bg-slate-50 p-2">{children}</div>
     </details>
   );
 }
@@ -71,21 +71,21 @@ function CollapsibleResultItem({
   return (
     <details
       open={defaultOpen}
-      className="group collapsible-item"
+      className="group overflow-hidden rounded-lg border border-slate-200 bg-white"
     >
-      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-start gap-2 bg-white px-3 py-2.5 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
-          className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
+          className="mt-0.5 shrink-0 text-slate-500 transition-transform group-open:rotate-180"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">{label}</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-promo-accent">{label}</p>
           {preview && (
-            <p className="mt-0.5 line-clamp-2 text-sm text-text-primary group-open:hidden">{preview}</p>
+            <p className="mt-0.5 line-clamp-2 text-sm text-slate-800 group-open:hidden">{preview}</p>
           )}
         </div>
       </summary>
-      <div className="border-t border-divider px-3 py-2.5">{children}</div>
+      <div className="border-t border-slate-200 bg-white px-3 py-3">{children}</div>
     </details>
   );
 }
@@ -111,7 +111,7 @@ function KitButton({
     variant === "primary"
       ? "bg-promo-accent text-text-on-accent hover:brightness-110"
       : variant === "ghost"
-        ? "text-text-muted hover:bg-slate-100 hover:text-text-heading"
+        ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
         : "btn-subtle";
 
   return (
@@ -248,12 +248,12 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     <div className="flex flex-col gap-6 min-w-0">
       {toast && (
         <div
-          className={`rounded-lg px-4 py-3 text-sm ${
+          className={`rounded-lg border px-4 py-3 text-sm ${
             toast.variant === "error"
-              ? "bg-error/20 text-red-200"
+              ? "border-red-200 bg-red-50 text-red-800"
               : toast.variant === "success"
-                ? "bg-success/20 text-emerald-200"
-                : "bg-black/10 text-text-primary"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                : "border-slate-200 bg-slate-100 text-slate-800"
           }`}
         >
           {toast.message}
@@ -272,7 +272,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               </span>
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${
-                  site.status === "live" ? "bg-success/20 text-success" : "bg-black/10 text-text-muted"
+                  site.status === "live" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"
                 }`}
               >
                 {site.status}
@@ -336,16 +336,16 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                   preview={post.text.slice(0, 120)}
                   defaultOpen={i === 0}
                 >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.text}</p>
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{post.text}</p>
                   {post.imageUrl ? (
-                    <div className="mt-3 surface-inset overflow-hidden">
+                    <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-white">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={post.imageUrl}
                         alt={`${post.angle || "Thread"} promotional image`}
                         className="aspect-square w-full max-w-xs object-cover"
                       />
-                      <div className="flex flex-wrap gap-2 border-t border-divider px-2 py-2">
+                      <div className="flex flex-wrap gap-2 border-t border-slate-200 bg-slate-50 px-2 py-2">
                         <KitButton
                           variant="ghost"
                           className="text-xs"
@@ -385,7 +385,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             <CollapsibleResultSection title="Suggested tags" count={visibleTags.length}>
               {visibleTags.map((t) => (
                 <CollapsibleResultItem key={t.tag} label={t.tag} preview={t.reason}>
-                  <p className="text-sm leading-relaxed text-text-secondary">{t.reason}</p>
+                  <p className="text-sm leading-relaxed text-slate-800">{t.reason}</p>
                   <KitButton variant="ghost" className="mt-2" onClick={() => copy(`tag-${t.tag}`, t.tag)}>
                     {copiedKey === `tag-${t.tag}` ? <Check size={14} /> : <Copy size={14} />}
                     Copy tag

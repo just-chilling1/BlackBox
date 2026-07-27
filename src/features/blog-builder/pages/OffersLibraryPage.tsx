@@ -34,25 +34,25 @@ function ThreadPreview({ thread }: { thread: SavedXThread }) {
   };
 
   return (
-    <details className="group collapsible-item">
-      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
+    <details className="group overflow-hidden rounded-lg border border-slate-200 bg-white">
+      <summary className="flex cursor-pointer list-none items-start gap-2 bg-white px-3 py-2.5 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
-          className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
+          className="mt-0.5 shrink-0 text-slate-500 transition-transform group-open:rotate-180"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+          <p className="text-xs font-bold uppercase tracking-wide text-promo-accent">
             {thread.angle || "Thread"}
           </p>
-          <p className="mt-0.5 line-clamp-2 text-sm text-text-primary group-open:hidden">{thread.text}</p>
+          <p className="mt-0.5 line-clamp-2 text-sm text-slate-800 group-open:hidden">{thread.text}</p>
         </div>
       </summary>
-      <div className="border-t border-divider px-3 py-2.5">
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{thread.text}</p>
+      <div className="border-t border-slate-200 bg-white px-3 py-3">
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{thread.text}</p>
         <button
           type="button"
           onClick={() => void copy()}
-          className="mt-2 inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-heading"
+          className="mt-2 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
         >
           {copied ? <Check size={14} /> : <Copy size={14} />}
           Copy thread
