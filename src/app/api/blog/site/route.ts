@@ -4,6 +4,7 @@ import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { getDailyGenerationQuota } from "@/features/blog-builder/lib/site-quota";
 import { countFacebookPostsBySite, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
+import { countXThreadsBySite, listXThreadsForSite } from "@/features/publish-kit/lib/x-threads-vault";
 import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ export interface SiteVaultSummary {
   livePostCount: number;
   clickCount: number;
   facebookPostCount: number;
+  xThreadCount: number;
 }
 
 function countBySite(rows: { site_id: string | null }[] | null): Record<string, number> {
@@ -60,10 +62,11 @@ export async function GET(request: Request) {
     );
   }
 
-  const [{ data: postRows }, { data: clickRows }, facebookPostCounts] = await Promise.all([
+  const [{ data: postRows }, { data: clickRows }, facebookPostCounts, xThreadCounts] = await Promise.all([
     supabase.from("posts").select("site_id, status").in("site_id", siteIds),
     supabase.from("affiliate_clicks").select("site_id").in("site_id", siteIds),
     countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+    countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
   ]);
 
   const postCounts = countBySite(postRows);
@@ -80,6 +83,7 @@ export async function GET(request: Request) {
     livePostCount: livePostCounts[site.id] ?? 0,
     clickCount: clickCounts[site.id] ?? 0,
     facebookPostCount: facebookPostCounts[site.id] ?? 0,
+    xThreadCount: xThreadCounts[site.id] ?? 0,
   }));
 
   if (siteId) {
@@ -96,6 +100,7 @@ export async function GET(request: Request) {
       .order("created_at", { ascending: true });
 
     const facebookPosts = await listFacebookPostsForSite(supabase, user.id, siteId).catch(() => []);
+    const xThreads = await listXThreadsForSite(supabase, user.id, siteId).catch(() => []);
 
     return NextResponse.json(
       {
@@ -103,6 +108,7 @@ export async function GET(request: Request) {
         site: summary.site,
         posts: posts ?? [],
         facebookPosts,
+        xThreads,
         clicks: summary.clickCount,
         quota,
         activeSiteId: session?.site_id ?? null,
@@ -159,6 +165,8 @@ export async function DELETE(request: Request) {
     .eq("site_id", siteId);
 
   await supabase.from("site_facebook_posts").delete().eq("user_id", user.id).eq("site_id", siteId);
+  await supabase.from("site_x_threads").delete().eq("user_id", user.id).eq("site_id", siteId);
+  await supabase.from("site_x_tags").delete().eq("user_id", user.id).eq("site_id", siteId);
 
   const { error } = await supabase.from("sites").delete().eq("id", siteId).eq("user_id", user.id);
 

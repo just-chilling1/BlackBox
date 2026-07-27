@@ -1,4 +1,4 @@
-# Product Skeleton
+# BlackBox Cash
 
 White-label Next.js + Supabase starter. Auth, shell, and promos are built-in; features plug in via config.
 

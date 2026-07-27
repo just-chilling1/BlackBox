@@ -29,14 +29,14 @@ export default function LinkVaultPage() {
 
     fetch("/api/blog/link-vault", { cache: "no-store" })
       .then(async (r) => {
-        if (!r.ok) throw new Error("Could not load link vault");
+        if (!r.ok) throw new Error("Could not load links library");
         return r.json();
       })
       .then((data) => {
         const stored = Array.isArray(data.links) ? (data.links as ArmedLink[]) : [];
         setLinks(stored);
       })
-      .catch(() => setError("Could not load Content Reserve"))
+      .catch(() => setError("Could not load Links Library"))
       .finally(() => {
         hydrated.current = true;
         setLoading(false);
@@ -57,25 +57,25 @@ export default function LinkVaultPage() {
           setError(null);
           setTimeout(() => setSaved(false), 2000);
         })
-        .catch(() => setError("Could not save to Content Reserve"));
+        .catch(() => setError("Could not save to Links Library"));
     }, 500);
 
     return () => clearTimeout(timer);
   }, [links, sessionLoaded, loading, saveLinksToVault]);
 
   if (loading) {
-    return <PageLoading message="Loading Content Reserve..." />;
+    return <PageLoading message="Loading Links Library..." />;
   }
 
   return (
     <div className="page-stack w-full max-w-3xl mx-auto">
       <PageHeader
-        eyebrow="Content Reserve"
-        title="Link Vault"
-        subtitle="Your promotional links are saved here automatically whenever you add or edit them in Step 1 or on this page."
+        eyebrow="Links library"
+        title="Saved promotion links"
+        subtitle="Store affiliate and promo links with a name, tag, and description. Links also save automatically when you add them in the Sales Offer Generator."
         actions={
-          <Link href="/arm-links" className="btn-secondary text-sm">
-            Add link in wizard
+          <Link href="/sales-offer-generator" className="btn-secondary text-sm">
+            Add link in generator
           </Link>
         }
       />
@@ -84,8 +84,8 @@ export default function LinkVaultPage() {
         <EmptyState
           icon={Link2}
           title="No links saved yet"
-          description="Add your first affiliate or promotional link in Step 1, or enter one below to start building your Content Reserve."
-          action={{ label: "Go to Step 1", href: "/arm-links" }}
+          description="Add your first promotional link in the Sales Offer Generator, or enter one below."
+          action={{ label: "Start Sales Offer Generator", href: "/sales-offer-generator" }}
         />
       ) : null}
 
@@ -95,7 +95,7 @@ export default function LinkVaultPage() {
 
       {error && <ErrorBanner message={error} />}
       {saved && !error && (
-        <p className="text-xs font-medium text-promo-accent">Saved to Content Reserve</p>
+        <p className="text-xs font-medium text-promo-accent">Saved to Links Library</p>
       )}
     </div>
   );

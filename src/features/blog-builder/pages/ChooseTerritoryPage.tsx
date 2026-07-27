@@ -11,8 +11,9 @@ import { PageLoading } from "@/components/ui/page-loading";
 import { WizardStepper } from "../components/WizardStepper";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import { NICHE_OPTIONS } from "../types";
+import type { WizardStepProps } from "../lib/wizard-step-props";
 
-export default function ChooseTerritoryPage() {
+export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: WizardStepProps = {}) {
   const router = useRouter();
   const { sessionLoaded, linksArmed, niche, chooseTerritory } = useBlogBuilder();
   const [selected, setSelected] = useState(niche);
@@ -20,10 +21,11 @@ export default function ChooseTerritoryPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (embedded) return;
     if (sessionLoaded && !linksArmed) {
-      router.replace("/arm-links");
+      router.replace("/sales-offer-generator");
     }
-  }, [sessionLoaded, linksArmed, router]);
+  }, [embedded, sessionLoaded, linksArmed, router]);
 
   useEffect(() => {
     if (niche) setSelected(niche);
@@ -39,7 +41,11 @@ export default function ChooseTerritoryPage() {
     setLoading(true);
     const label = NICHE_OPTIONS.find((n) => n.value === selected)?.label ?? selected;
     chooseTerritory(selected, label);
-    router.push("/theme");
+    if (onContinue) {
+      onContinue();
+    } else {
+      router.push("/theme");
+    }
   };
 
   if (!sessionLoaded) {
@@ -47,16 +53,18 @@ export default function ChooseTerritoryPage() {
   }
 
   return (
-    <div className="page-stack w-full max-w-4xl mx-auto">
-      <WizardStepBar breadcrumb="Site Builder / Niche" step={2} />
-
-      <PageHeader
-        eyebrow="Step 2"
-        title="Pick Your Niche"
-        subtitle="Choose the niche your money site will target. We'll tailor content and layout to match."
-      />
-
-      <WizardStepper currentStep={2} />
+    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-4xl mx-auto"}>
+      {!embedded && (
+        <>
+          <WizardStepBar breadcrumb="Site Builder / Niche" step={2} />
+          <PageHeader
+            eyebrow="Step 2"
+            title="Pick Your Niche"
+            subtitle="Choose one of nine niches. We'll build a questionnaire about that topic — your affiliate link appears on the final page."
+          />
+          <WizardStepper currentStep={2} />
+        </>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -102,7 +110,7 @@ export default function ChooseTerritoryPage() {
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
             type="button"
-            onClick={() => router.push("/arm-links")}
+            onClick={() => (onBack ? onBack() : router.push("/sales-offer-generator"))}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary transition-colors"
           >
             <ArrowLeft size={18} />

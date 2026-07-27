@@ -24,7 +24,7 @@ export interface ReadyTemplate {
   toneLabel: string;
 }
 
-/** Six curated templates — each with distinct color, font, layout, and copy tone. */
+/** Three curated templates — each with distinct color, font, layout, and copy tone. */
 export const READY_TEMPLATES: ReadyTemplate[] = [
   {
     id: "editorial-sage",
@@ -37,14 +37,14 @@ export const READY_TEMPLATES: ReadyTemplate[] = [
     toneLabel: "Thoughtful & narrative",
   },
   {
-    id: "magazine-pulse",
-    name: "Magazine Pulse",
-    tagline: "Sunset orange · Fraunces · bento grid energy",
-    presetId: "magazine",
-    accentOverride: "#ea580c",
-    structureId: "magazine",
-    copyToneId: "magazine",
-    toneLabel: "Bold & punchy",
+    id: "conversion-dark",
+    name: "Conversion Pro",
+    tagline: "Dark emerald · Syne · high-converting blocks",
+    presetId: "affiliate-pro",
+    accentOverride: "#059669",
+    structureId: "conversion",
+    copyToneId: "conversion",
+    toneLabel: "Urgent & direct-response",
   },
   {
     id: "minimal-clarity",
@@ -55,40 +55,6 @@ export const READY_TEMPLATES: ReadyTemplate[] = [
     structureId: "minimal",
     copyToneId: "minimal",
     toneLabel: "Calm & precise",
-  },
-  {
-    id: "authority-review",
-    name: "Authority Review",
-    tagline: "Trust blue · Plus Jakarta · expert split panels",
-    presetId: "authority",
-    accentOverride: "#0369a1",
-    structureId: "authority",
-    copyToneId: "authority",
-    toneLabel: "Expert & analytical",
-  },
-  {
-    id: "conversion-dark",
-    name: "Conversion Pro",
-    tagline: "Dark emerald · Syne · high-converting blocks",
-    presetId: "affiliate-pro",
-    accentOverride: "#10b981",
-    structureId: "conversion",
-    copyToneId: "conversion",
-    toneLabel: "Urgent & direct-response",
-  },
-  {
-    id: "luxury-elevate",
-    name: "Luxury Elevate",
-    tagline: "Gold ivory · Playfair · elegant columns",
-    presetId: "recurring-premium",
-    accentOverride: "#b45309",
-    headingFont: "'Playfair Display', Georgia, serif",
-    bodyFont: "'Source Sans 3', system-ui, sans-serif",
-    googleFontsUrl:
-      "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap",
-    structureId: "luxury",
-    copyToneId: "luxury",
-    toneLabel: "Premium & aspirational",
   },
 ];
 

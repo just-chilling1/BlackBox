@@ -3,47 +3,83 @@ import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
+import { listXTagsForSite, saveXTagBatch } from "@/features/publish-kit/lib/x-tags-vault";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
-const PLATFORM_FORMATS: Record<string, string> = {
-  linkedin:
-    "LinkedIn hashtags (e.g. #DigitalMarketing). Suggest 5-8 hashtags. Mix 2-3 broad/popular hashtags with 3-5 niche-specific ones.",
-  quora:
-    'Quora topics/spaces the answer should be added to (e.g. "Digital Marketing", "Affiliate Marketing Tips"). Suggest 5-8 relevant Quora topics.',
-  medium:
-    'Medium tags (e.g. "Marketing", "Side Hustle"). Medium allows up to 5 tags. Suggest exactly 5 tags, ordered by popularity.',
-  reddit:
-    'Relevant subreddits to post in (e.g. "r/Entrepreneur", "r/SEO") and post flair keywords. Suggest 3-5 subreddits and 2-3 flair keywords.',
-  twitter:
-    "X/Twitter hashtags (e.g. #MarketingTips). Suggest 3-5 hashtags only — over-hashtagging hurts reach on X.",
-  facebook:
-    "Facebook post topics and interest groups. Suggest 5-8 relevant audience interests or group themes (no hashtags).",
-};
+const TWITTER_FORMAT =
+  "X/Twitter hashtags (e.g. #MarketingTips). Suggest 3-5 hashtags only — over-hashtagging hurts reach on X.";
+
+export async function GET(request: Request) {
+  const guard = featureApiGuard("article-publish");
+  if (guard) return guard;
+
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
+  const siteId = new URL(request.url).searchParams.get("siteId")?.trim() || "";
+  if (!siteId) {
+    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
+  }
+
+  const { data: site } = await supabase
+    .from("sites")
+    .select("id")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!site) {
+    return NextResponse.json({ error: "Site not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  const saved = await listXTagsForSite(supabase, user.id, siteId);
+  const tags = saved.map((row) => ({ tag: row.tag, reason: row.reason || "" }));
+
+  return NextResponse.json({ tags, platform: "twitter" }, { headers: NO_STORE_HEADERS });
+}
 
 export async function POST(request: Request) {
   const guard = featureApiGuard("article-publish");
   if (guard) return guard;
 
-  const { user } = await getApiUser();
+  const { supabase, user } = await getApiUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
   }
 
-  const { platform, articleTitle, articleContent, niche } = await request.json();
+  const body = await request.json().catch(() => ({}));
+  const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
+  const platform = typeof body.platform === "string" ? body.platform : "twitter";
+  const articleTitle = typeof body.articleTitle === "string" ? body.articleTitle : "";
+  const articleContent = typeof body.articleContent === "string" ? body.articleContent : "";
+  const niche = typeof body.niche === "string" ? body.niche : "";
 
-  if (!platform || !articleTitle) {
-    return NextResponse.json(
-      { error: "Platform and title are required" },
-      { status: 400, headers: NO_STORE_HEADERS }
-    );
+  if (!siteId) {
+    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
   }
 
-  const contentSnippet =
-    typeof articleContent === "string" ? articleContent.replace(/<[^>]+>/g, " ").slice(0, 500) : "";
+  if (!articleTitle) {
+    return NextResponse.json({ error: "Title is required" }, { status: 400, headers: NO_STORE_HEADERS });
+  }
 
-  const userPrompt = `You are a social media growth expert. Based on the following product/website, suggest the best ${PLATFORM_FORMATS[platform] || "tags/hashtags"}
+  const { data: site } = await supabase
+    .from("sites")
+    .select("id")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!site) {
+    return NextResponse.json({ error: "Site not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  const contentSnippet = articleContent.replace(/<[^>]+>/g, " ").slice(0, 500);
+
+  const userPrompt = `You are a social media growth expert. Based on the following product/website, suggest the best ${TWITTER_FORMAT}
 
 Title: ${articleTitle}
 ${niche ? `Niche: ${niche}` : ""}
@@ -68,7 +104,11 @@ Respond ONLY with valid JSON in this exact format:
     let tags: { tag: string; reason: string }[] = [];
     const parsed = extractJsonFromText(raw) as { tags?: { tag: string; reason: string }[] } | null;
     if (parsed?.tags && Array.isArray(parsed.tags)) {
-      tags = parsed.tags;
+      tags = parsed.tags.filter((t) => t && typeof t.tag === "string" && t.tag.trim());
+    }
+
+    if (tags.length > 0) {
+      await saveXTagBatch(supabase, user.id, siteId, tags);
     }
 
     return NextResponse.json({ tags, platform }, { headers: NO_STORE_HEADERS });

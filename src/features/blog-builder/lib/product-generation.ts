@@ -1,12 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ArmedLink, ThemeConfig } from "../types";
 import { getReadyTemplateFromConfig } from "../themes";
-import {
-  deriveProductName,
-  generateProductSalesCopy,
-  type ProductSalesCopy,
-} from "./product-sales-copy";
-import { buildThemedProductSalesPage } from "./product-sales-page-html";
+import { deriveProductName } from "./product-sales-copy";
+import { generateQuestionnaireCopy, type QuestionnaireCopy } from "./questionnaire-copy";
+import { buildThemedQuestionnairePage } from "./questionnaire-page-html";
 
 export interface GenerateProductSiteParams {
   supabase: SupabaseClient;
@@ -23,7 +20,7 @@ export interface GenerateProductSiteParams {
 export interface GenerateProductSiteResult {
   productName: string;
   salesPageHtml: string;
-  salesPageJson: ProductSalesCopy;
+  salesPageJson: QuestionnaireCopy;
   site: Record<string, unknown>;
 }
 
@@ -43,7 +40,7 @@ export async function generateProductSite(
 
   const template = getReadyTemplateFromConfig(params.themeConfig);
 
-  const copy = await generateProductSalesCopy({
+  const copy = await generateQuestionnaireCopy({
     productName,
     niche: params.niche,
     description: params.scrapedDescription,
@@ -52,7 +49,7 @@ export async function generateProductSite(
     copyToneId: template.copyToneId,
   });
 
-  const salesPageHtml = buildThemedProductSalesPage({
+  const salesPageHtml = buildThemedQuestionnairePage({
     siteId: params.siteId,
     productName,
     niche: params.niche,
@@ -61,12 +58,12 @@ export async function generateProductSite(
     themeConfig: params.themeConfig,
   });
 
-  const tagline = copy.subhook.slice(0, 160);
+  const tagline = copy.subtitle.slice(0, 160);
 
   const { data: updatedSite, error } = await params.supabase
     .from("sites")
     .update({
-      title: productName,
+      title: copy.title,
       tagline,
       site_type: "product",
       sales_page_html: salesPageHtml,

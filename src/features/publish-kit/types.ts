@@ -1,6 +1,6 @@
 export type Platform = "linkedin" | "medium" | "quora" | "reddit" | "twitter" | "facebook";
 
-export type PromotePlatform = "linkedin" | "twitter";
+export type PromotePlatform = "twitter";
 
 export interface PublishKitSite {
   siteId: string;

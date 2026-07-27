@@ -12,10 +12,13 @@ import type { ArmedLink, ThemeConfig } from "../types";
 import { defaultThemeConfig } from "../themes";
 import { isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
 
+import type { WizardStepNumber } from "../lib/wizard-step-props";
+
 export type BlogBuilderStep = 0 | 1 | 2 | 3;
 
 interface BlogBuilderState {
   step: BlogBuilderStep;
+  wizardUiStep: WizardStepNumber;
   hobby: string;
   territory: string;
   niche: string;
@@ -50,11 +53,13 @@ interface BlogBuilderContextType extends BlogBuilderState {
   setGenerating: (v: boolean) => void;
   resetWizard: () => Promise<void>;
   beginNewSiteGeneration: () => void;
+  setWizardUiStep: (step: WizardStepNumber) => void;
   blogProgress: number;
 }
 
 const defaultState: BlogBuilderState = {
   step: 0,
+  wizardUiStep: 1,
   hobby: "",
   territory: "",
   niche: "",
@@ -88,18 +93,42 @@ interface DbSessionRow {
   site_slug?: string | null;
   is_generating?: boolean;
   generation_log?: string[];
+  wizard_ui_step?: number;
+}
+
+function clampWizardUiStep(value: number | undefined, flags: {
+  linksArmed: boolean;
+  territoryChosen: boolean;
+  themeChosen: boolean;
+}): WizardStepNumber {
+  if (typeof value === "number" && value >= 1 && value <= 4) {
+    return value as WizardStepNumber;
+  }
+  if (flags.themeChosen) return 4;
+  if (flags.territoryChosen) return 3;
+  if (flags.linksArmed) return 2;
+  return 1;
 }
 
 function mapSessionFromDb(row: DbSessionRow): Partial<BlogBuilderState> {
+  const linksArmed = row.links_armed ?? false;
+  const territoryChosen = row.territory_chosen ?? false;
+  const themeChosen = row.theme_chosen ?? false;
+
   return {
     step: (row.step ?? 0) as BlogBuilderStep,
+    wizardUiStep: clampWizardUiStep(row.wizard_ui_step, {
+      linksArmed,
+      territoryChosen,
+      themeChosen,
+    }),
     hobby: row.hobby ?? "",
     territory: row.territory ?? "",
     niche: row.niche ?? row.territory ?? "",
     suggestions: row.suggestions ?? [],
-    territoryChosen: row.territory_chosen ?? false,
-    linksArmed: row.links_armed ?? false,
-    themeChosen: row.theme_chosen ?? false,
+    territoryChosen,
+    linksArmed,
+    themeChosen,
     themeConfig: row.theme_config ?? defaultThemeConfig(),
     deployArmedLinks: row.deploy_armed_links ?? [],
     deployed: row.deployed ?? false,
@@ -113,6 +142,7 @@ function mapSessionFromDb(row: DbSessionRow): Partial<BlogBuilderState> {
 function persistPayload(state: BlogBuilderState) {
   return {
     step: state.step,
+    wizardUiStep: state.wizardUiStep,
     hobby: state.hobby,
     territory: state.territory,
     niche: state.niche,
@@ -211,6 +241,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
     return () => clearTimeout(timer);
   }, [
     state.step,
+    state.wizardUiStep,
     state.hobby,
     state.territory,
     state.niche,
@@ -341,6 +372,10 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
     setState(defaultState);
   }, []);
 
+  const setWizardUiStep = useCallback((wizardUiStep: WizardStepNumber) => {
+    setState((s) => ({ ...s, wizardUiStep }));
+  }, []);
+
   const beginNewSiteGeneration = useCallback(() => {
     setState((s) => ({
       ...s,
@@ -348,6 +383,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       siteId: null,
       siteSlug: null,
       step: 3,
+      wizardUiStep: 2,
       isGenerating: false,
       generationLog: [],
     }));
@@ -379,6 +415,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
         setGenerating,
         resetWizard,
         beginNewSiteGeneration,
+        setWizardUiStep,
         blogProgress,
       }}
     >

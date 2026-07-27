@@ -65,7 +65,7 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
           className="mt-4 inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-[#45A29E]/40 bg-[#45A29E]/10 px-5 py-3 text-sm font-semibold text-[#45A29E] transition-colors hover:bg-[#45A29E]/15"
         >
           <Eye size={16} />
-          View live product page
+          View live questionnaire
         </Link>
       )}
     </motion.div>

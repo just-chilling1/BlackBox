@@ -28,6 +28,7 @@ import { ContentReservePicker } from "../components/ContentReservePicker";
 import { WizardStepper } from "../components/WizardStepper";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import type { ArmedLink } from "../types";
+import type { WizardStepProps } from "../lib/wizard-step-props";
 import { detectLinkNetwork, isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
 
 function warmScrapeCache(url: string) {
@@ -68,7 +69,7 @@ const INSTRUCTION_STEPS = [
   },
 ];
 
-export default function ArmLinksPage() {
+export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps = {}) {
   const router = useRouter();
   const { sessionLoaded, armedLinks, saveLinksToVault, armLinks } = useBlogBuilder();
 
@@ -162,7 +163,12 @@ export default function ArmLinksPage() {
     try {
       armLinks([link]);
       warmScrapeCache(url);
-      router.push("/territory");
+      if (onContinue) {
+        onContinue();
+        setLoading(false);
+      } else {
+        router.push("/territory");
+      }
     } catch {
       setError("Could not continue. Try again.");
       setLoading(false);
@@ -174,14 +180,18 @@ export default function ArmLinksPage() {
   }
 
   return (
-    <div className="page-stack w-full max-w-3xl mx-auto">
-      <WizardStepBar breadcrumb="Site Builder / Link" step={1} />
-      <PageHeader
-        eyebrow="Step 1"
-        title="Add Your Link"
-        subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Content Reserve" if you want to reuse it later.'
-      />
-      <WizardStepper currentStep={1} />
+    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-3xl mx-auto"}>
+      {!embedded && (
+        <>
+          <WizardStepBar breadcrumb="Site Builder / Link" step={1} />
+          <PageHeader
+            eyebrow="Step 1"
+            title="Add Your Link"
+            subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Content Reserve" if you want to reuse it later.'
+          />
+          <WizardStepper currentStep={1} />
+        </>
+      )}
 
         <div className="glass-card mb-2 border-white/5 overflow-hidden">
           <button

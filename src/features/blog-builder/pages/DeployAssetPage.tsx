@@ -15,6 +15,8 @@ import { getReadyTemplateFromConfig } from "../themes";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { ArmedLink, BlogSite } from "../types";
 import { NICHE_OPTIONS } from "../types";
+import type { WizardStepProps } from "../lib/wizard-step-props";
+import { SALES_OFFER_GENERATOR_PATH } from "../lib/wizard-step-props";
 
 interface GenerationQuota {
   limit: number | null;
@@ -72,7 +74,11 @@ function siteMatchesWizard(
   return Boolean(niche) && siteNiche === niche && siteLinks === currentLinks;
 }
 
-export default function DeployAssetPage() {
+export default function DeployAssetPage({
+  embedded,
+  onBack,
+  onGenerateAnother,
+}: WizardStepProps & { onGenerateAnother?: () => void } = {}) {
   const router = useRouter();
   const {
     sessionLoaded,
@@ -102,11 +108,12 @@ export default function DeployAssetPage() {
   const deployRunning = useRef(false);
 
   useEffect(() => {
+    if (embedded) return;
     if (!sessionLoaded) return;
-    if (!linksArmed) router.replace("/arm-links");
+    if (!linksArmed) router.replace("/sales-offer-generator");
     else if (!territory.trim() && !niche.trim()) router.replace("/territory");
     else if (!themeChosen) router.replace("/theme");
-  }, [linksArmed, themeChosen, territory, niche, sessionLoaded, router]);
+  }, [embedded, linksArmed, themeChosen, territory, niche, sessionLoaded, router]);
 
   useEffect(() => {
     if (!sessionLoaded) return;
@@ -135,9 +142,9 @@ export default function DeployAssetPage() {
           } else if (data.canResume) {
             setCanResume(true);
             if (data.isProductSite && !loadedSite.sales_page_html) {
-              setResumeLabel("Continue — finish building your product page");
+              setResumeLabel("Continue — finish building your questionnaire");
             } else if (data.isProductSite && loadedSite.sales_page_html) {
-              setResumeLabel("Publish your product website");
+              setResumeLabel("Publish your questionnaire site");
             } else {
               setResumeLabel("Continue deployment");
             }
@@ -165,14 +172,14 @@ export default function DeployAssetPage() {
 
   const publishSite = async (siteId: string, siteSlug: string) => {
     setPhase("publishing");
-    appendLog("Publishing your product website...");
+    appendLog("Publishing your questionnaire site...");
 
     const { ok: pubOk, status: pubStatus, data: pubData } = await postJson("/api/blog/publish", {
       siteId,
     });
     if (!pubOk) throw new Error((pubData?.error as string) || busyError(pubStatus));
 
-    appendLog("Your product promotion website is live.");
+    appendLog("Your niche questionnaire is live.");
     markDeployed(siteId, siteSlug);
     setPhase("complete");
     setCanResume(false);
@@ -251,7 +258,7 @@ export default function DeployAssetPage() {
         setProductName(null);
         beginNewSiteGeneration();
 
-        appendLog("Creating your product website and scanning the offer page...");
+        appendLog("Creating your questionnaire site and scanning the offer page...");
 
         const scrapeTask = scrapeAffiliateOffer();
         const createTask = postJson("/api/blog/create-site", {
@@ -281,7 +288,7 @@ export default function DeployAssetPage() {
 
       if (!activeSite.sales_page_html) {
         setPhase("generating");
-        appendLog("Writing sales copy and building your themed product page...");
+        appendLog("Writing quiz questions and building your themed questionnaire...");
 
         const { ok: genOk, status: genStatus, data: genData } = await postJson(
           "/api/blog/generate-product-site",
@@ -303,7 +310,7 @@ export default function DeployAssetPage() {
         activeSite = genData.site as BlogSite;
         setSite(activeSite);
         setProductName((genData.productName as string) || activeSite.title);
-        appendLog(`Product page ready: ${genData.productName || activeSite.title}`);
+        appendLog(`Questionnaire ready: ${genData.productName || activeSite.title}`);
       }
 
       await publishSite(activeSite.id, activeSite.slug);
@@ -316,7 +323,7 @@ export default function DeployAssetPage() {
 
       if (resumeSiteId) {
         setCanResume(true);
-        setResumeLabel("Continue — finish building your product page");
+        setResumeLabel("Continue — finish building your questionnaire");
       }
 
       setError(msg);
@@ -343,20 +350,32 @@ export default function DeployAssetPage() {
     : "Selected template";
 
   return (
-    <div className="page-stack w-full max-w-2xl mx-auto">
-      <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />
+    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-2xl mx-auto"}>
+      {!embedded && (
+        <>
+          <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />
+          <PageHeader
+            eyebrow="Step 4"
+            title={isComplete ? "Your Questionnaire Is Live" : "Launch Your Questionnaire Site"}
+            subtitle={
+              isComplete
+                ? "Your niche quiz is published and ready to share. Visitors answer questions, then see your affiliate offer on the last page."
+                : "We generate niche-specific quiz questions and place your affiliate link on the final results page — then publish instantly."
+            }
+          />
+          {!isComplete && <WizardStepper currentStep={4} />}
+        </>
+      )}
 
-      <PageHeader
-        eyebrow="Step 4"
-        title={isComplete ? "Your Website Is Live" : "Launch Your Product Website"}
-        subtitle={
-          isComplete
-            ? "Your product promotion page is published and ready to share."
-            : "We build sales copy, benefits, FAQs, and affiliate CTAs from your setup — then publish instantly."
-        }
-      />
-
-      {!isComplete && <WizardStepper currentStep={4} />}
+      {embedded && !isComplete && onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary"
+        >
+          Back to Template
+        </button>
+      )}
 
       {isLoading && (
         <DeploySiteLoader
@@ -394,9 +413,13 @@ export default function DeployAssetPage() {
           onDismissBanner={() => setShowOfferBanner(false)}
           onGenerateAnother={() => {
             prepareFreshDeploy();
-            router.push("/territory");
+            if (onGenerateAnother) {
+              onGenerateAnother();
+            } else {
+              router.push(`${SALES_OFFER_GENERATOR_PATH}?step=2`);
+            }
           }}
-          onViewVault={() => router.push("/asset")}
+          onViewVault={() => router.push("/offers")}
         />
       )}
     </div>

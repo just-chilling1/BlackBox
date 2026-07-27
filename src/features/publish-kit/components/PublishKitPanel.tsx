@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
 import {
   Copy,
   Check,
@@ -13,17 +12,16 @@ import {
   Loader2,
 } from "lucide-react";
 import { fetchJson } from "@/lib/fetch-json";
+import { THREADS_PER_GENERATION } from "../lib/promote-constants";
 import type {
-  Platform,
   PromotePlatform,
-  PromoteSocialResults,
   PublishKitSite,
   SocialPostResult,
 } from "../types";
+import type { ThreadGenerationQuota } from "../lib/thread-generation-quota";
 
-function emptyResults(): PromoteSocialResults {
-  return { platform: null, posts: [], tags: [] };
-}
+const THREAD_COUNT = THREADS_PER_GENERATION;
+const PROMOTE_PLATFORM = "twitter" as const;
 
 function CollapsibleResultSection({
   title,
@@ -95,6 +93,7 @@ function KitButton({
   children,
   onClick,
   loading,
+  disabled,
   variant = "secondary",
   className = "",
 }: {
@@ -102,6 +101,7 @@ function KitButton({
   onClick?: () => void;
   loading?: boolean;
   variant?: "primary" | "secondary" | "ghost";
+  disabled?: boolean;
   className?: string;
 }) {
   const base =
@@ -114,43 +114,65 @@ function KitButton({
         : "border border-white/[0.12] bg-white/[0.04] text-text-heading hover:bg-white/[0.08]";
 
   return (
-    <button type="button" onClick={onClick} disabled={loading} className={`${base} ${styles} ${className}`}>
+    <button type="button" onClick={onClick} disabled={loading || disabled} className={`${base} ${styles} ${className}`}>
       {loading ? <Loader2 size={14} className="animate-spin" /> : null}
       {children}
     </button>
   );
 }
 
-function platformLabel(platform: PromotePlatform): string {
-  return platform === "linkedin" ? "LinkedIn" : "X";
-}
-
 export function PublishKitPanel({ site }: { site: PublishKitSite }) {
-  const [kitBySite, setKitBySite] = useState<Record<string, PromoteSocialResults>>({});
-  const [selectedPlatform, setSelectedPlatform] = useState<PromotePlatform>("linkedin");
+  const [posts, setPosts] = useState<SocialPostResult[]>([]);
+  const [tags, setTags] = useState<{ tag: string; reason: string }[]>([]);
+  const [contentLoading, setContentLoading] = useState(true);
   const [generateLoading, setGenerateLoading] = useState(false);
   const [tagsLoading, setTagsLoading] = useState(false);
+  const [quota, setQuota] = useState<ThreadGenerationQuota | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" | "info" } | null>(null);
 
-  const kit = kitBySite[site.siteId] ?? emptyResults();
-  const visiblePosts = kit.platform === selectedPlatform ? kit.posts : [];
-  const visibleTags = kit.platform === selectedPlatform ? kit.tags : [];
+  const visiblePosts = posts;
+  const visibleTags = tags;
 
   const promoLink = useMemo(() => site.affiliateLink || site.siteUrl || "", [site]);
-
-  const updateKit = (siteId: string, patch: Partial<PromoteSocialResults>) => {
-    setKitBySite((prev) => ({
-      ...prev,
-      [siteId]: { ...(prev[siteId] ?? emptyResults()), ...patch },
-    }));
-  };
 
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 2500);
     return () => clearTimeout(t);
   }, [toast]);
+
+  useEffect(() => {
+    setContentLoading(true);
+    void fetchJson<{
+      quota: ThreadGenerationQuota;
+      threads?: { text: string; angle: string | null }[];
+      tags?: { tag: string; reason: string }[];
+    }>(`/api/promote/social-posts?siteId=${encodeURIComponent(site.siteId)}`)
+      .then((res) => {
+        if (!res.ok) return;
+        if (res.data.quota) setQuota(res.data.quota);
+        if (Array.isArray(res.data.threads)) {
+          setPosts(
+            res.data.threads.map((thread) => ({
+              text: thread.text,
+              angle: thread.angle || undefined,
+            }))
+          );
+        } else {
+          setPosts([]);
+        }
+        if (Array.isArray(res.data.tags)) {
+          setTags(res.data.tags);
+        } else {
+          setTags([]);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setContentLoading(false));
+  }, [site.siteId]);
+
+  const quotaBlocked = quota !== null && quota.remaining <= 0;
 
   const showToast = (message: string, variant: "success" | "error" | "info" = "info") => {
     setToast({ message, variant });
@@ -168,7 +190,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
   const runGenerate = async () => {
     if (!promoLink) {
-      showToast("Add an affiliate link or publish your site before generating posts.", "info");
+      showToast("Add an affiliate link or publish your site before generating threads.", "info");
       return;
     }
 
@@ -176,13 +198,14 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     const res = await fetchJson<{
       platform: PromotePlatform;
       posts: SocialPostResult[];
+      quota?: ThreadGenerationQuota;
     }>("/api/promote/social-posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         siteId: site.siteId,
         siteUrl: site.siteUrl,
-        platform: selectedPlatform,
+        platform: PROMOTE_PLATFORM,
       }),
     });
     setGenerateLoading(false);
@@ -192,12 +215,9 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       return;
     }
 
-    updateKit(site.siteId, {
-      platform: res.data.platform,
-      posts: res.data.posts || [],
-      tags: [],
-    });
-    showToast(`10 ${platformLabel(selectedPlatform)} posts ready to copy`, "success");
+    setPosts(res.data.posts || []);
+    if (res.data.quota) setQuota(res.data.quota);
+    showToast(`${THREAD_COUNT} X threads ready to copy`, "success");
   };
 
   const runTags = async () => {
@@ -206,7 +226,8 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        platform: selectedPlatform as Platform,
+        siteId: site.siteId,
+        platform: PROMOTE_PLATFORM,
         articleTitle: site.siteName,
         articleContent: `${site.territory}. ${site.tagline || site.affiliateLabel || ""}`.trim(),
         niche: site.territory,
@@ -218,7 +239,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       showToast(res.error, "error");
       return;
     }
-    updateKit(site.siteId, { platform: selectedPlatform, tags: res.data.tags || [] });
+    setTags(res.data.tags || []);
   };
 
   return (
@@ -240,7 +261,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       <div className="glass-card p-6 flex flex-col gap-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-promo-accent/80">Promotion kit</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-promo-accent/80">X-Power Promotions</p>
             <h2 className="mt-1 brand-font text-xl text-text-heading">{site.siteName}</h2>
             {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
             <div className="mt-3 flex flex-wrap gap-2">
@@ -273,38 +294,42 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
               <Sparkles size={16} className="text-promo-accent" />
-              Generate posts
+              Generate threads
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Choose LinkedIn or X, then generate 10 ready-to-copy posts based on your product and website.
+              Generate {THREAD_COUNT} ready-to-copy X threads based on your product and website.
             </p>
-            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
-              <select
-                value={selectedPlatform}
-                onChange={(e) => setSelectedPlatform(e.target.value as PromotePlatform)}
-                className="rounded-lg border border-white/[0.12] bg-[rgb(10,14,22)] px-3 py-2.5 text-sm text-text-heading focus:outline-none focus:ring-2 focus:ring-promo-accent/40"
-              >
-                <option value="linkedin">LinkedIn</option>
-                <option value="twitter">X (Twitter)</option>
-              </select>
-              <KitButton
-                variant="primary"
-                onClick={runGenerate}
-                loading={generateLoading}
-                className="w-full sm:w-fit px-5 py-3"
-              >
-                <Megaphone size={14} />
-                Generate 10 posts
-              </KitButton>
-            </div>
+            {contentLoading ? (
+              <p className="text-sm text-text-muted flex items-center gap-2">
+                <Loader2 size={14} className="animate-spin" />
+                Loading saved promotion content...
+              </p>
+            ) : null}
+            {quota && (
+              <p className="text-xs text-promo-accent/90">
+                {quota.remaining} of {quota.limit} generations remaining today
+              </p>
+            )}
+            <KitButton
+              variant="primary"
+              onClick={runGenerate}
+              loading={generateLoading}
+              disabled={quotaBlocked}
+              className="w-full sm:w-fit px-5 py-3"
+            >
+              <Megaphone size={14} />
+              {generateLoading
+                ? `Just generating ${THREAD_COUNT} threads`
+                : `Generate ${THREAD_COUNT} threads`}
+            </KitButton>
           </div>
 
           {visiblePosts.length > 0 && (
-            <CollapsibleResultSection title={`${platformLabel(selectedPlatform)} posts`} count={visiblePosts.length}>
+            <CollapsibleResultSection title="X threads" count={visiblePosts.length}>
               {visiblePosts.map((post, i) => (
                 <CollapsibleResultItem
                   key={i}
-                  label={post.angle || `Post ${i + 1}`}
+                  label={post.angle || `Thread ${i + 1}`}
                   preview={post.text.slice(0, 120)}
                   defaultOpen={i === 0}
                 >
@@ -312,10 +337,10 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                   <KitButton
                     variant="ghost"
                     className="mt-2"
-                    onClick={() => copy(`${selectedPlatform}-${i}`, post.text)}
+                    onClick={() => copy(`twitter-${i}`, post.text)}
                   >
-                    {copiedKey === `${selectedPlatform}-${i}` ? <Check size={14} /> : <Copy size={14} />}
-                    Copy post
+                    {copiedKey === `twitter-${i}` ? <Check size={14} /> : <Copy size={14} />}
+                    Copy thread
                   </KitButton>
                 </CollapsibleResultItem>
               ))}
@@ -330,7 +355,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               Bonus hashtags
             </h3>
             <KitButton onClick={runTags} loading={tagsLoading}>
-              Suggest for {platformLabel(selectedPlatform)}
+              Suggest for X
             </KitButton>
           </div>
           {visibleTags.length > 0 && (
@@ -362,14 +387,6 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               {copiedKey === "link" ? <Check size={16} /> : <Copy size={16} />}
               Copy promotion link
             </KitButton>
-            {site.siteUrl && (
-              <Link href={site.siteUrl} target="_blank">
-                <KitButton variant="ghost">
-                  <ExternalLink size={16} className="opacity-60" />
-                  Open website
-                </KitButton>
-              </Link>
-            )}
           </div>
         )}
       </div>

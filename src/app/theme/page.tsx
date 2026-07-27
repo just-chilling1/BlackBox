@@ -1,10 +1,5 @@
-import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import ChooseThemePage from "@/features/blog-builder/pages/ChooseThemePage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return (
-    <FeatureGuard feature="blog-builder">
-      <ChooseThemePage />
-    </FeatureGuard>
-  );
+  redirect("/sales-offer-generator?step=3");
 }

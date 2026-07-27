@@ -54,6 +54,26 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Tag</label>
+            <input
+              type="text"
+              value={link.tag ?? ""}
+              onChange={(e) => updateLink(index, { tag: e.target.value })}
+              placeholder="e.g. health, weight-loss, supplement"
+              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-1.5">Description</label>
+            <textarea
+              value={link.description ?? ""}
+              onChange={(e) => updateLink(index, { description: e.target.value })}
+              placeholder="Short note about this offer — payout, audience, angle..."
+              rows={2}
+              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 resize-y min-h-[72px]"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-text-primary mb-1.5">URL</label>
             <input
               type="url"

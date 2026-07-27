@@ -37,7 +37,7 @@ export function DeployCompletePanel({
               {productName || site.title}
             </p>
             <p className="mt-1 text-sm text-text-secondary">
-              Published and ready to share. Open it below or start another site.
+              Published and ready to share. Visitors complete the quiz, then see your affiliate offer on the last page.
             </p>
           </div>
         </div>

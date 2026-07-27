@@ -1,4 +1,5 @@
 import { parseSalesPageDocument } from "../lib/product-sales-page-html";
+import { QuestionnaireSiteEmbed } from "./QuestionnaireSiteEmbed";
 
 interface ProductSiteViewProps {
   html: string;
@@ -66,9 +67,14 @@ const LEGACY_CONTRAST_FIXES = `
 }
 `;
 
-/** Renders a generated product promotion sales page (full HTML document stored on the site). */
+/** Renders a generated questionnaire or product page (full HTML document stored on the site). */
 export function ProductSiteView({ html }: ProductSiteViewProps) {
   const { styles, bodyHtml, googleFontsUrl } = parseSalesPageDocument(html);
+  const isQuestionnaire = bodyHtml.includes("questionnaire-root");
+
+  if (isQuestionnaire) {
+    return <QuestionnaireSiteEmbed html={html} />;
+  }
 
   return (
     <>

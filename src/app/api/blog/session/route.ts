@@ -21,6 +21,7 @@ const defaultSession = {
   site_slug: null as string | null,
   is_generating: false,
   generation_log: [] as string[],
+  wizard_ui_step: 1,
 };
 
 export async function GET() {
@@ -82,6 +83,11 @@ export async function PUT(request: Request) {
       : Array.isArray(body.generation_log)
         ? body.generation_log
         : defaultSession.generation_log,
+    wizard_ui_step: typeof body.wizardUiStep === "number"
+      ? body.wizardUiStep
+      : typeof body.wizard_ui_step === "number"
+        ? body.wizard_ui_step
+        : defaultSession.wizard_ui_step,
     updated_at: new Date().toISOString(),
   };
 

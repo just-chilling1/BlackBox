@@ -74,7 +74,7 @@ export function DeployLaunchPanel({
       ? "Try Deploy Again"
       : canResume
         ? resumeLabel || "Continue Deployment"
-        : "Launch My Product Website";
+        : "Launch My Questionnaire Site";
   const PrimaryIcon = phase === "error" || canResume ? RotateCcw : Rocket;
 
   return (
@@ -95,7 +95,7 @@ export function DeployLaunchPanel({
             <p className="text-sm leading-relaxed text-text-secondary">
               {phase === "error"
                 ? "Something went wrong while building your site. Review the message below and try again."
-                : "Your niche, template, and affiliate link are locked in. One click builds and publishes your product page."}
+                : "Your niche, template, and affiliate link are locked in. One click builds a questionnaire site with your offer on the final page."}
             </p>
           </div>
         </div>

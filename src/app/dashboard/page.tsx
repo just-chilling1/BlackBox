@@ -66,7 +66,7 @@ export default function DashboardPage() {
       <div className="flex flex-wrap gap-3">
         <Link href="/training" className="btn-primary inline-flex items-center gap-2 px-5 sm:px-6">
           <GraduationCap size={18} />
-          Training
+          Academy
         </Link>
         <Link
           href="/support"

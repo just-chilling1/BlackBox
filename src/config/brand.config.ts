@@ -1,8 +1,8 @@
 export const brand = {
   /** Software display name — set via NEXT_PUBLIC_PRODUCT_NAME in .env */
-  productName: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "Product Skeleton",
+  productName: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash",
   storagePrefix: "product_skeleton",
-  tagline: "Modular App Platform",
+  tagline: "Affiliate Sales & Promotions",
   authTagline: "Secure member access",
   signupTagline: "Create your account",
   logo: {
@@ -10,7 +10,7 @@ export const brand = {
     type: "icon" as "icon" | "image",
     icon: "Target",
     src: "/logo.png",
-    alt: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "Product Skeleton",
+    alt: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash",
   },
   colors: {
     primary: "#EAB308",
@@ -36,10 +36,10 @@ export const brand = {
     ui: "Inter",
   },
   get metadata() {
-    const name = process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "Product Skeleton";
+    const name = process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash";
     return {
-      title: `${name} | Modular App Platform`,
-      description: "A modular skeleton for shipping branded SaaS products.",
+      title: `${name} | Affiliate Sales & Promotions`,
+      description: "Generate sales offers, promotion threads, and affiliate assets with BlackBox Cash.",
     };
   },
 } as const;

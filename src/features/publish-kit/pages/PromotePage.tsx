@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Megaphone, Globe } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
@@ -12,6 +12,7 @@ import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 import type { BlogSite } from "@/features/blog-builder/types";
 import type { PublishKitSite } from "../types";
 import { PublishKitPanel } from "../components/PublishKitPanel";
+import { THREADS_PER_GENERATION } from "../lib/promote-constants";
 
 function toPublishKitSite(site: BlogSite, siteUrl: string): PublishKitSite {
   const affiliate = site.armed_links?.[0];
@@ -28,6 +29,8 @@ function toPublishKitSite(site: BlogSite, siteUrl: string): PublishKitSite {
 }
 
 export default function PromotePage() {
+  const searchParams = useSearchParams();
+  const initialSiteId = searchParams.get("siteId");
   const [summaries, setSummaries] = useState<SiteVaultSummary[]>([]);
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [selectedSite, setSelectedSite] = useState<BlogSite | null>(null);
@@ -40,12 +43,17 @@ export default function PromotePage() {
       .then((data) => {
         const list = Array.isArray(data.summaries) ? data.summaries : [];
         setSummaries(list);
-        if (list.length === 1) {
-          void loadSite(list[0].site.id);
+        const preferredId = initialSiteId && list.some((s: SiteVaultSummary) => s.site.id === initialSiteId)
+          ? initialSiteId
+          : list.length === 1
+            ? list[0].site.id
+            : null;
+        if (preferredId) {
+          void loadSite(preferredId);
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [initialSiteId]);
 
   const loadSite = async (siteId: string) => {
     setSelectedSiteId(siteId);
@@ -83,15 +91,15 @@ export default function PromotePage() {
     return (
       <div className="page-stack w-full max-w-4xl mx-auto">
         <PageHeader
-          eyebrow="Platform promotion"
-          title="Promotion kit"
-          subtitle="Analyze your product and website, then generate ready-to-copy posts for LinkedIn or X."
+          eyebrow="X-Power Promotions"
+          title="Generate X threads"
+          subtitle="Analyze your product and website, then generate ready-to-copy X threads."
         />
         <EmptyState
           icon={Globe}
-          title="No websites to promote yet"
-          description="Deploy a website first — then come back here to analyze your product and generate social posts."
-          action={{ label: "Build a website", href: "/arm-links" }}
+          title="No offers to promote yet"
+          description="Launch a sales offer first — then come back here to generate X promotion threads."
+          action={{ label: "Start Sales Offer Generator", href: "/sales-offer-generator" }}
         />
       </div>
     );
@@ -100,9 +108,9 @@ export default function PromotePage() {
   return (
     <div className="page-stack w-full max-w-6xl mx-auto">
       <PageHeader
-        eyebrow="Platform promotion"
-        title="Promotion kit"
-        subtitle="Analyze your product and website, then generate 10 ready-to-copy posts for LinkedIn or X."
+        eyebrow="X-Power Promotions"
+        title="Generate X threads"
+        subtitle={`Analyze your product and website, then generate ${THREADS_PER_GENERATION} ready-to-copy X threads.`}
       />
 
       <div className="lg:hidden">
@@ -130,7 +138,7 @@ export default function PromotePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,280px)_1fr] gap-6">
         <aside className="hidden lg:flex flex-col gap-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-accent">Your websites</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-accent">Your offers</p>
           {summaries.map((summary) => {
             const active = summary.site.id === selectedSiteId;
             return (
@@ -154,8 +162,8 @@ export default function PromotePage() {
           {!selectedSiteId ? (
             <EmptyState
               icon={Megaphone}
-              title="Select a website"
-              description="Choose a website to analyze your product and generate social posts."
+              title="Select an offer"
+              description="Choose a sales offer to analyze your product and generate X threads."
             />
           ) : detailLoading ? (
             <PageLoading message="Loading site details..." className="max-w-none" />

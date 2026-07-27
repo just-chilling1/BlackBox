@@ -1,10 +1,5 @@
-import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import AssetCommandPage from "@/features/blog-builder/pages/AssetCommandPage";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return (
-    <FeatureGuard feature="blog-builder">
-      <AssetCommandPage />
-    </FeatureGuard>
-  );
+export default function AssetRedirectPage() {
+  redirect("/offers");
 }

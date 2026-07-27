@@ -359,6 +359,7 @@ export function buildThemedProductSalesPage(
 export function parseSalesPageDocument(html: string): {
   styles: string;
   bodyHtml: string;
+  scripts: string[];
   googleFontsUrl?: string;
   metaDescription?: string;
 } {
@@ -371,9 +372,20 @@ export function parseSalesPageDocument(html: string): {
     html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i) ??
     html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i);
 
+  const rawBody = bodyMatch?.[1]?.trim() ?? html;
+  const scripts: string[] = [];
+  const bodyHtml = rawBody
+    .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, (_, content: string) => {
+      const trimmed = content.trim();
+      if (trimmed) scripts.push(trimmed);
+      return "";
+    })
+    .trim();
+
   return {
     styles: styleMatch?.[1]?.trim() ?? "",
-    bodyHtml: bodyMatch?.[1]?.trim() ?? html,
+    bodyHtml,
+    scripts,
     googleFontsUrl: fontMatch?.[1],
     metaDescription: metaMatch?.[1],
   };

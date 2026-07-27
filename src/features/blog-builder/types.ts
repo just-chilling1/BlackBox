@@ -2,6 +2,8 @@ export interface ArmedLink {
   label: string;
   url: string;
   network: "digistore" | "amazon" | "other";
+  description?: string;
+  tag?: string;
 }
 
 export interface ThemeConfig {
@@ -100,24 +102,18 @@ export interface NicheOption {
 export const NICHE_OPTIONS: NicheOption[] = [
   { value: "health", label: "Health & Wellness" },
   { value: "finance", label: "Finance & Investing" },
-  { value: "tech", label: "Technology" },
-  { value: "marketing", label: "Digital Marketing" },
-  { value: "ecommerce", label: "E-Commerce" },
   { value: "fitness", label: "Fitness & Sports" },
-  { value: "education", label: "Education & Learning" },
-  { value: "realestate", label: "Real Estate" },
-  { value: "travel", label: "Travel & Lifestyle" },
-  { value: "food", label: "Food & Nutrition" },
-  { value: "beauty", label: "Beauty & Skincare" },
-  { value: "business", label: "Business & Entrepreneurship" },
+  { value: "marketing", label: "Digital Marketing" },
   { value: "selfhelp", label: "Self-Help & Personal Development" },
-  { value: "crypto", label: "Crypto & Blockchain" },
-  { value: "saas", label: "SaaS & Software" },
+  { value: "beauty", label: "Beauty & Skincare" },
+  { value: "education", label: "Education & Learning" },
+  { value: "business", label: "Business & Entrepreneurship" },
+  { value: "travel", label: "Travel & Lifestyle" },
 ];
 
 export const WIZARD_STEPS = [
   { number: 1, title: "Add Your Link", description: "Save your promotional or affiliate link" },
-  { number: 2, title: "Pick Your Niche", description: "Choose the niche for your money site" },
-  { number: 3, title: "Choose Template", description: "Pick a ready-made template" },
-  { number: 4, title: "Launch Website", description: "Generate and publish your product promotion site" },
+  { number: 2, title: "Pick Your Niche", description: "Choose one of nine niches for your quiz site" },
+  { number: 3, title: "Choose Template", description: "Pick a template, color theme, and fonts" },
+  { number: 4, title: "Launch Offer", description: "Generate and publish your niche questionnaire" },
 ] as const;

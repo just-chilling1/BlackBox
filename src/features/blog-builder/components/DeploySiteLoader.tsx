@@ -22,8 +22,8 @@ const PHASE_INDEX: Record<DeployLoaderPhase, number> = {
 };
 
 const PHASE_MESSAGES: Record<DeployLoaderPhase, string> = {
-  setup: "Creating your product website record…",
-  generating: "Writing sales copy, benefits, and FAQs…",
+  setup: "Creating your questionnaire site record…",
+  generating: "Writing quiz questions and building pages…",
   publishing: "Publishing your site to the web…",
 };
 
@@ -35,9 +35,9 @@ const PHASE_TICKERS: Record<DeployLoaderPhase, string[]> = {
     "Applying your theme preset…",
   ],
   generating: [
-    "Drafting headline and hook…",
-    "Building benefit bullets…",
-    "Writing FAQ answers…",
+    "Drafting niche quiz questions…",
+    "Building intro and results pages…",
+    "Placing affiliate offer on final page…",
     "Assembling themed layout…",
     "Polishing call-to-action copy…",
   ],
@@ -168,7 +168,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
 
   const progressLabel = useMemo(() => {
     if (phase === "publishing") return "Going live";
-    if (phase === "generating") return "AI building your page";
+    if (phase === "generating") return "AI building your questionnaire";
     return "Preparing site";
   }, [phase]);
 

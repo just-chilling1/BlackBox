@@ -122,7 +122,7 @@ export default function AssetCommandPage() {
           icon={FolderOpen}
           title="No websites yet"
           description="Deploy a website and it will appear here as a saved folder you can open anytime."
-          action={{ label: "Start building", href: "/arm-links" }}
+          action={{ label: "Start building", href: "/sales-offer-generator" }}
         />
       </div>
     );
@@ -270,7 +270,7 @@ export default function AssetCommandPage() {
 
         {(quota?.unlimited || (quota?.remaining ?? 0) > 0) && (
           <Link
-            href="/arm-links"
+            href="/sales-offer-generator"
             className="rounded-xl border border-dashed border-promo-accent/35 p-4 sm:p-5 flex flex-col items-center justify-center gap-3 min-h-[140px] text-center hover:border-promo-accent/55 hover:bg-promo-accent/5 transition-colors"
           >
             <div className="w-11 h-11 rounded-lg bg-promo-accent/10 text-promo-accent flex items-center justify-center">

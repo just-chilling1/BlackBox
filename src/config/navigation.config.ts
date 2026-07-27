@@ -43,7 +43,7 @@ export interface NavItem {
 
 export const homeNav: NavItem = {
   path: "/dashboard",
-  label: "Home",
+  label: "Dashboard",
   icon: "LayoutGrid",
 };
 
@@ -60,23 +60,24 @@ export const extractionWorkflowSteps: NavItem[] = [
   { path: "/dashboard", label: "Home", icon: "LayoutGrid", feature: "extraction-workflow", workflowStep: 1 },
 ];
 
-/** Blog builder workflow — link → niche → theme → deploy */
+/** Single-page sales offer generator (all wizard steps) */
 export const blogBuilderWorkflowSteps: NavItem[] = [
-  { path: "/arm-links", label: "Step 1: Add Your Link", icon: "Link2", feature: "blog-builder", workflowStep: 1 },
-  { path: "/territory", label: "Step 2: Pick Your Niche", icon: "MapPin", feature: "blog-builder", workflowStep: 2, requiresWorkflowStep: 1 },
-  { path: "/theme", label: "Step 3: Choose Template", icon: "PenLine", feature: "blog-builder", workflowStep: 3, requiresWorkflowStep: 2 },
-  { path: "/deploy", label: "Step 4: Launch Website", icon: "Rocket", feature: "blog-builder", workflowStep: 4, requiresWorkflowStep: 3 },
+  { path: "/sales-offer-generator", label: "Sales Offer Generator", icon: "Rocket", feature: "blog-builder" },
 ];
 
-export const blogBuilderResourceNav: NavItem[] = [
-  { path: "/asset", label: "My Websites", icon: "Globe", feature: "blog-builder" },
-  { path: "/promote", label: "Promotion Kit", icon: "Send", feature: "article-publish" },
-  { path: "/link-vault", label: "Link Vault", icon: "FileText", feature: "blog-builder" },
+/** Core app pages — promotions, links, and generated offers */
+export const blogBuilderCoreNav: NavItem[] = [
+  { path: "/promote", label: "X-Power Promotions", icon: "Megaphone", feature: "article-publish" },
+  { path: "/link-vault", label: "Links Library", icon: "Link2", feature: "blog-builder" },
+  { path: "/offers", label: "Offers Library", icon: "FolderOpen", feature: "blog-builder" },
 ];
 
-/** Core sidebar resources — training is feature-gated; support is always on */
+/** @deprecated Use blogBuilderCoreNav */
+export const blogBuilderResourceNav: NavItem[] = blogBuilderCoreNav;
+
+/** Core sidebar resources — academy is feature-gated; support is always on */
 export const coreResourceNav: NavItem[] = [
-  { path: "/training", label: "Training", icon: "GraduationCap", feature: "training" },
+  { path: "/training", label: "Academy", icon: "GraduationCap", feature: "training" },
   { path: "/support", label: "Support", icon: "Headphones" },
 ];
 
@@ -115,7 +116,7 @@ export const bottomNavTabs: NavItem[] = [
 /** Links shown in mobile "More" sheet (non-tab navigation) */
 export const bottomNavMoreLinks: NavItem[] = [
   { path: "/analysis", label: "Step 2: Check Demand", icon: "Brain", feature: "core-workflow" },
-  { path: "/training", label: "Training", icon: "GraduationCap", feature: "training" },
+  { path: "/training", label: "Academy", icon: "GraduationCap", feature: "training" },
   { path: "/scale-training", label: "Scale Training", icon: "TrendingUp", feature: "scale-upsell" },
   { path: "/support", label: "Support", icon: "Headphones" },
 ];

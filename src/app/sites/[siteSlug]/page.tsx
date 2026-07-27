@@ -20,8 +20,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!site) return { title: "Not found" };
 
   const isProductSite = site.site_type === "product" || Boolean(site.sales_page_html);
-  const salesCopy = site.sales_page_json as { subhook?: string; hook?: string } | null;
+  const salesCopy = site.sales_page_json as { subhook?: string; subtitle?: string; hook?: string } | null;
   const productDescription =
+    (typeof salesCopy?.subtitle === "string" && salesCopy.subtitle.trim()) ||
     (typeof salesCopy?.subhook === "string" && salesCopy.subhook.trim()) ||
     (typeof site.tagline === "string" && site.tagline.trim()) ||
     undefined;
