@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Lightbulb } from "lucide-react";
 import { brand } from "@/config/brand.config";
+import { DashboardSection } from "./DashboardSection";
 
 const DEFAULT_TIPS = [
   {
@@ -40,13 +41,17 @@ export function DashboardTipsWidget({ tips = DEFAULT_TIPS }: DashboardTipsWidget
   const tip = tips[tipIndex];
 
   return (
-    <div className="card-base border-border-dim/40 p-5">
-      <div className="flex items-center gap-2 mb-3">
-        <Lightbulb size={16} className="text-accent shrink-0" />
-        <p className="ds-h4">{tip.title}</p>
+    <DashboardSection>
+      <div className="dashboard-section-header mb-0 pb-0">
+        <div className="dashboard-section-icon">
+          <Lightbulb size={18} />
+        </div>
+        <div className="min-w-0">
+          <p className="ds-h4">{tip.title}</p>
+        </div>
       </div>
-      <p className="text-sm leading-relaxed text-text-muted">{tip.body}</p>
+      <p className="mt-4 text-sm leading-relaxed text-text-muted">{tip.body}</p>
       <p className="mt-3 text-xs text-text-muted italic">Individual results vary.</p>
-    </div>
+    </DashboardSection>
   );
 }

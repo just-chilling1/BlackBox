@@ -5,6 +5,7 @@ import { CheckCircle2, Headphones, Loader2, Mail } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support";
 import { trainingContent } from "@/config/training.config";
+import { DashboardSection } from "./DashboardSection";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -92,7 +93,7 @@ export function ContactSupportWidget() {
 
   if (formState === "success") {
     return (
-      <div className="card-base min-w-0 overflow-hidden border-accent/20 p-5 space-y-5">
+      <DashboardSection className="min-w-0 space-y-5">
         <div className="flex flex-col items-center text-center">
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-green-500/30 bg-green-500/10">
             <CheckCircle2 className="h-6 w-6 text-green-400" />
@@ -125,17 +126,19 @@ export function ContactSupportWidget() {
         >
           Send another message
         </button>
-      </div>
+      </DashboardSection>
     );
   }
 
   return (
-    <div className="card-base min-w-0 overflow-hidden border-accent/20 p-5 space-y-5">
-      <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 border border-accent/20">
-          <Headphones className="text-accent" size={22} />
+    <DashboardSection className="min-w-0 space-y-5">
+      <div className="dashboard-section-header mb-0 pb-0">
+        <div className="dashboard-section-icon">
+          <Headphones size={22} />
         </div>
-        <h3 className="ds-h3">Contact Support</h3>
+        <div className="min-w-0">
+          <h3 className="ds-h3">Contact Support</h3>
+        </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -181,7 +184,7 @@ export function ContactSupportWidget() {
           )}
         </button>
       </form>
-      <div className="rounded-xl border border-border-dim/40 px-4 py-3.5 flex gap-3">
+      <div className="dashboard-nested-card flex gap-3 px-4 py-3.5">
         <Mail className="shrink-0 text-text-muted" size={16} />
         <div className="min-w-0">
           <p className="text-xs text-text-muted">If the form doesn&apos;t work, email us:</p>
@@ -190,6 +193,6 @@ export function ContactSupportWidget() {
           </a>
         </div>
       </div>
-    </div>
+    </DashboardSection>
   );
 }

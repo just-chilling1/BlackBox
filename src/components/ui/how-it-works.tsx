@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LucideIcon, ArrowRight } from "lucide-react";
+import { clsx } from "clsx";
 
 export interface HowItWorksStep {
   number: number;
@@ -23,19 +24,21 @@ export function HowItWorks({
   subtitle = "Three steps to launch, promote, and earn from your offers.",
 }: HowItWorksProps) {
   return (
-    <section className="flex flex-col gap-5 animate-fade-in-up">
-      <div>
-        <h2 className="ds-h2">{title}</h2>
-        <p className="ds-subtitle mt-2">{subtitle}</p>
+    <section className="dashboard-container animate-fade-in-up">
+      <div className="dashboard-section-header">
+        <div className="min-w-0">
+          <h2 className="ds-h2">{title}</h2>
+          <p className="ds-subtitle mt-2">{subtitle}</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
             <div
               key={step.number}
-              className="card-base accent-card flex flex-col gap-4 h-full border-border-dim/60 animate-stagger-item"
+              className="dashboard-nested-card flex h-full flex-col gap-4 animate-stagger-item"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <div className="flex items-center justify-between gap-3">
@@ -48,7 +51,7 @@ export function HowItWorks({
               </div>
 
               <div className="flex items-center gap-2">
-                <Icon size={18} className="text-promo-accent shrink-0" />
+                <Icon size={18} className="shrink-0 text-promo-accent" />
                 <h3 className="ds-h3">{step.title}</h3>
               </div>
 
@@ -63,7 +66,7 @@ export function HowItWorks({
         })}
       </div>
 
-      <div className="surface-inset p-4 sm:p-5">
+      <div className="dashboard-nested-card mt-5 p-4 sm:p-5">
         <p className="text-sm leading-relaxed text-text-secondary">
           Follow the steps above to launch your first offer. If you get stuck, use the Support card in
           the sidebar.{" "}

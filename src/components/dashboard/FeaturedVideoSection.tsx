@@ -7,6 +7,7 @@ import { VideoThumbnail } from "@/components/ui/video-thumbnail";
 import { VideoOverlay } from "@/components/ui/video-overlay";
 import { dashboardContent } from "@/config/dashboard.config";
 import { trainingContent } from "@/config/training.config";
+import { DashboardSection } from "./DashboardSection";
 
 function resolveIntroVideoId(): string {
   return dashboardContent.introVideoId || trainingContent.videos[0]?.id || "";
@@ -30,10 +31,15 @@ export function FeaturedVideoSection({ onPlayWithoutVideo }: FeaturedVideoSectio
 
   return (
     <>
-      <section className="card-base overflow-hidden border-border-dim/60 p-0!">
-        <div className="flex items-center gap-3 border-b border-border-dim/40 px-5 py-4">
-          <PlayCircle className="h-7 w-7 shrink-0 text-accent" />
-          <h3 className="ds-h3">{dashboardContent.introVideoTitle}</h3>
+      <DashboardSection flush>
+        <div className="dashboard-section-header mb-0 border-b border-border-dim/60 px-5 py-4">
+          <div className="dashboard-section-icon">
+            <PlayCircle className="h-6 w-6" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="ds-h3">{dashboardContent.introVideoTitle}</h2>
+            <p className="mt-1 text-sm text-text-secondary">{dashboardContent.introVideoSubtitle}</p>
+          </div>
         </div>
 
         <VideoThumbnail
@@ -55,7 +61,7 @@ export function FeaturedVideoSection({ onPlayWithoutVideo }: FeaturedVideoSectio
             <ArrowRight size={16} />
           </Link>
         </div>
-      </section>
+      </DashboardSection>
 
       {introVideoId ? (
         <VideoOverlay

@@ -153,15 +153,14 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             title={brand.productName}
           >
             {collapsed ? (
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-accent/30 bg-white shadow-sm">
-                {/* logo-icon.png is wide; clip the square BC mark from the wordmark */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={brand.logo.src}
-                  alt={brand.logo.alt}
-                  className="h-8 w-auto max-w-none select-none object-contain object-left"
-                />
-              </div>
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={brand.logo.iconSrc}
+                alt={brand.logo.alt}
+                width={40}
+                height={40}
+                className="h-10 w-10 shrink-0 rounded-xl object-contain shadow-sm"
+              />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img

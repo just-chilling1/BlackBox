@@ -9,7 +9,6 @@ import { dashboardContent } from "@/config/dashboard.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps, getDashboardQuickActions } from "@/lib/dashboard-steps";
 import { supabase } from "@/lib/supabase";
-import { PageHeader } from "@/components/ui/page-header";
 import { HowItWorks } from "@/components/ui/how-it-works";
 import { QuickActionCard } from "@/components/ui/quick-action-card";
 import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSection";
@@ -17,6 +16,7 @@ import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidge
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
 import { HonestActivity } from "@/components/dashboard/HonestActivity";
+import { DashboardSection } from "@/components/dashboard/DashboardSection";
 
 const SETUP_STEPS = [
   {
@@ -96,22 +96,33 @@ export default function DashboardPage() {
     : dashboardContent.title;
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
-      <PageHeader
-        eyebrow={dashboardContent.eyebrow}
-        title={welcomeTitle}
-        subtitle={dashboardContent.subtitle}
-      />
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardSection as="header">
+        <div className="flex flex-col gap-2 min-w-0">
+          {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
+          <h1 className="ds-h1">{welcomeTitle}</h1>
+          {dashboardContent.subtitle ? (
+            <p className="ds-subtitle">{dashboardContent.subtitle}</p>
+          ) : null}
+        </div>
+      </DashboardSection>
 
-      <div className="grid grid-cols-1 gap-8 xl:grid-cols-4">
-        <div className="flex flex-col gap-8 xl:col-span-3">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
+        <div className="flex flex-col gap-6 xl:col-span-3">
           <FeaturedVideoSection onPlayWithoutVideo={() => router.push("/training")} />
 
           <HowItWorks steps={howItWorksSteps} />
 
-          <section>
-            <h2 className="ds-h2 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <DashboardSection>
+            <div className="dashboard-section-header mb-0 border-b-0 pb-0">
+              <div className="min-w-0">
+                <h2 className="ds-h2">Quick Actions</h2>
+                <p className="mt-2 text-sm text-text-secondary">
+                  Jump straight into the tools you use most.
+                </p>
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
               {quickActions.map((action) => (
                 <QuickActionCard
                   key={action.href}
@@ -124,14 +135,16 @@ export default function DashboardPage() {
                 />
               ))}
             </div>
-          </section>
+          </DashboardSection>
+
+          {hasPremium ? <PremiumUpgradesWidget /> : null}
 
           <HonestActivity />
 
-          <section className="accent-card card-base flex flex-col gap-4 border-promo-accent/20 sm:flex-row sm:items-center sm:justify-between">
+          <DashboardSection className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-promo-accent/10 border border-promo-accent/20">
-                <Headphones className="h-7 w-7 text-promo-accent" />
+              <div className="dashboard-section-icon h-14 w-14">
+                <Headphones className="h-7 w-7" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-text-heading">Need Help?</h3>
@@ -142,25 +155,26 @@ export default function DashboardPage() {
               Contact Support
               <ArrowRight size={16} />
             </Link>
-          </section>
+          </DashboardSection>
 
-          <p className="text-center text-xs text-text-muted italic">Individual results vary.</p>
+          <DashboardSection className="py-4 text-center">
+            <p className="text-xs text-text-muted italic">Individual results vary.</p>
+          </DashboardSection>
         </div>
 
-        <aside className="flex flex-col gap-4 xl:col-span-1">
+        <aside className="flex flex-col gap-6 xl:col-span-1">
           <ContactSupportWidget />
           <DashboardTipsWidget />
-          {hasPremium ? <PremiumUpgradesWidget /> : null}
         </aside>
       </div>
 
       {showDevChecklist ? (
-        <div className="card-base flex flex-col gap-4 border-dashed border-accent/30">
+        <DashboardSection className="border-dashed border-accent/30">
           <div className="flex items-center gap-3">
             <Sparkles className="shrink-0 text-accent" size={20} />
             <span className="font-bold text-text-primary">Developer setup checklist</span>
           </div>
-          <ul className="flex flex-col gap-3">
+          <ul className="mt-4 flex flex-col gap-3">
             {SETUP_STEPS.map((step) => (
               <li key={step.title} className="flex gap-3 text-sm">
                 <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-accent" />
@@ -179,10 +193,10 @@ export default function DashboardPage() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-text-muted">
+          <p className="mt-4 text-xs text-text-muted">
             Full handoff guide: <code className="text-accent">DEVELOPER-SETUP.md</code> in the project root.
           </p>
-        </div>
+        </DashboardSection>
       ) : null}
     </div>
   );

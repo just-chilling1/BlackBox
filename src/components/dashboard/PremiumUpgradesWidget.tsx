@@ -58,40 +58,62 @@ export function PremiumUpgradesWidget({
   return (
     <div
       className={clsx(
-        "premium-nav-section w-full",
-        isFeatured ? "p-3 md:p-4" : "p-2.5 md:p-3",
+        isFeatured ? "dashboard-container" : "premium-nav-section w-full",
+        !isFeatured && (isSidebar ? "p-2.5 md:p-3" : ""),
+        isFeatured && "p-3 md:p-4",
         className
       )}
     >
-      <div className={clsx("px-1 pb-2.5 pt-1.5", isFeatured && "text-center md:text-left")}>
-        <p
-          className={clsx(
-            "flex items-center gap-1.5 font-bold uppercase tracking-widest text-accent",
-            isSidebar ? "text-[10px]" : "justify-center text-xs md:justify-start"
-          )}
-        >
-          <Sparkles
-            className={clsx("animate-premium-pulse shrink-0", isSidebar ? "h-3 w-3" : "h-4 w-4")}
-            fill="currentColor"
-          />
-          Premium Upgrades
-        </p>
-        {!collapsed && (
-          <p
-            className={clsx(
-              "mt-1 leading-relaxed text-text-secondary",
-              isSidebar ? "text-[11px]" : "mx-auto max-w-2xl text-sm md:mx-0"
+      <div
+        className={clsx(
+          isFeatured ? "dashboard-section-header mb-5 border-b-0 pb-0" : "px-1 pb-2.5 pt-1.5",
+          isFeatured && "text-center md:text-left"
+        )}
+      >
+        {isFeatured ? (
+          <>
+            <div className="dashboard-section-icon">
+              <Sparkles className="h-5 w-5 animate-premium-pulse" fill="currentColor" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="ds-h3">Premium Upgrades</h2>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                Unlock the tools that drive the biggest results.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <p
+              className={clsx(
+                "flex items-center gap-1.5 font-bold uppercase tracking-widest text-accent",
+                isSidebar ? "text-[10px]" : "text-xs"
+              )}
+            >
+              <Sparkles
+                className={clsx("animate-premium-pulse shrink-0", isSidebar ? "h-3 w-3" : "h-4 w-4")}
+                fill="currentColor"
+              />
+              Premium Upgrades
+            </p>
+            {!collapsed && (
+              <p
+                className={clsx(
+                  "mt-1 leading-relaxed text-text-secondary",
+                  isSidebar ? "text-[11px]" : "text-sm"
+                )}
+              >
+                Unlock the tools that drive the biggest results.
+              </p>
             )}
-          >
-            Unlock the tools that drive the biggest results.
-          </p>
+          </>
         )}
       </div>
 
       <div
         className={clsx(
           "grid gap-2",
-          isFeatured ? "sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4" : "grid-cols-2"
+          isFeatured ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" : "grid-cols-2"
         )}
       >
         {PREMIUM_FEATURES.map((feature, index) => {

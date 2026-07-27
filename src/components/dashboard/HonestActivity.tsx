@@ -7,6 +7,7 @@ import { brand } from "@/config/brand.config";
 import { storageKeys } from "@/lib/storage-keys";
 import { supabase } from "@/lib/supabase";
 import { getVisibleWorkflowSteps } from "@/lib/features";
+import { DashboardSection } from "./DashboardSection";
 
 const TIPS = [
   "Pick one niche and stick with it — consistency beats jumping between topics.",
@@ -62,13 +63,13 @@ export function HonestActivity() {
   );
 
   return (
-    <div className="accent-card card-base border-border-dim/60">
+    <DashboardSection>
       <h3 className="ds-h3">Your Activity</h3>
 
       {hasUsage ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {stats.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="surface-inset p-4">
+            <div key={label} className="dashboard-nested-card p-4">
               <div className="flex items-center gap-2 text-accent">
                 <Icon size={18} />
                 <span className="text-2xl font-bold text-text-heading">{value}</span>
@@ -87,7 +88,7 @@ export function HonestActivity() {
         </p>
       )}
 
-      <div className="mt-5 flex items-start gap-3 rounded-xl border border-accent/15 bg-accent/5 p-4">
+      <div className="dashboard-nested-card mt-5 flex items-start gap-3 border-accent/20 bg-accent/5 p-4">
         <Lightbulb className="mt-0.5 shrink-0 text-accent" size={18} />
         <div>
           <p className="text-xs font-bold uppercase tracking-wider text-accent/80">Tip</p>
@@ -96,6 +97,6 @@ export function HonestActivity() {
       </div>
 
       <p className="mt-4 text-xs text-text-muted italic">Individual results vary.</p>
-    </div>
+    </DashboardSection>
   );
 }

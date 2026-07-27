@@ -47,7 +47,7 @@ export function QuickActionCard({
     <Link
       href={href}
       className={clsx(
-        "accent-card group flex h-full flex-col rounded-2xl border border-border-dim/60 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
+        "dashboard-nested-card group flex h-full flex-col p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
         tone.hoverBorder
       )}
     >
