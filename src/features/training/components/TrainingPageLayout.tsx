@@ -3,7 +3,6 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/ui/page-header";
-import { trainingPageSkeletonNote, trainingContentReady } from "@/config/training-content.config";
 import { trainingContent as trainingMeta } from "@/config/training.config";
 import { TrainingTabNav } from "./TrainingTabNav";
 
@@ -19,12 +18,6 @@ export function TrainingPageLayout({ children }: { children: ReactNode }) {
         title={trainingMeta.pageTitle}
         subtitle={trainingMeta.pageSubtitle}
       />
-
-      {!trainingContentReady && (
-        <p className="-mt-4 mb-2 alert-warning">
-          {trainingPageSkeletonNote}
-        </p>
-      )}
 
       <TrainingTabNav />
       {children}

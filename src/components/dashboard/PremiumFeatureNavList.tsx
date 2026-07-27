@@ -28,12 +28,32 @@ export function PremiumFeatureNavList({
   if (PREMIUM_FEATURES.length === 0) return null;
 
   return (
-    <div className={clsx("premium-feature-panel", className)}>
-      {!collapsed && (
-        <p className="premium-feature-panel__header">
+    <div
+      className={clsx(
+        "premium-feature-panel",
+        collapsed && "premium-feature-panel--collapsed",
+        className
+      )}
+    >
+      {collapsed ? (
+        <div
+          className="premium-feature-panel__collapsed-mark"
+          title={PREMIUM_SECTION_LABEL}
+          aria-hidden
+        >
           <Sparkles className="premium-feature-panel__sparkle" fill="currentColor" />
-          {PREMIUM_SECTION_LABEL}
-        </p>
+        </div>
+      ) : (
+        <>
+          <div className="premium-feature-panel__header-row">
+            <p className="premium-feature-panel__header">
+              <Sparkles className="premium-feature-panel__sparkle" fill="currentColor" />
+              {PREMIUM_SECTION_LABEL}
+            </p>
+            <span className="premium-feature-panel__badge">{PREMIUM_FEATURES.length} tools</span>
+          </div>
+          <p className="premium-feature-panel__sub">Included with your membership</p>
+        </>
       )}
 
       <ul className="premium-feature-panel__list">
@@ -46,7 +66,7 @@ export function PremiumFeatureNavList({
               key={item.href}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.08 + index * 0.04 }}
+              transition={{ delay: 0.04 + index * 0.03 }}
             >
               <Link
                 href={item.href}
@@ -59,7 +79,9 @@ export function PremiumFeatureNavList({
                   isActive && "is-active"
                 )}
               >
-                <Icon className="premium-feature-btn__icon" strokeWidth={1.75} />
+                <span className="premium-feature-btn__icon-wrap">
+                  <Icon className="premium-feature-btn__icon" strokeWidth={1.85} />
+                </span>
                 {!collapsed && (
                   <span className="premium-feature-btn__label">{item.label}</span>
                 )}

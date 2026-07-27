@@ -148,7 +148,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .command-nav-link {
-    @apply flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 rounded-xl text-sm transition-all duration-300 relative overflow-hidden;
+    @apply flex items-center justify-between px-3 sm:px-4 py-2.5 rounded-xl text-sm transition-all duration-200 relative overflow-hidden;
     @apply text-text-secondary hover:text-text-primary hover:bg-slate-100;
   }
 
@@ -272,27 +272,72 @@ html[data-sidebar="collapsed"] {
     @apply text-sm sm:text-base text-text-secondary leading-relaxed;
   }
 
+  .sidebar-section-label {
+    @apply text-[10px] font-black tracking-[0.22em] text-text-muted uppercase px-3 mb-1.5 mt-3 first:mt-0;
+  }
+
   .premium-nav-section {
     @apply rounded-2xl border border-accent/20 bg-accent/5;
     box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 8%, transparent);
   }
 
-  /* Premium feature panel — matches sidebar upgrade card (icon + label rows) */
+  /* Premium feature panel — highlighted upgrade block in sidebar */
   .premium-feature-panel {
-    @apply rounded-2xl border border-accent/15 p-2;
+    @apply relative overflow-hidden rounded-2xl border border-accent/30 p-1.5;
     background: linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--brand-primary) 8%, white) 0%,
-      #F8FAFC 100%
+      155deg,
+      color-mix(in srgb, var(--brand-primary) 14%, white) 0%,
+      color-mix(in srgb, var(--brand-primary) 4%, #F8FAFC) 55%,
+      #FFFFFF 100%
     );
     box-shadow:
-      0 0 24px color-mix(in srgb, var(--brand-primary) 6%, transparent),
-      inset 0 1px 0 color-mix(in srgb, white 80%, transparent);
+      0 0 28px color-mix(in srgb, var(--brand-primary) 12%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 90%, transparent);
+  }
+
+  .premium-feature-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: linear-gradient(
+      180deg,
+      var(--brand-primary) 0%,
+      color-mix(in srgb, var(--brand-primary) 55%, var(--brand-secondary)) 100%
+    );
+    border-radius: 3px 0 0 3px;
+  }
+
+  .premium-feature-panel--collapsed {
+    @apply px-1 py-1.5;
+  }
+
+  .premium-feature-panel__header-row {
+    @apply flex items-center justify-between gap-2 pr-2 pl-3 pt-2 pb-0.5;
   }
 
   .premium-feature-panel__header {
-    @apply flex items-center gap-1.5 px-3 pb-2 pt-2 text-[10px] font-black uppercase tracking-[0.22em];
+    @apply flex min-w-0 items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em];
+    color: color-mix(in srgb, var(--brand-primary) 85%, #0F172A);
+  }
+
+  .premium-feature-panel__badge {
+    @apply shrink-0 rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider;
+    background: color-mix(in srgb, var(--brand-primary) 18%, white);
+    color: color-mix(in srgb, var(--brand-primary) 70%, #0F172A);
+    border: 1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent);
+  }
+
+  .premium-feature-panel__sub {
+    @apply px-3 pb-1.5 text-[10px] font-semibold leading-snug;
+    color: color-mix(in srgb, var(--brand-primary) 45%, var(--text-muted));
+  }
+
+  .premium-feature-panel__collapsed-mark {
+    @apply mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-lg;
+    background: color-mix(in srgb, var(--brand-primary) 16%, white);
     color: var(--brand-primary);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 20%, transparent);
   }
 
   .premium-feature-panel__sparkle {
@@ -305,21 +350,36 @@ html[data-sidebar="collapsed"] {
   }
 
   .premium-feature-btn {
-    @apply flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-200;
+    @apply flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-semibold transition-all duration-200;
     color: var(--text-primary);
   }
 
   .premium-feature-btn--mobile {
-    @apply min-h-[52px] px-4 py-3.5 text-base;
+    @apply min-h-[52px] gap-3 px-4 py-3.5 text-base;
   }
 
   .premium-feature-btn--collapsed {
-    @apply justify-center px-2;
+    @apply justify-center px-1.5 py-2;
+  }
+
+  .premium-feature-btn__icon-wrap {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-200;
+    background: color-mix(in srgb, var(--brand-primary) 14%, white);
+    border: 1px solid color-mix(in srgb, var(--brand-primary) 22%, transparent);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  }
+
+  .premium-feature-btn--collapsed .premium-feature-btn__icon-wrap {
+    @apply h-9 w-9;
   }
 
   .premium-feature-btn__icon {
-    @apply h-[18px] w-[18px] shrink-0;
-    color: var(--brand-primary);
+    @apply h-[17px] w-[17px] shrink-0;
+    color: color-mix(in srgb, var(--brand-primary) 80%, #0F172A);
+  }
+
+  .premium-feature-btn--mobile .premium-feature-btn__icon-wrap {
+    @apply h-10 w-10;
   }
 
   .premium-feature-btn--mobile .premium-feature-btn__icon {
@@ -328,23 +388,34 @@ html[data-sidebar="collapsed"] {
 
   .premium-feature-btn__label {
     font-family: var(--font-brand);
-    @apply font-bold tracking-tight leading-snug;
+    @apply min-w-0 font-bold tracking-tight leading-snug;
   }
 
   .premium-feature-btn:hover {
-    background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+    background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
     color: var(--text-heading);
   }
 
+  .premium-feature-btn:hover .premium-feature-btn__icon-wrap {
+    background: color-mix(in srgb, var(--brand-primary) 22%, white);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  }
+
   .premium-feature-btn.is-active {
-    background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+    background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
     color: var(--text-heading);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  }
+
+  .premium-feature-btn.is-active .premium-feature-btn__icon-wrap {
+    background: color-mix(in srgb, var(--brand-primary) 28%, white);
+    border-color: color-mix(in srgb, var(--brand-primary) 45%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
   }
 
   .premium-feature-btn.is-active .premium-feature-btn__icon,
   .premium-feature-btn:hover .premium-feature-btn__icon {
-    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--brand-primary) 60%, transparent));
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--brand-primary) 50%, transparent));
   }
 
   .premium-sidebar-item {

@@ -118,6 +118,10 @@ export function BottomNav() {
           >
             <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-black/15" />
             <div className="space-y-6 p-4">
+              {PREMIUM_FEATURES.length > 0 ? (
+                <PremiumFeatureNavList mobile onNavigate={() => setMoreOpen(false)} />
+              ) : null}
+
               {moreLinks.length > 0 ? (
                 <div>
                   <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-widest text-text-muted">
@@ -145,10 +149,6 @@ export function BottomNav() {
                     })}
                   </div>
                 </div>
-              ) : null}
-
-              {PREMIUM_FEATURES.length > 0 ? (
-                <PremiumFeatureNavList mobile onNavigate={() => setMoreOpen(false)} />
               ) : null}
 
               {exclusiveOffers.length > 0 ? (

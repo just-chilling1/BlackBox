@@ -31,6 +31,8 @@ interface SidebarContentProps {
   onMobileClose?: () => void;
 }
 
+const sectionLabelClass = "sidebar-section-label";
+
 function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentProps) {
   const pathname = usePathname();
   const workflowSteps = getVisibleWorkflowSteps();
@@ -70,7 +72,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       return (
         <div
           key={item.path}
-          className="command-nav-link py-3 sm:py-4 opacity-40 cursor-not-allowed"
+          className="command-nav-link opacity-40 cursor-not-allowed"
           title="Complete the previous step first"
         >
           <div className={clsx("flex items-center gap-3 min-w-0", collapsed && "justify-center")}>
@@ -91,7 +93,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         href={item.path}
         onClick={handleNavClick}
         title={collapsed ? item.label : undefined}
-        className={clsx("command-nav-link py-3 sm:py-4", isActive && "active", collapsed && "justify-center px-2")}
+        className={clsx("command-nav-link", isActive && "active", collapsed && "justify-center px-2")}
       >
         <div className={clsx("flex items-center gap-3 min-w-0 flex-1", collapsed && "justify-center")}>
           <Icon size={18} className={clsx("shrink-0", isActive ? "text-accent" : "text-text-muted")} />
@@ -121,15 +123,15 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </div>
       )}
 
-      <div className={clsx("relative z-10 shrink-0 border-b border-black/5", collapsed ? "px-3 py-4" : "px-4 py-5")}>
-        <div className={clsx("flex items-center", collapsed ? "flex-col gap-3" : "justify-between gap-2")}>
+      <div className={clsx("relative z-10 shrink-0 border-b border-black/5", collapsed ? "px-3 py-3" : "px-4 py-3.5")}>
+        <div className={clsx("flex items-center", collapsed ? "flex-col gap-2.5" : "justify-between gap-2")}>
           <Link
             href="/dashboard"
             onClick={handleNavClick}
             className={clsx("min-w-0", collapsed ? "flex justify-center" : "flex-1")}
             title={collapsed ? brand.productName : undefined}
           >
-            <BrandLogo size="sm" compact={collapsed} splitTitle showTagline={!collapsed} />
+            <BrandLogo size="sm" compact={collapsed} splitTitle showTagline={false} />
           </Link>
           {collapsed ? (
             <button
@@ -154,16 +156,18 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </div>
       </div>
 
-      <nav className="sidebar-scrollbar relative z-10 flex flex-col gap-1.5 flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-2 py-2 pb-4">
+      <nav className="sidebar-scrollbar relative z-10 flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-2 py-2 pb-3">
         {showHomeNav ? renderNavLink(homeNav) : null}
+
+        {PREMIUM_FEATURES.length > 0 && (
+          <div className="my-1">
+            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
+          </div>
+        )}
 
         {workflowSteps.length > 0 && (
           <>
-            {!collapsed && (
-              <span className="text-xs font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mb-2">
-                Workflow
-              </span>
-            )}
+            {!collapsed && <span className={sectionLabelClass}>Workflow</span>}
             {workflowSteps.map((step) => renderNavLink(step))}
           </>
         )}
@@ -172,28 +176,18 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           <BlogBuilderNav pathname={pathname} onNavClick={handleNavClick} collapsed={collapsed} />
         ) : null}
 
-        {PREMIUM_FEATURES.length > 0 && (
-          <div className="mt-4 px-1">
-            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
-          </div>
-        )}
-
         {(coreResourceNav.length > 0 || resourceNav.length > 0) && (
           <>
-            {!collapsed && (
-              <span className="text-[10px] font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mt-4 mb-2">
-                Resources
-              </span>
-            )}
+            {!collapsed && <span className={sectionLabelClass}>Resources</span>}
             {coreResourceNav.map((step) => renderNavLink(step))}
             {resourceNav.map((step) => renderNavLink(step))}
           </>
         )}
       </nav>
 
-      <div className="relative z-10 shrink-0 border-t border-black/5 px-2 py-3">
+      <div className="relative z-10 shrink-0 border-t border-black/5 px-2 py-2.5">
         {dopamineEnabled && !collapsed ? (
-          <div className="mb-3 px-2">
+          <div className="mb-2 px-1">
             <LiveActivityTicker />
           </div>
         ) : null}
@@ -202,7 +196,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           onClick={() => void handleLogout()}
           title={collapsed ? "Sign Out" : undefined}
           className={clsx(
-            "command-nav-link py-3 sm:py-4 text-red-600 hover:text-red-700 hover:bg-red-500/10",
+            "command-nav-link text-red-600 hover:text-red-700 hover:bg-red-500/10",
             collapsed && "justify-center px-2"
           )}
         >

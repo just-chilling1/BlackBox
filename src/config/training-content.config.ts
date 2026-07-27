@@ -78,7 +78,7 @@ export const trainingPremiumVideos = [
   },
 ] as const;
 
-/** Set to true after DEVELOPER-SETUP.md §7 — hides skeleton banner on Training page */
+/** Set to true after DEVELOPER-SETUP.md §7 — used by dashboard tips widget */
 export const trainingContentReady = false;
 
 export const trainingCta = {
@@ -87,7 +87,3 @@ export const trainingCta = {
   buttonLabel: "CTA button",
   href: "/dashboard",
 } as const;
-
-/** Shown when trainingContentReady is false */
-export const trainingPageSkeletonNote =
-  `Skeleton layout only — populate training.config.ts and training-content.config.ts before launch (DEVELOPER-SETUP.md §7).`;

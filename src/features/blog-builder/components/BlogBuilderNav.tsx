@@ -43,7 +43,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
       return (
         <div
           key={item.path}
-          className="command-nav-link py-3 sm:py-4 opacity-40 cursor-not-allowed"
+          className="command-nav-link opacity-40 cursor-not-allowed"
           title="Complete the previous step first"
         >
           <div className={clsx("flex items-center gap-3 min-w-0", collapsed && "justify-center")}>
@@ -65,7 +65,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         onClick={onNavClick}
         title={collapsed ? item.label : undefined}
         className={clsx(
-          "command-nav-link py-3 sm:py-4",
+          "command-nav-link",
           isActive && "active",
           collapsed && "justify-center px-2"
         )}
@@ -91,7 +91,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         onClick={onNavClick}
         title={collapsed ? item.label : undefined}
         className={clsx(
-          "command-nav-link py-3 sm:py-4",
+          "command-nav-link",
           isActive && "active",
           collapsed && "justify-center px-2"
         )}
@@ -106,8 +106,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     );
   };
 
-  const sectionLabelClass =
-    "text-[10px] font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mt-4 mb-2";
+  const sectionLabelClass = "sidebar-section-label";
 
   return (
     <>
