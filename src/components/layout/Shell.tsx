@@ -6,6 +6,7 @@ import { Sidebar } from "./Sidebar";
 import { BrandLogo } from "./BrandLogo";
 import { PromoOrchestrator } from "./PromoOrchestrator";
 import { BottomNav } from "./BottomNav";
+import { PageMotion } from "@/components/motion/PageMotion";
 
 /** Route prefixes that render without the app shell (public hosted pages). */
 const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
@@ -49,7 +50,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <div className="app-glow-orb app-glow-orb-gold" aria-hidden />
 
           <div className="app-content-layer mx-auto flex min-h-full w-full min-w-0 max-w-7xl flex-col">
-            {children}
+            <PageMotion>{children}</PageMotion>
           </div>
         </main>
       </div>

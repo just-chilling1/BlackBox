@@ -435,6 +435,53 @@ html[data-sidebar="collapsed"] {
   .border-divider {
     @apply border-border-dim/80;
   }
+
+  /** Left accent bar — light-theme signature (distinct from dark glass siblings) */
+  .accent-card {
+    @apply relative overflow-hidden;
+  }
+
+  .accent-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--brand-primary) 85%, transparent),
+      color-mix(in srgb, var(--promo-accent) 70%, transparent)
+    );
+    opacity: 0.85;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.45s ease-out both;
+}
+
+.animate-stagger-item {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-stagger-item {
+    animation: none;
+  }
 }
 
 /* Custom Scrollbar */

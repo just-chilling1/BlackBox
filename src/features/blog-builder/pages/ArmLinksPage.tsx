@@ -193,7 +193,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
         </>
       )}
 
-        <div className="glass-card mb-2 border-black/5 overflow-hidden">
+        <div className="glass-card mb-2 overflow-hidden border-border-dim">
           <button
             type="button"
             onClick={() => setInstructionsOpen(!instructionsOpen)}
@@ -231,15 +231,15 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.06 }}
-                      className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-black/5"
+                      className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-black/5 border border-black/10 flex items-center justify-center shrink-0">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-promo-accent/25 bg-promo-accent/10">
                         <span className="text-xs font-bold text-promo-accent">{step.number}</span>
                       </div>
-                      <div className="flex-1 min-w-0 pt-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <step.icon className="w-3.5 h-3.5 text-text-muted shrink-0" />
-                          <span className="text-sm text-text-secondary">{step.text}</span>
+                      <div className="min-w-0 flex-1 pt-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <step.icon className="h-3.5 w-3.5 shrink-0 text-promo-accent" />
+                          <span className="text-sm text-slate-800">{step.text}</span>
                         </div>
                         {step.link && (
                           <a
@@ -264,7 +264,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-6 md:p-8 border-promo-accent/20 bg-black/40"
+          className="glass-card border border-promo-accent/20 bg-white p-6 md:p-8"
         >
           <div className="flex flex-col gap-5">
             <ContentReservePicker
@@ -273,7 +273,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               onSelect={handleSelectFromVault}
             />
 
-            <label className="text-sm font-bold text-text-secondary uppercase tracking-wider">
+            <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
               Link Name
             </label>
             <div className="relative">
@@ -290,11 +290,11 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                   clearVaultSelectionIfEdited(linkUrl, nextLabel);
                 }}
                 placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
-                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-black/5 border-black/10"
+                className="h-16 pl-12 text-base tracking-wide md:text-lg"
               />
             </div>
 
-            <label className="text-sm font-bold text-text-secondary uppercase tracking-wider">
+            <label className="text-sm font-bold uppercase tracking-wider text-slate-700">
               Paste Your Affiliate Link
             </label>
             <div className="relative">
@@ -314,7 +314,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                   if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
                 }}
                 placeholder="Paste Digistore24 affiliate URL here..."
-                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-black/5 border-black/10"
+                className="h-16 pl-12 text-base tracking-wide md:text-lg"
               />
             </div>
 

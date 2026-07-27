@@ -58,7 +58,7 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
           <div className="w-full border-t border-border-dim" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-surface px-3 text-xs text-text-muted">or enter manually</span>
+          <span className="bg-white px-3 text-xs font-medium text-slate-500">or enter manually</span>
         </div>
       </div>
     </div>
