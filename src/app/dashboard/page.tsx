@@ -17,7 +17,6 @@ import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidge
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
 import { HonestActivity } from "@/components/dashboard/HonestActivity";
-import { DopamineDashboard } from "@/features/dopamine/DopamineDashboard";
 
 const SETUP_STEPS = [
   {
@@ -185,8 +184,6 @@ export default function DashboardPage() {
           </p>
         </div>
       ) : null}
-
-      {isFeatureEnabled("dopamine") ? <DopamineDashboard /> : null}
     </div>
   );
 }
