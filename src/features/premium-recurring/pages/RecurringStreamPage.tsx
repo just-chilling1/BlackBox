@@ -218,8 +218,8 @@ export default function RecurringStreamPage() {
             </button>
           </div>
           {appliedLink && (
-            <p className="flex items-center gap-2 text-xs text-emerald-200/90">
-              <Sparkles size={12} />
+            <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
+              <Sparkles size={14} className="shrink-0 text-emerald-600" />
               Link applied — previews and copies will include your URL.
             </p>
           )}
