@@ -22,10 +22,15 @@ export async function POST(request: Request) {
   }
 
   const subject = typeof body.subject === "string" ? body.subject.trim() : hobby;
+  const scrapeUrl = typeof body.scrapeUrl === "string" ? body.scrapeUrl.trim() : "";
 
   // Preview path: return a directly-usable URL fast (no download/upload). It is
   // cached to Supabase later when the post is generated/saved.
-  const image = await resolveFastImageUrl({ title, subject });
+  const image = await resolveFastImageUrl({
+    title,
+    subject,
+    scrapeUrl: scrapeUrl || undefined,
+  });
 
   return NextResponse.json(image);
 }

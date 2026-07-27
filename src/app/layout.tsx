@@ -1,9 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/brand.config";
 import { storageKeys } from "@/lib/storage-keys";
 import { AppProviders } from "@/components/layout/AppProviders";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: brand.metadata.title,
@@ -28,7 +42,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning style={{ colorScheme: "light" }}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${outfit.variable}`}
+      style={{ colorScheme: "light" }}
+    >
       <head>
         <Script
           id="sidebar-collapse-restore"

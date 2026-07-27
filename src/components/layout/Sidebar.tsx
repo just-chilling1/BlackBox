@@ -131,7 +131,17 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           >
             <BrandLogo size="sm" compact={collapsed} splitTitle showTagline={!collapsed} />
           </Link>
-          {!collapsed ? (
+          {collapsed ? (
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Expand sidebar"
+              title="Expand sidebar"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/10 text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
+            >
+              <PanelLeftOpen size={16} />
+            </button>
+          ) : (
             <button
               type="button"
               onClick={onToggle}
@@ -140,7 +150,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             >
               <PanelLeftClose size={16} />
             </button>
-          ) : null}
+          )}
         </div>
       </div>
 
@@ -187,23 +197,12 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             <LiveActivityTicker />
           </div>
         ) : null}
-        {collapsed ? (
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label="Expand sidebar"
-            title="Expand sidebar"
-            className="command-nav-link mb-2 justify-center px-2 py-3 sm:py-4 text-text-muted hover:text-text-primary"
-          >
-            <PanelLeftOpen size={18} className="shrink-0" />
-          </button>
-        ) : null}
         <button
           type="button"
           onClick={() => void handleLogout()}
           title={collapsed ? "Sign Out" : undefined}
           className={clsx(
-            "command-nav-link py-3 sm:py-4 text-red-400/60 hover:text-red-400 hover:bg-red-500/5",
+            "command-nav-link py-3 sm:py-4 text-red-600 hover:text-red-700 hover:bg-red-500/10",
             collapsed && "justify-center px-2"
           )}
         >

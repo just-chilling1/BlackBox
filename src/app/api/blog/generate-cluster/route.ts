@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
-import { getApiUser } from "@/lib/api-auth";
+import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { buildClusterTopics } from "@/features/blog-builder/lib/templates";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
-import { scrapePage, buildProductContext } from "@/features/blog-builder/lib/scrape";
+import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
 import { fetchTrendingAngles } from "@/features/blog-builder/lib/trends";
 import { mapWithConcurrency } from "@/features/blog-builder/lib/concurrency";
 import {
@@ -45,9 +45,10 @@ export async function POST(request: Request) {
   // Real product details from the offer page + niche trend angles, both fetched
   // once and reused across the whole cluster.
   const affiliateUrl = armedLinks[0]?.url ?? "";
+  const admin = getServiceRoleClient();
   const [productContext, trendContext] = await Promise.all([
     affiliateUrl
-      ? scrapePage(affiliateUrl).then((s) => (s ? buildProductContext(s) : ""))
+      ? scrapePageWithCache(affiliateUrl, admin).then((r) => r.context)
       : Promise.resolve(""),
     fetchTrendingAngles(territory, typedSite.hobby),
   ]);

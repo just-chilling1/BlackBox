@@ -190,6 +190,7 @@ Return ONLY this JSON shape:
           threadText: post.text,
           userId: user.id,
           supabase,
+          scrapeUrl: affiliateUrl || undefined,
         })
       )
     );

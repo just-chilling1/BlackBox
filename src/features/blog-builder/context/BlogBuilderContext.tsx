@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import type { ArmedLink, ThemeConfig } from "../types";
 import { defaultThemeConfig } from "../themes";
 import { isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
@@ -177,7 +178,27 @@ function vaultReadyLinks(links: ArmedLink[]): ArmedLink[] {
 
 const BlogBuilderContext = createContext<BlogBuilderContextType | undefined>(undefined);
 
+const BLOG_SESSION_ROUTES = [
+  "/sales-offer-generator",
+  "/territory",
+  "/theme",
+  "/arm-links",
+  "/offers",
+  "/link-vault",
+  "/deploy",
+  "/promote",
+  "/accelerator",
+  "/recurring-wealth",
+] as const;
+
+function needsBlogSession(pathname: string): boolean {
+  return BLOG_SESSION_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+}
+
 export function BlogBuilderProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [state, setState] = useState<BlogBuilderState>(defaultState);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const persistReady = useRef(false);
@@ -185,15 +206,17 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     let cancelled = false;
 
+    if (!needsBlogSession(pathname)) {
+      setSessionLoaded(true);
+      return () => {
+        cancelled = true;
+      };
+    }
+
     async function load() {
       try {
-        const [sessionRes, vaultRes] = await Promise.all([
-          fetch("/api/blog/session", { cache: "no-store" }),
-          fetch("/api/blog/link-vault", { cache: "no-store" }),
-        ]);
-
+        const sessionRes = await fetch("/api/blog/session", { cache: "no-store" });
         const sessionJson = sessionRes.ok ? await sessionRes.json() : { session: null };
-        const vaultJson = vaultRes.ok ? await vaultRes.json() : { links: [] };
 
         if (cancelled) return;
 
@@ -201,13 +224,22 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
           ? mapSessionFromDb(sessionJson.session as DbSessionRow)
           : {};
 
-        const vaultLinks = Array.isArray(vaultJson.links) ? (vaultJson.links as ArmedLink[]) : [];
-
         setState((s) => ({
           ...s,
           ...fromSession,
-          armedLinks: vaultLinks.length > 0 ? vaultLinks : s.armedLinks,
         }));
+
+        const vaultRes = await fetch("/api/blog/link-vault", { cache: "no-store" });
+        const vaultJson = vaultRes.ok ? await vaultRes.json() : { links: [] };
+        if (cancelled) return;
+
+        const vaultLinks = Array.isArray(vaultJson.links) ? (vaultJson.links as ArmedLink[]) : [];
+        if (vaultLinks.length > 0) {
+          setState((s) => ({
+            ...s,
+            armedLinks: vaultLinks,
+          }));
+        }
       } finally {
         if (!cancelled) {
           setSessionLoaded(true);
@@ -216,11 +248,13 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       }
     }
 
+    setSessionLoaded(false);
+    persistReady.current = false;
     load();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [pathname]);
 
   const persistToServer = useCallback((payload: ReturnType<typeof persistPayload>) => {
     void fetch("/api/blog/session", {
@@ -232,7 +266,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
   }, []);
 
   useEffect(() => {
-    if (!persistReady.current) return;
+    if (!persistReady.current || !needsBlogSession(pathname)) return;
 
     const timer = setTimeout(() => {
       persistToServer(persistPayload(state));
@@ -240,6 +274,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
 
     return () => clearTimeout(timer);
   }, [
+    pathname,
     state.step,
     state.wizardUiStep,
     state.hobby,

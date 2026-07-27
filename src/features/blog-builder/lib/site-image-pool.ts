@@ -3,17 +3,32 @@ import { normalizeImageUrl, resolveFastImageUrl, type ResolvedImage } from "./im
 type ResolveParams = Parameters<typeof resolveFastImageUrl>[0];
 
 /**
- * Tracks stock photos used across one site generation (7 deploy posts or 25 premium).
- * Serialized lookups prevent parallel workers from picking the same Pixabay hit.
+ * Tracks images used across one site generation (7 deploy posts or 25 premium).
+ * Image lookups run in parallel; only snapshot reads and dedupe writes are serialized.
  */
 export class SiteImagePool {
   private usedUrls = new Set<string>();
   private usedStockIds = new Set<string>();
-  private queue: Promise<void> = Promise.resolve();
+  private lock: Promise<void> = Promise.resolve();
 
   private track(image: Pick<ResolvedImage, "url" | "stockId">) {
     if (image.url) this.usedUrls.add(normalizeImageUrl(image.url));
     if (image.stockId) this.usedStockIds.add(image.stockId);
+  }
+
+  private async runExclusive<T>(fn: () => T | Promise<T>): Promise<T> {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const prev = this.lock;
+    this.lock = gate;
+    await prev;
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
   }
 
   /** Pre-register prefetched heroes so inline picks skip them. */
@@ -40,20 +55,15 @@ export class SiteImagePool {
 
   /** Resolve a unique image and register it in the pool. */
   async resolveUnique(params: ResolveParams): Promise<ResolvedImage> {
-    const work = this.queue.then(async () => {
-      const snap = this.snapshot();
-      const image = await resolveFastImageUrl({
-        ...params,
-        excludeUrls: [...(params.excludeUrls ?? []), ...snap.excludeUrls],
-        excludeStockIds: [...(params.excludeStockIds ?? []), ...snap.excludeStockIds],
-      });
-      this.track(image);
-      return image;
+    const snap = await this.runExclusive(() => this.snapshot());
+    const image = await resolveFastImageUrl({
+      ...params,
+      excludeUrls: [...(params.excludeUrls ?? []), ...snap.excludeUrls],
+      excludeStockIds: [...(params.excludeStockIds ?? []), ...snap.excludeStockIds],
     });
-    this.queue = work.then(
-      () => undefined,
-      () => undefined
-    );
-    return work;
+    await this.runExclusive(() => {
+      this.track(image);
+    });
+    return image;
   }
 }

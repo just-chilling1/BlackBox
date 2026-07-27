@@ -10,6 +10,8 @@ export interface ScrapedPageInfo {
   rating: string;
   features: string[];
   bodySnippet: string;
+  /** og:image / JSON-LD product image when present on the page. */
+  imageUrl: string;
 }
 
 const SCRAPER_API_TIMEOUT_MS = 30_000;
@@ -143,6 +145,112 @@ function metaContent($: cheerio.CheerioAPI, selectors: string[]): string {
   return "";
 }
 
+function resolveAbsoluteUrl(pageUrl: string, href: string): string | null {
+  const trimmed = href.trim();
+  if (!trimmed || trimmed.startsWith("data:")) return null;
+  try {
+    return new URL(trimmed, pageUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+function normalizeImageCandidate(raw: string): string {
+  return raw.replace(/\s+/g, " ").trim();
+}
+
+function jsonLdImageUrl(value: unknown): string {
+  if (typeof value === "string") return normalizeImageCandidate(value);
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const url = jsonLdImageUrl(item);
+      if (url) return url;
+    }
+    return "";
+  }
+  if (value && typeof value === "object") {
+    const node = value as JsonLdNode;
+    if (typeof node.url === "string") return normalizeImageCandidate(node.url);
+    if (typeof node.contentUrl === "string") return normalizeImageCandidate(node.contentUrl);
+    if (typeof node["@id"] === "string" && /^https?:\/\//i.test(node["@id"])) {
+      return normalizeImageCandidate(node["@id"]);
+    }
+  }
+  return "";
+}
+
+function extractImageFromJsonLd($: cheerio.CheerioAPI): string {
+  const nodes: JsonLdNode[] = [];
+  $('script[type="application/ld+json"]').each((_, el) => {
+    const raw = $(el).contents().text();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      const list = Array.isArray(parsed) ? parsed : [parsed];
+      for (const item of list) {
+        if (item && typeof item === "object") {
+          nodes.push(item as JsonLdNode);
+          const graph = (item as JsonLdNode)["@graph"];
+          if (Array.isArray(graph)) nodes.push(...(graph as JsonLdNode[]));
+        }
+      }
+    } catch {
+      /* ignore malformed blocks */
+    }
+  });
+
+  const typeMatches = (node: JsonLdNode, type: string) => {
+    const t = node["@type"];
+    return Array.isArray(t) ? t.includes(type) : t === type;
+  };
+
+  for (const node of nodes) {
+    if (!typeMatches(node, "Product") && !typeMatches(node, "ImageObject")) continue;
+    const imageUrl = jsonLdImageUrl(node.image ?? node.contentUrl ?? node.url);
+    if (imageUrl) return imageUrl;
+  }
+
+  return "";
+}
+
+/** Pull the best product/hero image URL from rendered HTML. */
+export function extractPageImageUrl(html: string, pageUrl: string): string | null {
+  const $ = cheerio.load(html);
+  const candidates = [
+    metaContent($, [
+      'meta[property="og:image:secure_url"]',
+      'meta[property="og:image"]',
+      'meta[property="og:image:url"]',
+      'meta[name="twitter:image"]',
+      'meta[name="twitter:image:src"]',
+    ]),
+    $('link[rel="image_src"]').attr("href") ?? "",
+    extractImageFromJsonLd($),
+  ];
+
+  for (const raw of candidates) {
+    if (!raw) continue;
+    const abs = resolveAbsoluteUrl(pageUrl, raw);
+    if (abs && /^https?:\/\//i.test(abs)) return abs;
+  }
+
+  return null;
+}
+
+/** Scrape an affiliate/product page and return its primary image URL, if any. */
+export async function scrapeImageFromUrl(url: string): Promise<string | null> {
+  let safeUrl: string;
+  try {
+    safeUrl = assertPublicHttpsUrl(url).toString();
+  } catch {
+    return null;
+  }
+
+  const html = await fetchHtml(safeUrl);
+  if (!html) return null;
+  return extractPageImageUrl(html, safeUrl);
+}
+
 /** Heuristic price sniff from visible text when JSON-LD has none. */
 function sniffPrice(text: string): string {
   const match = text.match(/(?:[$€£]|USD|EUR)\s?\d{1,4}(?:[.,]\d{2})?/);
@@ -208,6 +316,7 @@ export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
 
     const price = jsonLd.price || sniffPrice(bodyText);
     const features = extractFeatures($);
+    const imageUrl = extractPageImageUrl(html, safeUrl) ?? "";
 
     return {
       title: (title || h1).slice(0, 200),
@@ -218,6 +327,7 @@ export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
       rating: (jsonLd.rating ?? "").slice(0, 60),
       features,
       bodySnippet: bodyText.slice(0, 600),
+      imageUrl: imageUrl.slice(0, 2048),
     };
   } catch {
     return null;

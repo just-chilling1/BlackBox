@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildHeroImagePrompt, buildHeroImageNegativePrompt } from "./prompts";
 import { mapWithConcurrency } from "./concurrency";
 import { SiteImagePool } from "./site-image-pool";
+import { scrapeImageFromUrl } from "./scrape";
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY ?? "";
 const RAPIDAPI_IMAGE_HOST =
@@ -21,6 +22,7 @@ const TEXTTOIMAGE_TIMEOUT_MS = 45_000;
 
 const PIXABAY_API_KEY = process.env.PIXABAY_API_KEY ?? "";
 const PIXABAY_TIMEOUT_MS = 5_000;
+const SCRAPE_IMAGE_TIMEOUT_MS = 15_000;
 
 const NANO_TIMEOUT_MS = 12_000;
 const ULTRA_FAST_CREATE_TIMEOUT_MS = 25_000;
@@ -30,6 +32,10 @@ const ULTRA_FAST_POLL_INTERVAL_MS = 1_500;
 const POLLINATIONS_TIMEOUT_MS = 10_000;
 const FAST_POLLINATIONS_TIMEOUT_MS = 7_000;
 const FAST_PICSUM_TIMEOUT_MS = 4_000;
+
+export const IMAGE_RESOLUTION_CONCURRENCY = Number(
+  process.env.IMAGE_RESOLUTION_CONCURRENCY ?? 4
+);
 
 const STOP_WORDS = new Set([
   "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with", "your",
@@ -335,6 +341,32 @@ async function fetchImageBuffer(url: string, timeoutMs: number): Promise<Buffer 
   }
 }
 
+/** Scrape og:image / product image from a page via ScraperAPI. Returns null when unavailable. */
+async function resolveScrapedImage(
+  scrapeUrl: string
+): Promise<{ url: string; buffer: Buffer } | null> {
+  try {
+    const url = await scrapeImageFromUrl(scrapeUrl);
+    if (!url) return null;
+    const buffer = await fetchImageBuffer(url, SCRAPE_IMAGE_TIMEOUT_MS);
+    if (!buffer || buffer.length < 800) return null;
+    console.info("[images] scraped page image", scrapeUrl.slice(0, 64));
+    return { url, buffer };
+  } catch {
+    return null;
+  }
+}
+
+async function fetchScrapedImageUrl(scrapeUrl: string): Promise<string | null> {
+  const scraped = await resolveScrapedImage(scrapeUrl);
+  return scraped?.url ?? null;
+}
+
+async function fetchScrapedImageBuffer(scrapeUrl: string): Promise<Buffer | null> {
+  const scraped = await resolveScrapedImage(scrapeUrl);
+  return scraped?.buffer ?? null;
+}
+
 async function pollUltraFastOutput(taskId: string): Promise<Buffer | null> {
   const queryKeys = [
     RAPIDAPI_IMAGE_OUTPUT_QUERY,
@@ -569,6 +601,8 @@ export async function resolveFastImageUrl(params: {
   title: string;
   subject: string;
   hobby?: string;
+  /** Affiliate/product page to scrape for og:image before AI generation. */
+  scrapeUrl?: string;
   pickOffset?: number;
   seedBoost?: number;
   excludeUrls?: string[];
@@ -579,14 +613,12 @@ export async function resolveFastImageUrl(params: {
   const exclude = params.excludeUrls ?? [];
   const excludeStockIds = params.excludeStockIds ?? [];
 
-  const pixabay = await fetchPixabayImage(params.title, params.subject, {
-    pickOffset: offset,
-    excludeUrls: exclude,
-    excludeStockIds,
-    hobby: params.hobby,
-    seedBoost: params.seedBoost,
-  });
-  if (pixabay) return { url: pixabay.url, alt, stockId: pixabay.stockId };
+  if (params.scrapeUrl) {
+    const scraped = await fetchScrapedImageUrl(params.scrapeUrl);
+    if (scraped && !isExcludedUrl(scraped, exclude)) {
+      return { url: scraped, alt, stockId: normalizeImageUrl(scraped) };
+    }
+  }
 
   const ai = await prLabsImageUrl(buildHeroImagePrompt(params.title, params.subject));
   if (ai && !isExcludedUrl(ai, exclude)) return { url: ai, alt, stockId: normalizeImageUrl(ai) };
@@ -610,23 +642,26 @@ export async function prefetchTopicImages(
   topics: ReadonlyArray<{ title: string; slug: string }>,
   subject: string,
   hobby?: string,
-  _concurrency = 4
+  concurrency = IMAGE_RESOLUTION_CONCURRENCY,
+  scrapeUrl?: string
 ): Promise<Record<string, ResolvedImage>> {
   const pool = new SiteImagePool();
-  const out: Record<string, ResolvedImage> = {};
-
-  for (let i = 0; i < topics.length; i++) {
-    const topic = topics[i];
+  const pairs = await mapWithConcurrency(topics, concurrency, async (topic, i) => {
     const image = await pool.resolveUnique({
       title: topic.title,
       subject,
       hobby,
+      scrapeUrl,
       seedBoost: i,
       pickOffset: 0,
     });
-    if (image.url) out[topic.slug] = image;
-  }
+    return [topic.slug, image] as const;
+  });
 
+  const out: Record<string, ResolvedImage> = {};
+  for (const [slug, image] of pairs) {
+    if (image.url) out[slug] = image;
+  }
   return out;
 }
 
@@ -653,6 +688,8 @@ export async function resolvePostImage(params: {
   subject: string;
   userId: string;
   supabase: SupabaseClient;
+  /** Affiliate/product page to scrape for og:image before AI generation. */
+  scrapeUrl?: string;
   /** Skip slow NanoBanana during bulk deploy — Pollinations + picsum only. */
   fast?: boolean;
 }): Promise<{ url: string; alt: string }> {
@@ -661,22 +698,18 @@ export async function resolvePostImage(params: {
   const negative = buildHeroImageNegativePrompt();
   const pollinations = pollinationsImageUrl(params.title, params.subject);
 
-  // Stock-first: a relevant free Pixabay photo resolves in well under a second
-  // and looks more professional than generation. Only generate if none is found.
-  const stockSource = async (): Promise<Buffer | null> => {
-    const stockUrl = await fetchPixabayImageUrl(params.title, params.subject);
-    return stockUrl ? fetchImageBuffer(stockUrl, PIXABAY_TIMEOUT_MS) : null;
-  };
+  const scrapeSource = async (): Promise<Buffer | null> =>
+    params.scrapeUrl ? fetchScrapedImageBuffer(params.scrapeUrl) : null;
 
   const sources: Array<() => Promise<Buffer | null>> = params.fast
     ? [
-        stockSource,
+        scrapeSource,
         () => prLabsImageBuffer(prompt),
         () => fetchImageBuffer(pollinations, FAST_POLLINATIONS_TIMEOUT_MS),
         () => fetchImageBuffer(picsumFallbackUrl(params.title), FAST_PICSUM_TIMEOUT_MS),
       ]
     : [
-        stockSource,
+        scrapeSource,
         () => prLabsImageBuffer(prompt),
         () =>
           callRapidApiImage({

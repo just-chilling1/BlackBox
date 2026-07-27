@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { resolvePostImage } from "@/features/blog-builder/lib/images";
+import { resolveFastImageUrl, persistExternalImage } from "@/features/blog-builder/lib/images";
 
 const ANGLE_VISUAL_HINTS: Record<string, string> = {
   Urgency: "dynamic motion, clock or countdown mood, high energy",
@@ -22,25 +22,31 @@ export function buildThreadImagePrompt(params: {
   };
 }
 
-/** Generate and persist a niche-related image for a promote thread. Returns null on failure. */
+/** Resolve a thread image quickly (scrape or fast AI), then persist to Supabase. */
 export async function generateThreadImage(params: {
   territory: string;
   angle: string;
   threadText: string;
   userId: string;
   supabase: SupabaseClient;
+  scrapeUrl?: string;
 }): Promise<string | null> {
   const { title, subject } = buildThreadImagePrompt(params);
 
   try {
-    const result = await resolvePostImage({
+    const resolved = await resolveFastImageUrl({
       title,
       subject,
+      scrapeUrl: params.scrapeUrl,
+    });
+    if (!resolved.url) return null;
+
+    const persisted = await persistExternalImage({
+      url: resolved.url,
       userId: params.userId,
       supabase: params.supabase,
-      fast: false,
     });
-    return result.url || null;
+    return persisted ?? resolved.url;
   } catch {
     return null;
   }

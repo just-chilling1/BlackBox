@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { prefetchTopicImages } from "@/features/blog-builder/lib/images";
+import { prefetchTopicImages, IMAGE_RESOLUTION_CONCURRENCY } from "@/features/blog-builder/lib/images";
 import type { ClusterTopic } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -39,13 +39,20 @@ export async function POST(request: Request) {
   const topics = parseTopics(body.topics);
   const territory = typeof body.territory === "string" ? body.territory.trim().slice(0, 200) : "";
   const hobby = typeof body.hobby === "string" ? body.hobby.trim().slice(0, 200) : "";
+  const scrapeUrl = typeof body.scrapeUrl === "string" ? body.scrapeUrl.trim() : "";
   const subject = territory || hobby;
 
   if (topics.length === 0 || !subject) {
     return NextResponse.json({ error: "topics and territory are required" }, { status: 400 });
   }
 
-  const images = await prefetchTopicImages(topics, subject, hobby || undefined);
+  const images = await prefetchTopicImages(
+    topics,
+    subject,
+    hobby || undefined,
+    IMAGE_RESOLUTION_CONCURRENCY,
+    scrapeUrl || undefined
+  );
   return NextResponse.json({
     images,
     count: Object.keys(images).length,

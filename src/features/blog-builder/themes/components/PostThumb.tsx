@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 interface PostThumbProps {
@@ -12,8 +13,14 @@ export function PostThumb({ href, imageUrl, alt, className = "", large }: PostTh
   const inner = (
     <>
       {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt={alt} loading="lazy" />
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover"
+          loading="lazy"
+        />
       ) : (
         <div
           className="absolute inset-0 opacity-30"

@@ -5,14 +5,20 @@ import {
   resolvePostImage,
   resolveFastImageUrl,
   persistExternalImage,
+  IMAGE_RESOLUTION_CONCURRENCY,
   type ResolvedImage,
 } from "./images";
+import { mapWithConcurrency } from "./concurrency";
 import { buildClusterTopics, buildInternalLinks } from "./templates";
 import { getSiteTerritory } from "./site-territory";
 import { injectMidArticleFigure, stripLeadingHeroFigure } from "./article-html";
 import { SiteImagePool } from "./site-image-pool";
 import type { ArmedLink, BlogPost, BlogSite, ClusterTopic, ContentTier } from "../types";
 import { sanitizePostHtml } from "./sanitize-html";
+
+function primaryScrapeUrl(armedLinks: ArmedLink[]): string | undefined {
+  return armedLinks[0]?.url?.trim() || undefined;
+}
 
 /** Hero goes to image_url (layout); body gets a distinct inline photo when possible. */
 async function weaveDistinctPostImages(params: {
@@ -21,6 +27,7 @@ async function weaveDistinctPostImages(params: {
   title: string;
   territory: string;
   hobby?: string;
+  scrapeUrl?: string;
   imagePool?: SiteImagePool;
   postIndex?: number;
 }): Promise<string> {
@@ -32,6 +39,7 @@ async function weaveDistinctPostImages(params: {
         title: params.title,
         subject: params.territory,
         hobby: params.hobby,
+        scrapeUrl: params.scrapeUrl,
         pickOffset: 5,
         seedBoost: (params.postIndex ?? 0) + 1,
       })
@@ -39,6 +47,7 @@ async function weaveDistinctPostImages(params: {
         title: params.title,
         subject: params.territory,
         hobby: params.hobby,
+        scrapeUrl: params.scrapeUrl,
         pickOffset: 5,
         seedBoost: (params.postIndex ?? 0) + 1,
         excludeUrls: [params.hero.url],
@@ -173,6 +182,7 @@ export async function generateAndSavePost(
 
   const territory = getSiteTerritory(site);
   const armedLinks = (site.armed_links ?? []) as ArmedLink[];
+  const scrapeUrl = primaryScrapeUrl(armedLinks);
   const topics = buildClusterTopics(territory, site.hobby);
 
   const content = await generateBlogPostContent({
@@ -199,6 +209,7 @@ export async function generateAndSavePost(
             title: content.title,
             subject: territory,
             hobby: site.hobby,
+            scrapeUrl,
             seedBoost: postIndex,
             pickOffset: 0,
           })
@@ -206,6 +217,7 @@ export async function generateAndSavePost(
             title: content.title,
             subject: territory,
             hobby: site.hobby,
+            scrapeUrl,
             seedBoost: postIndex,
           });
       imageUrl = image.url || null;
@@ -218,6 +230,7 @@ export async function generateAndSavePost(
         subject: territory,
         userId,
         supabase,
+        scrapeUrl,
         fast: false,
       });
       imageUrl = image.url || null;
@@ -233,6 +246,7 @@ export async function generateAndSavePost(
       title: content.title,
       territory,
       hobby: site.hobby,
+      scrapeUrl,
       imagePool,
       postIndex,
     });
@@ -287,6 +301,7 @@ export async function regenerateAndSavePost(params: GeneratePostParams): Promise
 
   const territory = getSiteTerritory(site);
   const armedLinks = (site.armed_links ?? []) as ArmedLink[];
+  const scrapeUrl = primaryScrapeUrl(armedLinks);
   const topics = buildClusterTopics(territory, site.hobby);
 
   const content = await generateBlogPostContent({
@@ -312,6 +327,7 @@ export async function regenerateAndSavePost(params: GeneratePostParams): Promise
             title: content.title,
             subject: territory,
             hobby: site.hobby,
+            scrapeUrl,
             seedBoost: postIndex,
             pickOffset: 0,
           })
@@ -319,6 +335,7 @@ export async function regenerateAndSavePost(params: GeneratePostParams): Promise
             title: content.title,
             subject: territory,
             hobby: site.hobby,
+            scrapeUrl,
             seedBoost: postIndex,
           });
       imageUrl = image.url || null;
@@ -330,6 +347,7 @@ export async function regenerateAndSavePost(params: GeneratePostParams): Promise
         subject: territory,
         userId,
         supabase,
+        scrapeUrl,
         fast: false,
       });
       imageUrl = image.url || null;
@@ -345,6 +363,7 @@ export async function regenerateAndSavePost(params: GeneratePostParams): Promise
       title: content.title,
       territory,
       hobby: site.hobby,
+      scrapeUrl,
       imagePool,
       postIndex,
     });
@@ -408,6 +427,7 @@ export async function attachImageToPost(params: {
 
   const territory = getSiteTerritory(site);
   const postIndex = params.postIndex ?? 0;
+  const scrapeUrl = primaryScrapeUrl((site.armed_links ?? []) as ArmedLink[]);
 
   const fast =
     params.prefetched ??
@@ -416,6 +436,7 @@ export async function attachImageToPost(params: {
           title: post.title,
           subject: territory,
           hobby: site.hobby,
+          scrapeUrl,
           seedBoost: postIndex,
           pickOffset: 0,
         })
@@ -423,6 +444,7 @@ export async function attachImageToPost(params: {
           title: post.title,
           subject: territory,
           hobby: site.hobby,
+          scrapeUrl,
           seedBoost: postIndex,
         }));
 
@@ -433,6 +455,7 @@ export async function attachImageToPost(params: {
       title: post.title,
       territory,
       hobby: site.hobby,
+      scrapeUrl,
       imagePool: params.imagePool,
       postIndex,
     });
@@ -469,6 +492,7 @@ export async function attachImageToPost(params: {
     subject: territory,
     userId: params.userId,
     supabase: params.supabase,
+    scrapeUrl,
     fast: true,
   });
 
@@ -480,6 +504,7 @@ export async function attachImageToPost(params: {
     title: post.title,
     territory,
     hobby: site.hobby,
+    scrapeUrl,
     imagePool: params.imagePool,
     postIndex,
   });
@@ -528,20 +553,31 @@ export async function attachSiteImages(params: {
   const posts: BlogPost[] = [];
   let attached = 0;
 
-  for (const item of params.items) {
-    try {
-      const post = await attachImageToPost({
-        supabase: params.supabase,
-        userId: params.userId,
-        postId: item.postId,
-        prefetched: item.prefetched,
-        imagePool: pool,
-        postIndex: item.postIndex ?? 0,
-      });
-      posts.push(post);
-      if (post.image_url) attached += 1;
-    } catch (err) {
-      console.error("[attach-site-images] failed for post", item.postId, err);
+  const results = await mapWithConcurrency(
+    params.items,
+    Math.min(IMAGE_RESOLUTION_CONCURRENCY, 3),
+    async (item) => {
+      try {
+        const post = await attachImageToPost({
+          supabase: params.supabase,
+          userId: params.userId,
+          postId: item.postId,
+          prefetched: item.prefetched,
+          imagePool: pool,
+          postIndex: item.postIndex ?? 0,
+        });
+        return { post, ok: true as const };
+      } catch (err) {
+        console.error("[attach-site-images] failed for post", item.postId, err);
+        return { ok: false as const };
+      }
+    }
+  );
+
+  for (const result of results) {
+    if (result.ok) {
+      posts.push(result.post);
+      if (result.post.image_url) attached += 1;
     }
   }
 

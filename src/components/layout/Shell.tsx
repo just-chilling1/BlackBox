@@ -1,12 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Sidebar } from "./Sidebar";
 import { BrandLogo } from "./BrandLogo";
-import { PromoOrchestrator } from "./PromoOrchestrator";
-import { BottomNav } from "./BottomNav";
 import { PageMotion } from "@/components/motion/PageMotion";
+
+const Sidebar = dynamic(() => import("./Sidebar").then((m) => ({ default: m.Sidebar })), {
+  ssr: false,
+  loading: () => <div className="hidden w-[var(--sidebar-w)] shrink-0 lg:block" aria-hidden />,
+});
+
+const BottomNav = dynamic(() => import("./BottomNav").then((m) => ({ default: m.BottomNav })), {
+  ssr: false,
+});
+
+const PromoOrchestrator = dynamic(
+  () => import("./PromoOrchestrator").then((m) => ({ default: m.PromoOrchestrator })),
+  { ssr: false }
+);
 
 /** Route prefixes that render without the app shell (public hosted pages). */
 const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
@@ -46,8 +58,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
-          <div className="app-glow-orb app-glow-orb-teal" aria-hidden />
-          <div className="app-glow-orb app-glow-orb-gold" aria-hidden />
+          <div className="app-glow-orb app-glow-orb-teal hidden lg:block" aria-hidden />
+          <div className="app-glow-orb app-glow-orb-gold hidden lg:block" aria-hidden />
 
           <div className="app-content-layer mx-auto flex min-h-full w-full min-w-0 max-w-7xl flex-col">
             <PageMotion>{children}</PageMotion>

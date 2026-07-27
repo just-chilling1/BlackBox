@@ -128,7 +128,7 @@ function ScoreRing({ score, animating }: { score: number; animating: boolean }) 
           cy="64"
           r={radius}
           fill="none"
-          stroke="rgb(52, 211, 153)"
+          stroke="#EEB310"
           strokeWidth="8"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -138,7 +138,7 @@ function ScoreRing({ score, animating }: { score: number; animating: boolean }) 
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-black text-emerald-400">{score}%</span>
+        <span className="text-3xl font-black text-accent">{score}%</span>
         <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
           Secure
         </span>
@@ -221,19 +221,19 @@ export default function ProtectorPage() {
       />
 
       <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-divider bg-emerald-500/5 p-6 md:p-8">
+        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <ScoreRing score={SECURITY_SCORE} animating={scanComplete} />
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent">
                     <ShieldCheck size={20} />
                   </div>
                   <span
                     className={
                       scanComplete
-                        ? "rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-800"
+                        ? "rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent"
                         : "badge-warning"
                     }
                   >
@@ -267,7 +267,7 @@ export default function ProtectorPage() {
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-slate-100">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
+                className="h-full rounded-full bg-gradient-to-r from-accent to-[#C9970D]"
                 initial={{ width: 0 }}
                 animate={{ width: `${scanProgress}%` }}
                 transition={{ duration: 0.15 }}
@@ -284,7 +284,7 @@ export default function ProtectorPage() {
                 key={layer.label}
                 className="rounded-xl border border-divider bg-slate-50 p-3 text-center"
               >
-                <Icon size={18} className="mx-auto text-emerald-400" />
+                <Icon size={18} className="mx-auto text-accent" />
                 <p className="mt-2 text-xs font-bold text-text-primary">{layer.label}</p>
                 <p className="mt-0.5 text-[10px] text-text-muted">{layer.detail}</p>
               </div>
@@ -295,10 +295,10 @@ export default function ProtectorPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Security Score", value: `${SECURITY_SCORE}%`, color: "text-emerald-400" },
-          { label: "Account Status", value: "Verified", color: "text-emerald-400" },
+          { label: "Security Score", value: `${SECURITY_SCORE}%`, color: "text-accent" },
+          { label: "Account Status", value: "Verified", color: "text-accent" },
           { label: "License", value: "Active", color: "text-accent" },
-          { label: "Uptime", value: "99.9%", color: "text-emerald-400" },
+          { label: "Uptime", value: "99.9%", color: "text-accent" },
         ].map((stat) => (
           <div key={stat.label} className="glass-card p-4 text-center">
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -315,7 +315,7 @@ export default function ProtectorPage() {
             <Shield size={18} className="text-accent" />
             Security checks
             {scanComplete && (
-              <span className="ml-auto flex items-center gap-1 text-xs font-semibold text-emerald-400">
+              <span className="ml-auto flex items-center gap-1 text-xs font-semibold text-accent">
                 <Sparkles size={12} /> {securityChecks.length}/{securityChecks.length} passed
               </span>
             )}
@@ -334,14 +334,14 @@ export default function ProtectorPage() {
                     className="flex flex-col gap-3 rounded-xl border border-divider bg-slate-50 p-4"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
                         <Icon size={16} />
                       </div>
                       <span
                         className={clsx(
                           "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
                           visible
-                            ? "bg-emerald-500/15 text-emerald-400"
+                            ? "bg-accent/15 text-accent"
                             : "bg-slate-100 text-text-muted"
                         )}
                       >
@@ -375,7 +375,7 @@ export default function ProtectorPage() {
                   <p className="truncate text-sm font-bold text-text-primary">
                     {userEmail || "Member"}
                   </p>
-                  <p className="text-xs text-emerald-400">Verified member</p>
+                  <p className="text-xs text-accent">Verified member</p>
                 </div>
               </div>
               {[
@@ -416,7 +416,7 @@ export default function ProtectorPage() {
                 const Icon = item.icon;
                 return (
                   <div key={item.text} className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
                       <Icon size={14} />
                     </div>
                     <div className="min-w-0 flex-1">

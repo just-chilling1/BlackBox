@@ -55,7 +55,6 @@ export default function RecurringStreamPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [articles, setArticles] = useState<ArticleRow[]>([]);
   const [seededCount, setSeededCount] = useState(0);
-  const [ready, setReady] = useState(false);
   const [niche, setNiche] = useState("All");
   const [affiliateLink, setAffiliateLink] = useState("");
   const [appliedLink, setAppliedLink] = useState("");
@@ -78,7 +77,6 @@ export default function RecurringStreamPage() {
         if (!res.ok) throw new Error(data.error || "Failed to load");
         setArticles(data.articles ?? []);
         setSeededCount(data.seededCount ?? 0);
-        setReady(Boolean(data.ready));
         setPage(0);
         setPreviewId(null);
       } catch (e) {
@@ -191,15 +189,6 @@ export default function RecurringStreamPage() {
                 </p>
               </div>
             </div>
-            {ready ? (
-              <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">
-                All {seededCount} ready
-              </span>
-            ) : (
-              <span className="badge-warning">
-                Seeding ({seededCount}/100)
-              </span>
-            )}
           </div>
         </div>
 

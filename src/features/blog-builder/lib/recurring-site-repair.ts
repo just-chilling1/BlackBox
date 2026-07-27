@@ -28,6 +28,7 @@ async function resolvePersistedImage(params: {
   hobby: string;
   userId: string;
   supabase: SupabaseClient;
+  scrapeUrl?: string;
   excludeUrls: string[];
   excludeStockIds: string[];
   pickOffset?: number;
@@ -37,6 +38,7 @@ async function resolvePersistedImage(params: {
     title: params.title,
     subject: params.subject,
     hobby: params.hobby,
+    scrapeUrl: params.scrapeUrl,
     pickOffset: params.pickOffset ?? 0,
     seedBoost: params.seedBoost,
     excludeUrls: params.excludeUrls,
@@ -69,6 +71,7 @@ export async function repairRecurringPost(params: {
   const territory = getSiteTerritory(params.site);
   const hobby = params.site.hobby?.trim() || territory;
   const armed = (params.site.armed_links ?? []) as ArmedLink[];
+  const scrapeUrl = armed[0]?.url?.trim() || undefined;
 
   let html = stripArticleDisclosure(params.post.html ?? "");
   html = stripLeadingHeroFigure(html, params.post.image_url);
@@ -81,6 +84,7 @@ export async function repairRecurringPost(params: {
     hobby,
     userId: params.post.user_id,
     supabase: params.supabase,
+    scrapeUrl,
     excludeUrls: params.usedImageUrls,
     excludeStockIds: params.usedStockIds,
     pickOffset: 0,
@@ -97,6 +101,7 @@ export async function repairRecurringPost(params: {
     hobby,
     userId: params.post.user_id,
     supabase: params.supabase,
+    scrapeUrl,
     excludeUrls: params.usedImageUrls,
     excludeStockIds: params.usedStockIds,
     pickOffset: 5,
