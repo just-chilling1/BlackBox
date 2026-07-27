@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Link2 } from "lucide-react";
+import { Check, Link2, Loader2, Save } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -10,18 +10,19 @@ import { ErrorBanner } from "@/components/ui/error-banner";
 import { ArmedLinkInput } from "../components/ArmedLinkInput";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import type { ArmedLink } from "../types";
+import { isValidAffiliateUrl } from "../lib/affiliate-url";
 
 function hasValidLink(links: ArmedLink[]): boolean {
-  return links.some((l) => l.url.trim().startsWith("http"));
+  return links.some((l) => isValidAffiliateUrl(l.url));
 }
 
 export default function LinkVaultPage() {
   const { sessionLoaded, saveLinksToVault } = useBlogBuilder();
   const [links, setLinks] = useState<ArmedLink[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const skipAutoSave = useRef(true);
   const hydrated = useRef(false);
 
   useEffect(() => {
@@ -34,45 +35,51 @@ export default function LinkVaultPage() {
       })
       .then((data) => {
         const stored = Array.isArray(data.links) ? (data.links as ArmedLink[]) : [];
-        setLinks(stored);
+        setLinks(
+          stored.length > 0
+            ? stored
+            : [{ label: "Promotional Offer", url: "", network: "other" }]
+        );
       })
       .catch(() => setError("Could not load Links Library"))
       .finally(() => {
         hydrated.current = true;
         setLoading(false);
-        skipAutoSave.current = false;
       });
   }, [sessionLoaded]);
 
-  useEffect(() => {
-    if (!sessionLoaded || loading || skipAutoSave.current) return;
+  const handleSave = async () => {
+    if (!hasValidLink(links)) {
+      setError("Add at least one link with a valid URL before saving.");
+      return;
+    }
 
-    const shouldSave = links.length === 0 || hasValidLink(links);
-    if (!shouldSave) return;
+    setSaving(true);
+    setError(null);
 
-    const timer = setTimeout(() => {
-      void saveLinksToVault(links)
-        .then(() => {
-          setSaved(true);
-          setError(null);
-          setTimeout(() => setSaved(false), 2000);
-        })
-        .catch(() => setError("Could not save to Links Library"));
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [links, sessionLoaded, loading, saveLinksToVault]);
+    try {
+      await saveLinksToVault(links);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setError("Could not save to Links Library");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return <PageLoading message="Loading Links Library..." />;
   }
+
+  const canSave = hasValidLink(links) && !saving;
 
   return (
     <div className="page-stack w-full max-w-3xl mx-auto">
       <PageHeader
         eyebrow="Links library"
         title="Saved promotion links"
-        subtitle="Store affiliate and promo links with a name, tag, and description. Links also save automatically when you add them in the Sales Offer Generator."
+        subtitle="Store affiliate and promo links with a name, tag, and description. Click Save link when you're ready."
         actions={
           <Link href="/sales-offer-generator" className="btn-secondary text-sm">
             Add link in generator
@@ -84,19 +91,37 @@ export default function LinkVaultPage() {
         <EmptyState
           icon={Link2}
           title="No links saved yet"
-          description="Add your first promotional link in the Sales Offer Generator, or enter one below."
+          description="Add your first promotional link below, or start in the Sales Offer Generator."
           action={{ label: "Start Sales Offer Generator", href: "/sales-offer-generator" }}
         />
       ) : null}
 
-      <div className="page-section-card">
+      <div className="page-section-card space-y-4">
         <ArmedLinkInput links={links} onChange={setLinks} />
+
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <button
+            type="button"
+            onClick={() => void handleSave()}
+            disabled={!canSave}
+            className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl font-bold uppercase tracking-widest text-sm border border-promo-accent/50 text-promo-accent bg-promo-accent/10 hover:bg-promo-accent/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {saving ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : saved ? (
+              <Check size={18} />
+            ) : (
+              <Save size={18} />
+            )}
+            {saved ? "Link Saved" : saving ? "Saving..." : "Save link"}
+          </button>
+          {saved && !error && (
+            <span className="text-sm text-promo-accent">Saved to Links Library</span>
+          )}
+        </div>
       </div>
 
       {error && <ErrorBanner message={error} />}
-      {saved && !error && (
-        <p className="text-xs font-medium text-promo-accent">Saved to Links Library</p>
-      )}
     </div>
   );
 }
