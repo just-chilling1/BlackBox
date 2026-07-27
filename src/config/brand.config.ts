@@ -1,7 +1,9 @@
+const PRODUCT_NAME = "BlackBox Cash";
+
 export const brand = {
-  /** Software display name — set via NEXT_PUBLIC_PRODUCT_NAME in .env */
-  productName: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash",
-  storagePrefix: "product_skeleton",
+  /** Software display name */
+  productName: PRODUCT_NAME,
+  storagePrefix: "blackbox_cash",
   tagline: "Affiliate Sales & Promotions",
   authTagline: "Secure member access",
   signupTagline: "Create your account",
@@ -10,7 +12,7 @@ export const brand = {
     type: "icon" as "icon" | "image",
     icon: "Target",
     src: "/logo.png",
-    alt: process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash",
+    alt: PRODUCT_NAME,
   },
   colors: {
     primary: "#CA8A04",
@@ -37,10 +39,9 @@ export const brand = {
     ui: "Inter",
   },
   get metadata() {
-    const name = process.env.NEXT_PUBLIC_PRODUCT_NAME ?? "BlackBox Cash";
     return {
-      title: `${name} | Affiliate Sales & Promotions`,
-      description: "Generate sales offers, promotion threads, and affiliate assets with BlackBox Cash.",
+      title: `${PRODUCT_NAME} | Affiliate Sales & Promotions`,
+      description: `Generate sales offers, promotion threads, and affiliate assets with ${PRODUCT_NAME}.`,
     };
   },
 } as const;
