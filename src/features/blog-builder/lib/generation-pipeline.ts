@@ -145,7 +145,7 @@ export interface GeneratePostParams {
   contentTier?: ContentTier;
   /** Text-only — image attached in a second pass. */
   skipImage?: boolean;
-  /** Scrape-first image path; AI generation runs only when scrape fails. Used during deploy. */
+  /** Scrape/stock image path (no AI generation). Used during deploy. */
   fastImage?: boolean;
   /** Shared pool — ensures no duplicate stock photos across one site generation. */
   imagePool?: SiteImagePool;

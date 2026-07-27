@@ -31,7 +31,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
       {links.map((link, index) => (
         <div key={index} className="card-base space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
+            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
               Link {index + 1}
             </span>
             <button
@@ -50,7 +50,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
               value={link.label}
               onChange={(e) => updateLink(index, { label: e.target.value })}
               placeholder="e.g. My Fitness eBook, Keto Supplement"
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50"
+              className="input-base w-full rounded-xl"
             />
           </div>
           <div>
@@ -60,7 +60,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
               value={link.tag ?? ""}
               onChange={(e) => updateLink(index, { tag: e.target.value })}
               placeholder="e.g. health, weight-loss, supplement"
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50"
+              className="input-base w-full rounded-xl"
             />
           </div>
           <div>
@@ -70,7 +70,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
               onChange={(e) => updateLink(index, { description: e.target.value })}
               placeholder="Short note about this offer — payout, audience, angle..."
               rows={2}
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 resize-y min-h-[72px]"
+              className="input-base w-full rounded-xl resize-y min-h-[72px]"
             />
           </div>
           <div>
@@ -83,7 +83,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
                 updateLink(index, { url, network: detectLinkNetwork(url) });
               }}
               placeholder="https://example.com/product?ref=your-id"
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50"
+              className="input-base w-full rounded-xl"
             />
           </div>
         </div>
@@ -91,7 +91,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
       <button
         type="button"
         onClick={addLink}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent/80 transition-colors"
+        className="text-link-action"
       >
         <Plus size={16} />
         Add another link

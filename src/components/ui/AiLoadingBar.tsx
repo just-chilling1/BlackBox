@@ -18,7 +18,7 @@ export function AiLoadingBar({ label, className = "", progress, active = false }
     <div className={`flex min-w-0 max-w-full flex-col gap-2 ${className}`} role="status" aria-live="polite">
       <div className="flex min-w-0 items-center justify-between gap-3">
         {label && (
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-accent/90 flex items-center gap-2 min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-800 flex items-center gap-2 min-w-0">
             {showActivity && (
               <span
                 className="inline-block w-1.5 h-1.5 shrink-0 rounded-full bg-accent ai-loading-pulse-dot"
@@ -29,7 +29,7 @@ export function AiLoadingBar({ label, className = "", progress, active = false }
           </p>
         )}
         {determinate && (
-          <p className="text-[10px] font-bold tabular-nums text-accent/90 shrink-0">
+          <p className="text-[10px] font-bold tabular-nums text-amber-800 shrink-0">
             {clamped}%
           </p>
         )}

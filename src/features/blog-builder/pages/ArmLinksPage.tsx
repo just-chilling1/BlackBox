@@ -323,7 +323,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                 type="button"
                 onClick={() => void handleSaveToVault()}
                 disabled={!linkUrl.trim() || loading}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl font-bold uppercase tracking-widest text-sm border border-promo-accent/50 text-promo-accent bg-promo-accent/10 hover:bg-promo-accent/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary-prominent"
               >
                 {loading ? (
                   <Loader2 size={18} className="animate-spin" />
@@ -335,7 +335,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                 {linkSaved ? "Link Saved" : "Save to Content Reserve"}
               </button>
               {linkSaved && (
-                <span className="text-sm text-promo-accent flex items-center gap-1.5">
+                <span className="text-sm font-medium text-emerald-700 flex items-center gap-1.5">
                   <CheckCircle2 size={15} />
                   Saved to your portfolio
                 </span>

@@ -242,7 +242,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             {!collapsed && (
               <div className="min-w-0 flex-1">
                 <div className="brand-font truncate text-sm font-bold text-text-heading">{displayName}</div>
-                <div className="text-xs text-text-muted">Active Member</div>
+                <div className="text-xs text-text-secondary">Active Member</div>
               </div>
             )}
             <button

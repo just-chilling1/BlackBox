@@ -111,7 +111,7 @@ export function DeployLaunchPanel({
         </div>
 
         {phase === "idle" && !quotaUnlimited && quotaLimit != null && quotaRemaining != null && (
-          <p className="text-xs text-accent/90">
+          <p className="text-xs text-text-secondary">
             {quotaRemaining} of {quotaLimit} new websites remaining today
           </p>
         )}

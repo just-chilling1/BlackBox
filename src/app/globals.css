@@ -138,8 +138,16 @@ html[data-sidebar="collapsed"] {
     @apply bg-accent text-text-on-accent px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50;
   }
 
+  .btn-primary-prominent {
+    @apply inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl font-bold uppercase tracking-widest text-sm bg-accent text-text-on-accent shadow-gold transition-all duration-300 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
   .btn-secondary {
     @apply bg-surface border border-border-dim text-text-primary px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-border-dim active:scale-[0.98];
+  }
+
+  .text-link-action {
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-amber-800 underline-offset-2 hover:text-amber-950 hover:underline transition-colors;
   }
 
   .btn-ghost {
@@ -238,7 +246,7 @@ html[data-sidebar="collapsed"] {
 
   /* Inputs */
   .input-base {
-    @apply bg-page border border-border-dim rounded-lg px-4 py-3 text-sm text-text-primary outline-none transition-all placeholder:text-text-muted focus:border-accent/50 focus:ring-1 focus:ring-accent/20;
+    @apply bg-page border border-slate-300 rounded-lg px-4 py-3 text-sm text-text-primary outline-none transition-all placeholder:text-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20;
   }
 
   /* Typography Utilities */
@@ -311,7 +319,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .page-eyebrow {
-    @apply text-[10px] font-black uppercase tracking-[0.25em] text-accent;
+    @apply text-[10px] font-black uppercase tracking-[0.25em] text-amber-800;
   }
 
   .ds-h1 {
@@ -509,7 +517,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .sidebar-sign-out {
-    color: var(--text-muted);
+    @apply text-text-secondary;
     transition: all 0.2s ease;
   }
 

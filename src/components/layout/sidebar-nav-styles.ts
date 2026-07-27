@@ -3,12 +3,12 @@ import { clsx } from "clsx";
 export type SidebarNavColor = "gold" | "indigo" | "purple" | "blue" | "orange" | "emerald";
 
 const ICON_COLOR: Record<SidebarNavColor, string> = {
-  gold: "text-text-muted group-hover:text-accent",
-  indigo: "text-text-muted group-hover:text-indigo-500",
-  purple: "text-text-muted group-hover:text-purple-500",
-  blue: "text-text-muted group-hover:text-blue-500",
-  orange: "text-text-muted group-hover:text-orange-500",
-  emerald: "text-text-muted group-hover:text-emerald-500",
+  gold: "text-text-secondary group-hover:text-accent",
+  indigo: "text-text-secondary group-hover:text-indigo-500",
+  purple: "text-text-secondary group-hover:text-purple-500",
+  blue: "text-text-secondary group-hover:text-blue-500",
+  orange: "text-text-secondary group-hover:text-orange-500",
+  emerald: "text-text-secondary group-hover:text-emerald-500",
 };
 
 export function sidebarNavItemClass(

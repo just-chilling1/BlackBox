@@ -104,7 +104,7 @@ export default function LinkVaultPage() {
             type="button"
             onClick={() => void handleSave()}
             disabled={!canSave}
-            className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl font-bold uppercase tracking-widest text-sm border border-accent/50 text-accent bg-accent/10 hover:bg-accent/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary-prominent"
           >
             {saving ? (
               <Loader2 size={18} className="animate-spin" />
@@ -116,7 +116,7 @@ export default function LinkVaultPage() {
             {saved ? "Link Saved" : saving ? "Saving..." : "Save link"}
           </button>
           {saved && !error && (
-            <span className="text-sm font-medium text-accent">Saved to Links Library</span>
+            <span className="text-sm font-medium text-emerald-700">Saved to Links Library</span>
           )}
         </div>
       </div>

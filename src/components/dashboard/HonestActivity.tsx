@@ -91,7 +91,7 @@ export function HonestActivity() {
       <div className="dashboard-nested-card mt-5 flex items-start gap-3 border-accent/20 bg-accent/5 p-4">
         <Lightbulb className="mt-0.5 shrink-0 text-accent" size={18} />
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-accent/80">Tip</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-amber-800">Tip</p>
           <p className="mt-1 text-sm text-text-secondary">{TIPS[tipIndex]}</p>
         </div>
       </div>

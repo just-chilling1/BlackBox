@@ -263,7 +263,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       <div className="glass-card p-6 flex flex-col gap-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-accent/90">X-Power Promotions</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-800">X-Power Promotions</p>
             <h2 className="mt-1 brand-font text-xl text-text-heading">{site.siteName}</h2>
             {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
             <div className="mt-3 flex flex-wrap gap-2">
@@ -284,7 +284,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               href={site.siteUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 shrink-0 text-xs font-semibold text-accent hover:text-accent/80 hover:underline"
+              className="text-link-action shrink-0 text-xs"
             >
               View live site
               <ExternalLink size={12} />
@@ -309,7 +309,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               </p>
             ) : null}
             {quota && (
-              <p className="text-xs font-medium text-accent/90">
+              <p className="text-xs font-medium text-text-secondary">
                 {quota.remaining} of {quota.limit} generations remaining today
               </p>
             )}

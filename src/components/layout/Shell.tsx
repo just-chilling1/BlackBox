@@ -47,7 +47,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <ParticleBackground />
       <Sidebar />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         <header
           className="mobile-header-glass fixed inset-x-0 top-0 z-40 shrink-0 lg:hidden"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
