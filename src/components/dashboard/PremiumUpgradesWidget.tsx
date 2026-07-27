@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
@@ -64,7 +64,7 @@ export function PremiumUpgradesWidget({
       )}
     >
       {!collapsed && (
-        <div className={clsx("px-3 pb-3 pt-2.5", isFeatured && "text-center md:text-left")}>
+        <div className={clsx("px-3 pb-2 pt-2.5", isFeatured && "text-center md:text-left")}>
           <p
             className={clsx(
               "flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent",
@@ -73,14 +73,6 @@ export function PremiumUpgradesWidget({
           >
             <Sparkles className="h-4 w-4 animate-premium-pulse shrink-0" fill="currentColor" />
             Premium Upgrades
-          </p>
-          <p
-            className={clsx(
-              "mt-1.5 text-sm leading-relaxed text-text-secondary",
-              isFeatured && "mx-auto max-w-2xl md:mx-0"
-            )}
-          >
-            Unlock the tools that drive the biggest results.
           </p>
         </div>
       )}
@@ -108,11 +100,11 @@ export function PremiumUpgradesWidget({
                 onClick={onNavigate}
                 className={clsx(
                   "premium-upgrade-card group h-full",
-                  isFeatured && "flex-col items-start gap-3 p-4",
+                  isFeatured && "p-4",
                   isActive && "is-active"
                 )}
               >
-                <div className="flex w-full items-start gap-3">
+                <div className="flex w-full items-center gap-3">
                   <div
                     className={clsx(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br transition-all duration-300",
@@ -124,45 +116,15 @@ export function PremiumUpgradesWidget({
                     <Icon size={19} strokeWidth={1.5} />
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <span
-                      className={clsx(
-                        "block text-sm font-bold tracking-wide text-text-heading",
-                        isActive && "text-text-heading"
-                      )}
-                    >
-                      {feature.label}
-                    </span>
-                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-text-muted">
-                      {feature.description}
-                    </p>
-                  </div>
-
-                  {isSidebar && (
-                    <span
-                      className={clsx(
-                        "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-300",
-                        isActive
-                          ? "bg-accent/20 text-accent"
-                          : "bg-slate-100 text-text-muted group-hover:translate-x-0.5 group-hover:bg-accent/15 group-hover:text-accent"
-                      )}
-                    >
-                      <ArrowRight size={14} />
-                    </span>
-                  )}
-                </div>
-
-                {isFeatured && (
                   <span
                     className={clsx(
-                      "inline-flex items-center gap-1 text-xs font-semibold transition-colors",
-                      isActive ? "text-accent" : "text-text-muted group-hover:text-accent"
+                      "min-w-0 flex-1 text-sm font-bold tracking-wide text-text-heading",
+                      isActive && "text-text-heading"
                     )}
                   >
-                    Explore
-                    <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                    {feature.label}
                   </span>
-                )}
+                </div>
               </Link>
             </motion.div>
           );

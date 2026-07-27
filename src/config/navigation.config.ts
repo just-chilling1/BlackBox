@@ -117,9 +117,9 @@ export const premiumNav: NavItem[] = [
   { path: "/instant", label: "Instant Income", icon: "Sparkles", feature: "premium-instant" },
   { path: "/autopilot", label: "Automated Profits", icon: "Rocket", feature: "premium-autopilot" },
   { path: "/accelerator", label: "Accelerator", icon: "Zap", feature: "premium-accelerator" },
-  { path: "/recurring-wealth", label: "Recurring Wealth Stream", icon: "Repeat", feature: "premium-recurring" },
+  { path: "/recurring-wealth", label: "Recurring Stream", icon: "Repeat", feature: "premium-recurring" },
   { path: "/social-payouts", label: "Social Payouts", icon: "Globe", feature: "premium-social" },
-  { path: "/protector", label: "Wealth Protector", icon: "ShieldCheck", feature: "protector" },
+  { path: "/protector", label: "Protector", icon: "ShieldCheck", feature: "protector" },
 ];
 
 export const premiumSectionLabel = "Premium Upgrades";
