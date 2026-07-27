@@ -43,7 +43,7 @@ export function PremiumFeatureNavList({
                   onClick={onNavigate}
                   className={clsx(
                     "premium-sidebar-item flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-medium",
-                    isActive ? "is-active text-white" : "text-gray-300"
+                    isActive ? "is-active text-text-heading" : "text-text-secondary"
                   )}
                 >
                   <Icon className={clsx("h-5 w-5 shrink-0", isActive ? "text-accent" : "text-accent/80")} />
@@ -84,7 +84,7 @@ export function PremiumFeatureNavList({
                 className={clsx(
                   "premium-sidebar-item flex items-center gap-3 rounded-xl py-3 text-sm font-medium transition-all duration-300",
                   collapsed ? "justify-center px-0" : "px-3",
-                  isActive ? "is-active text-white" : "text-gray-300"
+                  isActive ? "is-active text-text-heading" : "text-text-secondary"
                 )}
               >
                 <Icon

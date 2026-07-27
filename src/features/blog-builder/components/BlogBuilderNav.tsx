@@ -62,9 +62,9 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
           )}
           title="Complete the previous step first"
         >
-          <Lock size={18} className="text-gray-500 shrink-0" />
+          <Lock size={18} className="text-text-muted shrink-0" />
           {!collapsed && (
-            <span className="brand-font text-sm font-medium text-gray-500 leading-snug truncate">
+            <span className="brand-font text-sm font-medium text-text-muted leading-snug truncate">
               {item.label}
             </span>
           )}
@@ -110,7 +110,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
   };
 
   const sectionLabelClass =
-    "px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-500 first:pt-2";
+    "px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-text-muted first:pt-2";
 
   return (
     <>

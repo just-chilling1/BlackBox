@@ -88,10 +88,16 @@ export const blogBuilderResourceNav: NavItem[] = blogBuilderCoreNav;
 export const blogBuilderGenerateSectionLabel = "Generate";
 export const blogBuilderLibrariesSectionLabel = "Libraries";
 
-/** Core sidebar resources — academy is feature-gated; support is always on */
+/** Footer support link — rendered above account in the sidebar */
+export const supportNav: NavItem = {
+  path: "/support",
+  label: "Support",
+  icon: "Headphones",
+};
+
+/** Core sidebar resources — academy is feature-gated */
 export const coreResourceNav: NavItem[] = [
   { path: "/training", label: "Academy", icon: "GraduationCap", feature: "training" },
-  { path: "/support", label: "Support", icon: "Headphones" },
 ];
 
 export const resourceNav: NavItem[] = [
