@@ -11,6 +11,8 @@ import {
   Loader2,
   Filter,
   Sparkles,
+  ArrowRight,
+  FolderOpen,
 } from "lucide-react";
 import Link from "next/link";
 import { clsx } from "clsx";
@@ -280,20 +282,30 @@ export default function AcceleratorPage() {
           )}
 
           {clonedUrl && (
-            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-              <Sparkles size={16} className="text-emerald-700" />
-              <span className="font-medium">Offer cloned with X threads!</span>
-              <Link
-                href={clonedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-semibold text-emerald-800 underline hover:text-emerald-950"
-              >
-                View offer <ExternalLink size={14} />
-              </Link>
-              <Link href="/offers" className="font-semibold text-emerald-700 hover:text-emerald-900">
-                Offers Library →
-              </Link>
+            <div className="flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2 text-sm text-emerald-900">
+                <Sparkles size={16} className="shrink-0 text-emerald-700" />
+                <span className="font-semibold">Offer cloned with X threads!</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={clonedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white shadow-sm transition-all hover:bg-emerald-800 active:scale-[0.98]"
+                >
+                  View offer
+                  <ExternalLink size={14} />
+                </Link>
+                <Link
+                  href="/offers"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-emerald-800 transition-all hover:bg-emerald-100 active:scale-[0.98]"
+                >
+                  <FolderOpen size={14} />
+                  Offers Library
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
             </div>
           )}
         </div>
