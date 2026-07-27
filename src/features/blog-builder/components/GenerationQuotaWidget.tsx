@@ -20,7 +20,7 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
   if (loading) {
     return (
       <div
-        className={`rounded-xl border border-white/10 bg-[#0B0C10]/80 p-4 flex items-center gap-3 ${className}`}
+        className={`rounded-xl border border-black/10 bg-[#0B0C10]/80 p-4 flex items-center gap-3 ${className}`}
       >
         <Loader2 className="animate-spin text-[#45A29E]" size={18} />
         <span className="text-sm text-[#6b7280]">Loading generations…</span>
@@ -93,7 +93,7 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
           </p>
         </div>
 
-        <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+        <div className="h-2 rounded-full bg-black/5 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${
               depleted ? "bg-amber-500/70" : "bg-[#45A29E]"

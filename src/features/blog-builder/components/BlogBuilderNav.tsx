@@ -5,9 +5,14 @@ import { clsx } from "clsx";
 import { Lock } from "lucide-react";
 import {
   getBlogBuilderWorkflowSteps,
-  getBlogBuilderCoreNav,
+  getBlogBuilderGenerateNav,
+  getBlogBuilderLibrariesNav,
   isNavItemLocked,
 } from "@/lib/features";
+import {
+  blogBuilderGenerateSectionLabel,
+  blogBuilderLibrariesSectionLabel,
+} from "@/config/navigation.config";
 import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
 import { isFeatureEnabled } from "@/config/features.config";
@@ -24,7 +29,8 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
   if (!isFeatureEnabled("blog-builder")) return null;
 
   const steps = getBlogBuilderWorkflowSteps();
-  const coreNav = getBlogBuilderCoreNav();
+  const generateNav = getBlogBuilderGenerateNav();
+  const librariesNav = getBlogBuilderLibrariesNav();
   const workflow = useWorkflowNav();
   const workflowProgress = workflow?.progress ?? 0;
 
@@ -74,7 +80,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     );
   };
 
-  const renderCoreLink = (item: (typeof coreNav)[0]) => {
+  const renderCoreLink = (item: (typeof generateNav)[0]) => {
     const Icon = getNavIcon(item.icon);
     const isActive = isNavPathActive(pathname, item.path);
 
@@ -100,26 +106,24 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     );
   };
 
+  const sectionLabelClass =
+    "text-[10px] font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mt-4 mb-2";
+
   return (
     <>
-      {steps.length > 0 && (
+      {(steps.length > 0 || generateNav.length > 0) && (
         <>
-          {steps.length > 1 && !collapsed && (
-            <span className="text-[10px] font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mt-4 mb-2">
-              Sales Offer Generator
-            </span>
-          )}
+          {!collapsed && <span className={sectionLabelClass}>{blogBuilderGenerateSectionLabel}</span>}
           {steps.map(renderStep)}
+          {generateNav.map(renderCoreLink)}
         </>
       )}
-      {coreNav.length > 0 && (
+      {librariesNav.length > 0 && (
         <>
           {!collapsed && (
-            <span className="text-[10px] font-black tracking-[0.25em] text-text-muted uppercase px-3 sm:px-5 mt-4 mb-2">
-              Libraries
-            </span>
+            <span className={sectionLabelClass}>{blogBuilderLibrariesSectionLabel}</span>
           )}
-          {coreNav.map(renderCoreLink)}
+          {librariesNav.map(renderCoreLink)}
         </>
       )}
     </>

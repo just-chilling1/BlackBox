@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Play } from "lucide-react";
+import { Play, HelpCircle } from "lucide-react";
 import { clsx } from "clsx";
 import { trainingRoutes } from "@/config/training.config";
 
 const tabs = [
   { href: trainingRoutes.videos, label: "Training Videos", icon: Play },
-  { href: trainingRoutes.faq, label: "FAQ", icon: GraduationCap },
+  { href: trainingRoutes.faq, label: "FAQ", icon: HelpCircle },
 ] as const;
 
 export function TrainingTabNav() {

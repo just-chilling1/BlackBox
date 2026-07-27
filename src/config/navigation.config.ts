@@ -65,15 +65,28 @@ export const blogBuilderWorkflowSteps: NavItem[] = [
   { path: "/sales-offer-generator", label: "Sales Offer Generator", icon: "Rocket", feature: "blog-builder" },
 ];
 
-/** Core app pages — promotions, links, and generated offers */
-export const blogBuilderCoreNav: NavItem[] = [
+/** Generate tools — sales pages and social promotions */
+export const blogBuilderGenerateNav: NavItem[] = [
   { path: "/promote", label: "X-Power Promotions", icon: "Megaphone", feature: "article-publish" },
+];
+
+/** Saved links and generated offers */
+export const blogBuilderLibrariesNav: NavItem[] = [
   { path: "/link-vault", label: "Links Library", icon: "Link2", feature: "blog-builder" },
   { path: "/offers", label: "Offers Library", icon: "FolderOpen", feature: "blog-builder" },
 ];
 
-/** @deprecated Use blogBuilderCoreNav */
+/** @deprecated Use blogBuilderGenerateNav and blogBuilderLibrariesNav */
+export const blogBuilderCoreNav: NavItem[] = [
+  ...blogBuilderGenerateNav,
+  ...blogBuilderLibrariesNav,
+];
+
+/** @deprecated Use blogBuilderGenerateNav and blogBuilderLibrariesNav */
 export const blogBuilderResourceNav: NavItem[] = blogBuilderCoreNav;
+
+export const blogBuilderGenerateSectionLabel = "Generate";
+export const blogBuilderLibrariesSectionLabel = "Libraries";
 
 /** Core sidebar resources — academy is feature-gated; support is always on */
 export const coreResourceNav: NavItem[] = [
@@ -97,9 +110,9 @@ export const premiumNav: NavItem[] = [
   { path: "/dfy", label: "Done-For-You", icon: "Scan", feature: "premium-dfy" },
   { path: "/instant", label: "Instant Income", icon: "Sparkles", feature: "premium-instant" },
   { path: "/autopilot", label: "Automated Profits", icon: "Rocket", feature: "premium-autopilot" },
-  { path: "/accelerator", label: "Accelerator", icon: "Rocket", feature: "premium-accelerator" },
-  { path: "/recurring-wealth", label: "Recurring Wealth", icon: "Repeat", feature: "premium-recurring" },
-  { path: "/social-payouts", label: "Social Payouts", icon: "Megaphone", feature: "premium-social" },
+  { path: "/accelerator", label: "Accelerator", icon: "Zap", feature: "premium-accelerator" },
+  { path: "/recurring-wealth", label: "Recurring Wealth Stream", icon: "Repeat", feature: "premium-recurring" },
+  { path: "/social-payouts", label: "Social Payouts", icon: "Globe", feature: "premium-social" },
   { path: "/protector", label: "Wealth Protector", icon: "ShieldCheck", feature: "protector" },
 ];
 

@@ -59,6 +59,12 @@ function maxAccessibleStep(
   return 1;
 }
 
+type StepCompletionFlags = Partial<{
+  linksArmed: boolean;
+  territoryChosen: boolean;
+  themeChosen: boolean;
+}>;
+
 export default function SalesOfferGeneratorPage() {
   const searchParams = useSearchParams();
   const {
@@ -89,14 +95,18 @@ export default function SalesOfferGeneratorPage() {
     setWizardUiStep,
   ]);
 
-  const goToStep = (next: WizardStepNumber) => {
-    const maxStep = maxAccessibleStep(linksArmed, territoryChosen, themeChosen);
+  const goToStep = (next: WizardStepNumber, justCompleted?: StepCompletionFlags) => {
+    const maxStep = maxAccessibleStep(
+      justCompleted?.linksArmed ?? linksArmed,
+      justCompleted?.territoryChosen ?? territoryChosen,
+      justCompleted?.themeChosen ?? themeChosen
+    );
     setWizardUiStep(next <= maxStep ? next : maxStep);
   };
 
   const handleGenerateAnother = () => {
     beginNewSiteGeneration();
-    setWizardUiStep(2);
+    setWizardUiStep(1);
   };
 
   if (!sessionLoaded) {
@@ -117,20 +127,20 @@ export default function SalesOfferGeneratorPage() {
       <WizardStepper currentStep={step} />
 
       {step === 1 && (
-        <ArmLinksPage embedded onContinue={() => goToStep(2)} />
+        <ArmLinksPage embedded onContinue={() => goToStep(2, { linksArmed: true })} />
       )}
       {step === 2 && (
         <ChooseTerritoryPage
           embedded
           onBack={() => goToStep(1)}
-          onContinue={() => goToStep(3)}
+          onContinue={() => goToStep(3, { territoryChosen: true })}
         />
       )}
       {step === 3 && (
         <ChooseThemePage
           embedded
           onBack={() => goToStep(2)}
-          onContinue={() => goToStep(4)}
+          onContinue={() => goToStep(4, { themeChosen: true })}
         />
       )}
       {step === 4 && (

@@ -40,7 +40,7 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
       className={`group relative rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(12,189,160,0.12)] ${
         isActive
           ? "border-promo-accent/45 bg-promo-accent/8"
-          : "border-white/10 glass-tile hover:border-promo-accent/35"
+          : "border-black/10 glass-tile hover:border-promo-accent/35"
       }`}
     >
       <div className="flex items-start gap-2">
@@ -126,7 +126,7 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
           ) : (
             <span
               title="Publish your site to view it live"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/10 bg-white/5 text-text-muted opacity-50 cursor-not-allowed"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-black/10 bg-black/5 text-text-muted opacity-50 cursor-not-allowed"
               aria-hidden
             >
               <Eye size={18} strokeWidth={2} />

@@ -17,7 +17,7 @@ interface DeployPostSlotProps {
 }
 
 function ShimmerBlock({ className = "" }: { className?: string }) {
-  return <div className={`rounded-md bg-white/5 animate-pulse ${className}`} />;
+  return <div className={`rounded-md bg-black/5 animate-pulse ${className}`} />;
 }
 
 function PostHeroImage({ src, alt }: { src: string; alt: string }) {
@@ -32,7 +32,7 @@ function PostHeroImage({ src, alt }: { src: string; alt: string }) {
   }
 
   return (
-    <div className="relative aspect-[16/9] w-full overflow-hidden bg-white/5">
+    <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/5">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -81,7 +81,7 @@ export function DeployPostSlot({ slot, index, isPillar, onViewPost }: DeployPost
                 </div>
               </div>
             ) : (
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-white/5 flex flex-col items-center justify-center gap-2">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/5 flex flex-col items-center justify-center gap-2">
                 <Loader2 size={22} className="text-accent animate-spin" />
                 <p className="text-[10px] uppercase tracking-wider text-text-muted">Adding hero image...</p>
               </div>

@@ -44,3 +44,6 @@ public/*.mp4
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# accelerator seed temp artifacts
+scripts/.accelerator-*

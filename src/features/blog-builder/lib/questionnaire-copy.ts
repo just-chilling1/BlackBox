@@ -1,5 +1,11 @@
 import { generateStructuredJSON, extractJsonFromText, generateWithGPT } from "./ai";
 import type { TemplateStructureId } from "../themes/ready-templates";
+import {
+  buildQuestionnairePromptContext,
+  buildSeededQuestionnaireCopy,
+  resolveNicheKey,
+  type NicheKey,
+} from "./questionnaire-seeds";
 
 export interface QuestionnaireQuestion {
   id: string;
@@ -104,116 +110,60 @@ function validateQuestionnaireCopy(raw: unknown): QuestionnaireCopy | null {
 
 export function buildFallbackQuestionnaireCopy(input: {
   niche: string;
+  nicheKey?: NicheKey;
   productName: string;
   description?: string;
+  copyToneId?: TemplateStructureId;
 }): QuestionnaireCopy {
-  const niche = input.niche;
-  const topic = niche.toLowerCase();
-
-  return {
-    title: `What's Your ${niche} Profile?`,
-    subtitle: `A quick 5-question check-in to understand where you stand with ${topic}.`,
-    intro: `Everyone's ${topic} journey looks different. Answer five short questions and we'll share insights tailored to your situation — plus a resource that matches your goals.`,
-    questions: [
-      {
-        id: "q1",
-        question: `How would you describe your current experience with ${topic}?`,
-        options: [
-          { label: "Just getting started", value: "beginner" },
-          { label: "Some experience, still learning", value: "intermediate" },
-          { label: "Fairly experienced", value: "experienced" },
-          { label: "Advanced — looking to level up", value: "advanced" },
-        ],
-      },
-      {
-        id: "q2",
-        question: `What's your biggest challenge right now in ${topic}?`,
-        options: [
-          { label: "Not knowing where to start", value: "start" },
-          { label: "Too much conflicting advice", value: "overwhelm" },
-          { label: "Lack of consistency", value: "consistency" },
-          { label: "Plateaued results", value: "plateau" },
-        ],
-      },
-      {
-        id: "q3",
-        question: "How much time can you realistically dedicate each week?",
-        options: [
-          { label: "Less than 2 hours", value: "minimal" },
-          { label: "2–5 hours", value: "moderate" },
-          { label: "5–10 hours", value: "committed" },
-          { label: "10+ hours — all in", value: "intensive" },
-        ],
-      },
-      {
-        id: "q4",
-        question: "What outcome matters most to you right now?",
-        options: [
-          { label: "Quick wins and momentum", value: "quick" },
-          { label: "A clear step-by-step plan", value: "plan" },
-          { label: "Long-term sustainable results", value: "longterm" },
-          { label: "Expert guidance I can trust", value: "guidance" },
-        ],
-      },
-      {
-        id: "q5",
-        question: "How do you prefer to learn and take action?",
-        options: [
-          { label: "Short, actionable tips", value: "tips" },
-          { label: "Structured courses or guides", value: "structured" },
-          { label: "Community and accountability", value: "community" },
-          { label: "Tools and templates I can use", value: "tools" },
-        ],
-      },
-    ],
-    resultHeadline: "Your profile is ready",
-    resultMessage: `Based on your answers, you're clearly motivated to make progress in ${niche}. The next step is finding the right resource that matches your goals and learning style.`,
-    promoHeadline: `A recommended next step for your ${niche} journey`,
-    promoBody: `${input.productName} is a focused solution for people in ${niche} who want real results without the guesswork.${input.description ? ` ${input.description}` : ""}`,
-    promoBullets: [
-      `Tailored for ${niche} — not generic advice`,
-      "Clear action steps you can start today",
-      "Designed for people at your stage of the journey",
-    ],
-    promoCta: "Check out the recommended offer",
-    promoSubtext: "See if this is the right fit for you — takes less than a minute.",
-  };
+  return buildSeededQuestionnaireCopy(input);
 }
 
 export async function generateQuestionnaireCopy(input: {
   niche: string;
+  nicheKey?: NicheKey;
   productName: string;
   description?: string;
   productContext?: string;
   affiliateLabel?: string;
   copyToneId?: TemplateStructureId;
+  templateId?: string;
+  templateName?: string;
 }): Promise<QuestionnaireCopy> {
-  const toneInstruction = COPY_TONE_INSTRUCTIONS[input.copyToneId ?? "editorial"];
-  const systemPrompt = `${QUESTIONNAIRE_SYSTEM_BASE}\n\n${toneInstruction}`;
+  const nicheKey = input.nicheKey ?? resolveNicheKey(input.niche);
+  const copyToneId = input.copyToneId ?? "editorial";
+  const toneInstruction = COPY_TONE_INSTRUCTIONS[copyToneId];
+  const promptContext = buildQuestionnairePromptContext({
+    niche: input.niche,
+    nicheKey,
+    copyToneId,
+    templateName: input.templateName,
+  });
+  const systemPrompt = `${QUESTIONNAIRE_SYSTEM_BASE}\n\n${toneInstruction}\n\nEach quiz must use questions unique to the niche and template — never generic copy that works for any topic.`;
 
   const userPrompt = `Create a niche questionnaire funnel for "${input.niche}".
 
-NICHE: ${input.niche}
+${promptContext}
+
 PRODUCT NAME (for final promo page only): ${input.productName}
 AFFILIATE OFFER LABEL: ${input.affiliateLabel || input.productName}
 DESCRIPTION: ${input.description || "A proven solution for this niche."}
 ${input.productContext ? `\nSCRAPED OFFER CONTEXT (use on promo page only):\n${input.productContext}` : ""}
 
-The quiz questions must explore the niche topic — goals, challenges, habits, preferences.
+Write original questions in the same niche-specific style as the examples above.
 The final promo page recommends the product as a natural next step based on quiz results.
-Match the voice instruction exactly.`;
+Match the template voice exactly — editorial vs conversion vs minimal must feel distinctly different.`;
 
   try {
     return await generateStructuredJSON({
       systemPrompt,
       userPrompt,
       validate: validateQuestionnaireCopy,
-      options: { temperature: 0.65, maxRetries: 2, maxRepairAttempts: 1 },
+      options: { temperature: 0.72, maxRetries: 2, maxRepairAttempts: 1 },
     });
   } catch {
     try {
       const raw = await generateWithGPT(systemPrompt, userPrompt, {
-        temperature: 0.75,
+        temperature: 0.78,
         maxRetries: 2,
       });
       const parsed = validateQuestionnaireCopy(extractJsonFromText(raw));
@@ -221,6 +171,6 @@ Match the voice instruction exactly.`;
     } catch {
       /* use fallback */
     }
-    return buildFallbackQuestionnaireCopy(input);
+    return buildFallbackQuestionnaireCopy({ ...input, nicheKey, copyToneId });
   }
 }

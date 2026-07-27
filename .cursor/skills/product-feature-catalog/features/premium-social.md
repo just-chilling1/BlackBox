@@ -1,22 +1,29 @@
-# Premium Social (Social Payouts)
+# Premium Social (Social Payouts / 10X)
 
-**Feature ID:** `premium-social`  
-**Reference:** `secretmillionaire`, `aiwealth`
-
-## Route
-
-- `/social-payouts`
+**Feature ID:** `premium-social` (implements skeleton `premium-10x` bulk post flow)  
+**Route:** `/social-payouts`
 
 ## Description
 
-Pre-made Facebook posts with images — copy and paste to promote offers.
+Bulk-generate 10+ Facebook post variants from a member's offer/site — different hooks, angles, CTAs. Maps to the skeleton **10X** feature.
 
-## Implementation
+## User flow
 
-Copy `SocialPayoutsPage` + `data/posts.ts` from reference. Persist optional settings via `user_premium_settings`.
+```
+/social-payouts → Select offer from library → Generate 10X posts → Copy each
+```
+
+## APIs
+
+| Route | Purpose |
+|-------|---------|
+| `POST /api/premium/social-payouts` | Generate 10 posts via AI, save to `site_facebook_posts` |
+| `GET /api/premium/social-payouts?siteId=` | List saved posts |
+
+Requires `RAPIDAPI_KEY` for generation.
 
 ## Enable
 
 ```typescript
-enabledFeatures: [..., "premium-social"]
+enabledFeatures: [..., "premium-social", "blog-builder"]
 ```

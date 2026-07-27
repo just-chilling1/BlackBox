@@ -3,6 +3,7 @@ import type { ArmedLink, ThemeConfig } from "../types";
 import { getReadyTemplateFromConfig } from "../themes";
 import { deriveProductName } from "./product-sales-copy";
 import { generateQuestionnaireCopy, type QuestionnaireCopy } from "./questionnaire-copy";
+import { resolveNicheKey } from "./questionnaire-seeds";
 import { buildThemedQuestionnairePage } from "./questionnaire-page-html";
 
 export interface GenerateProductSiteParams {
@@ -43,10 +44,13 @@ export async function generateProductSite(
   const copy = await generateQuestionnaireCopy({
     productName,
     niche: params.niche,
+    nicheKey: resolveNicheKey(params.niche),
     description: params.scrapedDescription,
     productContext: params.productContext,
     affiliateLabel: affiliate.label,
     copyToneId: template.copyToneId,
+    templateId: template.id,
+    templateName: template.name,
   });
 
   const salesPageHtml = buildThemedQuestionnairePage({

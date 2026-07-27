@@ -1,3 +1,8 @@
+export const supportRoutes = {
+  contact: "/support",
+  faq: "/support/faq",
+} as const;
+
 export const support = {
   email: "support@example.com",
   /** mailto: or https:// helpdesk / ticketing URL */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Megaphone, Globe } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
@@ -28,34 +28,24 @@ function toPublishKitSite(site: BlogSite, siteUrl: string): PublishKitSite {
   };
 }
 
+function offerLabel(summary: SiteVaultSummary): string {
+  const title = summary.site.title || getSiteTerritory(summary.site);
+  if (summary.xThreadCount > 0) {
+    return `${title} (${summary.xThreadCount} threads)`;
+  }
+  return title;
+}
+
 export default function PromotePage() {
   const searchParams = useSearchParams();
   const initialSiteId = searchParams.get("siteId");
   const [summaries, setSummaries] = useState<SiteVaultSummary[]>([]);
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const [selectedSiteId, setSelectedSiteId] = useState("");
   const [selectedSite, setSelectedSite] = useState<BlogSite | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/blog/site", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((data) => {
-        const list = Array.isArray(data.summaries) ? data.summaries : [];
-        setSummaries(list);
-        const preferredId = initialSiteId && list.some((s: SiteVaultSummary) => s.site.id === initialSiteId)
-          ? initialSiteId
-          : list.length === 1
-            ? list[0].site.id
-            : null;
-        if (preferredId) {
-          void loadSite(preferredId);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [initialSiteId]);
-
-  const loadSite = async (siteId: string) => {
+  const loadSite = useCallback(async (siteId: string) => {
     setSelectedSiteId(siteId);
     setDetailLoading(true);
     setSelectedSite(null);
@@ -70,7 +60,30 @@ export default function PromotePage() {
     } finally {
       setDetailLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/blog/site", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        const list = Array.isArray(data.summaries) ? data.summaries : [];
+        setSummaries(list);
+        if (list.length === 0) return;
+
+        const preferredId =
+          initialSiteId && list.some((s: SiteVaultSummary) => s.site.id === initialSiteId)
+            ? initialSiteId
+            : list[0].site.id;
+
+        void loadSite(preferredId);
+      })
+      .finally(() => setLoading(false));
+  }, [initialSiteId, loadSite]);
+
+  const selectedSummary = useMemo(
+    () => summaries.find((s) => s.site.id === selectedSiteId),
+    [summaries, selectedSiteId]
+  );
 
   const siteUrl = useMemo(() => {
     if (!selectedSite) return "";
@@ -106,72 +119,63 @@ export default function PromotePage() {
   }
 
   return (
-    <div className="page-stack w-full max-w-6xl mx-auto">
+    <div className="page-stack w-full max-w-4xl mx-auto">
       <PageHeader
         eyebrow="X-Power Promotions"
         title="Generate X threads"
         subtitle={`Analyze your product and website, then generate ${THREADS_PER_GENERATION} ready-to-copy X threads.`}
       />
 
-      <div className="lg:hidden">
-        <label htmlFor="promote-site-select" className="sr-only">
-          Select website
+      <section className="glass-card space-y-5 p-6 md:p-8">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-promo-accent/15 text-promo-accent">
+            <Megaphone size={22} />
+          </div>
+          <div>
+            <p className="font-bold text-text-primary">X thread generator</p>
+            <p className="text-sm text-text-secondary">
+              Pick an offer, analyze your product, and generate ready-to-copy threads.
+            </p>
+          </div>
+        </div>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+          <select
+            value={selectedSiteId}
+            onChange={(e) => {
+              if (e.target.value) void loadSite(e.target.value);
+            }}
+            className="input-base w-full"
+          >
+            {summaries.map((summary) => (
+              <option key={summary.site.id} value={summary.site.id}>
+                {offerLabel(summary)}
+              </option>
+            ))}
+          </select>
         </label>
-        <select
-          id="promote-site-select"
-          value={selectedSiteId ?? ""}
-          onChange={(e) => {
-            if (e.target.value) void loadSite(e.target.value);
-          }}
-          className="input-base w-full"
-        >
-          <option value="" disabled>
-            Select a website…
-          </option>
-          {summaries.map((summary) => (
-            <option key={summary.site.id} value={summary.site.id}>
-              {summary.site.title}
-            </option>
-          ))}
-        </select>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,280px)_1fr] gap-6">
-        <aside className="hidden lg:flex flex-col gap-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-accent">Your offers</p>
-          {summaries.map((summary) => {
-            const active = summary.site.id === selectedSiteId;
-            return (
-              <button
-                key={summary.site.id}
-                type="button"
-                onClick={() => loadSite(summary.site.id)}
-                className={`glass-card p-4 text-left transition-colors ${
-                  active ? "border-promo-accent/40 bg-promo-accent/5" : "hover:border-white/20"
-                }`}
-              >
-                <p className="brand-font text-sm text-text-heading truncate">{summary.site.title}</p>
-                <p className="text-xs text-text-muted mt-1 truncate">{getSiteTerritory(summary.site)}</p>
-                <p className="text-[11px] text-text-muted mt-2 capitalize">{summary.site.status}</p>
-              </button>
-            );
-          })}
-        </aside>
+        {selectedSummary && (
+          <p className="text-xs text-text-muted">
+            Niche: {getSiteTerritory(selectedSummary.site)}
+            {selectedSummary.site.armed_links?.[0]?.url
+              ? " · Link armed"
+              : " · Add a link in Links Library for best results"}
+            {selectedSummary.xThreadCount > 0
+              ? ` · ${selectedSummary.xThreadCount} saved threads`
+              : ""}
+          </p>
+        )}
+      </section>
 
-        <section className="flex flex-col gap-4 min-w-0">
-          {!selectedSiteId ? (
-            <EmptyState
-              icon={Megaphone}
-              title="Select an offer"
-              description="Choose a sales offer to analyze your product and generate X threads."
-            />
-          ) : detailLoading ? (
-            <PageLoading message="Loading site details..." className="max-w-none" />
-          ) : kitSite ? (
-            <PublishKitPanel site={kitSite} />
-          ) : null}
-        </section>
-      </div>
+      <section className="min-w-0">
+        {detailLoading ? (
+          <PageLoading message="Loading site details..." className="max-w-none" />
+        ) : kitSite ? (
+          <PublishKitPanel site={kitSite} />
+        ) : null}
+      </section>
     </div>
   );
 }

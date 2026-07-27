@@ -454,7 +454,7 @@ export default function AutomatedProfitsPage() {
             </section>
 
             {/* Footer */}
-            <footer className="mt-16 pt-8 border-t border-white/5 flex flex-col items-center gap-4 pb-10">
+            <footer className="mt-16 pt-8 border-t border-black/5 flex flex-col items-center gap-4 pb-10">
                 <div className="flex items-center gap-6 flex-wrap justify-center">
                     {["100+ Sources", "9 Niches", "Submit Once", "Traffic Forever"].map((b, i) => (
                         <div key={i} className="flex items-center gap-2 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">

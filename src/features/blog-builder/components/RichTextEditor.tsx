@@ -129,7 +129,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-1 flex-wrap rounded-lg border border-white/10 glass-tile p-1.5">
+      <div className="flex items-center gap-1 flex-wrap rounded-lg border border-black/10 glass-tile p-1.5">
         {mode === "visual" && (
           <>
             {actions.map(({ icon: Icon, label, run }) => (
@@ -140,12 +140,12 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
                 aria-label={label}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={run}
-                className="inline-flex items-center justify-center h-8 w-8 rounded-md text-text-muted hover:text-text-heading hover:bg-white/10 transition-colors"
+                className="inline-flex items-center justify-center h-8 w-8 rounded-md text-text-muted hover:text-text-heading hover:bg-black/10 transition-colors"
               >
                 <Icon size={15} />
               </button>
             ))}
-            <span className="mx-0.5 h-5 w-px bg-white/10" aria-hidden />
+            <span className="mx-0.5 h-5 w-px bg-black/10" aria-hidden />
             <button
               type="button"
               title="Insert image"
@@ -153,7 +153,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               disabled={uploading}
               onMouseDown={(e) => e.preventDefault()}
               onClick={insertImage}
-              className="inline-flex items-center justify-center h-8 w-8 rounded-md text-text-muted hover:text-text-heading hover:bg-white/10 transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-md text-text-muted hover:text-text-heading hover:bg-black/10 transition-colors disabled:opacity-50"
             >
               {uploading ? <Loader2 size={15} className="animate-spin" /> : <ImagePlus size={15} />}
             </button>
@@ -163,7 +163,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           <button
             type="button"
             onClick={() => setMode((m) => (m === "visual" ? "html" : "visual"))}
-            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11px] font-semibold text-text-muted hover:text-text-heading hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11px] font-semibold text-text-muted hover:text-text-heading hover:bg-black/10 transition-colors"
           >
             {mode === "visual" ? <Code2 size={14} /> : <Eye size={14} />}
             {mode === "visual" ? "HTML" : "Visual"}

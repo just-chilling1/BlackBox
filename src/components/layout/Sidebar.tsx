@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LogOut, ChevronRight, Lock, Sparkles, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { LogOut, ChevronRight, Lock, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -13,7 +13,8 @@ import {
   getVisibleResourceNav,
   isNavItemLocked,
 } from "@/lib/features";
-import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
+import { PREMIUM_FEATURES } from "@/lib/premium-features";
+import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
 import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
 import { BrandLogo } from "./BrandLogo";
@@ -106,7 +107,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   return (
     <div className="relative flex h-full flex-col">
       {workflowSteps.length > 0 && (
-        <div className="absolute left-0 top-0 z-0 h-full w-0.5 bg-white/5">
+        <div className="absolute left-0 top-0 z-0 h-full w-0.5 bg-black/5">
           <motion.div
             initial={{ height: 0 }}
             animate={{ height: `${progress}%` }}
@@ -120,7 +121,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </div>
       )}
 
-      <div className={clsx("relative z-10 shrink-0 border-b border-white/5", collapsed ? "px-3 py-4" : "px-4 py-5")}>
+      <div className={clsx("relative z-10 shrink-0 border-b border-black/5", collapsed ? "px-3 py-4" : "px-4 py-5")}>
         <div className={clsx("flex items-center", collapsed ? "flex-col gap-3" : "justify-between gap-2")}>
           <Link
             href="/dashboard"
@@ -135,7 +136,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
               type="button"
               onClick={onToggle}
               aria-label="Collapse sidebar"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-text-muted transition-colors hover:bg-white/5 hover:text-text-primary"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/10 text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
             >
               <PanelLeftClose size={16} />
             </button>
@@ -162,45 +163,8 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         ) : null}
 
         {PREMIUM_FEATURES.length > 0 && (
-          <div className="mt-4">
-            <div className={clsx("premium-nav-section", collapsed ? "p-1" : "p-2")}>
-              {!collapsed && (
-                <p className="relative z-10 flex items-center gap-1.5 px-2.5 sm:px-3 pb-2 pt-1.5 text-[10px] font-black tracking-[0.25em] text-accent uppercase">
-                  <Sparkles className="h-3 w-3 shrink-0 animate-sparkle-pulse" fill="currentColor" />
-                  {PREMIUM_SECTION_LABEL}
-                </p>
-              )}
-              <ul className="relative z-10 space-y-1">
-                {PREMIUM_FEATURES.map((item, index) => {
-                  const isActive = isNavPathActive(pathname, item.href);
-                  const Icon = item.icon;
-                  return (
-                    <motion.li
-                      key={item.href}
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15 + index * 0.05 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={handleNavClick}
-                        title={collapsed ? item.label : undefined}
-                        className={clsx(
-                          "premium-sidebar-item flex items-center gap-3 rounded-xl py-3 text-sm font-medium text-text-secondary",
-                          collapsed ? "justify-center px-2" : "px-3 sm:px-4",
-                          isActive && "is-active"
-                        )}
-                      >
-                        <Icon size={18} className={clsx("shrink-0", isActive ? "text-accent" : "text-accent/80")} />
-                        {!collapsed && (
-                          <span className="brand-font text-sm font-medium leading-snug">{item.label}</span>
-                        )}
-                      </Link>
-                    </motion.li>
-                  );
-                })}
-              </ul>
-            </div>
+          <div className="mt-4 px-1">
+            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
           </div>
         )}
 
@@ -217,7 +181,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         )}
       </nav>
 
-      <div className="relative z-10 shrink-0 border-t border-white/5 px-2 py-3">
+      <div className="relative z-10 shrink-0 border-t border-black/5 px-2 py-3">
         {dopamineEnabled && !collapsed ? (
           <div className="mb-3 px-2">
             <LiveActivityTicker />

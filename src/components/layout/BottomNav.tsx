@@ -5,10 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles, LogOut, ExternalLink, Headphones, ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
-import { motion } from "framer-motion";
 import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { getBottomNavTabs, getBottomNavMoreLinks } from "@/lib/features";
-import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
+import { PREMIUM_FEATURES } from "@/lib/premium-features";
+import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
 import { getExclusiveOffers } from "@/config/offers.config";
 import { trainingContent } from "@/config/training.config";
 import { getNavIcon } from "@/lib/nav-icons";
@@ -62,7 +62,7 @@ export function BottomNav() {
   return (
     <>
       <nav
-        className="app-bottom-nav fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-page/95 lg:hidden"
+        className="app-bottom-nav fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-page/95 lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex h-16">
@@ -113,10 +113,10 @@ export function BottomNav() {
             onClick={() => setMoreOpen(false)}
           />
           <div
-            className="absolute bottom-0 left-0 right-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-white/10 bg-page"
+            className="absolute bottom-0 left-0 right-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-black/10 bg-page"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
           >
-            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-white/15" />
+            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-black/15" />
             <div className="space-y-6 p-4">
               {moreLinks.length > 0 ? (
                 <div>
@@ -134,7 +134,7 @@ export function BottomNav() {
                           onClick={() => setMoreOpen(false)}
                           className={clsx(
                             "flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold",
-                            isActive ? "bg-accent/10 text-accent" : "text-text-secondary active:bg-white/5"
+                            isActive ? "bg-accent/10 text-accent" : "text-text-secondary active:bg-black/5"
                           )}
                         >
                           <Icon className="h-5 w-5" />
@@ -148,38 +148,7 @@ export function BottomNav() {
               ) : null}
 
               {PREMIUM_FEATURES.length > 0 ? (
-                <div className="premium-nav-section p-2">
-                  <p className="flex items-center gap-1.5 px-2 pb-2 pt-1 text-xs font-semibold uppercase tracking-widest text-accent">
-                    <Sparkles className="h-3.5 w-3.5 shrink-0 animate-sparkle-pulse" fill="currentColor" />
-                    {PREMIUM_SECTION_LABEL}
-                  </p>
-                  <div className="space-y-1.5">
-                    {PREMIUM_FEATURES.map((item, index) => {
-                      const Icon = item.icon;
-                      const isActive = pathname.startsWith(item.href);
-                      return (
-                        <motion.div
-                          key={item.href}
-                          initial={{ opacity: 0, x: -12 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.05 + index * 0.05 }}
-                        >
-                          <Link
-                            href={item.href}
-                            onClick={() => setMoreOpen(false)}
-                            className={clsx(
-                              "premium-sidebar-item flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold",
-                              isActive ? "is-active text-accent" : "text-text-secondary"
-                            )}
-                          >
-                            <Icon className="h-5 w-5" />
-                            {item.label}
-                          </Link>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
+                <PremiumFeatureNavList mobile onNavigate={() => setMoreOpen(false)} />
               ) : null}
 
               {exclusiveOffers.length > 0 ? (
@@ -205,11 +174,11 @@ export function BottomNav() {
                 </div>
               ) : null}
 
-              <div className="space-y-3 border-t border-white/10 pt-4">
+              <div className="space-y-3 border-t border-black/10 pt-4">
                 <Link
                   href="/support"
                   onClick={() => setMoreOpen(false)}
-                  className="flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-text-secondary active:bg-white/5"
+                  className="flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-text-secondary active:bg-black/5"
                 >
                   <Headphones className="h-5 w-5" />
                   Contact Support

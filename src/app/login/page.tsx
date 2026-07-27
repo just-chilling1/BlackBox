@@ -126,9 +126,9 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="flex flex-col items-center gap-4 border-t border-[#141414] pt-8">
+      <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-8">
         <p className="text-[#475569] text-xs">New here?</p>
-        <Link href="/signup" className="brand-font text-accent text-xs font-bold tracking-wide hover:text-white transition-colors">
+        <Link href="/signup" className="brand-font text-accent text-xs font-bold tracking-wide hover:text-text-heading transition-colors">
           Sign Up
         </Link>
       </div>

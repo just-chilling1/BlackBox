@@ -6,7 +6,10 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "setup:supabase-auth": "node scripts/apply-supabase-auth-setup.mjs"
+    "setup:supabase-auth": "node scripts/apply-supabase-auth-setup.mjs",
+    "seed:accelerator": "npx tsx scripts/seed-accelerator.ts",
+    "seed:accelerator:all": "node scripts/seed-all-accelerator-batches.mjs",
+    "seed:recurring": "npx tsx scripts/seed-recurring-stream.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

@@ -416,7 +416,7 @@ export default function DeployAssetPage({
             if (onGenerateAnother) {
               onGenerateAnother();
             } else {
-              router.push(`${SALES_OFFER_GENERATOR_PATH}?step=2`);
+              router.push(`${SALES_OFFER_GENERATOR_PATH}?step=1`);
             }
           }}
           onViewVault={() => router.push("/offers")}

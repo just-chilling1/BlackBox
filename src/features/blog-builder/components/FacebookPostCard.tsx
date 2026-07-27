@@ -20,7 +20,7 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
   };
 
   return (
-    <div className="rounded-xl bg-black/30 border border-white/5 p-4 flex flex-col gap-3">
+    <div className="rounded-xl bg-black/30 border border-black/5 p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-text-muted">
           <Facebook size={12} className="text-accent" />

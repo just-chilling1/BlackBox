@@ -1,10 +1,14 @@
+import { Suspense } from "react";
+import SocialPayoutsPage from "@/features/premium-social/pages/SocialPayoutsPage";
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import { FeatureStubPage } from "@/components/FeatureStubPage";
+import { PageLoading } from "@/components/ui/page-loading";
 
 export default function Page() {
   return (
     <FeatureGuard feature="premium-social">
-      <FeatureStubPage feature="premium-social" title="Social Payouts" />
+      <Suspense fallback={<PageLoading message="Loading Social Payouts..." />}>
+        <SocialPayoutsPage />
+      </Suspense>
     </FeatureGuard>
   );
 }

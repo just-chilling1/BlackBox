@@ -1,31 +1,37 @@
-# premium-recurring
+# premium-recurring (Recurring Stream)
 
 **Feature ID:** `premium-recurring`  
-**Tier:** PREMIUM
+**Route:** `/recurring-wealth` (nav label: **Recurring Stream**)
 
 ## Description
 
-Catalog of recurring-commission affiliate offers (subscriptions/memberships) with stats: commission %, cancel rate, earn per visitor.
+100 ready-to-publish authority articles stored in `premium_article_templates`. Seeded once; members preview/copy with their affiliate link woven in.
 
 ## User flow
 
 ```
-/recurring → Grid of recurring offers
-  → Filter by niche
-  → Copy affiliate link
-  → Stats: commission, earn/visitor, cart conv., cancel rate
+/recurring-wealth → Filter by niche → Enter link → Expand article → Copy
 ```
 
-## Routes
+## One-time seed (admin)
 
-`/recurring` — premium nav
+Set env: `RECURRING_SEED_SECRET`
 
-## Supabase
+```bash
+curl -X PUT "http://localhost:3000/api/premium/recurring-stream/articles" \
+  -H "x-recurring-seed-secret: YOUR_SECRET"
+```
 
-- `recurring_offers` — name, niche, commission, cancel_rate, affiliate_url, earn_per_visitor
+## APIs
 
-## Implementation steps
+| Route | Purpose |
+|-------|---------|
+| `GET /api/premium/recurring-stream/articles` | List articles |
+| `POST /api/premium/recurring-stream/articles` | Get HTML with affiliate link |
+| `PUT /api/premium/recurring-stream/articles` | Admin seed |
 
-1. Add `"premium-recurring"` to `enabledFeatures`
-2. Seed offers table
-3. Grid page with copy buttons
+## Enable
+
+```typescript
+enabledFeatures: [..., "premium-recurring"]
+```

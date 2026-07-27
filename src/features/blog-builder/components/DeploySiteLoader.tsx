@@ -89,11 +89,11 @@ function BrowserChrome() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="deploy-browser-dot h-2 w-2 rounded-full bg-white/10"
+          className="deploy-browser-dot h-2 w-2 rounded-full bg-black/10"
           style={{ animationDelay: `${i * 0.22}s` }}
         />
       ))}
-      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-black/[0.06]">
         <span className="deploy-url-shimmer absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-accent/25 to-transparent" />
       </div>
     </div>
@@ -111,7 +111,7 @@ function SkeletonBlock({ index, className, visible }: { index: number; className
       }}
       transition={{ delay: index * 0.12, duration: 0.45, ease: "easeOut" }}
       className={cn(
-        "deploy-block relative overflow-hidden rounded-md border border-white/[0.06]",
+        "deploy-block relative overflow-hidden rounded-md border border-black/[0.06]",
         "bg-gradient-to-r from-accent/15 via-promo-accent/10 to-transparent",
         className,
         visible && "deploy-block--live"
@@ -239,7 +239,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
         <Globe size={18} className="deploy-globe shrink-0 text-text-muted/60" aria-hidden />
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-page/80 p-3 sm:p-4">
+      <div className="relative overflow-hidden rounded-xl border border-black/[0.08] bg-page/80 p-3 sm:p-4">
         <BrowserChrome />
         <SkeletonPreview phase={phase} />
       </div>
@@ -259,7 +259,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       </AnimatePresence>
 
       {recentLogs.length > 1 && (
-        <ul className="mt-2 space-y-1 border-t border-white/[0.06] pt-2" aria-label="Recent activity">
+        <ul className="mt-2 space-y-1 border-t border-black/[0.06] pt-2" aria-label="Recent activity">
           {recentLogs.slice(0, -1).map((line, i) => (
             <motion.li
               key={`${line}-${i}`}
@@ -292,7 +292,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors duration-300",
                   isDone && "bg-accent text-text-on-accent",
                   isActive && "bg-promo-accent/15 text-promo-accent ring-1 ring-promo-accent/40",
-                  !isDone && !isActive && "bg-white/[0.06] text-text-muted"
+                  !isDone && !isActive && "bg-black/[0.06] text-text-muted"
                 )}
                 aria-current={isActive ? "step" : undefined}
               >
@@ -308,7 +308,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
               </span>
               {index < PHASES.length - 1 && (
                 <span className="relative hidden h-px flex-1 overflow-hidden sm:block" aria-hidden>
-                  <span className="absolute inset-0 bg-white/[0.08]" />
+                  <span className="absolute inset-0 bg-black/[0.08]" />
                   <motion.span
                     className="absolute inset-y-0 left-0 bg-accent/50"
                     initial={{ width: "0%" }}

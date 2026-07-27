@@ -70,17 +70,26 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
   { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
   { id: "premium-autopilot", tier: "premium", description: "Curated traffic sources checklist with promotion URL tracking.", guide: "premium-autopilot" },
-  { id: "premium-accelerator", tier: "premium", description: "Bulk-generate websites and ready-to-post content.", guide: "premium-accelerator" },
-  { id: "premium-social", tier: "premium", description: "Pre-made Facebook posts with images for quick promotion.", guide: "premium-social" },
-  { id: "premium-10x", tier: "premium", description: "Bulk-generate many Facebook post variants from one article.", guide: "premium-10x" },
+  { id: "premium-accelerator", tier: "premium", description: "200 pre-made sales pages + X threads across all niches (seed once, clone on demand).", guide: "premium-accelerator" },
+  { id: "premium-social", tier: "premium", description: "10X bulk social post generator — many Facebook variants from one offer.", guide: "premium-social" },
+  { id: "premium-10x", tier: "premium", description: "Alias for Social Payouts bulk post generation (see premium-social).", guide: "premium-10x" },
   { id: "premium-infinite", tier: "premium", description: "Batch-generate multiple full articles from one niche.", guide: "premium-infinite" },
   { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
-  { id: "premium-recurring", tier: "premium", description: "Browse recurring-commission affiliate offers with income stats.", guide: "premium-recurring" },
+  { id: "premium-recurring", tier: "premium", description: "100 ready-to-publish authority articles (Recurring Stream).", guide: "premium-recurring" },
   { id: "protector", tier: "premium", description: "Account security score and verification trust UI.", guide: "protector" },
 ];
 
 /** Skeleton ships with training only. Enable modules per product. */
-export const enabledFeatures: FeatureId[] = ["training", "blog-builder", "article-publish", "dopamine"];
+export const enabledFeatures: FeatureId[] = [
+  "training",
+  "blog-builder",
+  "article-publish",
+  "dopamine",
+  "premium-accelerator",
+  "premium-recurring",
+  "premium-social",
+  "protector",
+];
 
 export function isFeatureEnabled(id: FeatureId): boolean {
   return enabledFeatures.includes(id);

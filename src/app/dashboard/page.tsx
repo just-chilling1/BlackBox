@@ -43,10 +43,12 @@ export default function DashboardPage() {
   const workflowSteps = getVisibleWorkflowSteps();
   const firstStep = workflowSteps[0];
   const hasWorkflow = workflowSteps.length > 0;
-  const hasPremium = isFeatureEnabled("premium-dfy") ||
+  const hasPremium =
+    isFeatureEnabled("premium-dfy") ||
     isFeatureEnabled("premium-instant") ||
     isFeatureEnabled("premium-autopilot") ||
     isFeatureEnabled("premium-accelerator") ||
+    isFeatureEnabled("premium-recurring") ||
     isFeatureEnabled("premium-social") ||
     isFeatureEnabled("protector");
 
@@ -70,7 +72,7 @@ export default function DashboardPage() {
         </Link>
         <Link
           href="/support"
-          className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 rounded-lg font-semibold border border-border-dim text-text-primary hover:bg-white/5"
+          className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 rounded-lg font-semibold border border-border-dim text-text-primary hover:bg-black/5"
         >
           <Headphones size={18} />
           Support

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Clock, Star, Shield, Headphones, Mail, ExternalLink } from "lucide-react";
 import { support } from "@/config/support.config";
-import { PageHeader } from "@/components/ui/page-header";
+import { SupportPageLayout } from "../components/SupportPageLayout";
 
 const STAT_ICONS = {
   clock: Clock,
@@ -15,9 +15,7 @@ export default function SupportPage() {
   const contactHref = support.contactUrl || `mailto:${support.email}`;
 
   return (
-    <div className="page-stack w-full max-w-4xl">
-      <PageHeader title={support.pageTitle} subtitle={support.pageSubtitle} />
-
+    <SupportPageLayout>
       <div className="card-base flex flex-col gap-6">
         <div className="flex items-start gap-4">
           <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
@@ -66,6 +64,6 @@ export default function SupportPage() {
           </Link>
         ) : null}
       </div>
-    </div>
+    </SupportPageLayout>
   );
 }

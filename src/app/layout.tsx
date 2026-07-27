@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: brand.metadata.description,
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: brand.productName,
   },
 };
@@ -19,7 +19,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: brand.colors.page,
+  themeColor: brand.colors.sidebar,
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning style={{ colorScheme: "light" }}>
       <head>
         <Script
           id="sidebar-collapse-restore"
@@ -39,7 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="text-white selection:bg-accent/30 antialiased"
+        className="text-text-primary selection:bg-accent/30 antialiased"
         style={{ backgroundColor: brand.colors.page }}
       >
         <AppProviders>{children}</AppProviders>

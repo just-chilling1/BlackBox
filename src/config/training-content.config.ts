@@ -5,6 +5,8 @@
  * checklist, FAQ). Replace all exports below before launch — see DEVELOPER-SETUP.md §7.
  */
 
+import { faqSections } from "./faq.config";
+
 export const trainingWorkflowSteps = [
   {
     step: 1,
@@ -40,17 +42,7 @@ export const trainingWorkflowSteps = [
   },
 ] as const;
 
-export const trainingFaqSections = [
-  {
-    title: "FAQ section",
-    items: [
-      {
-        q: "Sample question?",
-        a: "Sample answer — replace with product FAQ in training-content.config.ts (DEVELOPER-SETUP.md §7).",
-      },
-    ],
-  },
-] as const;
+export const trainingFaqSections = faqSections;
 
 export const trainingProTips = [
   { title: "Pro tip title", text: "Pro tip body — populate in training-content.config.ts" },

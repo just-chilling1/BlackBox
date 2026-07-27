@@ -7,7 +7,7 @@ export function getBrandCssVars(): Record<string, string> {
     "--bg-sidebar": brand.colors.sidebar,
     "--bg-panel": brand.colors.panel,
     "--bg-panel-glass": brand.colors.panelGlass,
-    "--bg-border": brand.colors.borderGlow,
+    "--bg-border": brand.colors.border,
     "--bg-border-glow": brand.colors.borderGlow,
     "--bg-border-teal": brand.colors.borderTeal,
     "--bg-glass": brand.colors.panelGlass,

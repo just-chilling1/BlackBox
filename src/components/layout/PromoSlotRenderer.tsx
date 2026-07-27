@@ -69,7 +69,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col gap-4 px-4 sm:px-6 py-4 sm:py-5 rounded-[14px] border border-white/5 bg-[#090b0f] transition-all duration-300 w-full mt-6 sm:mt-8 shrink-0"
+        className="flex flex-col gap-4 px-4 sm:px-6 py-4 sm:py-5 rounded-[14px] border border-black/5 bg-[#090b0f] transition-all duration-300 w-full mt-6 sm:mt-8 shrink-0"
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
           <div className="flex items-center gap-3 sm:gap-5 min-w-0">
@@ -97,7 +97,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           )}
         </div>
         {content.stats && content.stats.length > 0 && (
-          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-white/5">
+          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-black/5">
             {content.stats.map((stat, i) => (
               <div key={i} className="flex items-center gap-1.5 text-[10px] text-text-muted">
                 <span>
@@ -123,7 +123,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         href={content.ctaUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#0A0A0B] border border-accent/25 hover:border-accent/50 transition-all duration-300 group"
+        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-page border border-accent/25 hover:border-accent/50 transition-all duration-300 group"
       >
         <div className="flex flex-col gap-0.5 min-w-0">
           <span className="brand-font text-[13px] font-semibold text-accent leading-tight">
@@ -152,14 +152,14 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         <motion.div
           initial={{ scale: 0.98, opacity: 0, y: 16 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
-          className="relative w-full sm:max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-white/10 bg-[#111] p-5 sm:p-8 shadow-2xl safe-bottom"
+          className="relative w-full sm:max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-black/10 bg-[#111] p-5 sm:p-8 shadow-2xl safe-bottom"
           onClick={(e) => e.stopPropagation()}
         >
           {onClose && (
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 text-text-muted hover:text-white"
+              className="absolute top-4 right-4 text-text-muted hover:text-text-heading"
               aria-label="Close"
             >
               ×
@@ -209,7 +209,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-6 sm:bottom-6 z-50 sm:max-w-sm rounded-xl border border-white/10 bg-[#111] p-4 shadow-xl safe-bottom"
+        className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-6 sm:bottom-6 z-50 sm:max-w-sm rounded-xl border border-black/10 bg-[#111] p-4 shadow-xl safe-bottom"
       >
         <p className="text-sm font-bold text-white">{content.headline}</p>
         <p className="text-xs text-text-muted mt-1">

@@ -4,6 +4,8 @@ import {
   workflowSteps,
   extractionWorkflowSteps,
   blogBuilderWorkflowSteps,
+  blogBuilderGenerateNav,
+  blogBuilderLibrariesNav,
   blogBuilderCoreNav,
   blogBuilderResourceNav,
   coreResourceNav,
@@ -33,8 +35,16 @@ export function getBlogBuilderWorkflowSteps(): NavItem[] {
   return filterNav(blogBuilderWorkflowSteps);
 }
 
+export function getBlogBuilderGenerateNav(): NavItem[] {
+  return filterNav(blogBuilderGenerateNav);
+}
+
+export function getBlogBuilderLibrariesNav(): NavItem[] {
+  return filterNav(blogBuilderLibrariesNav);
+}
+
 export function getBlogBuilderCoreNav(): NavItem[] {
-  return filterNav(blogBuilderCoreNav);
+  return [...getBlogBuilderGenerateNav(), ...getBlogBuilderLibrariesNav()];
 }
 
 export function getBlogBuilderResourceNav(): NavItem[] {

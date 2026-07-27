@@ -470,7 +470,7 @@ export default function InstantIncomePage() {
             </AnimatePresence>
 
             {/* Footer */}
-            <footer className="mt-16 pt-8 border-t border-white/5 flex flex-col items-center gap-4 pb-10">
+            <footer className="mt-16 pt-8 border-t border-black/5 flex flex-col items-center gap-4 pb-10">
                 <div className="flex items-center gap-6 flex-wrap justify-center">
                     {["200+ Posts", "9 Niches", "Auto Link Insertion", "Copy & Earn"].map((b, i) => (
                         <div key={i} className="flex items-center gap-2 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">

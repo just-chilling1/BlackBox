@@ -60,7 +60,7 @@ export function ThemePreview({ config, templateId, nicheLabel, compact = false }
         />
 
         {!compact && (
-          <div className="flex flex-col justify-center gap-3 rounded-xl border border-white/5 bg-black/20 p-4">
+          <div className="flex flex-col justify-center gap-3 rounded-xl border border-black/5 bg-black/20 p-4">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
                 Site format

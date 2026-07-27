@@ -193,11 +193,11 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
         </>
       )}
 
-        <div className="glass-card mb-2 border-white/5 overflow-hidden">
+        <div className="glass-card mb-2 border-black/5 overflow-hidden">
           <button
             type="button"
             onClick={() => setInstructionsOpen(!instructionsOpen)}
-            className="w-full flex items-center justify-between p-5 hover:bg-white/[0.02] transition-colors"
+            className="w-full flex items-center justify-between p-5 hover:bg-black/[0.02] transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-promo-accent/10 border border-promo-accent/20 flex items-center justify-center">
@@ -231,9 +231,9 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.06 }}
-                      className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-white/5"
+                      className="flex items-start gap-3 p-3 rounded-xl bg-black/30 border border-black/5"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-black/5 border border-black/10 flex items-center justify-center shrink-0">
                         <span className="text-xs font-bold text-promo-accent">{step.number}</span>
                       </div>
                       <div className="flex-1 min-w-0 pt-1">
@@ -290,7 +290,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                   clearVaultSelectionIfEdited(linkUrl, nextLabel);
                 }}
                 placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
-                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-white/5 border-white/10"
+                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-black/5 border-black/10"
               />
             </div>
 
@@ -314,7 +314,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                   if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
                 }}
                 placeholder="Paste Digistore24 affiliate URL here..."
-                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-white/5 border-white/10"
+                className="h-16 pl-12 text-base md:text-lg tracking-wide bg-black/5 border-black/10"
               />
             </div>
 

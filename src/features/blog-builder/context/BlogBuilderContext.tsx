@@ -383,8 +383,6 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       siteId: null,
       siteSlug: null,
       step: 3,
-      wizardUiStep: 2,
-      isGenerating: false,
       generationLog: [],
     }));
   }, []);

@@ -228,14 +228,14 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                   "group rounded-xl border text-left transition-all overflow-hidden",
                   isSelected
                     ? "border-promo-accent/50 bg-promo-accent/10 ring-1 ring-promo-accent/30"
-                    : "border-border-dim hover:border-promo-accent/25 hover:bg-white/[0.02]"
+                    : "border-border-dim hover:border-promo-accent/25 hover:bg-black/[0.02]"
                 )}
               >
                 <div className="flex h-16 items-end gap-1.5 px-3 pb-2 pt-3" style={{ backgroundColor: `${accent}14` }}>
                   <div className="h-8 flex-1 rounded-md opacity-90" style={{ backgroundColor: accent }} />
-                  <div className="h-5 w-1/3 rounded-md bg-white/10" />
+                  <div className="h-5 w-1/3 rounded-md bg-black/10" />
                 </div>
-                <div className="p-3.5 border-t border-white/5">
+                <div className="p-3.5 border-t border-black/5">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-semibold text-text-primary">{template.name}</p>
                     {isSelected && (

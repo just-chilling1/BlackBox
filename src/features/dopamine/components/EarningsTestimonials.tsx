@@ -51,7 +51,7 @@ export function EarningsTestimonials() {
             type="button"
             aria-label="Previous"
             onClick={() => setIndex((i) => (i - 1 + items.length) % items.length)}
-            className="p-1.5 rounded-lg border border-border-dim text-text-muted hover:text-white"
+            className="p-1.5 rounded-lg border border-border-dim text-text-muted hover:text-text-heading"
           >
             <ChevronLeft size={14} />
           </button>
@@ -59,7 +59,7 @@ export function EarningsTestimonials() {
             type="button"
             aria-label="Next"
             onClick={() => setIndex((i) => (i + 1) % items.length)}
-            className="p-1.5 rounded-lg border border-border-dim text-text-muted hover:text-white"
+            className="p-1.5 rounded-lg border border-border-dim text-text-muted hover:text-text-heading"
           >
             <ChevronRight size={14} />
           </button>

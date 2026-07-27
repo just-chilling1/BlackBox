@@ -32,7 +32,7 @@ export function MilestoneTracker({ activityCount = 0 }: MilestoneTrackerProps) {
           {activityCount} / {next.threshold}
         </span>
       </div>
-      <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+      <div className="h-2 rounded-full bg-black/5 overflow-hidden">
         <div
           className="h-full bg-accent transition-all duration-500"
           style={{ width: `${progress}%` }}

@@ -279,7 +279,7 @@ export default function ResetPasswordPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md relative z-10"
             >
-                <div className="glass-card p-10 flex flex-col gap-8 border-[#141414] shadow-2xl">
+                <div className="glass-card p-10 flex flex-col gap-8 border-black/5 shadow-xl">
                     <div className="flex flex-col items-center gap-4 text-center">
                         <div className="w-16 h-16 bg-accent flex items-center justify-center rounded-xl shadow-gold">
                             <Target size={32} className="text-black" />
@@ -297,7 +297,7 @@ export default function ResetPasswordPage() {
                     {renderContent()}
 
                     {(ready || checking) && !success && (
-                        <div className="flex flex-col items-center gap-4 border-t border-[#141414] pt-6">
+                        <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-6">
                             <Link
                                 href="/login"
                                 className="text-xs text-text-muted hover:text-accent transition-colors"

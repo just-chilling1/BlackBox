@@ -222,7 +222,7 @@ export default function DfyPage() {
                         )}>
                             <span className={clsx(
                                 "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black",
-                                step >= s.num ? "bg-accent text-black" : "bg-white/5 text-text-muted"
+                                step >= s.num ? "bg-accent text-black" : "bg-black/5 text-text-muted"
                             )}>
                                 {step > s.num ? <Check size={12} /> : s.num}
                             </span>
@@ -518,7 +518,7 @@ export default function DfyPage() {
             </AnimatePresence>
 
             {/* Footer */}
-            <footer className="mt-10 pt-8 border-t border-white/5 flex flex-col items-center gap-4 pb-10">
+            <footer className="mt-10 pt-8 border-t border-black/5 flex flex-col items-center gap-4 pb-10">
                 <div className="flex items-center gap-8">
                     {["5 Hot Keywords", "Real Posts Found", "AI Replies + Your Link", "Copy & Earn"].map((b, i) => (
                         <div key={i} className="flex items-center gap-2 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">

@@ -9,10 +9,10 @@ export const GlassInput = forwardRef<HTMLInputElement, GlassInputProps>(
       <input
         type={type}
         className={clsx(
-          "flex h-14 w-full rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-lg",
-          "text-text-primary placeholder:text-white/30 focus-visible:outline-none",
+          "flex h-14 w-full rounded-xl border border-black/10 bg-black/5 px-6 py-3 text-lg",
+          "text-text-primary placeholder:text-text-muted focus-visible:outline-none",
           "focus-visible:ring-2 focus-visible:ring-promo-accent/50 focus-visible:border-promo-accent",
-          "transition-all duration-300 hover:bg-white/10",
+          "transition-all duration-300 hover:bg-black/10",
           "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}

@@ -155,7 +155,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             className="relative z-10 flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full max-w-full flex-col overflow-hidden rounded-t-2xl border border-accent/30 glass-surface shadow-2xl sm:h-auto sm:max-h-[88vh] sm:max-w-3xl sm:rounded-2xl"
           >
-            <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-white/10 glass-tile rounded-none">
+            <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-black/10 glass-tile rounded-none">
               <div className="flex items-center gap-2 min-w-0">
                 <Eye size={18} className="text-accent shrink-0" />
                 <p
@@ -190,7 +190,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-text-heading hover:bg-white/5"
+                  className="p-1.5 rounded-lg text-text-muted hover:text-text-heading hover:bg-black/5"
                   aria-label="Close"
                 >
                   <X size={18} />
@@ -212,7 +212,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
               {!loading && post && !editing && (
                 <div className="flex min-w-0 max-w-full flex-col gap-4">
                   {post.image_url && (
-                    <div className="overflow-hidden rounded-xl border border-white/10">
+                    <div className="overflow-hidden rounded-xl border border-black/10">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={post.image_url}
@@ -258,7 +258,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                       className="hidden"
                       onChange={handleHeroSelected}
                     />
-                    <div className="relative overflow-hidden rounded-xl border border-white/10 glass-tile">
+                    <div className="relative overflow-hidden rounded-xl border border-black/10 glass-tile">
                       {draft.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -291,7 +291,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                         <button
                           type="button"
                           onClick={() => setDraft((d) => ({ ...d, image_url: "" }))}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-heading hover:bg-white/5"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-heading hover:bg-black/5"
                         >
                           <ImageOff size={14} />
                           Remove

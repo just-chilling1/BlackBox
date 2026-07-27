@@ -37,21 +37,21 @@ function CollapsibleResultSection({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]"
+      className="group overflow-hidden rounded-xl border border-black/[0.08] bg-black/[0.02]"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 transition-colors hover:bg-white/[0.03] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 transition-colors hover:bg-black/[0.03] [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={16}
           className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
         />
         <span className="min-w-0 flex-1 text-sm font-medium text-text-heading">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] text-text-muted">
+          <span className="shrink-0 rounded-full bg-black/[0.06] px-2 py-0.5 text-[11px] text-text-muted">
             {count}
           </span>
         )}
       </summary>
-      <div className="space-y-1.5 border-t border-white/[0.06] p-2">{children}</div>
+      <div className="space-y-1.5 border-t border-black/[0.06] p-2">{children}</div>
     </details>
   );
 }
@@ -70,9 +70,9 @@ function CollapsibleResultItem({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-lg border border-white/[0.06] bg-[rgb(8,11,18)]/40"
+      className="group overflow-hidden rounded-lg border border-black/[0.06] bg-[rgb(8,11,18)]/40"
     >
-      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover:bg-white/[0.03] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover:bg-black/[0.03] [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
           className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
@@ -84,7 +84,7 @@ function CollapsibleResultItem({
           )}
         </div>
       </summary>
-      <div className="border-t border-white/[0.06] px-3 py-2.5">{children}</div>
+      <div className="border-t border-black/[0.06] px-3 py-2.5">{children}</div>
     </details>
   );
 }
@@ -110,8 +110,8 @@ function KitButton({
     variant === "primary"
       ? "bg-promo-accent text-[#0B0C10] hover:brightness-110"
       : variant === "ghost"
-        ? "text-text-muted hover:bg-white/[0.06] hover:text-text-heading"
-        : "border border-white/[0.12] bg-white/[0.04] text-text-heading hover:bg-white/[0.08]";
+        ? "text-text-muted hover:bg-black/[0.06] hover:text-text-heading"
+        : "border border-black/[0.12] bg-black/[0.04] text-text-heading hover:bg-black/[0.08]";
 
   return (
     <button type="button" onClick={onClick} disabled={loading || disabled} className={`${base} ${styles} ${className}`}>
@@ -251,7 +251,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               ? "bg-error/20 text-red-200"
               : toast.variant === "success"
                 ? "bg-success/20 text-emerald-200"
-                : "bg-white/10 text-text-primary"
+                : "bg-black/10 text-text-primary"
           }`}
         >
           {toast.message}
@@ -270,7 +270,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               </span>
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${
-                  site.status === "live" ? "bg-success/20 text-success" : "bg-white/10 text-text-muted"
+                  site.status === "live" ? "bg-success/20 text-success" : "bg-black/10 text-text-muted"
                 }`}
               >
                 {site.status}
@@ -348,7 +348,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           )}
         </section>
 
-        <section className="space-y-3 border-t border-white/[0.08] pt-6">
+        <section className="space-y-3 border-t border-black/[0.08] pt-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
               <Hash size={16} className="text-accent-muted" />
@@ -382,7 +382,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         </section>
 
         {promoLink && (
-          <div className="flex flex-wrap gap-2 border-t border-white/[0.08] pt-6">
+          <div className="flex flex-wrap gap-2 border-t border-black/[0.08] pt-6">
             <KitButton variant="secondary" onClick={() => copy("link", promoLink)}>
               {copiedKey === "link" ? <Check size={16} /> : <Copy size={16} />}
               Copy promotion link
