@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Check,
-  Copy,
   ExternalLink,
   FolderOpen,
   Globe,
@@ -12,6 +10,8 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
+import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
+import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
@@ -19,48 +19,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 import type { SavedXThread } from "@/features/publish-kit/lib/x-threads-vault";
-
-function ThreadPreview({ thread }: { thread: SavedXThread }) {
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(thread.text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
-    }
-  };
-
-  return (
-    <details className="group overflow-hidden rounded-lg border border-slate-200 bg-white">
-      <summary className="flex cursor-pointer list-none items-start gap-2 bg-white px-3 py-2.5 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
-        <ChevronDown
-          size={14}
-          className="mt-0.5 shrink-0 text-slate-500 transition-transform group-open:rotate-180"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-wide text-promo-accent">
-            {thread.angle || "Thread"}
-          </p>
-          <p className="mt-0.5 line-clamp-2 text-sm text-slate-800 group-open:hidden">{thread.text}</p>
-        </div>
-      </summary>
-      <div className="border-t border-slate-200 bg-white px-3 py-3">
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{thread.text}</p>
-        <button
-          type="button"
-          onClick={() => void copy()}
-          className="mt-2 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
-        >
-          {copied ? <Check size={14} /> : <Copy size={14} />}
-          Copy thread
-        </button>
-      </div>
-    </details>
-  );
-}
 
 function OfferCard({
   summary,
@@ -162,12 +120,18 @@ function OfferCard({
               Loading threads...
             </div>
           ) : threads.length > 0 ? (
-            <div className="space-y-2">
-              <p className="text-xs font-bold uppercase tracking-wider text-text-muted">Saved X threads</p>
-              {threads.map((thread) => (
-                <ThreadPreview key={thread.id} thread={thread} />
+            <ThreadListSection title="Saved X threads" count={threads.length}>
+              {threads.map((thread, i) => (
+                <ThreadCard
+                  key={thread.id}
+                  index={i + 1}
+                  label={thread.angle || `Thread ${i + 1}`}
+                  text={thread.text}
+                  imageUrl={thread.image_url}
+                  defaultOpen={i === 0}
+                />
               ))}
-            </div>
+            </ThreadListSection>
           ) : (
             <p className="text-sm text-text-secondary">
               No X threads saved for this offer yet. Open X-Power Promotions to generate a batch.

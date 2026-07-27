@@ -10,10 +10,11 @@ import {
   Megaphone,
   ChevronDown,
   Loader2,
-  ImageIcon,
 } from "lucide-react";
 import { fetchJson } from "@/lib/fetch-json";
 import { THREADS_PER_GENERATION, THREADS_WITH_IMAGES } from "../lib/promote-constants";
+import { ThreadCard } from "./ThreadCard";
+import { ThreadListSection } from "./ThreadListSection";
 import type {
   PromotePlatform,
   PublishKitSite,
@@ -328,46 +329,18 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           </div>
 
           {visiblePosts.length > 0 && (
-            <CollapsibleResultSection title="X threads" count={visiblePosts.length}>
+            <ThreadListSection title="X threads" count={visiblePosts.length}>
               {visiblePosts.map((post, i) => (
-                <CollapsibleResultItem
+                <ThreadCard
                   key={i}
+                  index={i + 1}
                   label={post.angle || `Thread ${i + 1}`}
-                  preview={post.text.slice(0, 120)}
+                  text={post.text}
+                  imageUrl={post.imageUrl}
                   defaultOpen={i === 0}
-                >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{post.text}</p>
-                  {post.imageUrl ? (
-                    <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-white">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={post.imageUrl}
-                        alt={`${post.angle || "Thread"} promotional image`}
-                        className="aspect-square w-full max-w-xs object-cover"
-                      />
-                      <div className="flex flex-wrap gap-2 border-t border-slate-200 bg-slate-50 px-2 py-2">
-                        <KitButton
-                          variant="ghost"
-                          className="text-xs"
-                          onClick={() => copy(`image-${i}`, post.imageUrl!)}
-                        >
-                          {copiedKey === `image-${i}` ? <Check size={14} /> : <ImageIcon size={14} />}
-                          Copy image URL
-                        </KitButton>
-                      </div>
-                    </div>
-                  ) : null}
-                  <KitButton
-                    variant="ghost"
-                    className="mt-2"
-                    onClick={() => copy(`twitter-${i}`, post.text)}
-                  >
-                    {copiedKey === `twitter-${i}` ? <Check size={14} /> : <Copy size={14} />}
-                    Copy thread
-                  </KitButton>
-                </CollapsibleResultItem>
+                />
               ))}
-            </CollapsibleResultSection>
+            </ThreadListSection>
           )}
         </section>
 
