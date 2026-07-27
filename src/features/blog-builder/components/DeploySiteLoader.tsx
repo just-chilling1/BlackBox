@@ -93,7 +93,7 @@ function BrowserChrome() {
           style={{ animationDelay: `${i * 0.22}s` }}
         />
       ))}
-      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-black/[0.06]">
+      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-slate-100">
         <span className="deploy-url-shimmer absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-accent/25 to-transparent" />
       </div>
     </div>
@@ -111,7 +111,7 @@ function SkeletonBlock({ index, className, visible }: { index: number; className
       }}
       transition={{ delay: index * 0.12, duration: 0.45, ease: "easeOut" }}
       className={cn(
-        "deploy-block relative overflow-hidden rounded-md border border-black/[0.06]",
+        "deploy-block relative overflow-hidden rounded-md border border-divider",
         "bg-gradient-to-r from-accent/15 via-promo-accent/10 to-transparent",
         className,
         visible && "deploy-block--live"
@@ -239,7 +239,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
         <Globe size={18} className="deploy-globe shrink-0 text-text-muted/60" aria-hidden />
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border border-black/[0.08] bg-page/80 p-3 sm:p-4">
+      <div className="relative overflow-hidden rounded-xl border border-border-dim bg-page/80 p-3 sm:p-4">
         <BrowserChrome />
         <SkeletonPreview phase={phase} />
       </div>
@@ -259,7 +259,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       </AnimatePresence>
 
       {recentLogs.length > 1 && (
-        <ul className="mt-2 space-y-1 border-t border-black/[0.06] pt-2" aria-label="Recent activity">
+        <ul className="mt-2 space-y-1 border-t border-divider pt-2" aria-label="Recent activity">
           {recentLogs.slice(0, -1).map((line, i) => (
             <motion.li
               key={`${line}-${i}`}
@@ -292,7 +292,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors duration-300",
                   isDone && "bg-accent text-text-on-accent",
                   isActive && "bg-promo-accent/15 text-promo-accent ring-1 ring-promo-accent/40",
-                  !isDone && !isActive && "bg-black/[0.06] text-text-muted"
+                  !isDone && !isActive && "bg-slate-100 text-text-muted"
                 )}
                 aria-current={isActive ? "step" : undefined}
               >

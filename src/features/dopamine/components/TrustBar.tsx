@@ -13,7 +13,7 @@ export function TrustBar() {
   const { items } = dopamineContent.trustBar;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 py-4 px-2 border border-border-dim/30 rounded-xl bg-[#0c0c0e]">
+    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 py-4 px-2 surface-inset border-border-dim/30">
       {items.map((item) => {
         const Icon = ICONS[item.icon as keyof typeof ICONS] ?? Star;
         return (

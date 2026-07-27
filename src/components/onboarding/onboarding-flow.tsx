@@ -157,7 +157,7 @@ export function OnboardingFlow() {
             type="button"
             onClick={() => void handleActivate()}
             disabled={!firstName.trim() || submitting}
-            className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#9333ea] text-xl font-extrabold text-white shadow-lg shadow-fuchsia-200 transition-all hover:-translate-y-0.5 hover:from-[#c026d3] hover:to-[#7e22ce] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+            className="mt-8 h-16 w-full rounded-2xl bg-gradient-to-r from-accent to-accent-muted text-xl font-extrabold text-text-on-accent shadow-gold transition-all hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
           >
             {submitting ? "Activating…" : cfg.ctaLabel}
           </button>

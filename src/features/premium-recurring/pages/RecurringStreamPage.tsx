@@ -178,7 +178,7 @@ export default function RecurringStreamPage() {
       />
 
       <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-black/[0.06] bg-accent/5 p-6 md:p-8">
+        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
@@ -196,7 +196,7 @@ export default function RecurringStreamPage() {
                 All {seededCount} ready
               </span>
             ) : (
-              <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-200">
+              <span className="badge-warning">
                 Seeding ({seededCount}/100)
               </span>
             )}
@@ -246,7 +246,7 @@ export default function RecurringStreamPage() {
                   "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                   niche === n
                     ? "bg-accent text-black"
-                    : "bg-black/[0.04] text-text-secondary hover:bg-black/[0.08]"
+                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
                 )}
               >
                 {n}
@@ -270,20 +270,20 @@ export default function RecurringStreamPage() {
             exit={{ opacity: 0, y: -8 }}
             className="glass-card overflow-hidden border-accent/20"
           >
-            <div className="flex items-start justify-between gap-3 border-b border-black/[0.06] p-4 md:p-5">
+            <div className="flex items-start justify-between gap-3 border-b border-divider p-4 md:p-5">
               <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                   {previewArticle.niche}
                 </p>
                 <h3 className="mt-1 font-bold text-text-primary">{previewArticle.title}</h3>
-                <span className="mt-2 inline-block rounded-full bg-black/[0.06] px-2 py-0.5 text-[10px] font-semibold text-text-muted">
+                <span className="mt-2 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-text-muted">
                   {formatAngle(previewArticle.angle)}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setPreviewId(null)}
-                className="rounded-lg p-2 text-text-muted hover:bg-black/[0.06] hover:text-text-primary"
+                className="rounded-lg p-2 text-text-muted hover:bg-slate-100 hover:text-text-primary"
                 aria-label="Close preview"
               >
                 <X size={16} />
@@ -293,7 +293,7 @@ export default function RecurringStreamPage() {
               className="prose prose-invert max-h-[420px] max-w-none overflow-y-auto p-4 md:p-6 text-sm text-text-secondary"
               dangerouslySetInnerHTML={{ __html: articleHtml[previewArticle.id] }}
             />
-            <div className="flex flex-wrap gap-2 border-t border-black/[0.06] p-4 md:p-5">
+            <div className="flex flex-wrap gap-2 border-t border-divider p-4 md:p-5">
               <button
                 type="button"
                 onClick={() => void copyArticle("text")}
@@ -305,7 +305,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => void copyArticle("html")}
-                className="inline-flex items-center gap-2 rounded-lg border border-black/[0.08] bg-black/[0.04] px-4 py-2 text-sm font-semibold text-text-primary hover:bg-black/[0.08]"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70"
               >
                 {copiedMode === "html" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "html" ? "Copied!" : "Copy HTML"}
@@ -343,7 +343,7 @@ export default function RecurringStreamPage() {
                   <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                     {article.niche}
                   </p>
-                  <span className="shrink-0 rounded bg-black/[0.06] px-2 py-0.5 text-[10px] text-text-muted">
+                  <span className="shrink-0 rounded bg-slate-100 px-2 py-0.5 text-[10px] text-text-muted">
                     {formatAngle(article.angle)}
                   </span>
                 </div>
@@ -381,7 +381,7 @@ export default function RecurringStreamPage() {
               type="button"
               disabled={page === 0}
               onClick={() => setPage((p) => Math.max(0, p - 1))}
-              className="inline-flex items-center gap-1 rounded-lg border border-black/[0.08] px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
+              className="inline-flex items-center gap-1 rounded-lg border border-border-dim px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
             >
               <ChevronLeft size={14} />
               Prev
@@ -393,7 +393,7 @@ export default function RecurringStreamPage() {
               type="button"
               disabled={page >= pageCount - 1}
               onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-              className="inline-flex items-center gap-1 rounded-lg border border-black/[0.08] px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
+              className="inline-flex items-center gap-1 rounded-lg border border-border-dim px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
             >
               Next
               <ChevronRight size={14} />

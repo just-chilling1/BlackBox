@@ -256,11 +256,11 @@ export default function AnalysisPage() {
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="bg-[#0c0c0e] border border-border-dim/30 rounded-xl p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="surface-inset border-border-dim/30 p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
                                     <BarChart3 size={14} className="text-accent" />
-                                    <span className="text-xs font-bold text-white">Demand Level</span>
+                                    <span className="text-xs font-bold text-text-heading">Demand Level</span>
                                 </div>
                                 <p className="text-[11px] text-text-muted leading-relaxed">
                                     <strong className="text-green-400">High</strong> = lots of people talking about this. Great for ads.
@@ -271,7 +271,7 @@ export default function AnalysisPage() {
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
                                     <MessageSquare size={14} className="text-accent" />
-                                    <span className="text-xs font-bold text-white">Ad Count</span>
+                                    <span className="text-xs font-bold text-text-heading">Ad Count</span>
                                 </div>
                                 <p className="text-[11px] text-text-muted leading-relaxed">
                                     How many ads and conversations we found on Reddit and YouTube. More ads = more places to post your reply and earn.
@@ -280,7 +280,7 @@ export default function AnalysisPage() {
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
                                     <Shield size={14} className="text-accent" />
-                                    <span className="text-xs font-bold text-white">Confidence</span>
+                                    <span className="text-xs font-bold text-text-heading">Confidence</span>
                                 </div>
                                 <p className="text-[11px] text-text-muted leading-relaxed">
                                     How sure we are about the data. Higher = more reliable. Based on how much live data we collected from real platforms.
@@ -289,7 +289,7 @@ export default function AnalysisPage() {
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
                                     <Info size={14} className="text-accent" />
-                                    <span className="text-xs font-bold text-white">What to Do</span>
+                                    <span className="text-xs font-bold text-text-heading">What to Do</span>
                                 </div>
                                 <p className="text-[11px] text-text-muted leading-relaxed">
                                     Click any row to select it. Then press <strong className="text-accent">&ldquo;Step 3: Find Ads&rdquo;</strong> to see real ads for that topic and create replies.
@@ -301,9 +301,9 @@ export default function AnalysisPage() {
             </AnimatePresence>
 
             {/* Data Table */}
-            <div className="border border-border-dim/30 rounded-xl overflow-hidden bg-[#0a0a0c]">
+            <div className="border border-border-dim rounded-xl overflow-hidden bg-page">
                 {/* Table Header */}
-                <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-[#0c0c0e] border-b border-border-dim/20">
+                <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-white border-b border-border-dim/20">
                     <div className="col-span-4">
                         <SortHeader label="Keyword" sKey="keyword" tooltip="The ad topic variation we are analyzing. Click to sort alphabetically." />
                     </div>
@@ -404,12 +404,12 @@ export default function AnalysisPage() {
                     key={activeChip}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-[#0c0c0e] border border-border-dim/30 rounded-xl p-5 flex flex-col gap-3"
+                    className="surface-inset border-border-dim/30 p-5 flex flex-col gap-3"
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <Brain size={16} className="text-accent" />
-                            <span className="text-sm font-bold text-white">Details for &ldquo;{activeChip}&rdquo;</span>
+                            <span className="text-sm font-bold text-text-heading">Details for &ldquo;{activeChip}&rdquo;</span>
                         </div>
                         <button
                             onClick={() => {

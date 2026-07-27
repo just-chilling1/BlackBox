@@ -197,7 +197,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
           <button
             type="button"
             onClick={() => setInstructionsOpen(!instructionsOpen)}
-            className="w-full flex items-center justify-between p-5 hover:bg-black/[0.02] transition-colors"
+            className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-promo-accent/10 border border-promo-accent/20 flex items-center justify-center">

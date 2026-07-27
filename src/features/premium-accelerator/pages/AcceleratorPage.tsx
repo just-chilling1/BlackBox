@@ -60,7 +60,7 @@ const TemplateCard = memo(function TemplateCard({
           <p className="mt-1 text-xs text-text-muted">{template.templateName}</p>
         </div>
         {!template.seeded && (
-          <span className="shrink-0 rounded bg-black/[0.06] px-2 py-0.5 text-[10px] text-text-muted">
+          <span className="shrink-0 rounded bg-slate-100 px-2 py-0.5 text-[10px] text-text-muted">
             Pending
           </span>
         )}
@@ -212,7 +212,7 @@ export default function AcceleratorPage() {
       />
 
       <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-black/[0.06] bg-accent/5 p-6 md:p-8">
+        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
@@ -260,7 +260,7 @@ export default function AcceleratorPage() {
                   "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                   niche === n
                     ? "bg-accent text-black"
-                    : "bg-black/[0.04] text-text-secondary hover:bg-black/[0.08]"
+                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
                 )}
               >
                 {n}

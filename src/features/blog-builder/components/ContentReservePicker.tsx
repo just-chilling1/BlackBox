@@ -30,7 +30,7 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
                 "w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
                 isSelected
                   ? "border-promo-accent/50 bg-promo-accent/10"
-                  : "border-border-dim bg-black/[0.02] hover:border-promo-accent/30"
+                  : "border-border-dim bg-slate-50 hover:border-promo-accent/30"
               )}
             >
               <Link2

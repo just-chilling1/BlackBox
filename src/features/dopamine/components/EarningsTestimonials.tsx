@@ -24,7 +24,7 @@ export function EarningsTestimonials() {
   const current = items[index];
 
   return (
-    <div className="relative border border-border-dim/30 rounded-xl bg-[#0c0c0e] p-5 overflow-hidden">
+    <div className="relative surface-inset border-border-dim/30 p-5 overflow-hidden">
       <Quote size={20} className="text-accent/40 mb-3" />
       <AnimatePresence mode="wait">
         <motion.div

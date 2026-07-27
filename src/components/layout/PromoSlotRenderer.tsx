@@ -69,7 +69,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col gap-4 px-4 sm:px-6 py-4 sm:py-5 rounded-[14px] border border-black/5 bg-[#090b0f] transition-all duration-300 w-full mt-6 sm:mt-8 shrink-0"
+        className="flex flex-col gap-4 px-4 sm:px-6 py-4 sm:py-5 rounded-[14px] border border-black/5 glass-card transition-all duration-300 w-full mt-6 sm:mt-8 shrink-0"
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
           <div className="flex items-center gap-3 sm:gap-5 min-w-0">
@@ -79,11 +79,11 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
               </div>
             )}
             <div className="flex flex-col gap-0.5">
-              <h3 className="text-[17px] font-bold text-white tracking-tight">
+              <h3 className="text-[17px] font-bold text-text-heading tracking-tight">
                 {content.title ?? content.headline}
               </h3>
               {content.subtitle && (
-                <p className="text-[#848795] text-[14px]">{content.subtitle}</p>
+                <p className="text-text-muted text-[14px]">{content.subtitle}</p>
               )}
             </div>
           </div>
@@ -152,7 +152,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         <motion.div
           initial={{ scale: 0.98, opacity: 0, y: 16 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
-          className="relative w-full sm:max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-black/10 bg-[#111] p-5 sm:p-8 shadow-2xl safe-bottom"
+          className="relative w-full sm:max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-black/10 bg-white p-5 sm:p-8 shadow-2xl safe-bottom"
           onClick={(e) => e.stopPropagation()}
         >
           {onClose && (
@@ -170,7 +170,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
               {content.badge}
             </span>
           )}
-          <h2 className="text-2xl font-bold text-white mt-2">{content.headline}</h2>
+          <h2 className="text-2xl font-bold text-text-heading mt-2">{content.headline}</h2>
           {bodies[0] && <p className="text-text-secondary mt-2">{bodies[0]}</p>}
           {content.bullets && (
             <ul className="mt-4 space-y-2">
@@ -209,9 +209,9 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-6 sm:bottom-6 z-50 sm:max-w-sm rounded-xl border border-black/10 bg-[#111] p-4 shadow-xl safe-bottom"
+        className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-6 sm:bottom-6 z-50 sm:max-w-sm rounded-xl border border-black/10 bg-white p-4 shadow-xl safe-bottom"
       >
-        <p className="text-sm font-bold text-white">{content.headline}</p>
+        <p className="text-sm font-bold text-text-heading">{content.headline}</p>
         <p className="text-xs text-text-muted mt-1">
           {content.toastMessage}{" "}
           {content.toastAmount && (

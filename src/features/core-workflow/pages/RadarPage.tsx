@@ -38,7 +38,7 @@ function AdCard({
                 "p-4 rounded-xl border transition-all cursor-pointer group relative",
                 isSelected
                     ? "border-accent/40 bg-accent/5"
-                    : "border-border-dim/30 bg-[#0c0c0e] hover:border-accent/20"
+                    : "surface-inset border-border-dim/30 hover:border-accent/20"
             )}
         >
             <div className={clsx(

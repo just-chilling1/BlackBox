@@ -11,7 +11,7 @@ export function WizardStepBar({ breadcrumb, step, total = 4, className }: Wizard
   return (
     <div
       className={clsx(
-        "sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-black/[0.08] bg-page/95 px-4 py-3 backdrop-blur-xl",
+        "sticky top-0 z-20 -mx-1 mb-2 rounded-xl border border-border-dim bg-page/95 px-4 py-3 backdrop-blur-xl",
         className
       )}
     >

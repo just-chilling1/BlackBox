@@ -34,8 +34,8 @@ function ThreadPreview({ thread }: { thread: SavedXThread }) {
   };
 
   return (
-    <details className="group overflow-hidden rounded-lg border border-black/[0.06] bg-[rgb(8,11,18)]/40">
-      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover:bg-black/[0.03] [&::-webkit-details-marker]:hidden">
+    <details className="group collapsible-item">
+      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
           className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
@@ -47,7 +47,7 @@ function ThreadPreview({ thread }: { thread: SavedXThread }) {
           <p className="mt-0.5 line-clamp-2 text-sm text-text-primary group-open:hidden">{thread.text}</p>
         </div>
       </summary>
-      <div className="border-t border-black/[0.06] px-3 py-2.5">
+      <div className="border-t border-divider px-3 py-2.5">
         <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{thread.text}</p>
         <button
           type="button"
@@ -87,7 +87,7 @@ function OfferCard({
       <button
         type="button"
         onClick={onExpand}
-        className="flex w-full items-start gap-4 p-5 text-left transition-colors hover:bg-black/[0.02]"
+        className="flex w-full items-start gap-4 p-5 text-left transition-colors hover:bg-slate-50"
       >
         <div
           className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-lg ${
@@ -122,14 +122,14 @@ function OfferCard({
       </button>
 
       {expanded && (
-        <div className="space-y-4 border-t border-black/[0.08] px-5 py-4">
+        <div className="space-y-4 border-t border-border-dim px-5 py-4">
           <div className="flex flex-wrap gap-2">
             {siteUrl && (
               <a
                 href={siteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-black/[0.12] bg-black/[0.04] px-3 py-2 text-xs font-medium text-text-heading hover:bg-black/[0.08]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-xs font-medium text-text-heading hover:bg-slate-200/70"
               >
                 <Globe size={14} />
                 View sales page
@@ -141,7 +141,7 @@ function OfferCard({
                 href={affiliate.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-black/[0.12] bg-black/[0.04] px-3 py-2 text-xs font-medium text-text-heading hover:bg-black/[0.08]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-xs font-medium text-text-heading hover:bg-slate-200/70"
               >
                 <ExternalLink size={14} />
                 {affiliate.label || "Affiliate link"}

@@ -165,11 +165,11 @@ export default function DfyPage() {
         >
             {/* Header */}
             <header className="flex flex-col items-center text-center gap-5">
-                <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center rounded-2xl shadow-[0_0_40px_rgba(212,175,55,0.1)]">
-                    <Crown size={32} className="text-[#D4AF37] fill-[#D4AF37]/20" />
+                <div className="w-16 h-16 bg-accent/10 border border-accent/20 flex items-center justify-center rounded-2xl shadow-gold">
+                    <Crown size={32} className="text-accent fill-accent/20" />
                 </div>
                 <div className="flex flex-col gap-3">
-                    <h1 className="text-[40px] text-white font-black leading-tight tracking-tight">
+                    <h1 className="text-[40px] text-text-heading font-black leading-tight tracking-tight">
                         Done-For-You <span className="text-accent">Vault</span>
                     </h1>
                     <p className="text-[18px] font-bold text-accent/80 tracking-wide uppercase">
@@ -198,7 +198,7 @@ export default function DfyPage() {
                             <Sparkles size={14} className="text-accent" />
                             <span className="text-[11px] font-bold text-accent uppercase tracking-[0.2em]">Watch First</span>
                         </div>
-                        <h2 className="text-2xl font-bold text-white">How to Use Done-For-You</h2>
+                        <h2 className="text-2xl font-bold text-text-heading">How to Use Done-For-You</h2>
                         <p className="text-text-secondary leading-relaxed">
                             Watch this quick tutorial to learn how to pick a keyword, add your link, and get ready-made replies you can post in minutes.
                         </p>
@@ -249,7 +249,7 @@ export default function DfyPage() {
                     >
                         <div className="flex items-center gap-3 px-1">
                             <Zap size={18} className="text-accent" />
-                            <h2 className="text-xl font-bold text-white">Choose Your Keyword</h2>
+                            <h2 className="text-xl font-bold text-text-heading">Choose Your Keyword</h2>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -274,7 +274,7 @@ export default function DfyPage() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-[16px] font-bold text-white group-hover:text-accent transition-colors leading-snug">
+                                    <h3 className="text-[16px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug">
                                         &ldquo;{kw.label}&rdquo;
                                     </h3>
 
@@ -308,7 +308,7 @@ export default function DfyPage() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Selected Keyword</p>
-                                    <p className="text-[15px] font-bold text-white">&ldquo;{selectedKeyword.label}&rdquo;</p>
+                                    <p className="text-[15px] font-bold text-text-heading">&ldquo;{selectedKeyword.label}&rdquo;</p>
                                 </div>
                             </div>
                             <button
@@ -326,7 +326,7 @@ export default function DfyPage() {
                                     <LinkIcon size={18} className="text-accent" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-white">Provide Your Digistore Affiliate Link</h2>
+                                    <h2 className="text-xl font-bold text-text-heading">Provide Your Digistore Affiliate Link</h2>
                                     <p className="text-[13px] text-text-muted">We&apos;ll find high-ranking posts and generate replies with your link.</p>
                                 </div>
                             </div>
@@ -335,7 +335,7 @@ export default function DfyPage() {
                                 <input
                                     type="url"
                                     placeholder="https://www.digistore24.com/redir/XXXXX/your-id/"
-                                    className="w-full bg-[#0c0c0e] border border-border-dim/40 rounded-xl px-4 py-4 text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-accent/40 transition-colors"
+                                    className="w-full surface-inset border-border-dim/40 px-4 py-4 text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-accent/40 transition-colors"
                                     value={affiliateLink}
                                     onChange={(e) => {
                                         setAffiliateLink(e.target.value);
@@ -410,7 +410,7 @@ export default function DfyPage() {
                         {!loadingPhase && results.length > 0 && (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center justify-between px-1">
-                                    <h2 className="text-lg font-bold text-white">
+                                    <h2 className="text-lg font-bold text-text-heading">
                                         {results.length} Posts Found — Replies Ready
                                     </h2>
                                     <span className="text-[11px] font-bold text-accent bg-accent/10 border border-accent/20 px-3 py-1 rounded-full">
@@ -427,7 +427,7 @@ export default function DfyPage() {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: idx * 0.05 }}
-                                                className="border border-border-dim/30 rounded-xl bg-[#0c0c0e] overflow-hidden"
+                                                className="surface-inset border-border-dim/30 overflow-hidden"
                                             >
                                                 {/* Post header */}
                                                 <div className="p-4 flex items-start justify-between gap-3 border-b border-border-dim/15">
@@ -470,7 +470,7 @@ export default function DfyPage() {
                                                             const isCopied = copiedId === uniqueId;
 
                                                             return (
-                                                                <div key={rIdx} className="flex flex-col bg-[#111113] border border-border-dim/20 rounded-lg p-4 hover:border-accent/20 transition-all group">
+                                                                <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-accent/20 transition-all group">
                                                                     <div className="flex items-center justify-between mb-2.5">
                                                                         <span className="text-[9px] font-black text-accent uppercase tracking-widest">
                                                                             {labels[rIdx] || `Reply #${rIdx + 1}`}

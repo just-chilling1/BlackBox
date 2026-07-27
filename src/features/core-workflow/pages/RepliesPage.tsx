@@ -158,7 +158,7 @@ export default function RepliesPage() {
                 </div>
 
                 {/* Affiliate link */}
-                <div className="flex items-center gap-3 p-3 bg-[#0c0c0e] border border-border-dim/30 rounded-xl">
+                <div className="flex items-center gap-3 p-3 surface-inset border-border-dim/30">
                     <LinkIcon size={14} className="text-text-muted shrink-0" />
                     <input
                         type="text"
@@ -183,7 +183,7 @@ export default function RepliesPage() {
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.04 }}
-                            className="border border-border-dim/30 rounded-xl bg-[#0c0c0e] overflow-hidden"
+                            className="surface-inset border-border-dim/30 overflow-hidden"
                         >
                             {/* Ad header */}
                             <div className="p-4 flex items-start justify-between gap-3">
@@ -218,7 +218,7 @@ export default function RepliesPage() {
                             </div>
 
                             {/* Action bar */}
-                            <div className="flex items-center justify-between px-4 py-2.5 border-t border-border-dim/15 bg-[#0a0a0c]">
+                            <div className="flex items-center justify-between px-4 py-2.5 border-t border-border-dim/15 bg-page">
                                 <button
                                     onClick={() => {
                                         if (replies.length === 0) handleGenerate(post);
@@ -283,7 +283,7 @@ export default function RepliesPage() {
                                                         const isCopied = copiedId === uniqueId;
 
                                                         return (
-                                                            <div key={rIdx} className="flex flex-col bg-[#111113] border border-border-dim/20 rounded-lg p-4 hover:border-accent/20 transition-all group">
+                                                            <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-accent/20 transition-all group">
                                                                 <div className="flex items-center justify-between mb-2.5">
                                                                     <span className="text-[9px] font-black text-accent uppercase tracking-widest">{labels[rIdx]}</span>
                                                                     <button

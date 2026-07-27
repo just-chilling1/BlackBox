@@ -91,7 +91,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
                   "relative p-4 rounded-xl border text-left transition-all",
                   isSelected
                     ? "border-promo-accent/50 bg-promo-accent/10 ring-1 ring-promo-accent/30"
-                    : "border-border-dim bg-black/[0.02] hover:border-promo-accent/30"
+                    : "border-border-dim bg-slate-50 hover:border-promo-accent/30"
                 )}
               >
                 {isSelected && (

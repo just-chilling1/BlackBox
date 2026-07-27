@@ -25,9 +25,9 @@ export function MilestoneTracker({ activityCount = 0 }: MilestoneTrackerProps) {
   const progress = Math.min(100, (activityCount / next.threshold) * 100);
 
   return (
-    <div className="flex flex-col gap-4 p-5 rounded-xl border border-border-dim/30 bg-[#0c0c0e]">
+    <div className="flex flex-col gap-4 p-5 surface-inset border-border-dim/30">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-white">Your progress</h3>
+        <h3 className="text-sm font-bold text-text-heading">Your progress</h3>
         <span className="text-xs text-text-muted">
           {activityCount} / {next.threshold}
         </span>

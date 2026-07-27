@@ -145,7 +145,7 @@ export function ArmedLinkSelector({
                 aria-label={`${isSelected ? "Deselect" : "Select"} product link ${i + 1}`}
                 className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
                   isSelected
-                    ? "border-accent bg-accent text-[#0B0C10]"
+                    ? "border-accent bg-accent text-text-on-accent"
                     : "border-border-dim/40 bg-black/20 text-transparent hover:border-accent/50"
                 }`}
               >

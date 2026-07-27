@@ -40,7 +40,7 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
 
   return (
     <details className="group glass-card overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_120px]">
-      <summary className="flex cursor-pointer list-none items-start gap-3 p-4 transition-colors hover:bg-black/[0.02] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-start gap-3 p-4 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={16}
           className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
@@ -63,14 +63,14 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
             "shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
             isCopied
               ? "bg-accent/20 text-accent"
-              : "bg-black/[0.06] text-text-secondary hover:bg-white/[0.1]"
+              : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
           )}
         >
           {isCopied ? <Check size={12} /> : <Copy size={12} />}
           {isCopied ? "Copied" : "Copy"}
         </button>
       </summary>
-      <div className="border-t border-black/[0.06] px-4 pb-4 pl-11">
+      <div className="border-t border-divider px-4 pb-4 pl-11">
         <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.body}</p>
       </div>
     </details>
@@ -347,7 +347,7 @@ export default function SocialPayoutsPage() {
           </div>
 
           {loadingPosts && posts.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-xl border border-black/[0.06] bg-black/[0.02] px-4 py-6 text-sm text-text-muted">
+            <div className="flex items-center gap-2 rounded-xl border border-divider bg-slate-50 px-4 py-6 text-sm text-text-muted">
               <Loader2 size={16} className="animate-spin" />
               Loading saved posts…
             </div>

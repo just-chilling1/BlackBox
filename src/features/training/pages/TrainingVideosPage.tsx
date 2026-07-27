@@ -9,7 +9,7 @@ import { TrainingPageLayout } from "../components/TrainingPageLayout";
 function VideoPlaceholder({ title }: { title: string }) {
   return (
     <div
-      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#0a0a0c] border border-dashed border-border-dim/40"
+      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-page border border-dashed border-border-dim/40"
       aria-hidden
     >
       <Video size={28} className="text-text-muted/50" />
@@ -37,7 +37,7 @@ function VideoCard({
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border-dim/30 bg-[#0c0c0e]">
+    <div className="overflow-hidden surface-inset border-border-dim/30">
       <div className="relative w-full bg-black" style={{ paddingBottom: "56.25%" }}>
         {id && playing ? (
           <iframe
@@ -68,7 +68,7 @@ function VideoCard({
         {badge ? (
           <span className="text-[9px] font-bold uppercase tracking-widest text-accent">{badge}</span>
         ) : null}
-        <h3 className="text-sm font-bold text-white">{title}</h3>
+        <h3 className="text-sm font-bold text-text-heading">{title}</h3>
         <p className="text-[12px] leading-relaxed text-text-muted">{description}</p>
       </div>
     </div>

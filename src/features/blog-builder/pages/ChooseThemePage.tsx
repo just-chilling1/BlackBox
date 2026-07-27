@@ -228,7 +228,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                   "group rounded-xl border text-left transition-all overflow-hidden",
                   isSelected
                     ? "border-promo-accent/50 bg-promo-accent/10 ring-1 ring-promo-accent/30"
-                    : "border-border-dim hover:border-promo-accent/25 hover:bg-black/[0.02]"
+                    : "border-border-dim hover:border-promo-accent/25 hover:bg-slate-50"
                 )}
               >
                 <div className="flex h-16 items-end gap-1.5 px-3 pb-2 pt-3" style={{ backgroundColor: `${accent}14` }}>

@@ -21,7 +21,7 @@ export function TrainingPageLayout({ children }: { children: ReactNode }) {
       />
 
       {!trainingContentReady && (
-        <p className="-mt-4 mb-2 text-xs text-amber-200/90 rounded-lg border border-amber-400/20 bg-amber-500/10 px-3 py-2">
+        <p className="-mt-4 mb-2 alert-warning">
           {trainingPageSkeletonNote}
         </p>
       )}

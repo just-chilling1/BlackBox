@@ -62,7 +62,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onViewVault}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl bg-gradient-to-br from-[#45A29E] to-[#2d7a76] px-4 py-4 text-base font-bold text-[#0B0C10] shadow-[0_0_40px_rgba(69,162,158,0.35)]"
+          className="w-full rounded-xl bg-gradient-to-br from-promo-accent to-promo-accent/80 px-4 py-4 text-base font-bold text-text-on-accent shadow-[0_0_40px_rgba(12,189,160,0.35)]"
         >
           <span className="flex items-center justify-center gap-2">
             View Asset Vault

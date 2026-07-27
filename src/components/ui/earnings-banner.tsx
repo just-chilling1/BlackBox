@@ -33,7 +33,7 @@ export function EarningsBanner({ onDismiss, compact = false }: EarningsBannerPro
         onClick={handleDismiss}
         aria-label="Dismiss offer"
         className={clsx(
-          "absolute rounded-full flex items-center justify-center text-white/50 hover:text-text-heading hover:bg-black/10 transition-colors",
+          "absolute rounded-full flex items-center justify-center text-text-muted hover:text-text-heading hover:bg-border-dim/50 transition-colors",
           compact ? "top-2 right-2 w-7 h-7" : "top-3 right-3 w-9 h-9"
         )}
       >
@@ -51,7 +51,7 @@ export function EarningsBanner({ onDismiss, compact = false }: EarningsBannerPro
 
       <h3
         className={clsx(
-          "font-black uppercase text-white leading-tight",
+          "font-black uppercase text-text-heading leading-tight",
           compact ? "text-sm sm:text-base mb-1.5" : "text-xl sm:text-2xl mb-2"
         )}
       >

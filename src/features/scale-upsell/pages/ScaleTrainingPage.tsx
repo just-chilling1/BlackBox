@@ -21,7 +21,7 @@ export default function ScaleTrainingPage() {
                     <span className="text-xs font-bold text-accent uppercase tracking-[0.15em]">Exclusive Training</span>
                 </div>
 
-                <h1 className="brand-font text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
+                <h1 className="brand-font text-4xl md:text-5xl lg:text-6xl font-bold text-text-heading leading-tight max-w-3xl">
                     Scale Your{" "}
                     <span className="text-accent">{brand.productName}</span>
                     {" "}To $1,000+ Per Day

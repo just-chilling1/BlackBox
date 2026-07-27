@@ -132,10 +132,10 @@ export function DeployLaunchPanel({
           whileTap={{ scale: 0.99 }}
           className={clsx(
             "flex w-full items-center justify-center gap-3 rounded-xl px-6 py-4 text-base font-bold sm:py-5 sm:text-lg",
-            "text-[#0B0C10] transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
+            "text-text-on-accent transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
             canResume || phase === "error"
-              ? "border border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37] to-[#b8942a] shadow-[0_0_40px_rgba(212,175,55,0.25)]"
-              : "bg-gradient-to-br from-[#45A29E] to-[#2d7a76] shadow-[0_0_40px_rgba(69,162,158,0.35)]"
+              ? "border border-accent/40 bg-gradient-to-br from-accent to-[#b8942a] shadow-gold"
+              : "bg-gradient-to-br from-promo-accent to-promo-accent/80 shadow-[0_0_40px_rgba(12,189,160,0.35)]"
           )}
         >
           <PrimaryIcon size={22} />
