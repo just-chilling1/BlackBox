@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import {
   Shield,
   ShieldCheck,
@@ -16,8 +15,6 @@ import {
   Calendar,
   Mail,
   BadgeCheck,
-  ArrowRight,
-  Headphones,
   RefreshCw,
   Sparkles,
 } from "lucide-react";
@@ -430,20 +427,6 @@ export default function ProtectorPage() {
           </section>
         </div>
       </div>
-
-      <section className="glass-card flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Headphones size={22} className="text-accent" />
-          <div>
-            <p className="font-bold text-text-primary">Need help with your account?</p>
-            <p className="text-sm text-text-secondary">Our support team is here if something looks off.</p>
-          </div>
-        </div>
-        <Link href="/support" className="btn-primary inline-flex items-center gap-2">
-          Contact Support
-          <ArrowRight size={16} />
-        </Link>
-      </section>
 
       <p className="text-xs text-text-muted">
         {brand.productName} Wealth Protector — visual security status for your member account. No settings

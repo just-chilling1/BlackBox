@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Headphones, Sparkles, CheckCircle2 } from "lucide-react";
+import { Sparkles, CheckCircle2 } from "lucide-react";
 import { brand } from "@/config/brand.config";
 import { dashboardContent } from "@/config/dashboard.config";
 import { isFeatureEnabled } from "@/config/features.config";
@@ -140,22 +140,6 @@ export default function DashboardPage() {
           {hasPremium ? <PremiumUpgradesWidget /> : null}
 
           <HonestActivity />
-
-          <DashboardSection className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="dashboard-section-icon h-14 w-14">
-                <Headphones className="h-7 w-7" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-text-heading">Need Help?</h3>
-                <p className="text-sm text-text-muted">Priority support when you need it</p>
-              </div>
-            </div>
-            <Link href="/support" className="btn-primary min-h-[48px] shrink-0">
-              Contact Support
-              <ArrowRight size={16} />
-            </Link>
-          </DashboardSection>
 
           <DashboardSection className="py-4 text-center">
             <p className="text-xs text-text-muted italic">Individual results vary.</p>
