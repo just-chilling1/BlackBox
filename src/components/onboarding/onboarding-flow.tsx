@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { getNavIcon } from "@/lib/nav-icons";
 import { supabase } from "@/lib/supabase";
@@ -14,27 +15,34 @@ import {
 function OnboardingBrand() {
   const Icon = getNavIcon(brand.logo.icon);
   const useImage = brand.logo.type === "image";
+  const isWordmarkImage = useImage && brand.logo.wordmark;
+  const imageSrc = isWordmarkImage ? brand.logo.src : brand.logo.iconSrc ?? brand.logo.src;
 
   return (
     <div className="flex items-center gap-3">
       {useImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={brand.logo.src}
+          src={imageSrc}
           alt={brand.logo.alt}
-          width={40}
-          height={40}
-          className="h-10 w-auto shrink-0 object-contain"
+          width={isWordmarkImage ? undefined : 40}
+          height={isWordmarkImage ? undefined : 40}
+          className={clsx(
+            "w-auto shrink-0 object-contain",
+            isWordmarkImage ? "h-10 sm:h-11" : "h-10"
+          )}
         />
       ) : (
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent shadow-sm">
           <Icon size={20} className="text-black" />
         </div>
       )}
-      <div className="min-w-0">
-        <p className="truncate font-bold text-slate-900">{brand.productName}</p>
-        <p className="truncate text-sm text-slate-500">{brand.tagline}</p>
-      </div>
+      {!isWordmarkImage && (
+        <div className="min-w-0">
+          <p className="truncate font-bold text-slate-900">{brand.productName}</p>
+          <p className="truncate text-sm text-slate-500">{brand.tagline}</p>
+        </div>
+      )}
     </div>
   );
 }

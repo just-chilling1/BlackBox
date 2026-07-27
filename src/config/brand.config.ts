@@ -8,11 +8,16 @@ export const brand = {
   authTagline: "Secure member access",
   signupTagline: "Create your account",
   logo: {
-    /** "icon" uses lucide icon; "image" uses public/logo.png */
-    type: "icon" as "icon" | "image",
+    /** "icon" uses lucide icon; "image" uses public logo assets */
+    type: "image" as "icon" | "image",
     icon: "Target",
+    /** Full wordmark for expanded nav/header */
     src: "/logo.png",
+    /** Square mark for collapsed sidebar and favicon */
+    iconSrc: "/logo-icon.png",
     alt: PRODUCT_NAME,
+    /** Logo image already includes the product name */
+    wordmark: true,
   },
   colors: {
     /** Duke University mustard yellow (Pantone 116) */

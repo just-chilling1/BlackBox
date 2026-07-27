@@ -22,6 +22,10 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: brand.metadata.title,
   description: brand.metadata.description,
+  icons: {
+    icon: brand.logo.type === "image" ? "/favicon.png" : "/favicon.ico",
+    apple: brand.logo.type === "image" ? "/apple-touch-icon.png" : "/favicon.ico",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

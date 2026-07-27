@@ -17,6 +17,7 @@ const SIZES = {
     box: "w-9 h-9 sm:w-10 sm:h-10",
     icon: 20,
     imgHeight: "h-9 sm:h-10",
+    wordmarkHeight: "h-8 sm:h-9",
     img: 40,
     title: "text-base sm:text-[18px] lg:text-[22px]",
     tagline: "text-[9px] sm:text-[10px]",
@@ -25,6 +26,7 @@ const SIZES = {
     box: "w-10 h-10 sm:w-12 sm:h-12",
     icon: 22,
     imgHeight: "h-10 sm:h-12",
+    wordmarkHeight: "h-10 sm:h-11",
     img: 48,
     title: "text-lg sm:text-[22px]",
     tagline: "text-[10px]",
@@ -33,6 +35,7 @@ const SIZES = {
     box: "w-14 h-14 sm:w-16 sm:h-16",
     icon: 28,
     imgHeight: "h-16 sm:h-20",
+    wordmarkHeight: "h-14 sm:h-16",
     img: 80,
     title: "text-xl sm:text-[28px] lg:text-[32px]",
     tagline: "text-xs sm:text-sm",
@@ -49,6 +52,8 @@ export function BrandLogo({
   const s = SIZES[size];
   const Icon = getNavIcon(brand.logo.icon);
   const useImage = brand.logo.type === "image";
+  const isWordmarkImage = useImage && brand.logo.wordmark;
+  const imageSrc = useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
 
   return (
     <div
@@ -61,11 +66,14 @@ export function BrandLogo({
       {useImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={brand.logo.src}
+          src={imageSrc}
           alt={brand.logo.alt}
-          width={s.img}
-          height={s.img}
-          className={`${s.imgHeight} w-auto max-w-none object-contain shrink-0`}
+          width={compact ? s.img : undefined}
+          height={compact ? s.img : undefined}
+          className={clsx(
+            "w-auto max-w-full object-contain shrink-0",
+            compact ? s.imgHeight : s.wordmarkHeight
+          )}
           loading="eager"
           decoding="async"
         />
@@ -76,7 +84,7 @@ export function BrandLogo({
           <Icon size={s.icon} className="text-black" />
         </div>
       )}
-      {!compact && (
+      {!compact && !isWordmarkImage && (
         <div className={clsx("flex flex-col min-w-0", stacked && "items-center")}>
           <span
             className={clsx(
