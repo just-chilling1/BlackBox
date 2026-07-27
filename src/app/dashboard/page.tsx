@@ -3,19 +3,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Headphones, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Headphones, Sparkles, CheckCircle2 } from "lucide-react";
 import { brand } from "@/config/brand.config";
 import { dashboardContent } from "@/config/dashboard.config";
-import { trainingContent } from "@/config/training.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps, getDashboardQuickActions } from "@/lib/dashboard-steps";
 import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/ui/page-header";
 import { HowItWorks } from "@/components/ui/how-it-works";
-import { VideoThumbnail } from "@/components/ui/video-thumbnail";
-import { VideoOverlay } from "@/components/ui/video-overlay";
 import { QuickActionCard } from "@/components/ui/quick-action-card";
-import { WelcomeOfferBanner } from "@/components/ui/welcome-offer-banner";
+import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSection";
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
@@ -51,16 +48,9 @@ const SETUP_STEPS = [
   },
 ] as const;
 
-function resolveIntroVideoId(): string {
-  return dashboardContent.introVideoId || trainingContent.videos[0]?.id || "";
-}
-
 export default function DashboardPage() {
   const router = useRouter();
-  const [videoOpen, setVideoOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
-
-  const introVideoId = resolveIntroVideoId();
   const howItWorksSteps = useMemo(() => getDashboardHowItWorksSteps(), []);
   const quickActions = useMemo(() => getDashboardQuickActions(), []);
 
@@ -114,44 +104,9 @@ export default function DashboardPage() {
         subtitle={dashboardContent.subtitle}
       />
 
-      <WelcomeOfferBanner compact />
-
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-4">
         <div className="flex flex-col gap-8 xl:col-span-3">
-          {introVideoId ? (
-            <section className="card-base overflow-hidden border-border-dim/60 p-0!">
-              <VideoThumbnail
-                videoId={introVideoId}
-                title={dashboardContent.introVideoTitle}
-                onPlay={() => setVideoOpen(true)}
-                eager
-                className="rounded-none border-0"
-              />
-              <div className="flex flex-col gap-4 border-t border-border-dim/40 p-5 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-bold text-text-primary">{dashboardContent.introVideoTitle}</p>
-                  <p className="mt-1 text-xs text-text-muted">{dashboardContent.introVideoSubtitle}</p>
-                </div>
-                <Link href="/training" className="btn-primary min-h-[48px] shrink-0">
-                  Open Training Academy
-                  <ArrowRight size={16} />
-                </Link>
-              </div>
-            </section>
-          ) : (
-            <section className="accent-card card-base flex flex-col gap-4 border-dashed border-accent/30 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm font-bold text-text-primary">Start with Training Academy</p>
-                <p className="mt-1 text-xs text-text-muted">
-                  Add a Vimeo ID in training.config.ts to show the intro video here.
-                </p>
-              </div>
-              <Link href="/training" className="btn-primary min-h-[48px] shrink-0">
-                <GraduationCap size={18} />
-                Open Academy
-              </Link>
-            </section>
-          )}
+          <FeaturedVideoSection onPlayWithoutVideo={() => router.push("/training")} />
 
           <HowItWorks steps={howItWorksSteps} />
 
@@ -232,15 +187,6 @@ export default function DashboardPage() {
       ) : null}
 
       {isFeatureEnabled("dopamine") ? <DopamineDashboard /> : null}
-
-      {introVideoId ? (
-        <VideoOverlay
-          open={videoOpen}
-          onClose={() => setVideoOpen(false)}
-          videoUrl={`https://player.vimeo.com/video/${introVideoId}`}
-          title={dashboardContent.introVideoTitle}
-        />
-      ) : null}
     </div>
   );
 }

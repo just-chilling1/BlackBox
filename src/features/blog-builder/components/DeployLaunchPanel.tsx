@@ -134,7 +134,7 @@ export function DeployLaunchPanel({
             "flex w-full items-center justify-center gap-3 rounded-xl px-6 py-4 text-base font-bold sm:py-5 sm:text-lg",
             "text-text-on-accent transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
             canResume || phase === "error"
-              ? "border border-accent/40 bg-gradient-to-br from-accent to-[#b8942a] shadow-gold"
+              ? "border border-accent/40 bg-gradient-to-br from-accent to-[#C9970D] shadow-gold"
               : "bg-gradient-to-br from-promo-accent to-promo-accent/80 shadow-[0_0_40px_rgba(12,189,160,0.35)]"
           )}
         >

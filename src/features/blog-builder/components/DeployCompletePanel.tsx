@@ -50,7 +50,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onGenerateAnother}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-accent/40 bg-gradient-to-br from-accent to-[#b8942a] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
+          className="w-full rounded-xl border border-accent/40 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
         >
           <span className="flex items-center justify-center gap-2">
             <Rocket size={18} />

@@ -16,7 +16,7 @@
   --color-brand-tint: var(--brand-tint);
   --color-promo-accent: var(--promo-accent);
 
-  --shadow-gold: 0 0 20px rgba(234, 179, 8, 0.15);
+  --shadow-gold: 0 0 20px rgba(238, 179, 16, 0.15);
 
   --color-success: #10B981;
   --color-error: #EF4444;
@@ -36,13 +36,13 @@
   --bg-border: #E2E8F0;
   --bg-glass: rgba(255, 255, 255, 0.92);
 
-  /* Brand Colors - Gold & Indigo */
-  --brand-primary: #CA8A04;
+  /* Brand Colors - Duke Mustard Yellow & Indigo */
+  --brand-primary: #EEB310;
   --brand-secondary: #6366F1;
-  --brand-tint: rgba(202, 138, 4, 0.1);
+  --brand-tint: rgba(238, 179, 16, 0.1);
 
   --promo-accent: #0D9488;
-  --promo-cta: #EAB308;
+  --promo-cta: #EEB310;
 
   /* Fonts */
   --font-brand: 'Outfit', sans-serif;
@@ -89,7 +89,7 @@ html[data-sidebar="collapsed"] {
     -webkit-tap-highlight-color: transparent;
     background-image:
       radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(202, 138, 4, 0.05) 0px, transparent 50%);
+      radial-gradient(at 100% 100%, rgba(238, 179, 16, 0.05) 0px, transparent 50%);
   }
 
   input, select, textarea {
@@ -456,6 +456,15 @@ html[data-sidebar="collapsed"] {
     );
     opacity: 0.85;
   }
+
+  .video-thumb-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(15, 23, 42, 0.72) 0%,
+      rgba(15, 23, 42, 0.2) 45%,
+      rgba(15, 23, 42, 0.12) 100%
+    );
+  }
 }
 
 @keyframes fade-in-up {
@@ -582,7 +591,7 @@ html[data-sidebar="collapsed"] {
   background: linear-gradient(
     105deg,
     transparent 35%,
-    rgba(234, 179, 8, 0.12) 45%,
+    rgba(238, 179, 16, 0.12) 45%,
     rgba(12, 189, 160, 0.18) 55%,
     transparent 65%
   );

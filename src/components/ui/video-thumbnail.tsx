@@ -9,13 +9,22 @@ interface VideoThumbnailProps {
   videoId: string;
   title: string;
   onPlay: () => void;
+  caption?: string;
   className?: string;
   eager?: boolean;
 }
 
-export function VideoThumbnail({ videoId, title, onPlay, className, eager = false }: VideoThumbnailProps) {
+export function VideoThumbnail({
+  videoId,
+  title,
+  onPlay,
+  caption,
+  className,
+  eager = false,
+}: VideoThumbnailProps) {
   const [imgError, setImgError] = useState(false);
   const thumbPath = videoId ? getVideoThumbnailById(videoId) : null;
+  const showImage = thumbPath && !imgError;
 
   return (
     <button
@@ -23,12 +32,12 @@ export function VideoThumbnail({ videoId, title, onPlay, className, eager = fals
       onClick={onPlay}
       aria-label={`Play ${title}`}
       className={clsx(
-        "group relative w-full overflow-hidden rounded-xl border border-border-dim/60 bg-gradient-to-br from-slate-100 via-white to-indigo-50/80 text-left transition-all duration-300 hover:border-accent/40 hover:shadow-md",
+        "group relative w-full overflow-hidden rounded-xl border border-border-dim/40 bg-black text-left",
         className
       )}
     >
       <div className="relative aspect-video w-full">
-        {thumbPath && !imgError ? (
+        {showImage ? (
           <img
             src={thumbPath}
             alt=""
@@ -38,16 +47,22 @@ export function VideoThumbnail({ videoId, title, onPlay, className, eager = fals
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/15 via-white to-brand-tint" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950" />
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-slate-900/10 to-transparent" />
+        <div className="video-thumb-scrim absolute inset-0" />
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-white/20 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:border-accent/50 group-hover:bg-accent/20 sm:h-16 sm:w-16">
-            <Play size={24} className="ml-1 fill-white text-white" />
-          </div>
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent to-promo-accent text-white shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
+            <Play className="ml-1 h-8 w-8 fill-white sm:h-9 sm:w-9" />
+          </span>
         </div>
+
+        {caption ? (
+          <p className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-4 text-center text-sm font-bold text-white drop-shadow-lg sm:text-base">
+            {caption}
+          </p>
+        ) : null}
       </div>
     </button>
   );

@@ -10,7 +10,7 @@ interface SuccessCelebrationProps {
   onDone?: () => void;
 }
 
-const CONFETTI_COLORS = ["#EAB308", "#10B981", "#6366F1", "#F59E0B", "#22D3EE", "#A855F7"];
+const CONFETTI_COLORS = ["#EEB310", "#10B981", "#6366F1", "#F59E0B", "#22D3EE", "#A855F7"];
 
 function ConfettiParticle({ delay, color }: { delay: number; color: string }) {
   const x = (Math.random() - 0.5) * 300;

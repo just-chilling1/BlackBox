@@ -15,10 +15,11 @@ export const brand = {
     alt: PRODUCT_NAME,
   },
   colors: {
-    primary: "#CA8A04",
+    /** Duke University mustard yellow (Pantone 116) */
+    primary: "#EEB310",
     secondary: "#6366F1",
     promoAccent: "#0D9488",
-    promoCta: "#EAB308",
+    promoCta: "#EEB310",
     page: "#F8FAFC",
     sidebar: "#FFFFFF",
     panel: "#FFFFFF",
@@ -32,7 +33,7 @@ export const brand = {
     borderTeal: "rgba(13, 148, 136, 0.16)",
     border: "#E2E8F0",
     encryptedGreen: "#059669",
-    vaultGold: "#CA8A04",
+    vaultGold: "#EEB310",
   },
   fonts: {
     brand: "Outfit",
