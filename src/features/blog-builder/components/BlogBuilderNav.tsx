@@ -17,6 +17,12 @@ import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
 import { isFeatureEnabled } from "@/config/features.config";
 import { useWorkflowNav } from "@/context/WorkflowNavContext";
+import {
+  sidebarNavIconClass,
+  sidebarNavItemClass,
+  sidebarNavLabelClass,
+  type SidebarNavColor,
+} from "@/components/layout/sidebar-nav-styles";
 
 interface BlogBuilderNavProps {
   pathname: string;
@@ -24,7 +30,13 @@ interface BlogBuilderNavProps {
   collapsed?: boolean;
 }
 
-/** Core app navigation when blog-builder is enabled. */
+const NAV_COLORS: Partial<Record<string, SidebarNavColor>> = {
+  Rocket: "gold",
+  Megaphone: "purple",
+  Link2: "blue",
+  FolderOpen: "indigo",
+};
+
 export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: BlogBuilderNavProps) {
   if (!isFeatureEnabled("blog-builder")) return null;
 
@@ -38,22 +50,24 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     const Icon = getNavIcon(item.icon);
     const isActive = isNavPathActive(pathname, item.path);
     const locked = isNavItemLocked(item, workflowProgress);
+    const color = NAV_COLORS[item.icon] ?? "gold";
 
     if (locked) {
       return (
         <div
           key={item.path}
-          className="command-nav-link opacity-40 cursor-not-allowed"
+          className={clsx(
+            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg opacity-40 cursor-not-allowed",
+            collapsed && "justify-center px-2"
+          )}
           title="Complete the previous step first"
         >
-          <div className={clsx("flex items-center gap-3 min-w-0", collapsed && "justify-center")}>
-            <Lock size={18} className="text-text-muted shrink-0" />
-            {!collapsed && (
-              <span className="brand-font text-sm font-medium text-text-muted leading-snug">
-                {item.label}
-              </span>
-            )}
-          </div>
+          <Lock size={18} className="text-gray-500 shrink-0" />
+          {!collapsed && (
+            <span className="brand-font text-sm font-medium text-gray-500 leading-snug truncate">
+              {item.label}
+            </span>
+          )}
         </div>
       );
     }
@@ -64,17 +78,11 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         href={item.path}
         onClick={onNavClick}
         title={collapsed ? item.label : undefined}
-        className={clsx(
-          "command-nav-link",
-          isActive && "active",
-          collapsed && "justify-center px-2"
-        )}
+        className="block group"
       >
-        <div className={clsx("flex items-center gap-3 min-w-0 flex-1", collapsed && "justify-center")}>
-          <Icon size={18} className={clsx("shrink-0", isActive ? "text-accent" : "text-text-muted")} />
-          {!collapsed && (
-            <span className="brand-font text-sm font-medium leading-snug">{item.label}</span>
-          )}
+        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </Link>
     );
@@ -83,6 +91,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
   const renderCoreLink = (item: (typeof generateNav)[0]) => {
     const Icon = getNavIcon(item.icon);
     const isActive = isNavPathActive(pathname, item.path);
+    const color = NAV_COLORS[item.icon] ?? "gold";
 
     return (
       <Link
@@ -90,38 +99,31 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         href={item.path}
         onClick={onNavClick}
         title={collapsed ? item.label : undefined}
-        className={clsx(
-          "command-nav-link",
-          isActive && "active",
-          collapsed && "justify-center px-2"
-        )}
+        className="block group"
       >
-        <div className={clsx("flex items-center gap-3 min-w-0 flex-1", collapsed && "justify-center")}>
-          <Icon size={18} className={clsx("shrink-0", isActive ? "text-accent" : "text-text-muted")} />
-          {!collapsed && (
-            <span className="brand-font text-sm font-medium leading-snug">{item.label}</span>
-          )}
+        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </Link>
     );
   };
 
-  const sectionLabelClass = "sidebar-section-label";
+  const sectionLabelClass =
+    "px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-500 first:pt-2";
 
   return (
     <>
       {(steps.length > 0 || generateNav.length > 0) && (
         <>
-          {!collapsed && <span className={sectionLabelClass}>{blogBuilderGenerateSectionLabel}</span>}
+          {!collapsed && <p className={sectionLabelClass}>{blogBuilderGenerateSectionLabel}</p>}
           {steps.map(renderStep)}
           {generateNav.map(renderCoreLink)}
         </>
       )}
       {librariesNav.length > 0 && (
         <>
-          {!collapsed && (
-            <span className={sectionLabelClass}>{blogBuilderLibrariesSectionLabel}</span>
-          )}
+          {!collapsed && <p className={sectionLabelClass}>{blogBuilderLibrariesSectionLabel}</p>}
           {librariesNav.map(renderCoreLink)}
         </>
       )}

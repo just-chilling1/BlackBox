@@ -2,9 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LogOut, ChevronRight, Lock, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import {
+  LogOut,
+  Lock,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ExternalLink,
+  PlayCircle,
+} from "lucide-react";
 import { clsx } from "clsx";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { brand } from "@/config/brand.config";
 import {
@@ -17,13 +23,20 @@ import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
 import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
-import { BrandLogo } from "./BrandLogo";
 import { isFeatureEnabled } from "@/config/features.config";
-import { LiveActivityTicker } from "@/features/dopamine/components/LiveActivityTicker";
 import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { BlogBuilderNav } from "@/features/blog-builder/components/BlogBuilderNav";
 import { storageKeys } from "@/lib/storage-keys";
 import { homeNav, type NavItem } from "@/config/navigation.config";
+import { getExclusiveOffers } from "@/config/offers.config";
+import { trainingContent } from "@/config/training.config";
+import { supabase } from "@/lib/supabase";
+import {
+  sidebarNavIconClass,
+  sidebarNavItemClass,
+  sidebarNavLabelClass,
+  type SidebarNavColor,
+} from "./sidebar-nav-styles";
 
 interface SidebarContentProps {
   collapsed: boolean;
@@ -31,7 +44,20 @@ interface SidebarContentProps {
   onMobileClose?: () => void;
 }
 
-const sectionLabelClass = "sidebar-section-label";
+const NAV_COLORS: Partial<Record<string, SidebarNavColor>> = {
+  LayoutGrid: "gold",
+  Search: "blue",
+  Brain: "indigo",
+  Radar: "purple",
+  MessageSquare: "emerald",
+  GraduationCap: "orange",
+  Headphones: "blue",
+  TrendingUp: "emerald",
+  Rocket: "gold",
+  Megaphone: "purple",
+  Link2: "blue",
+  FolderOpen: "indigo",
+};
 
 function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentProps) {
   const pathname = usePathname();
@@ -41,14 +67,23 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const workflow = useWorkflowNav();
   const workflowProgress = workflow?.progress ?? 0;
   const blogEnabled = isFeatureEnabled("blog-builder");
-  const dopamineEnabled = isFeatureEnabled("dopamine");
   const showHomeNav = !workflowSteps.some((step) => step.path === homeNav.path);
+  const exclusiveOffers = getExclusiveOffers(trainingContent.externalTrainingUrl);
 
-  const currentWorkflowIndex = workflowSteps.findIndex((s) => s.path === pathname);
-  const progress =
-    currentWorkflowIndex >= 0
-      ? ((currentWorkflowIndex + 1) / Math.max(workflowSteps.length, 1)) * 100
-      : 0;
+  const [displayName, setDisplayName] = useState("Member");
+  const [userInitials, setUserInitials] = useState("BC");
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      const handle = user.email?.split("@")[0] || "Member";
+      const name =
+        (user.user_metadata?.full_name as string | undefined)?.trim() ||
+        handle.charAt(0).toUpperCase() + handle.slice(1);
+      setDisplayName(name);
+      setUserInitials(name.substring(0, 2).toUpperCase());
+    });
+  }, []);
 
   const handleLogout = async () => {
     onMobileClose?.();
@@ -56,7 +91,6 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       await workflow.resetSession();
       return;
     }
-    const { supabase } = await import("@/lib/supabase");
     await supabase.auth.signOut();
     window.location.href = "/login";
   };
@@ -67,22 +101,24 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
     const isActive = isNavPathActive(pathname, item.path);
     const Icon = getNavIcon(item.icon);
     const locked = isNavItemLocked(item, workflowProgress);
+    const color = NAV_COLORS[item.icon] ?? "gold";
 
     if (locked) {
       return (
         <div
           key={item.path}
-          className="command-nav-link opacity-40 cursor-not-allowed"
+          className={clsx(
+            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg opacity-40 cursor-not-allowed",
+            collapsed && "justify-center px-2"
+          )}
           title="Complete the previous step first"
         >
-          <div className={clsx("flex items-center gap-3 min-w-0", collapsed && "justify-center")}>
-            <Lock size={18} className="text-text-muted shrink-0" />
-            {!collapsed && (
-              <span className="brand-font text-sm font-medium text-text-muted leading-snug">
-                {item.label}
-              </span>
-            )}
-          </div>
+          <Lock size={18} className="text-gray-500 shrink-0" />
+          {!collapsed && (
+            <span className="brand-font text-sm font-medium text-gray-500 leading-snug truncate">
+              {item.label}
+            </span>
+          )}
         </div>
       );
     }
@@ -93,118 +129,117 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         href={item.path}
         onClick={handleNavClick}
         title={collapsed ? item.label : undefined}
-        className={clsx("command-nav-link", isActive && "active", collapsed && "justify-center px-2")}
+        className="block group"
       >
-        <div className={clsx("flex items-center gap-3 min-w-0 flex-1", collapsed && "justify-center")}>
-          <Icon size={18} className={clsx("shrink-0", isActive ? "text-accent" : "text-text-muted")} />
-          {!collapsed && (
-            <span className="brand-font text-sm font-medium leading-snug">{item.label}</span>
-          )}
+        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
-        {isActive && !collapsed && <ChevronRight size={14} className="text-accent ml-2 shrink-0" />}
       </Link>
     );
   };
 
   return (
-    <div className="relative flex h-full flex-col">
-      {workflowSteps.length > 0 && (
-        <div className="absolute left-0 top-0 z-0 h-full w-0.5 bg-black/5">
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: `${progress}%` }}
-            className="w-full"
-            style={{
-              backgroundColor: brand.colors.primary,
-              boxShadow: `0 0 15px ${brand.colors.primary}80`,
-            }}
-            transition={{ duration: 1, ease: "circOut" }}
-          />
-        </div>
-      )}
-
-      <div className={clsx("relative z-10 shrink-0 border-b border-black/5", collapsed ? "px-3 py-3" : "px-4 py-3.5")}>
-        <div className={clsx("flex items-center", collapsed ? "flex-col gap-2.5" : "justify-between gap-2")}>
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-white/5 bg-[var(--sidebar-bg)] backdrop-blur-xl">
+      <div className={clsx("shrink-0 border-b border-white/5", collapsed ? "p-3" : "p-6 pb-2")}>
+        <div className={clsx("flex items-center", collapsed ? "flex-col gap-3" : "justify-between gap-2")}>
           <Link
             href="/dashboard"
             onClick={handleNavClick}
-            className={clsx("min-w-0", collapsed ? "flex justify-center" : "flex-1")}
-            title={collapsed ? brand.productName : undefined}
+            className="block min-w-0 transition-opacity hover:opacity-80"
+            title={brand.productName}
           >
-            <BrandLogo size="sm" compact={collapsed} splitTitle showTagline={false} />
+            {collapsed ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={brand.logo.iconSrc}
+                alt={brand.logo.alt}
+                width={40}
+                height={40}
+                className="mx-auto h-10 w-10 rounded-xl border border-accent/30 object-contain p-1 shadow-[0_0_15px_rgba(238,179,16,0.15)]"
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={brand.logo.src}
+                alt={brand.logo.alt}
+                className="h-9 w-auto max-w-[210px] object-contain object-left"
+              />
+            )}
           </Link>
-          {collapsed ? (
-            <button
-              type="button"
-              onClick={onToggle}
-              aria-label="Expand sidebar"
-              title="Expand sidebar"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/10 text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
-            >
-              <PanelLeftOpen size={16} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onToggle}
-              aria-label="Collapse sidebar"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/10 text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
-            >
-              <PanelLeftClose size={16} />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          </button>
         </div>
       </div>
 
-      <nav className="sidebar-scrollbar relative z-10 flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-2 py-2 pb-3">
-        {showHomeNav ? renderNavLink(homeNav) : null}
+      <nav
+        aria-label="Main navigation"
+        className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain py-2 pl-2 pr-1 md:pl-4 md:pr-2"
+      >
+        <div className="space-y-1">
+          {showHomeNav ? renderNavLink(homeNav) : null}
+          {workflowSteps.map((step) => renderNavLink(step))}
+          {blogEnabled ? (
+            <BlogBuilderNav pathname={pathname} onNavClick={handleNavClick} collapsed={collapsed} />
+          ) : null}
+          {coreResourceNav.map((step) => renderNavLink(step))}
+          {resourceNav.map((step) => renderNavLink(step))}
+        </div>
 
         {PREMIUM_FEATURES.length > 0 && (
-          <div className="my-1">
-            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
+          <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
+        )}
+
+        {!collapsed && exclusiveOffers.length > 0 && (
+          <div className="mt-4 space-y-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+            <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+              Exclusive Offers
+            </p>
+            {exclusiveOffers.map((offer) => (
+              <a
+                key={offer.href + offer.title}
+                href={offer.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-gray-300 transition-colors hover:bg-emerald-500/10 hover:text-white"
+              >
+                <PlayCircle className="h-4 w-4 shrink-0 text-emerald-400" />
+                <span className="flex-1">{offer.title}</span>
+                <ExternalLink className="h-3 w-3 text-emerald-400" />
+              </a>
+            ))}
           </div>
-        )}
-
-        {workflowSteps.length > 0 && (
-          <>
-            {!collapsed && <span className={sectionLabelClass}>Workflow</span>}
-            {workflowSteps.map((step) => renderNavLink(step))}
-          </>
-        )}
-
-        {blogEnabled ? (
-          <BlogBuilderNav pathname={pathname} onNavClick={handleNavClick} collapsed={collapsed} />
-        ) : null}
-
-        {(coreResourceNav.length > 0 || resourceNav.length > 0) && (
-          <>
-            {!collapsed && <span className={sectionLabelClass}>Resources</span>}
-            {coreResourceNav.map((step) => renderNavLink(step))}
-            {resourceNav.map((step) => renderNavLink(step))}
-          </>
         )}
       </nav>
 
-      <div className="relative z-10 shrink-0 border-t border-black/5 px-2 py-2.5">
-        {dopamineEnabled && !collapsed ? (
-          <div className="mb-2 px-1">
-            <LiveActivityTicker />
+      <div className="shrink-0 border-t border-white/5 p-2 md:p-4">
+        <div className={clsx("rounded-xl bg-black/20 p-3", collapsed && "px-2")}>
+          <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-accent to-indigo-600 text-sm font-bold text-black shadow-[0_0_15px_rgba(238,179,16,0.35)]">
+              {userInitials}
+            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <div className="brand-font truncate text-sm font-bold text-white">{displayName}</div>
+                <div className="text-xs text-gray-500">Active Member</div>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="rounded-lg p-2 text-gray-500 transition-all hover:bg-red-500/10 hover:text-red-400"
+              title="Sign Out"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
-        ) : null}
-        <button
-          type="button"
-          onClick={() => void handleLogout()}
-          title={collapsed ? "Sign Out" : undefined}
-          className={clsx(
-            "command-nav-link text-red-600 hover:text-red-700 hover:bg-red-500/10",
-            collapsed && "justify-center px-2"
-          )}
-        >
-          <div className={clsx("flex items-center gap-3", collapsed && "justify-center")}>
-            <LogOut size={18} className="shrink-0" />
-            {!collapsed && <span className="brand-font text-sm font-medium">Sign Out</span>}
-          </div>
-        </button>
+        </div>
       </div>
     </div>
   );
@@ -221,7 +256,6 @@ function applySidebarLayout(collapsed: boolean) {
 }
 
 export function Sidebar() {
-  // Always start expanded so SSR and the first client render match (localStorage is read after mount).
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -241,7 +275,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="sidebar-glass fixed left-0 top-0 z-30 hidden h-dvh flex-col overflow-hidden transition-[width] duration-300 ease-out lg:flex"
+      className="fixed left-0 top-0 z-50 hidden h-dvh border-r border-white/10 bg-[var(--sidebar-shell-bg)] backdrop-blur-md transition-[width] duration-300 lg:flex"
       style={{ width: "var(--sidebar-w)" }}
     >
       <SidebarContent collapsed={collapsed} onToggle={toggleCollapse} />
