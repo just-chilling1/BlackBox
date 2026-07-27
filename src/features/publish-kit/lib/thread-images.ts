@@ -22,7 +22,7 @@ export function buildThreadImagePrompt(params: {
   };
 }
 
-/** Resolve a thread image quickly (scrape or fast AI), then persist to Supabase. */
+/** Resolve a thread image via scrape/stock, then persist to Supabase. */
 export async function generateThreadImage(params: {
   territory: string;
   angle: string;

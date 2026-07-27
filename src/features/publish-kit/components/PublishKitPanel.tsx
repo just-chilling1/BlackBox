@@ -300,7 +300,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
               Generate {THREAD_COUNT} ready-to-copy X threads based on your product and website.
-              The first {THREADS_WITH_IMAGES} threads include AI-generated niche images.
+              The first {THREADS_WITH_IMAGES} threads include scraped product or stock niche images.
             </p>
             {contentLoading ? (
               <p className="text-sm text-text-muted flex items-center gap-2">

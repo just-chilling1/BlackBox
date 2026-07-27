@@ -145,7 +145,7 @@ export interface GeneratePostParams {
   contentTier?: ContentTier;
   /** Text-only — image attached in a second pass. */
   skipImage?: boolean;
-  /** Fast Pollinations/picsum only (skip NanoBanana). Used during deploy. */
+  /** Scrape/stock image path (no AI generation). Used during deploy. */
   fastImage?: boolean;
   /** Shared pool — ensures no duplicate stock photos across one site generation. */
   imagePool?: SiteImagePool;
@@ -486,7 +486,7 @@ export async function attachImageToPost(params: {
     return updated as BlogPost;
   }
 
-  // Slow fallback: download + upload before return (NanoBanana / guaranteed persist).
+  // Slow fallback: download + upload before return (scrape/stock, guaranteed persist).
   const image = await resolvePostImage({
     title: post.title,
     subject: territory,

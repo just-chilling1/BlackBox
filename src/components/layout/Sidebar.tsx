@@ -181,10 +181,10 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain">
         <nav
           aria-label="Main navigation"
-          className="sidebar-scroll shrink-0 overflow-y-auto overscroll-y-contain py-2 pl-2 pr-1 md:pl-4 md:pr-2"
+          className="py-2 pl-2 pr-1 md:pl-4 md:pr-2"
         >
           <div className="space-y-1">
             {showHomeNav ? renderNavLink(homeNav) : null}
@@ -219,14 +219,12 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </nav>
 
         {PREMIUM_FEATURES.length > 0 && (
-          <div className="flex min-h-0 flex-1 items-center px-2 py-3 md:px-3">
-            <div className="sidebar-scroll max-h-full w-full overflow-y-auto">
-              <PremiumUpgradesWidget
-                layout="sidebar"
-                collapsed={collapsed}
-                onNavigate={handleNavClick}
-              />
-            </div>
+          <div className="px-2 py-3 md:px-3">
+            <PremiumUpgradesWidget
+              layout="sidebar"
+              collapsed={collapsed}
+              onNavigate={handleNavClick}
+            />
           </div>
         )}
       </div>
