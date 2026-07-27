@@ -1,5 +1,8 @@
 export const THREADS_PER_GENERATION = 10;
 
+/** First N threads receive AI-generated niche images on each generation run. */
+export const THREADS_WITH_IMAGES = 3;
+
 export const THREAD_POST_ANGLES = [
   "Urgency",
   "Social proof",

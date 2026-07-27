@@ -10,9 +10,10 @@ import {
   Megaphone,
   ChevronDown,
   Loader2,
+  ImageIcon,
 } from "lucide-react";
 import { fetchJson } from "@/lib/fetch-json";
-import { THREADS_PER_GENERATION } from "../lib/promote-constants";
+import { THREADS_PER_GENERATION, THREADS_WITH_IMAGES } from "../lib/promote-constants";
 import type {
   PromotePlatform,
   PublishKitSite,
@@ -37,21 +38,21 @@ function CollapsibleResultSection({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-xl border border-black/[0.08] bg-black/[0.02]"
+      className="group collapsible-panel"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 transition-colors hover:bg-black/[0.03] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={16}
           className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
         />
         <span className="min-w-0 flex-1 text-sm font-medium text-text-heading">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-black/[0.06] px-2 py-0.5 text-[11px] text-text-muted">
+          <span className="chip-muted shrink-0 px-2 py-0.5 text-[11px]">
             {count}
           </span>
         )}
       </summary>
-      <div className="space-y-1.5 border-t border-black/[0.06] p-2">{children}</div>
+      <div className="space-y-1.5 border-t border-divider p-2">{children}</div>
     </details>
   );
 }
@@ -70,9 +71,9 @@ function CollapsibleResultItem({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-lg border border-black/[0.06] bg-[rgb(8,11,18)]/40"
+      className="group collapsible-item"
     >
-      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover:bg-black/[0.03] [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-start gap-2 px-3 py-2.5 transition-colors hover-surface [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
           className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
@@ -84,7 +85,7 @@ function CollapsibleResultItem({
           )}
         </div>
       </summary>
-      <div className="border-t border-black/[0.06] px-3 py-2.5">{children}</div>
+      <div className="border-t border-divider px-3 py-2.5">{children}</div>
     </details>
   );
 }
@@ -108,10 +109,10 @@ function KitButton({
     "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-60";
   const styles =
     variant === "primary"
-      ? "bg-promo-accent text-[#0B0C10] hover:brightness-110"
+      ? "bg-promo-accent text-text-on-accent hover:brightness-110"
       : variant === "ghost"
-        ? "text-text-muted hover:bg-black/[0.06] hover:text-text-heading"
-        : "border border-black/[0.12] bg-black/[0.04] text-text-heading hover:bg-black/[0.08]";
+        ? "text-text-muted hover:bg-slate-100 hover:text-text-heading"
+        : "btn-subtle";
 
   return (
     <button type="button" onClick={onClick} disabled={loading || disabled} className={`${base} ${styles} ${className}`}>
@@ -146,7 +147,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     setContentLoading(true);
     void fetchJson<{
       quota: ThreadGenerationQuota;
-      threads?: { text: string; angle: string | null }[];
+      threads?: { text: string; angle: string | null; image_url?: string | null }[];
       tags?: { tag: string; reason: string }[];
     }>(`/api/promote/social-posts?siteId=${encodeURIComponent(site.siteId)}`)
       .then((res) => {
@@ -157,6 +158,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             res.data.threads.map((thread) => ({
               text: thread.text,
               angle: thread.angle || undefined,
+              imageUrl: thread.image_url || undefined,
             }))
           );
         } else {
@@ -217,7 +219,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
     setPosts(res.data.posts || []);
     if (res.data.quota) setQuota(res.data.quota);
-    showToast(`${THREAD_COUNT} X threads ready to copy`, "success");
+    showToast(`${THREAD_COUNT} X threads ready — first ${THREADS_WITH_IMAGES} include niche images`, "success");
   };
 
   const runTags = async () => {
@@ -298,6 +300,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
               Generate {THREAD_COUNT} ready-to-copy X threads based on your product and website.
+              The first {THREADS_WITH_IMAGES} threads include AI-generated niche images.
             </p>
             {contentLoading ? (
               <p className="text-sm text-text-muted flex items-center gap-2">
@@ -319,7 +322,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             >
               <Megaphone size={14} />
               {generateLoading
-                ? `Just generating ${THREAD_COUNT} threads`
+                ? `Generating ${THREAD_COUNT} threads + ${THREADS_WITH_IMAGES} images`
                 : `Generate ${THREAD_COUNT} threads`}
             </KitButton>
           </div>
@@ -334,6 +337,26 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                   defaultOpen={i === 0}
                 >
                   <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.text}</p>
+                  {post.imageUrl ? (
+                    <div className="mt-3 surface-inset overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={post.imageUrl}
+                        alt={`${post.angle || "Thread"} promotional image`}
+                        className="aspect-square w-full max-w-xs object-cover"
+                      />
+                      <div className="flex flex-wrap gap-2 border-t border-divider px-2 py-2">
+                        <KitButton
+                          variant="ghost"
+                          className="text-xs"
+                          onClick={() => copy(`image-${i}`, post.imageUrl!)}
+                        >
+                          {copiedKey === `image-${i}` ? <Check size={14} /> : <ImageIcon size={14} />}
+                          Copy image URL
+                        </KitButton>
+                      </div>
+                    </div>
+                  ) : null}
                   <KitButton
                     variant="ghost"
                     className="mt-2"
@@ -348,7 +371,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           )}
         </section>
 
-        <section className="space-y-3 border-t border-black/[0.08] pt-6">
+        <section className="space-y-3 border-t border-border-dim pt-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
               <Hash size={16} className="text-accent-muted" />
@@ -382,7 +405,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         </section>
 
         {promoLink && (
-          <div className="flex flex-wrap gap-2 border-t border-black/[0.08] pt-6">
+          <div className="flex flex-wrap gap-2 border-t border-border-dim pt-6">
             <KitButton variant="secondary" onClick={() => copy("link", promoLink)}>
               {copiedKey === "link" ? <Check size={16} /> : <Copy size={16} />}
               Copy promotion link

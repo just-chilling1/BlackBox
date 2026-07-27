@@ -13,12 +13,14 @@ import {
 import {
   THREADS_PER_GENERATION,
   THREAD_POST_ANGLES,
+  THREADS_WITH_IMAGES,
 } from "@/features/publish-kit/lib/promote-constants";
 import {
   listXThreadsForSite,
   saveXThreadBatch,
 } from "@/features/publish-kit/lib/x-threads-vault";
 import { listXTagsForSite } from "@/features/publish-kit/lib/x-tags-vault";
+import { generateThreadImage } from "@/features/publish-kit/lib/thread-images";
 import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +29,7 @@ export const maxDuration = 120;
 interface SocialPostRow {
   text: string;
   angle?: string;
+  imageUrl?: string;
 }
 
 function platformInstructions(): string {
@@ -177,14 +180,33 @@ Return ONLY this JSON shape:
       );
     }
 
+    const territory = context.territory;
+    const threadsForImages = posts.slice(0, THREADS_WITH_IMAGES);
+    const imageResults = await Promise.all(
+      threadsForImages.map((post) =>
+        generateThreadImage({
+          territory,
+          angle: post.angle,
+          threadText: post.text,
+          userId: user.id,
+          supabase,
+        })
+      )
+    );
+
+    const postsWithImages = posts.map((post, i) => ({
+      ...post,
+      imageUrl: i < THREADS_WITH_IMAGES ? imageResults[i] || undefined : undefined,
+    }));
+
     await recordThreadGeneration(supabase, user.id, siteId);
-    await saveXThreadBatch(supabase, user.id, siteId, posts);
+    await saveXThreadBatch(supabase, user.id, siteId, postsWithImages);
     const quotaAfter = await getThreadGenerationQuota(supabase, user.id);
 
     return NextResponse.json(
       {
         platform,
-        posts,
+        posts: postsWithImages,
         promoLink,
         quota: quotaAfter,
       },

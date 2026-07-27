@@ -16,6 +16,7 @@ export interface PublishKitSite {
 export interface SocialPostResult {
   text: string;
   angle?: string;
+  imageUrl?: string;
 }
 
 export interface PromoteSocialResults {
