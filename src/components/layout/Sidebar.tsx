@@ -225,6 +225,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
               layout="sidebar"
               collapsed={collapsed}
               onNavigate={handleNavClick}
+              className={collapsed ? "mt-4" : "mt-4 md:mt-6"}
             />
           </div>
         )}

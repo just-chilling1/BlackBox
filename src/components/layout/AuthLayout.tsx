@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { brand } from "@/config/brand.config";
 import { BrandLogo } from "./BrandLogo";
 import { FloatingSupportButton } from "@/components/support/FloatingSupportButton";
+import { ParticleBackground } from "@/components/ui/particle-background";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
       className="min-h-[100dvh] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden"
       style={{ backgroundColor: brand.colors.authPage }}
     >
+      <ParticleBackground />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div
           className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]"

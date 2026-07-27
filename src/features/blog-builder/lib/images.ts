@@ -643,7 +643,7 @@ export async function resolveFastImageUrl(params: {
   title: string;
   subject: string;
   hobby?: string;
-  /** Affiliate/product page to scrape for og:image. */
+  /** Affiliate/product page to scrape for og:image; AI runs only if scrape fails. */
   scrapeUrl?: string;
   pickOffset?: number;
   seedBoost?: number;
@@ -659,6 +659,16 @@ export async function resolveFastImageUrl(params: {
     const scraped = await fetchScrapedImageUrl(params.scrapeUrl);
     if (scraped && !isExcludedUrl(scraped, exclude)) {
       return { url: scraped, alt, stockId: normalizeImageUrl(scraped) };
+    }
+
+    const ai = await prLabsImageUrl(buildHeroImagePrompt(params.title, params.subject));
+    if (ai && !isExcludedUrl(ai, exclude)) {
+      return { url: ai, alt, stockId: normalizeImageUrl(ai) };
+    }
+
+    const pollUrl = pollinationsImageUrl(params.title, params.subject, offset + (params.seedBoost ?? 0));
+    if (!isExcludedUrl(pollUrl, exclude)) {
+      return { url: pollUrl, alt, stockId: normalizeImageUrl(pollUrl) };
     }
   }
 
@@ -721,22 +731,48 @@ export async function persistExternalImage(params: {
 }
 
 /**
- * Always returns a Supabase-hosted URL (scrape → stock photo → placeholder).
+ * Always returns a Supabase-hosted URL (scrape → AI on scrape failure → stock → placeholder).
  */
 export async function resolvePostImage(params: {
   title: string;
   subject: string;
   userId: string;
   supabase: SupabaseClient;
-  /** Affiliate/product page to scrape for og:image. */
+  /** Affiliate/product page to scrape for og:image before AI generation. */
   scrapeUrl?: string;
-  /** @deprecated AI image generation is disabled; kept for API compatibility. */
+  /** Skip slow NanoBanana during bulk deploy — PR Labs + Pollinations only. */
   fast?: boolean;
 }): Promise<{ url: string; alt: string }> {
   const alt = `${params.title} — ${params.subject}`;
+  const prompt = buildHeroImagePrompt(params.title, params.subject);
+  const negative = buildHeroImageNegativePrompt();
+  const pollinations = pollinationsImageUrl(params.title, params.subject);
 
-  const scrapeSource = async (): Promise<Buffer | null> =>
-    params.scrapeUrl ? fetchScrapedImageBuffer(params.scrapeUrl) : null;
+  if (params.scrapeUrl) {
+    const scraped = await fetchScrapedImageBuffer(params.scrapeUrl);
+    if (scraped) {
+      const url = await uploadToBlogImages(params.supabase, params.userId, scraped);
+      if (url) return { url, alt };
+    }
+  }
+
+  const aiSources: Array<() => Promise<Buffer | null>> = params.scrapeUrl
+    ? params.fast
+      ? [
+          () => prLabsImageBuffer(prompt),
+          () => fetchImageBuffer(pollinations, FAST_POLLINATIONS_TIMEOUT_MS),
+        ]
+      : [
+          () => prLabsImageBuffer(prompt),
+          () =>
+            callRapidApiImage({
+              prompt,
+              negativePrompt: negative,
+              referenceImageUrl: pollinations,
+            }),
+          () => fetchImageBuffer(pollinations, POLLINATIONS_TIMEOUT_MS),
+        ]
+    : [];
 
   const pixabaySource = async (): Promise<Buffer | null> => {
     const hit = await fetchPixabayImage(params.title, params.subject);
@@ -745,7 +781,7 @@ export async function resolvePostImage(params: {
   };
 
   const sources: Array<() => Promise<Buffer | null>> = [
-    scrapeSource,
+    ...aiSources,
     pixabaySource,
     () => fetchImageBuffer(picsumFallbackUrl(params.title), FAST_PICSUM_TIMEOUT_MS),
   ];
@@ -758,6 +794,6 @@ export async function resolvePostImage(params: {
   }
 
   // Never return an imageless post: picsum is a reliable, whitelisted host so a
-  // hero always renders even if scrape/stock/upload all failed.
+  // hero always renders even if scrape/AI/stock/upload all failed.
   return { url: picsumFallbackUrl(params.title), alt };
 }

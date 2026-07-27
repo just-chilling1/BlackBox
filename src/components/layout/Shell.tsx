@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "./BrandLogo";
 import { PageMotion } from "@/components/motion/PageMotion";
+import { ParticleBackground } from "@/components/ui/particle-background";
 
 const Sidebar = dynamic(() => import("./Sidebar").then((m) => ({ default: m.Sidebar })), {
   ssr: false,
@@ -43,6 +44,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="app-bg flex min-h-dvh min-w-0 overflow-x-clip">
+      <ParticleBackground />
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -58,9 +60,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
-          <div className="app-glow-orb app-glow-orb-teal hidden lg:block" aria-hidden />
-          <div className="app-glow-orb app-glow-orb-gold hidden lg:block" aria-hidden />
-
           <div className="app-content-layer mx-auto flex min-h-full w-full min-w-0 max-w-7xl flex-col">
             <PageMotion>{children}</PageMotion>
           </div>
