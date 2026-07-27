@@ -16,14 +16,18 @@ export interface ScrapedPageInfo {
 
 const SCRAPER_API_TIMEOUT_MS = 30_000;
 const DIRECT_FETCH_TIMEOUT_MS = 10_000;
-const USER_AGENT =
+export const SCRAPE_USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+
+function getScraperApiKey(): string | undefined {
+  return (process.env.SCRAPER_API_KEY || process.env.SCRAPERAPI_KEY)?.trim() || undefined;
+}
 
 async function fetchDirectHtml(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, {
       method: "GET",
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
+      headers: { "User-Agent": SCRAPE_USER_AGENT, Accept: "text/html" },
       signal: AbortSignal.timeout(DIRECT_FETCH_TIMEOUT_MS),
       redirect: "follow",
     });
@@ -35,13 +39,13 @@ async function fetchDirectHtml(url: string): Promise<string | null> {
 }
 
 async function fetchScraperApiHtml(url: string): Promise<string | null> {
-  const scraperApiKey = process.env.SCRAPER_API_KEY;
+  const scraperApiKey = getScraperApiKey();
   if (!scraperApiKey) return null;
 
   try {
     const scraperUrl = `https://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(
       url
-    )}&render=true`;
+    )}&render=true&premium=true`;
     const res = await fetch(scraperUrl, {
       method: "GET",
       signal: AbortSignal.timeout(SCRAPER_API_TIMEOUT_MS),
@@ -246,9 +250,21 @@ export async function scrapeImageFromUrl(url: string): Promise<string | null> {
     return null;
   }
 
-  const html = await fetchHtml(safeUrl);
-  if (!html) return null;
-  return extractPageImageUrl(html, safeUrl);
+  const direct = await fetchDirectHtml(safeUrl);
+  if (direct) {
+    const imageUrl = extractPageImageUrl(direct, safeUrl);
+    if (imageUrl) return imageUrl;
+  }
+
+  // Many offer pages inject og:image via JS — retry with rendered HTML even when
+  // the direct response already has title/description signals.
+  const rendered = await fetchScraperApiHtml(safeUrl);
+  if (rendered) {
+    const imageUrl = extractPageImageUrl(rendered, safeUrl);
+    if (imageUrl) return imageUrl;
+  }
+
+  return direct ? extractPageImageUrl(direct, safeUrl) : null;
 }
 
 /** Heuristic price sniff from visible text when JSON-LD has none. */
@@ -288,10 +304,22 @@ export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
     return null;
   }
 
-  const html = await fetchHtml(safeUrl);
+  let html = await fetchHtml(safeUrl);
   if (!html) return null;
 
   try {
+    let imageUrl = extractPageImageUrl(html, safeUrl) ?? "";
+    if (!imageUrl) {
+      const rendered = await fetchScraperApiHtml(safeUrl);
+      if (rendered) {
+        const renderedImage = extractPageImageUrl(rendered, safeUrl);
+        if (renderedImage) {
+          imageUrl = renderedImage;
+          if (!htmlHasOfferSignals(html)) html = rendered;
+        }
+      }
+    }
+
     const $ = cheerio.load(html);
     $("script, style, noscript, svg").remove();
 
@@ -316,7 +344,6 @@ export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
 
     const price = jsonLd.price || sniffPrice(bodyText);
     const features = extractFeatures($);
-    const imageUrl = extractPageImageUrl(html, safeUrl) ?? "";
 
     return {
       title: (title || h1).slice(0, 200),

@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildHeroImagePrompt, buildHeroImageNegativePrompt } from "./prompts";
 import { mapWithConcurrency } from "./concurrency";
 import { SiteImagePool } from "./site-image-pool";
-import { scrapeImageFromUrl } from "./scrape";
+import { scrapeImageFromUrl, SCRAPE_USER_AGENT } from "./scrape";
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY ?? "";
 const RAPIDAPI_IMAGE_HOST =
@@ -329,13 +329,55 @@ async function bufferFromRapidApiImageResponse(data: unknown): Promise<Buffer | 
   return null;
 }
 
-async function fetchImageBuffer(url: string, timeoutMs: number): Promise<Buffer | null> {
+function looksLikeImageBytes(buffer: Buffer): boolean {
+  if (buffer.length < 12) return false;
+  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return true;
+  if (buffer.subarray(0, 8).toString("ascii") === "\x89PNG\r\n\x1a\n") return true;
+  const gif = buffer.subarray(0, 6).toString("ascii");
+  if (gif === "GIF87a" || gif === "GIF89a") return true;
+  if (
+    buffer.subarray(0, 4).toString("ascii") === "RIFF" &&
+    buffer.subarray(8, 12).toString("ascii") === "WEBP"
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function urlLooksLikeImage(url: string): boolean {
+  return /\.(png|jpe?g|webp|gif|avif|bmp)(\?|$)/i.test(url) || /\/image/i.test(url);
+}
+
+async function fetchImageBuffer(
+  url: string,
+  timeoutMs: number,
+  referer?: string
+): Promise<Buffer | null> {
   try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    const headers: Record<string, string> = {
+      "User-Agent": SCRAPE_USER_AGENT,
+      Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+    };
+    if (referer) headers.Referer = referer;
+
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(timeoutMs),
+      headers,
+      redirect: "follow",
+    });
     if (!response.ok) return null;
-    const type = response.headers.get("content-type") ?? "";
-    if (!type.startsWith("image/")) return null;
-    return Buffer.from(await response.arrayBuffer());
+    const type = (response.headers.get("content-type") ?? "").toLowerCase();
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.length < 800) return null;
+
+    if (type.startsWith("image/")) return buffer;
+    if (type.includes("octet-stream") && (urlLooksLikeImage(url) || looksLikeImageBytes(buffer))) {
+      return buffer;
+    }
+    if (!type || type.includes("binary")) {
+      if (looksLikeImageBytes(buffer) || urlLooksLikeImage(url)) return buffer;
+    }
+    return null;
   } catch {
     return null;
   }
@@ -348,7 +390,7 @@ async function resolveScrapedImage(
   try {
     const url = await scrapeImageFromUrl(scrapeUrl);
     if (!url) return null;
-    const buffer = await fetchImageBuffer(url, SCRAPE_IMAGE_TIMEOUT_MS);
+    const buffer = await fetchImageBuffer(url, SCRAPE_IMAGE_TIMEOUT_MS, scrapeUrl);
     if (!buffer || buffer.length < 800) return null;
     console.info("[images] scraped page image", scrapeUrl.slice(0, 64));
     return { url, buffer };
