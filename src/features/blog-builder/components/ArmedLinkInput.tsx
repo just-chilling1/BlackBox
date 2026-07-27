@@ -91,7 +91,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
       <button
         type="button"
         onClick={addLink}
-        className="inline-flex items-center gap-2 text-sm text-promo-accent hover:text-accent transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent/80 transition-colors"
       >
         <Plus size={16} />
         Add another link

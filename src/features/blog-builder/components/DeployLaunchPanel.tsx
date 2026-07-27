@@ -39,8 +39,8 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-border-dim/60 bg-page/50 px-4 py-3">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-promo-accent/10">
-        <Icon size={16} className="text-promo-accent" />
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+        <Icon size={16} className="text-accent" />
       </div>
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{label}</p>
@@ -85,8 +85,8 @@ export function DeployLaunchPanel({
     >
       <div className="space-y-6 p-6 sm:p-8">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-promo-accent/10 ring-1 ring-promo-accent/20">
-            <Sparkles size={22} className="text-promo-accent" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-accent/20">
+            <Sparkles size={22} className="text-accent" />
           </div>
           <div className="min-w-0 space-y-1">
             <h2 className="text-lg font-semibold text-text-primary sm:text-xl">
@@ -111,7 +111,7 @@ export function DeployLaunchPanel({
         </div>
 
         {phase === "idle" && !quotaUnlimited && quotaLimit != null && quotaRemaining != null && (
-          <p className="text-xs text-promo-accent/90">
+          <p className="text-xs text-accent/90">
             {quotaRemaining} of {quotaLimit} new websites remaining today
           </p>
         )}
@@ -135,7 +135,7 @@ export function DeployLaunchPanel({
             "text-text-on-accent transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
             canResume || phase === "error"
               ? "border border-accent/40 bg-gradient-to-br from-accent to-[#C9970D] shadow-gold"
-              : "bg-gradient-to-br from-promo-accent to-promo-accent/80 shadow-[0_0_40px_rgba(12,189,160,0.35)]"
+              : "bg-gradient-to-br from-accent to-[#C9970D] shadow-gold"
           )}
         >
           <PrimaryIcon size={22} />

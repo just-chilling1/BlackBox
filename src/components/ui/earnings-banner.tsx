@@ -24,7 +24,7 @@ export function EarningsBanner({ onDismiss, compact = false }: EarningsBannerPro
   return (
     <div
       className={clsx(
-        "relative w-full rounded-2xl border-2 border-accent/50 bg-gradient-to-b from-surface to-page text-center shadow-[0_0_40px_rgba(234,179,8,0.08)] transition-all duration-300",
+        "relative w-full rounded-2xl border-2 border-accent/40 bg-gradient-to-b from-accent/[0.06] via-white to-page text-center shadow-[0_0_40px_rgba(238,179,16,0.08)] transition-all duration-300",
         compact ? "p-3 sm:p-3.5" : "p-5 sm:p-6"
       )}
     >

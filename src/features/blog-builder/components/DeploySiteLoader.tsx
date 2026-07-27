@@ -75,7 +75,7 @@ function TypingDots() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="deploy-typing-dot inline-block h-1 w-1 rounded-full bg-promo-accent/80"
+          className="deploy-typing-dot inline-block h-1 w-1 rounded-full bg-accent/80"
           style={{ animationDelay: `${i * 0.18}s` }}
         />
       ))}
@@ -112,7 +112,7 @@ function SkeletonBlock({ index, className, visible }: { index: number; className
       transition={{ delay: index * 0.12, duration: 0.45, ease: "easeOut" }}
       className={cn(
         "deploy-block relative overflow-hidden rounded-md border border-divider",
-        "bg-gradient-to-r from-accent/15 via-promo-accent/10 to-transparent",
+        "bg-gradient-to-r from-accent/15 via-accent/10 to-transparent",
         className,
         visible && "deploy-block--live"
       )}
@@ -143,7 +143,7 @@ function SkeletonPreview({ phase }: { phase: DeployLoaderPhase }) {
       <SkeletonBlock index={5} className={SKELETON_BLOCKS[5].className} visible={5 < visibleBlocks} />
 
       <div
-        className="deploy-scan pointer-events-none absolute inset-x-0 top-2 h-px bg-gradient-to-r from-transparent via-accent to-promo-accent opacity-90 shadow-[0_0_12px_rgba(234,179,8,0.45)]"
+        className="deploy-scan pointer-events-none absolute inset-x-0 top-2 h-px bg-gradient-to-r from-transparent via-accent to-[#C9970D] opacity-90 shadow-[0_0_12px_rgba(238,179,16,0.45)]"
         aria-hidden
       />
       <div
@@ -217,7 +217,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
             <Rocket size={16} className="text-accent" />
           </motion.div>
           <div className="min-w-0">
-            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-promo-accent">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
               <Sparkles size={11} className="deploy-sparkle shrink-0" aria-hidden />
               Site Assembly
             </p>
@@ -253,7 +253,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
           transition={{ duration: 0.3 }}
           className="mt-3 flex items-center gap-2 text-[11px] text-text-muted"
         >
-          <span className="deploy-activity-pulse h-1.5 w-1.5 shrink-0 rounded-full bg-promo-accent" aria-hidden />
+          <span className="deploy-activity-pulse h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
           <span className="truncate">{tickerMessage}</span>
         </motion.p>
       </AnimatePresence>
@@ -284,14 +284,14 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                 layout
                 animate={
                   isActive
-                    ? { scale: [1, 1.08, 1], boxShadow: "0 0 12px rgba(12,189,160,0.35)" }
+                    ? { scale: [1, 1.08, 1], boxShadow: "0 0 12px rgba(238,179,16,0.35)" }
                     : { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }
                 }
                 transition={isActive ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}
                 className={cn(
                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors duration-300",
                   isDone && "bg-accent text-text-on-accent",
-                  isActive && "bg-promo-accent/15 text-promo-accent ring-1 ring-promo-accent/40",
+                  isActive && "bg-accent/15 text-accent ring-1 ring-accent/40",
                   !isDone && !isActive && "bg-slate-100 text-text-muted"
                 )}
                 aria-current={isActive ? "step" : undefined}

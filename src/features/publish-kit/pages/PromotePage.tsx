@@ -128,7 +128,7 @@ export default function PromotePage() {
 
       <section className="glass-card space-y-5 p-6 md:p-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-promo-accent/15 text-promo-accent">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/15 text-accent">
             <Megaphone size={22} />
           </div>
           <div>

@@ -29,7 +29,7 @@ const accents = {
     text: "text-promo-accent",
     tile: "bg-promo-accent/10 border-promo-accent/25",
     hoverBorder: "hover:border-promo-accent/40",
-    bar: "from-promo-accent/80 to-teal-400/80",
+    bar: "from-promo-accent/80 to-[#C9970D]/80",
   },
 } as const;
 

@@ -18,7 +18,7 @@ export const brand = {
     /** Duke University mustard yellow (Pantone 116) */
     primary: "#EEB310",
     secondary: "#6366F1",
-    promoAccent: "#0D9488",
+    promoAccent: "#EEB310",
     promoCta: "#EEB310",
     page: "#F8FAFC",
     sidebar: "#FFFFFF",
@@ -30,7 +30,7 @@ export const brand = {
     textMuted: "#64748B",
     panelGlass: "rgba(255, 255, 255, 0.92)",
     borderGlow: "rgba(15, 23, 42, 0.08)",
-    borderTeal: "rgba(13, 148, 136, 0.16)",
+    borderTeal: "rgba(238, 179, 16, 0.16)",
     border: "#E2E8F0",
     encryptedGreen: "#059669",
     vaultGold: "#EEB310",

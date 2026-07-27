@@ -25,7 +25,7 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                   className={clsx(
                     "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all",
                     isActive &&
-                      "bg-accent text-text-on-accent shadow-[0_0_20px_rgba(234,179,8,0.25)]",
+                      "bg-accent text-text-on-accent shadow-[0_0_20px_rgba(238,179,16,0.25)]",
                     isComplete && "border border-accent/30 bg-accent/20 text-accent",
                     !isComplete && !isActive && "border border-border-dim bg-surface text-text-muted"
                   )}

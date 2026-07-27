@@ -72,7 +72,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
         className="card-base space-y-6"
       >
         <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-          <MapPin size={20} className="text-promo-accent" />
+          <MapPin size={20} className="text-accent" />
           Select a niche
         </h2>
 
@@ -90,12 +90,12 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
                 className={clsx(
                   "relative p-4 rounded-xl border text-left transition-all",
                   isSelected
-                    ? "border-promo-accent/50 bg-promo-accent/10 ring-1 ring-promo-accent/30"
-                    : "border-border-dim bg-slate-50 hover:border-promo-accent/30"
+                    ? "border-accent/50 bg-accent/10 ring-1 ring-accent/30"
+                    : "border-border-dim bg-slate-50 hover:border-accent/30"
                 )}
               >
                 {isSelected && (
-                  <span className="absolute top-3 right-3 text-promo-accent">
+                  <span className="absolute top-3 right-3 text-accent">
                     <Check size={16} />
                   </span>
                 )}

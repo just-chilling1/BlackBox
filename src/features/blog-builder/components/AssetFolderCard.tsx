@@ -37,7 +37,7 @@ export function AssetFolderCard({ summary, isActive, onOpen, onDelete, deleting 
 
   return (
     <div
-      className={`group relative rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(12,189,160,0.12)] ${
+      className={`group relative rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(238,179,16,0.12)] ${
         isActive
           ? "border-promo-accent/45 bg-promo-accent/8"
           : "border-black/10 glass-tile hover:border-promo-accent/35"

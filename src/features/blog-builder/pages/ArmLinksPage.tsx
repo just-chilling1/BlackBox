@@ -348,7 +348,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               type="button"
               onClick={() => void handleContinue()}
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 h-14 w-full rounded-xl font-bold uppercase tracking-widest text-sm text-text-on-accent bg-promo-accent shadow-[0_0_20px_rgba(12,189,160,0.35)] hover:shadow-[0_0_30px_rgba(12,189,160,0.55)] hover:brightness-110 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 h-14 w-full rounded-xl font-bold uppercase tracking-widest text-sm text-text-on-accent bg-promo-accent shadow-[0_0_20px_rgba(238,179,16,0.35)] hover:shadow-[0_0_30px_rgba(238,179,16,0.55)] hover:brightness-110 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
               Continue to Niche
