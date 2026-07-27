@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
@@ -14,6 +13,88 @@ type PremiumUpgradesWidgetProps = {
   onNavigate?: () => void;
   className?: string;
 };
+
+function SidebarPremiumCard({
+  feature,
+  isActive,
+  onNavigate,
+}: {
+  feature: (typeof PREMIUM_FEATURES)[number];
+  isActive: boolean;
+  onNavigate?: () => void;
+}) {
+  const Icon = feature.icon;
+
+  return (
+    <Link
+      href={feature.href}
+      onClick={onNavigate}
+      className={clsx("premium-upgrade-card premium-upgrade-card--sidebar group", isActive && "is-active")}
+    >
+      <div className="flex w-full items-start gap-2">
+        <div className="premium-upgrade-icon premium-upgrade-icon--sidebar">
+          <Icon size={13} strokeWidth={1.75} />
+        </div>
+        <span className="min-w-0 flex-1 text-[11px] font-bold leading-tight text-text-heading line-clamp-2">
+          {feature.label}
+        </span>
+      </div>
+
+      <p className="w-full text-[10px] leading-snug text-text-muted line-clamp-2">{feature.description}</p>
+
+      <span
+        className={clsx(
+          "mt-auto inline-flex items-center gap-0.5 text-[10px] font-semibold transition-colors",
+          isActive ? "text-amber-600" : "text-text-muted group-hover:text-amber-600"
+        )}
+      >
+        Explore
+        <ArrowRight size={10} className="transition-transform group-hover:translate-x-0.5" />
+      </span>
+    </Link>
+  );
+}
+
+function FeaturedPremiumCard({
+  feature,
+  isActive,
+  onNavigate,
+}: {
+  feature: (typeof PREMIUM_FEATURES)[number];
+  isActive: boolean;
+  onNavigate?: () => void;
+}) {
+  const Icon = feature.icon;
+
+  return (
+    <Link
+      href={feature.href}
+      onClick={onNavigate}
+      className={clsx("premium-upgrade-card group p-4", isActive && "is-active")}
+    >
+      <div className="flex w-full items-start gap-2.5">
+        <div className="premium-upgrade-icon h-10 w-10">
+          <Icon size={18} strokeWidth={1.75} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <span className="block text-sm font-bold text-text-heading">{feature.label}</span>
+        </div>
+      </div>
+
+      <p className="text-xs leading-snug text-text-muted line-clamp-2">{feature.description}</p>
+
+      <span
+        className={clsx(
+          "mt-auto inline-flex items-center gap-0.5 text-xs font-semibold transition-colors",
+          isActive ? "text-amber-600" : "text-text-muted group-hover:text-amber-600"
+        )}
+      >
+        Explore
+        <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+      </span>
+    </Link>
+  );
+}
 
 export function PremiumUpgradesWidget({
   layout = "featured",
@@ -41,10 +122,10 @@ export function PremiumUpgradesWidget({
               onClick={onNavigate}
               title={feature.label}
               className={clsx(
-                "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300",
+                "flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-200",
                 isActive
-                  ? "border-accent/50 bg-accent/15 text-accent shadow-sm"
-                  : "border-border-dim bg-white text-accent/80 hover:border-accent/35 hover:bg-accent/10"
+                  ? "border-amber-300 bg-amber-50 text-amber-600"
+                  : "border-slate-200 bg-white text-amber-500 hover:border-amber-200 hover:bg-amber-50"
               )}
             >
               <Icon size={18} strokeWidth={1.5} />
@@ -55,138 +136,56 @@ export function PremiumUpgradesWidget({
     );
   }
 
+  if (isSidebar) {
+    return (
+      <div className={clsx("premium-upgrades-panel premium-upgrades-panel--sidebar w-full", className)}>
+        <div className="premium-upgrades-sidebar-header">
+          <p className="premium-upgrades-sidebar-label text-[10px]">
+            <Sparkles className="h-3 w-3 shrink-0" fill="currentColor" />
+            Premium Upgrades
+          </p>
+          <p className="text-[11px] leading-relaxed text-text-secondary">
+            Unlock the tools that drive the biggest results.
+          </p>
+        </div>
+
+        <div className="premium-upgrades-sidebar-grid">
+          {PREMIUM_FEATURES.map((feature) => (
+            <SidebarPremiumCard
+              key={feature.href}
+              feature={feature}
+              isActive={isNavPathActive(pathname, feature.href)}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={clsx(
-        isFeatured ? "dashboard-container" : "premium-nav-section w-full",
-        !isFeatured && (isSidebar ? "p-2.5 md:p-3" : ""),
-        isFeatured && "p-3 md:p-4",
-        className
-      )}
-    >
-      <div
-        className={clsx(
-          isFeatured ? "dashboard-section-header mb-5 border-b-0 pb-0" : "px-1 pb-2.5 pt-1.5",
-          isFeatured && "text-center md:text-left"
-        )}
-      >
-        {isFeatured ? (
-          <>
-            <div className="dashboard-section-icon">
-              <Sparkles className="h-5 w-5 animate-premium-pulse" fill="currentColor" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="ds-h3">Premium Upgrades</h2>
-              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                Unlock the tools that drive the biggest results.
-              </p>
-            </div>
-          </>
-        ) : (
-          <>
-            <p
-              className={clsx(
-                "flex items-center gap-1.5 font-bold uppercase tracking-widest text-accent",
-                isSidebar ? "text-[10px]" : "text-xs"
-              )}
-            >
-              <Sparkles
-                className={clsx("animate-premium-pulse shrink-0", isSidebar ? "h-3 w-3" : "h-4 w-4")}
-                fill="currentColor"
-              />
-              Premium Upgrades
-            </p>
-            {!collapsed && (
-              <p
-                className={clsx(
-                  "mt-1 leading-relaxed text-text-secondary",
-                  isSidebar ? "text-[11px]" : "text-sm"
-                )}
-              >
-                Unlock the tools that drive the biggest results.
-              </p>
-            )}
-          </>
-        )}
+    <div className={clsx("premium-upgrades-panel premium-upgrades-panel--featured", className)}>
+      <div className="mb-4 flex items-start gap-3">
+        <div className="premium-upgrades-header-icon">
+          <Sparkles className="h-5 w-5" fill="currentColor" />
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-lg font-bold tracking-tight text-text-heading sm:text-xl">Premium Upgrades</h2>
+          <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+            Unlock the tools that drive the biggest results.
+          </p>
+        </div>
       </div>
 
-      <div
-        className={clsx(
-          "grid gap-2",
-          isFeatured ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" : "grid-cols-2"
-        )}
-      >
-        {PREMIUM_FEATURES.map((feature, index) => {
-          const isActive = isNavPathActive(pathname, feature.href);
-          const Icon = feature.icon;
-
-          return (
-            <motion.div
-              key={feature.href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.08, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-              className="min-w-0"
-            >
-              <Link
-                href={feature.href}
-                onClick={onNavigate}
-                className={clsx(
-                  "premium-upgrade-card group h-full flex-col items-start gap-2",
-                  isSidebar ? "p-2.5" : "gap-3 p-4",
-                  isActive && "is-active"
-                )}
-              >
-                <div className="flex w-full items-start gap-2">
-                  <div
-                    className={clsx(
-                      "flex shrink-0 items-center justify-center rounded-xl bg-linear-to-br transition-all duration-300",
-                      isSidebar ? "h-8 w-8" : "h-10 w-10",
-                      isActive
-                        ? "from-accent to-indigo-600 text-white shadow-[0_0_12px_rgba(238,179,16,0.35)]"
-                        : "from-accent/20 to-indigo-600/15 text-accent group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_12px_rgba(238,179,16,0.35)]"
-                    )}
-                  >
-                    <Icon size={isSidebar ? 15 : 19} strokeWidth={1.5} />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <span
-                      className={clsx(
-                        "block font-bold tracking-wide text-text-heading",
-                        isSidebar ? "text-[11px] leading-tight" : "text-sm"
-                      )}
-                    >
-                      {feature.label}
-                    </span>
-                    <p
-                      className={clsx(
-                        "mt-0.5 line-clamp-2 leading-snug text-text-muted",
-                        isSidebar ? "text-[10px]" : "text-xs"
-                      )}
-                    >
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-
-                <span
-                  className={clsx(
-                    "inline-flex items-center gap-0.5 font-semibold transition-colors",
-                    isSidebar ? "text-[10px]" : "text-xs",
-                    isActive ? "text-accent" : "text-text-muted group-hover:text-accent"
-                  )}
-                >
-                  Explore
-                  <ArrowRight
-                    size={isSidebar ? 10 : 12}
-                    className="transition-transform group-hover:translate-x-0.5"
-                  />
-                </span>
-              </Link>
-            </motion.div>
-          );
-        })}
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
+        {PREMIUM_FEATURES.map((feature) => (
+          <FeaturedPremiumCard
+            key={feature.href}
+            feature={feature}
+            isActive={isNavPathActive(pathname, feature.href)}
+            onNavigate={onNavigate}
+          />
+        ))}
       </div>
     </div>
   );

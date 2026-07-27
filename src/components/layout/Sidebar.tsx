@@ -87,9 +87,10 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
   const handleLogout = async () => {
     onMobileClose?.();
-    if (workflow?.resetSession) {
+    try {
       await workflow.resetSession();
-      return;
+    } catch (err) {
+      console.error("[logout] session reset failed", err);
     }
     await supabase.auth.signOut();
     window.location.href = "/login";
@@ -219,7 +220,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </nav>
 
         {PREMIUM_FEATURES.length > 0 && (
-          <div className="px-2 py-3 md:px-3">
+          <div className="px-2 pb-2 pt-1 md:px-3 md:pb-3">
             <PremiumUpgradesWidget
               layout="sidebar"
               collapsed={collapsed}

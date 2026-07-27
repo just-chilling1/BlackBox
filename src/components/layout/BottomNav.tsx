@@ -50,9 +50,10 @@ export function BottomNav() {
 
   const handleSignOut = async () => {
     setMoreOpen(false);
-    if (workflow?.resetSession) {
+    try {
       await workflow.resetSession();
-      return;
+    } catch (err) {
+      console.error("[logout] session reset failed", err);
     }
     const { supabase } = await import("@/lib/supabase");
     await supabase.auth.signOut();

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { clsx } from "clsx";
-import { motion } from "framer-motion";
 import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
 
@@ -27,11 +26,13 @@ export function PremiumFeatureNavList({
 
   if (mobile) {
     return (
-      <div className={clsx("premium-nav-section p-2", className)}>
-        <p className="flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[10px] font-bold uppercase tracking-widest text-accent">
-          <Sparkles className="h-3 w-3 animate-premium-pulse" fill="currentColor" />
-          {PREMIUM_SECTION_LABEL}
-        </p>
+      <div className={clsx("premium-upgrades-panel p-3", className)}>
+        <div className="premium-upgrades-sidebar-header mb-2">
+          <p className="premium-upgrades-sidebar-label text-[10px]">
+            <Sparkles className="h-3 w-3 shrink-0" fill="currentColor" />
+            {PREMIUM_SECTION_LABEL}
+          </p>
+        </div>
         <ul className="space-y-1">
           {PREMIUM_FEATURES.map((item) => {
             const isActive = isNavPathActive(pathname, item.href);
@@ -42,11 +43,13 @@ export function PremiumFeatureNavList({
                   href={item.href}
                   onClick={onNavigate}
                   className={clsx(
-                    "premium-sidebar-item flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-medium",
+                    "premium-sidebar-item flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
                     isActive ? "is-active text-text-heading" : "text-text-secondary"
                   )}
                 >
-                  <Icon className={clsx("h-5 w-5 shrink-0", isActive ? "text-accent" : "text-accent/80")} />
+                  <span className="premium-upgrade-icon premium-upgrade-icon--sidebar">
+                    <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  </span>
                   <span>{item.label}</span>
                 </Link>
               </li>
@@ -58,49 +61,41 @@ export function PremiumFeatureNavList({
   }
 
   return (
-    <div className={clsx("premium-nav-section", collapsed ? "mt-4 p-1" : "mt-6 p-2", className)}>
+    <div className={clsx("premium-upgrades-panel", collapsed ? "mt-4 p-2" : "mt-6 p-2.5", className)}>
       {!collapsed && (
-        <p className="flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[10px] font-bold uppercase tracking-widest text-accent">
-          <Sparkles className="h-3 w-3 animate-premium-pulse" fill="currentColor" />
-          {PREMIUM_SECTION_LABEL}
-        </p>
+        <div className="premium-upgrades-sidebar-header mb-2">
+          <p className="premium-upgrades-sidebar-label text-[10px]">
+            <Sparkles className="h-3 w-3 shrink-0" fill="currentColor" />
+            {PREMIUM_SECTION_LABEL}
+          </p>
+        </div>
       )}
       <ul className="space-y-1">
-        {PREMIUM_FEATURES.map((item, index) => {
+        {PREMIUM_FEATURES.map((item) => {
           const isActive = isNavPathActive(pathname, item.href);
           const Icon = item.icon;
 
           return (
-            <motion.li
-              key={item.href}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15 + index * 0.05 }}
-            >
+            <li key={item.href}>
               <Link
                 href={item.href}
                 onClick={onNavigate}
                 title={collapsed ? item.label : undefined}
                 className={clsx(
-                  "premium-sidebar-item flex items-center gap-3 rounded-xl py-3 text-sm font-medium transition-all duration-300",
-                  collapsed ? "justify-center px-0" : "px-3",
+                  "premium-sidebar-item flex items-center gap-3 rounded-xl py-2.5 text-sm font-medium transition-all duration-200",
+                  collapsed ? "justify-center px-0" : "px-2.5",
                   isActive ? "is-active text-text-heading" : "text-text-secondary"
                 )}
               >
-                <Icon
-                  className={clsx("h-[18px] w-[18px] shrink-0", isActive ? "text-accent" : "text-accent/80")}
-                  strokeWidth={1.5}
-                />
-                {!collapsed && <span className="tracking-wide">{item.label}</span>}
-                {!collapsed && isActive && (
-                  <motion.div
-                    layoutId="activePremiumIndicator"
-                    className="ml-auto h-1.5 w-1.5 rounded-full bg-accent"
-                    style={{ boxShadow: "0 0 10px rgba(238, 179, 16, 0.7)" }}
+                <span className={clsx("premium-upgrade-icon", collapsed ? "h-8 w-8 rounded-full" : "premium-upgrade-icon--sidebar")}>
+                  <Icon
+                    className={clsx(collapsed ? "h-4 w-4" : "h-3.5 w-3.5")}
+                    strokeWidth={1.75}
                   />
-                )}
+                </span>
+                {!collapsed && <span className="tracking-wide">{item.label}</span>}
               </Link>
-            </motion.li>
+            </li>
           );
         })}
       </ul>

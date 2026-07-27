@@ -122,7 +122,7 @@ export const premiumNav: NavItem[] = [
   { path: "/protector", label: "Wealth Protector", icon: "ShieldCheck", feature: "protector" },
 ];
 
-export const premiumSectionLabel = "Premium Features";
+export const premiumSectionLabel = "Premium Upgrades";
 
 /** Primary mobile bottom tabs — first 4 visible tabs + "More" */
 export const bottomNavTabs: NavItem[] = [
