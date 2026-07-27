@@ -18,12 +18,12 @@ function substituteThreadText(text: string, affiliateUrl: string): string {
 
 /** Clone an accelerator template into the member's offers library. */
 export async function cloneAcceleratorTemplate(params: {
-  admin: SupabaseClient;
+  db: SupabaseClient;
   userId: string;
   catalogId: number;
   affiliateUrl: string;
 }): Promise<{ site: BlogSite; threadsCopied: number }> {
-  const { admin, userId, catalogId, affiliateUrl } = params;
+  const { db, userId, catalogId, affiliateUrl } = params;
   const url = affiliateUrl.trim();
   if (!url) throw new Error("Affiliate URL is required");
 
@@ -31,7 +31,7 @@ export async function cloneAcceleratorTemplate(params: {
   if (!entry) throw new Error("Template not found in catalog");
 
   const key = acceleratorTemplateKey(catalogId);
-  const { data: templateRows } = await admin
+  const { data: templateRows } = await db
     .from("sites")
     .select("*")
     .eq("is_template", true)
@@ -50,7 +50,7 @@ export async function cloneAcceleratorTemplate(params: {
   const slug = newSlug(entry.productSlug);
   const salesPageHtml = substituteLink(template.sales_page_html, url);
 
-  const { data: siteData, error: siteErr } = await admin
+  const { data: siteData, error: siteErr } = await db
     .from("sites")
     .insert({
       user_id: userId,
@@ -75,7 +75,7 @@ export async function cloneAcceleratorTemplate(params: {
   if (siteErr || !siteData) throw new Error(siteErr?.message ?? "Failed to clone template");
   const site = siteData as BlogSite;
 
-  const { data: templateThreads } = await admin
+  const { data: templateThreads } = await db
     .from("site_x_threads")
     .select("text, angle")
     .eq("site_id", template.id)
@@ -92,7 +92,7 @@ export async function cloneAcceleratorTemplate(params: {
       batch_id: batchId,
     }));
 
-    const { error: threadErr } = await admin.from("site_x_threads").insert(rows);
+    const { error: threadErr } = await db.from("site_x_threads").insert(rows);
     if (threadErr) throw new Error(threadErr.message);
     threadsCopied = rows.length;
   }

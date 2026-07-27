@@ -130,6 +130,9 @@ export default function AcceleratorPage() {
       setTemplates(data.templates ?? []);
       setSeededCount(data.seededCount ?? 0);
       setReady(Boolean(data.ready));
+      if (data.seedStatusError) {
+        setError(data.seedStatusError);
+      }
     } catch (e) {
       if (!silent) {
         setError(e instanceof Error ? e.message : "Failed to load");

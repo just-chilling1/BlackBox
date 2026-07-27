@@ -11,15 +11,13 @@ export async function POST(request: Request) {
   const guard = featureApiGuard("premium-accelerator");
   if (guard) return guard;
 
-  const { user } = await getApiUser();
+  const { user, supabase } = await getApiUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
   }
 
   const admin = getServiceRoleClient();
-  if (!admin) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500, headers: NO_STORE_HEADERS });
-  }
+  const db = admin ?? supabase;
 
   const body = await request.json().catch(() => ({}));
   const catalogId = typeof body.catalogId === "number" ? body.catalogId : Number(body.catalogId);
@@ -34,7 +32,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await cloneAcceleratorTemplate({
-      admin,
+      db,
       userId: user.id,
       catalogId,
       affiliateUrl,

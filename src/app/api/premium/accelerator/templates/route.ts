@@ -6,6 +6,7 @@ import {
   buildAcceleratorCatalog,
   ACCELERATOR_TARGET_COUNT,
 } from "@/features/premium-accelerator/lib/catalog";
+import { getAcceleratorSeedStatus } from "@/features/premium-accelerator/lib/seed-status";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function GET(request: Request) {
 
   const { supabase } = await getApiUser();
   const admin = getServiceRoleClient();
+  const db = admin ?? supabase;
 
   const niche = new URL(request.url).searchParams.get("niche")?.trim() || "All";
   const catalog = buildAcceleratorCatalog().filter(
@@ -23,18 +25,17 @@ export async function GET(request: Request) {
   );
 
   let seededKeys = new Set<string>();
-  if (admin) {
-    const { data } = await admin
-      .from("sites")
-      .select("template_key")
-      .eq("is_template", true)
-      .like("template_key", "accelerator-%");
+  let seededCount = 0;
+  let ready = false;
+  let seedStatusError: string | null = null;
 
-    seededKeys = new Set(
-      (data ?? [])
-        .map((r) => (r as { template_key: string }).template_key)
-        .filter(Boolean)
-    );
+  try {
+    const status = await getAcceleratorSeedStatus(db);
+    seededKeys = status.seededKeys;
+    seededCount = status.seededCount;
+    ready = status.ready;
+  } catch (e) {
+    seedStatusError = e instanceof Error ? e.message : "Failed to read seed status";
   }
 
   const templates = catalog.map((entry) => ({
@@ -45,14 +46,14 @@ export async function GET(request: Request) {
     seeded: seededKeys.has(`accelerator-${entry.id}`),
   }));
 
-  const seededCount = seededKeys.size;
-
   return NextResponse.json(
     {
       templates,
       total: ACCELERATOR_TARGET_COUNT,
       seededCount,
-      ready: seededCount >= ACCELERATOR_TARGET_COUNT,
+      ready,
+      usingServiceRole: Boolean(admin),
+      ...(seedStatusError ? { seedStatusError } : {}),
     },
     { headers: NO_STORE_HEADERS }
   );
