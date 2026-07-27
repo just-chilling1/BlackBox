@@ -990,10 +990,13 @@ export function resolveNicheKey(niche: string): NicheKey {
   return partial?.value ?? "health";
 }
 
-function pickTemplateVariant<T extends Record<TemplateStructureId, string>>(
-  map: T,
-  toneId: TemplateStructureId
-): string {
+type TemplateVariantSeed = {
+  editorial: string;
+  conversion: string;
+  minimal: string;
+} & Partial<Record<TemplateStructureId, string>>;
+
+function pickTemplateVariant(map: TemplateVariantSeed, toneId: TemplateStructureId): string {
   return map[toneId] ?? map.editorial;
 }
 
