@@ -274,24 +274,24 @@ export default function AcceleratorPage() {
           </p>
 
           {error && (
-            <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
               {error}
             </p>
           )}
 
           {clonedUrl && (
-            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
-              <Sparkles size={16} />
-              Offer cloned with X threads!
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+              <Sparkles size={16} className="text-emerald-700" />
+              <span className="font-medium">Offer cloned with X threads!</span>
               <Link
                 href={clonedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-semibold underline"
+                className="inline-flex items-center gap-1 font-semibold text-emerald-800 underline hover:text-emerald-950"
               >
                 View offer <ExternalLink size={14} />
               </Link>
-              <Link href="/offers" className="text-emerald-200/80 hover:text-emerald-100">
+              <Link href="/offers" className="font-semibold text-emerald-700 hover:text-emerald-900">
                 Offers Library →
               </Link>
             </div>
