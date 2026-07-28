@@ -49,41 +49,46 @@ function slugify(value: string): string {
     .slice(0, 80);
 }
 
-/** Build 100 authority article definitions deterministically. */
+/** Build 100 authority article definitions — evenly distributed across all niches. */
 export function buildRecurringStreamCatalog(): RecurringStreamArticle[] {
   const articles: RecurringStreamArticle[] = [];
+  const nicheCount = NICHE_OPTIONS.length;
+  const basePerNiche = Math.floor(RECURRING_STREAM_TARGET_COUNT / nicheCount);
+  const remainder = RECURRING_STREAM_TARGET_COUNT % nicheCount;
+
   let id = 1;
 
-  while (articles.length < RECURRING_STREAM_TARGET_COUNT) {
-    for (const niche of NICHE_OPTIONS) {
-      for (let t = 0; t < TOPIC_TEMPLATES.length && articles.length < RECURRING_STREAM_TARGET_COUNT; t++) {
-        const title = TOPIC_TEMPLATES[t](niche.label);
-        const angle = ARTICLE_ANGLES[t % ARTICLE_ANGLES.length];
-        const content = buildRecurringStreamArticleContent({
-          topic: title,
-          territory: niche.label,
-          hobby: niche.label,
-          angle,
-        });
+  for (let nIdx = 0; nIdx < nicheCount; nIdx++) {
+    const niche = NICHE_OPTIONS[nIdx];
+    const articlesForNiche = basePerNiche + (nIdx < remainder ? 1 : 0);
 
-        articles.push({
-          id,
-          templateKey: `recurring-stream-${id}`,
-          niche: niche.label,
-          nicheKey: niche.value,
-          title: content.title,
-          slug: slugify(`${niche.value}-${title}-${id}`),
-          html: content.html,
-          excerpt: content.excerpt,
-          metaDescription: content.metaDescription,
-          angle,
-        });
-        id++;
-      }
+    for (let t = 0; t < articlesForNiche; t++) {
+      const title = TOPIC_TEMPLATES[t % TOPIC_TEMPLATES.length](niche.label);
+      const angle = ARTICLE_ANGLES[t % ARTICLE_ANGLES.length];
+      const content = buildRecurringStreamArticleContent({
+        topic: title,
+        territory: niche.label,
+        hobby: niche.label,
+        angle,
+      });
+
+      articles.push({
+        id,
+        templateKey: `recurring-stream-${id}`,
+        niche: niche.label,
+        nicheKey: niche.value,
+        title: content.title,
+        slug: slugify(`${niche.value}-${title}-${id}`),
+        html: content.html,
+        excerpt: content.excerpt,
+        metaDescription: content.metaDescription,
+        angle,
+      });
+      id++;
     }
   }
 
-  return articles.slice(0, RECURRING_STREAM_TARGET_COUNT);
+  return articles;
 }
 
 export const RECURRING_STREAM_NICHES = NICHE_OPTIONS.map((n) => n.label);
