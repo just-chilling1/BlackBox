@@ -210,7 +210,7 @@ export default function RepliesPage() {
                                     </button>
                                     <a
                                         href={post.url} target="_blank" rel="noopener noreferrer"
-                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-accent hover:bg-accent/10 transition-all"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-amber-800 hover:bg-accent/10 transition-all"
                                     >
                                         <ExternalLink size={13} />
                                     </a>
@@ -230,7 +230,7 @@ export default function RepliesPage() {
                                         isLoading ? "text-text-muted" :
                                         isExpanded ? "bg-accent/10 text-accent border border-accent/20" :
                                         replies.length > 0 ? "bg-accent/5 text-accent hover:bg-accent/10" :
-                                        "bg-surface border border-border-dim text-text-secondary hover:border-accent/30 hover:text-accent"
+                                        "bg-surface border border-border-dim text-text-secondary hover:border-accent/30 hover:text-amber-800"
                                     )}
                                 >
                                     {isLoading ? (
@@ -251,7 +251,7 @@ export default function RepliesPage() {
                                     <button
                                         onClick={() => handleGenerate(post)}
                                         disabled={isLoading}
-                                        className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted hover:text-accent transition-colors"
+                                        className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted hover:text-amber-800 transition-colors"
                                     >
                                         <RefreshCw size={11} />
                                         <span>Regenerate</span>
@@ -320,7 +320,7 @@ export default function RepliesPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/radar")}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-amber-800 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 3</span>

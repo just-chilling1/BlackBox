@@ -135,7 +135,7 @@ export function ThreadCard({ index, label, text, imageUrl, defaultOpen = false }
           <button
             type="button"
             onClick={() => void copy("text", text)}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wide text-text-on-accent shadow-gold transition-all hover:brightness-110 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wide text-text-on-accent shadow-gold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-[0_0_16px_rgba(238,179,16,0.22)] active:scale-[0.98]"
           >
             {copiedKey === "text" ? <Check size={14} /> : <Copy size={14} />}
             {copiedKey === "text" ? "Copied" : "Copy post"}
@@ -144,7 +144,7 @@ export function ThreadCard({ index, label, text, imageUrl, defaultOpen = false }
             <button
               type="button"
               onClick={() => void copy("image", imageUrl)}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-accent/30 hover:text-text-heading"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-text-secondary cursor-pointer transition-all duration-200 hover:border-accent/30 hover:bg-slate-50 hover:text-text-heading active:scale-[0.98]"
             >
               {copiedKey === "image" ? <Check size={14} /> : <ImageIcon size={14} />}
               {copiedKey === "image" ? "Copied URL" : "Copy image URL"}

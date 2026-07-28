@@ -244,7 +244,7 @@ export default function ResetPasswordPage() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-accent transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-amber-800 transition-colors"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -298,7 +298,7 @@ export default function ResetPasswordPage() {
                 <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-6">
                     <Link
                         href="/login"
-                        className="text-xs text-text-muted hover:text-accent transition-colors"
+                        className="text-xs text-text-muted hover:text-amber-800 transition-colors"
                     >
                         Back to Login
                     </Link>

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { MapPin, Loader2, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { clsx } from "clsx";
 import { PageHeader } from "@/components/ui/page-header";
@@ -53,7 +52,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-4xl mx-auto"}>
+    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-4xl mx-auto"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Niche" step={2} />
@@ -66,17 +65,18 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
         </>
       )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="card-base space-y-6"
-      >
-        <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-          <MapPin size={20} className="text-accent" />
-          Select a niche
-        </h2>
+      <section className="wizard-panel animate-fade-in-up">
+        <div className="wizard-panel-header">
+          <div className="wizard-panel-icon">
+            <MapPin size={18} />
+          </div>
+          <div>
+            <h2 className="ds-h4">Select a niche</h2>
+            <p className="mt-0.5 text-sm text-text-secondary">Choose the topic your questionnaire will cover.</p>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {NICHE_OPTIONS.map((option) => {
             const isSelected = selected === option.value;
             return (
@@ -87,31 +87,26 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
                   setSelected(option.value);
                   setError(null);
                 }}
-                className={clsx(
-                  "relative p-4 rounded-xl border text-left transition-all",
-                  isSelected
-                    ? "border-accent/50 bg-accent/10 ring-1 ring-accent/30"
-                    : "border-border-dim bg-slate-50 hover:border-accent/30"
-                )}
+                className={clsx("wizard-selection-card", isSelected && "is-selected")}
               >
                 {isSelected && (
                   <span className="absolute top-3 right-3 text-accent">
-                    <Check size={16} />
+                    <Check size={16} strokeWidth={2.5} />
                   </span>
                 )}
-                <p className="text-sm font-semibold text-text-primary pr-6">{option.label}</p>
+                <p className="pr-6 text-sm font-semibold text-text-primary">{option.label}</p>
               </button>
             );
           })}
         </div>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="mt-4 text-sm font-medium text-error">{error}</p>}
 
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="wizard-action-bar mt-6">
           <button
             type="button"
             onClick={() => (onBack ? onBack() : router.push("/sales-offer-generator"))}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary transition-colors"
+            className="btn-subtle sm:min-w-[8rem]"
           >
             <ArrowLeft size={18} />
             Back
@@ -120,14 +115,14 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
             type="button"
             onClick={handleContinue}
             disabled={loading || !selected}
-            className="flex-1 btn-primary inline-flex items-center justify-center gap-2 py-3"
+            className="btn-primary flex-1 inline-flex items-center justify-center gap-2 py-3"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : null}
             Continue to Template
             <ArrowRight size={18} />
           </button>
         </div>
-      </motion.div>
+      </section>
     </div>
   );
 }

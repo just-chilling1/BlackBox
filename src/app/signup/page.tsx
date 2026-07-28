@@ -120,7 +120,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] hover:text-accent transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] cursor-pointer transition-colors hover:text-amber-800"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -141,7 +141,7 @@ export default function SignupPage() {
 
       <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-8">
         <p className="text-[#475569] text-xs">Already have an account?</p>
-        <Link href="/login" className="brand-font text-accent text-xs font-bold tracking-wide hover:text-text-heading transition-colors">
+        <Link href="/login" className="brand-font text-amber-800 text-xs font-bold tracking-wide hover:text-amber-950 transition-colors">
           Log In
         </Link>
       </div>

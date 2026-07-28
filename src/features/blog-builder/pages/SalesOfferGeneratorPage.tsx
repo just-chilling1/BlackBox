@@ -111,7 +111,7 @@ export default function SalesOfferGeneratorPage() {
 
   if (!sessionLoaded) {
     return (
-      <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="wizard-shell w-full max-w-4xl mx-auto">
         <PageHeader
           eyebrow="Sales Offer Generator"
           title="Launch Your Offer"
@@ -126,7 +126,7 @@ export default function SalesOfferGeneratorPage() {
   const copy = STEP_COPY[step];
 
   return (
-    <div className="page-stack w-full max-w-4xl mx-auto">
+    <div className="wizard-shell w-full max-w-4xl mx-auto">
       <PageHeader
         eyebrow="Sales Offer Generator"
         title={copy.title}

@@ -16,7 +16,7 @@ import {
 } from "../src/features/premium-accelerator/lib/catalog";
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
-  buildAcceleratorXThreadSeedRows,
+  buildStaticAcceleratorXThreadSeedRows,
 } from "../src/features/premium-accelerator/lib/x-thread-seeds";
 
 const TEMPLATE_OWNER_ID =
@@ -54,7 +54,7 @@ function buildEntryPayload(entry: AcceleratorCatalogEntry) {
   });
 
   const batchId = randomUUID();
-  const threads = buildAcceleratorXThreadSeedRows(
+  const threads = buildStaticAcceleratorXThreadSeedRows(
     entry.productName,
     entry.nicheLabel,
     entry.nicheKey

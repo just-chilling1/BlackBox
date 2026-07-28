@@ -14,7 +14,7 @@ import { clsx } from "clsx";
 function Tooltip({ text }: { text: string }) {
     return (
         <div className="group/tip relative inline-flex items-center">
-            <HelpCircle size={12} className="text-text-muted/50 hover:text-accent cursor-help transition-colors" />
+            <HelpCircle size={12} className="text-text-muted/50 hover:text-amber-800 cursor-help transition-colors" />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1a1a1c] border border-border-dim rounded-lg text-[11px] text-text-secondary leading-snug w-56 opacity-0 pointer-events-none group-hover/tip:opacity-100 group-hover/tip:pointer-events-auto transition-opacity z-50 shadow-xl">
                 {text}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1a1a1c] border-r border-b border-border-dim rotate-45 -mt-1" />
@@ -418,7 +418,7 @@ export default function AnalysisPage() {
                                 setAnalysisByVariation(newAnalysis);
                                 fetchAnalysis(activeChip);
                             }}
-                            className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted hover:text-accent transition-colors"
+                            className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted hover:text-amber-800 transition-colors"
                         >
                             <RefreshCw size={11} />
                             <span>Re-analyze</span>
@@ -438,7 +438,7 @@ export default function AnalysisPage() {
             <div className="flex items-center justify-between pt-4">
                 <button
                     onClick={() => router.push("/search")}
-                    className="text-[11px] font-bold text-text-muted hover:text-accent transition-colors"
+                    className="text-[11px] font-bold text-text-muted hover:text-amber-800 transition-colors"
                 >
                     ← Back to Step 1
                 </button>

@@ -15,10 +15,8 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
 
   return (
     <div>
-      <label className="block text-sm font-medium text-text-primary mb-2">
-        Select from Links Library
-      </label>
-      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+      <label className="wizard-form-label mb-2 block">Select from Links Library</label>
+      <div className="max-h-48 space-y-2 overflow-y-auto pr-1">
         {links.map((link, index) => {
           const isSelected = selectedUrl === link.url;
           return (
@@ -27,40 +25,33 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
               type="button"
               onClick={() => onSelect(isSelected ? null : link)}
               className={clsx(
-                "w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                "flex w-full items-center gap-3 rounded-xl border p-3 text-left cursor-pointer transition-all duration-200",
                 isSelected
-                  ? "border-promo-accent/50 bg-promo-accent/10"
-                  : "border-border-dim bg-slate-50 hover:border-promo-accent/30"
+                  ? "border-accent/55 bg-accent/10 ring-1 ring-accent/20"
+                  : "border-border-dim bg-page hover:border-accent/35 hover:bg-white"
               )}
             >
               <Link2
                 size={16}
-                className={clsx("shrink-0", isSelected ? "text-promo-accent" : "text-text-muted")}
+                className={clsx("shrink-0", isSelected ? "text-accent" : "text-text-muted")}
               />
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <p
                   className={clsx(
-                    "text-sm font-medium truncate",
-                    isSelected ? "text-text-primary" : "text-text-secondary"
+                    "truncate text-sm font-medium",
+                    isSelected ? "text-text-heading" : "text-text-primary"
                   )}
                 >
                   {link.label || "Untitled Link"}
                 </p>
-                <p className="text-xs text-text-muted truncate">{link.url}</p>
+                <p className="truncate text-xs text-text-muted">{link.url}</p>
               </div>
-              {isSelected && <Check size={16} className="text-promo-accent shrink-0" />}
+              {isSelected && <Check size={16} className="shrink-0 text-accent" strokeWidth={2.5} />}
             </button>
           );
         })}
       </div>
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border-dim" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white px-3 text-xs font-medium text-slate-500">or enter manually</span>
-        </div>
-      </div>
+      <p className="wizard-divider-label">or enter manually</p>
     </div>
   );
 }

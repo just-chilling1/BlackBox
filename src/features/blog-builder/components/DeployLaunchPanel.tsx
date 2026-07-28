@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   Globe,
@@ -38,13 +37,13 @@ function SummaryRow({
   value: string;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border-dim/60 bg-page/50 px-4 py-3">
+    <div className="dashboard-nested-card flex items-start gap-3">
       <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
         <Icon size={16} className="text-accent" />
       </div>
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{label}</p>
-        <p className="truncate text-sm font-medium text-text-primary">{value}</p>
+        <p className="truncate text-sm font-semibold text-text-primary">{value}</p>
       </div>
     </div>
   );
@@ -78,18 +77,14 @@ export function DeployLaunchPanel({
   const PrimaryIcon = phase === "error" || canResume ? RotateCcw : Rocket;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="overflow-hidden rounded-2xl border border-border-dim bg-surface/40"
-    >
+    <section className="wizard-panel overflow-hidden p-0 animate-fade-in-up">
       <div className="space-y-6 p-6 sm:p-8">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-accent/20">
-            <Sparkles size={22} className="text-accent" />
+        <div className="wizard-panel-header mb-0 border-b-0 pb-0">
+          <div className="wizard-panel-icon h-12 w-12">
+            <Sparkles size={22} />
           </div>
           <div className="min-w-0 space-y-1">
-            <h2 className="text-lg font-semibold text-text-primary sm:text-xl">
+            <h2 className="ds-h3">
               {phase === "error" ? "Deployment interrupted" : "Ready to launch"}
             </h2>
             <p className="text-sm leading-relaxed text-text-secondary">
@@ -111,38 +106,29 @@ export function DeployLaunchPanel({
         </div>
 
         {phase === "idle" && !quotaUnlimited && quotaLimit != null && quotaRemaining != null && (
-          <p className="text-xs text-text-secondary">
+          <p className="text-xs font-medium text-text-secondary">
             {quotaRemaining} of {quotaLimit} new websites remaining today
           </p>
         )}
 
-        {error && (
-          <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300/90">
-            {error}
-          </p>
-        )}
+        {error && <p className="alert-error">{error}</p>}
       </div>
 
-      <div className="border-t border-border-dim bg-page/40 p-6 sm:p-8">
-        <motion.button
+      <div className="border-t border-border-dim bg-page/60 p-6 sm:p-8">
+        <button
           type="button"
           onClick={primaryAction}
           disabled={phase === "idle" && !canResume && quotaBlocked}
-          whileHover={{ scale: phase === "idle" && !canResume && quotaBlocked ? 1 : 1.01 }}
-          whileTap={{ scale: 0.99 }}
           className={clsx(
-            "flex w-full items-center justify-center gap-3 rounded-xl px-6 py-4 text-base font-bold sm:py-5 sm:text-lg",
-            "text-text-on-accent transition-opacity disabled:cursor-not-allowed disabled:opacity-50",
-            canResume || phase === "error"
-              ? "border border-accent/40 bg-gradient-to-br from-accent to-[#C9970D] shadow-gold"
-              : "bg-gradient-to-br from-accent to-[#C9970D] shadow-gold"
+            "btn-primary-prominent h-14 w-full sm:h-16 sm:text-lg",
+            (canResume || phase === "error") && "border border-accent/40"
           )}
         >
           <PrimaryIcon size={22} />
           {primaryLabel}
           {phase === "idle" && !canResume && <ArrowRight size={22} />}
-        </motion.button>
+        </button>
       </div>
-    </motion.div>
+    </section>
   );
 }

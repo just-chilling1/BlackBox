@@ -57,7 +57,7 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-slate-100 hover:text-text-heading"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading active:scale-95"
           >
             <X size={20} />
           </button>

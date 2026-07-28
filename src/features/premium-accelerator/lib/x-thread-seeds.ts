@@ -3,7 +3,8 @@ import { THREAD_POST_ROLES } from "@/features/publish-kit/lib/promote-constants"
 /** Placeholder used in template HTML — replaced when a member clones. */
 export const ACCELERATOR_LINK_PLACEHOLDER = "[AFFILIATE_LINK]";
 
-const LINK = "[LINK]";
+/** Placeholder in thread post 10 — replaced with the member's affiliate link on clone. */
+export const ACCELERATOR_THREAD_LINK_PLACEHOLDER = "[LINK]";
 
 export interface AcceleratorThreadSeedRow {
   text: string;
@@ -59,10 +60,10 @@ function resolveStoryBeats(nicheKey: string | undefined, nicheLabel: string) {
 }
 
 /**
- * Static 10-post story threads for accelerator templates.
- * Follows x-thread rules: one story arc, failure in post 4, product in posts 7+10, link only in post 10.
+ * Static fallback 10-post story threads when AI generation is unavailable.
+ * Mirrors the x-thread-rules arc: failure in post 4, product in posts 7+10, link only in post 10.
  */
-export function buildAcceleratorXThreadSeeds(
+export function buildStaticAcceleratorXThreadSeeds(
   productName: string,
   niche: string,
   nicheKey?: string
@@ -81,16 +82,16 @@ export function buildAcceleratorXThreadSeeds(
     `${short} is what made that weekly loop fast enough that I actually stuck with it.`,
     beats.proof,
     `Not for people chasing overnight wins. If you won't review one number every week, skip this.`,
-    `One path. One metric. One tool if you want speed.\n\nStart here: ${LINK}`,
+    `One path. One metric. One tool if you want speed.\n\nStart here: ${ACCELERATOR_THREAD_LINK_PLACEHOLDER}`,
   ];
 }
 
-export function buildAcceleratorXThreadSeedRows(
+export function buildStaticAcceleratorXThreadSeedRows(
   productName: string,
   niche: string,
   nicheKey?: string
 ): AcceleratorThreadSeedRow[] {
-  const texts = buildAcceleratorXThreadSeeds(productName, niche, nicheKey);
+  const texts = buildStaticAcceleratorXThreadSeeds(productName, niche, nicheKey);
   return texts.map((text, i) => ({
     text,
     angle: THREAD_POST_ROLES[i] ?? `Post ${i + 1}`,

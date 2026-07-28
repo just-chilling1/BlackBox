@@ -12,9 +12,9 @@ import {
 } from "./catalog";
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
-  buildAcceleratorXThreadSeedRows,
   type AcceleratorThreadSeedRow,
 } from "./x-thread-seeds";
+import { generateAcceleratorXThreadRows } from "./generate-accelerator-thread";
 
 function newSlug(seed: string): string {
   return `${seed}-${crypto.randomUUID().slice(0, 8)}`;
@@ -43,7 +43,7 @@ async function loadSeededTemplate(
 
   const { data: threads } = await admin
     .from("site_x_threads")
-    .select("image_url")
+    .select("text, angle, image_url")
     .eq("site_id", site.id)
     .order("created_at", { ascending: true });
 
@@ -171,17 +171,57 @@ export async function seedAcceleratorTemplate(
     if (error) throw new Error(error.message);
   }
 
-  const needsThreads =
-    !existing || existing.threadCount < 10 || !existing.imagesReady;
+  const existingThreads =
+    (await admin
+      .from("site_x_threads")
+      .select("id, text, angle, image_url")
+      .eq("site_id", site!.id)
+      .order("created_at", { ascending: true })).data ?? [];
 
-  if (needsThreads) {
+  const needsNewThreads = !existing || existingThreads.length < 10;
+  const needsImagesOnly =
+    existing &&
+    existingThreads.length >= 10 &&
+    !existing.imagesReady;
+
+  if (needsImagesOnly) {
+    const threadRows = existingThreads.map((row) => ({
+      text: (row as { text: string }).text,
+      angle: (row as { angle: string | null }).angle ?? "Post",
+    }));
+
+    const rowsWithImages = await attachAcceleratorThreadImages({
+      admin,
+      ownerId,
+      entry,
+      threadRows,
+    });
+
+    for (let i = 0; i < existingThreads.length; i++) {
+      const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
+        i as (typeof THREAD_IMAGE_POST_INDEXES)[number]
+      );
+      const imageUrl =
+        imageSlot >= 0 ? rowsWithImages[i]?.image_url ?? null : null;
+      if (!imageUrl) continue;
+
+      const { error } = await admin
+        .from("site_x_threads")
+        .update({ image_url: imageUrl })
+        .eq("id", (existingThreads[i] as { id: string }).id);
+      if (error) throw new Error(error.message);
+    }
+
+    return { skipped: false, siteId: site!.id };
+  }
+
+  if (needsNewThreads) {
     await admin.from("site_x_threads").delete().eq("site_id", site!.id);
 
-    const threadRows = buildAcceleratorXThreadSeedRows(
-      entry.productName,
-      entry.nicheLabel,
-      entry.nicheKey
-    );
+    const threadRows = await generateAcceleratorXThreadRows({
+      entry,
+      copy,
+    });
 
     const rowsWithImages = await attachAcceleratorThreadImages({
       admin,

@@ -22,7 +22,7 @@ export function FloatingSupportButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Need help? Contact support"
-        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-accent px-4 py-3 text-xs font-black uppercase tracking-wide text-black shadow-gold transition-all hover:brightness-110 active:scale-[0.97] max-lg:bottom-[calc(5rem+env(safe-area-inset-bottom))]"
+        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-accent px-4 py-3 text-xs font-black uppercase tracking-wide text-black shadow-gold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-[0_0_24px_rgba(238,179,16,0.28)] active:scale-[0.97] max-lg:bottom-[calc(5rem+env(safe-area-inset-bottom))]"
       >
         <HelpCircle size={16} />
         Need help?
@@ -42,7 +42,7 @@ export function FloatingSupportButton() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border-dim bg-surface text-text-secondary hover:border-accent/40 hover:text-accent"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-border-dim bg-surface text-text-secondary cursor-pointer transition-all duration-200 hover:border-accent/40 hover:bg-slate-100 hover:text-amber-800 active:scale-95"
               >
                 <X size={16} />
               </button>

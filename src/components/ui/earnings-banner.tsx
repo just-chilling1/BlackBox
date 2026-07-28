@@ -63,7 +63,7 @@ export function EarningsBanner({ onDismiss, compact = false }: EarningsBannerPro
         target="_blank"
         rel="noopener noreferrer"
         className={clsx(
-          "inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl font-black uppercase tracking-wide text-black bg-accent hover:brightness-110 active:scale-[0.98] transition-all",
+          "inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl font-black uppercase tracking-wide text-black bg-accent cursor-pointer hover:brightness-110 hover:shadow-gold active:scale-[0.98] transition-all duration-200",
           compact ? "min-h-[40px] px-5 py-2 text-[11px]" : "min-h-[48px] px-8 py-3 text-sm"
         )}
       >

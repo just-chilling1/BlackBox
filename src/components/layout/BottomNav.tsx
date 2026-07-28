@@ -75,8 +75,8 @@ export function BottomNav() {
                 key={tab.path}
                 href={tab.path}
                 className={clsx(
-                  "relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors",
-                  isActive ? "text-accent" : "text-text-muted active:text-text-primary"
+                  "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
+                  isActive ? "text-amber-800" : "text-text-muted hover:text-text-primary"
                 )}
               >
                 {isActive ? (
@@ -92,8 +92,8 @@ export function BottomNav() {
             type="button"
             onClick={() => setMoreOpen(true)}
             className={clsx(
-              "relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors",
-              moreActive || moreOpen ? "text-accent" : "text-text-muted active:text-text-primary"
+              "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
+              moreActive || moreOpen ? "text-amber-800" : "text-text-muted hover:text-text-primary"
             )}
           >
             {(moreActive || moreOpen) ? (

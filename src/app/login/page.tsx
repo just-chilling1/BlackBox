@@ -101,7 +101,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] hover:text-accent transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] cursor-pointer transition-colors hover:text-amber-800"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -109,7 +109,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex justify-end -mt-1">
-          <Link href="/forgot-password" className="text-[11px] text-text-muted hover:text-accent transition-colors">
+          <Link href="/forgot-password" className="text-[11px] text-text-muted hover:text-amber-800 transition-colors">
             Forgot Password?
           </Link>
         </div>
@@ -128,7 +128,7 @@ export default function LoginPage() {
 
       <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-8">
         <p className="text-[#475569] text-xs">New here?</p>
-        <Link href="/signup" className="brand-font text-accent text-xs font-bold tracking-wide hover:text-text-heading transition-colors">
+        <Link href="/signup" className="brand-font text-amber-800 text-xs font-bold tracking-wide hover:text-amber-950 transition-colors">
           Sign Up
         </Link>
       </div>

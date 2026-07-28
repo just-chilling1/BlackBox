@@ -12,7 +12,7 @@ interface WizardStepperProps {
 
 export function WizardStepper({ currentStep, className }: WizardStepperProps) {
   return (
-    <nav aria-label="Site builder progress" className={clsx("mb-8", className)}>
+    <nav aria-label="Site builder progress" className={clsx("wizard-progress", className)}>
       <ol className="flex w-full items-start">
         {WIZARD_STEPS.map((step, index) => {
           const isComplete = currentStep > step.number;
@@ -23,25 +23,29 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
               <li className="flex min-w-0 flex-1 flex-col items-center px-0.5 text-center sm:px-1">
                 <div
                   className={clsx(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all",
-                    isActive &&
-                      "bg-accent text-text-on-accent shadow-[0_0_20px_rgba(238,179,16,0.25)]",
-                    isComplete && "border border-accent/30 bg-accent/20 text-accent",
-                    !isComplete && !isActive && "border border-border-dim bg-surface text-text-muted"
+                    "wizard-step-badge",
+                    isActive && "is-active",
+                    isComplete && "is-complete",
+                    !isComplete && !isActive && "is-pending"
                   )}
                   aria-current={isActive ? "step" : undefined}
                 >
-                  {isComplete ? <Check size={16} aria-hidden /> : step.number}
+                  {isComplete ? <Check size={16} strokeWidth={2.5} aria-hidden /> : step.number}
                 </div>
                 <p
                   className={clsx(
-                    "mt-2 text-xs font-medium leading-snug sm:text-sm",
-                    currentStep >= step.number ? "text-text-primary" : "text-text-muted"
+                    "mt-2 text-xs font-semibold leading-snug sm:text-sm",
+                    isActive ? "text-text-heading" : currentStep >= step.number ? "text-text-primary" : "text-text-muted"
                   )}
                 >
                   {step.title}
                 </p>
-                <p className="mt-0.5 text-[10px] leading-snug text-text-muted sm:text-xs">
+                <p
+                  className={clsx(
+                    "mt-0.5 hidden text-[10px] leading-snug sm:block sm:text-xs",
+                    isActive ? "text-text-secondary" : "text-text-muted"
+                  )}
+                >
                   {step.description}
                 </p>
               </li>
@@ -50,8 +54,8 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                 <li
                   aria-hidden
                   className={clsx(
-                    "mt-5 h-px w-3 shrink-0 sm:w-6 md:w-10",
-                    currentStep > step.number ? "bg-accent/50" : "bg-border-dim"
+                    "wizard-step-connector",
+                    currentStep > step.number ? "is-complete" : "is-pending"
                   )}
                 />
               )}

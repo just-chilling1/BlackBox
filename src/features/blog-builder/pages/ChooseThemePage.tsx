@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import {
   LayoutTemplate,
   Loader2,
@@ -130,15 +129,11 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
     const link = deployArmedLinks[0];
 
     return (
-      <div className="page-stack w-full max-w-2xl mx-auto">
+      <div className="wizard-shell w-full max-w-2xl mx-auto">
         <WizardStepBar breadcrumb="Site Builder / Wrap-up" step={3} />
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="card-base space-y-6 py-10 text-center"
-        >
-          <CheckCircle2 size={48} className="text-promo-accent mx-auto" />
+        <section className="wizard-panel animate-fade-in-up space-y-6 py-10 text-center">
+          <CheckCircle2 size={48} className="mx-auto text-accent" />
           <div>
             <h1 className="ds-h1 mb-2">Setup Complete</h1>
             <p className="ds-subtitle">
@@ -146,31 +141,27 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
             </p>
           </div>
 
-          <div className="text-left rounded-xl border border-border-dim bg-page p-4 space-y-2 text-sm">
+          <div className="surface-inset space-y-2 p-4 text-left text-sm">
             {link && (
               <p className="text-text-secondary">
-                <span className="text-text-muted">Link:</span> {link.label}
+                <span className="font-medium text-text-muted">Link:</span> {link.label}
               </p>
             )}
             {nicheLabel && (
               <p className="text-text-secondary">
-                <span className="text-text-muted">Niche:</span> {nicheLabel}
+                <span className="font-medium text-text-muted">Niche:</span> {nicheLabel}
               </p>
             )}
             <p className="text-text-secondary">
-              <span className="text-text-muted">Template:</span> {selectedTemplate.name}
+              <span className="font-medium text-text-muted">Template:</span> {selectedTemplate.name}
             </p>
             <p className="text-text-secondary">
-              <span className="text-text-muted">Style:</span> {selectedTemplate.toneLabel}
+              <span className="font-medium text-text-muted">Style:</span> {selectedTemplate.toneLabel}
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              type="button"
-              onClick={() => setFinished(false)}
-              className="px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary"
-            >
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <button type="button" onClick={() => setFinished(false)} className="btn-subtle">
               Edit choices
             </button>
             <Link href="/sales-offer-generator?step=4" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3">
@@ -178,13 +169,13 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
               Launch Your Website
             </Link>
           </div>
-        </motion.div>
+        </section>
       </div>
     );
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-4xl mx-auto"}>
+    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-4xl mx-auto"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Template" step={3} />
@@ -197,25 +188,22 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
         </>
       )}
 
-      <motion.div
-        key={`${selectedTemplateId}-${config.accentOverride ?? ""}-${config.headingFont ?? ""}-${config.bodyFont ?? ""}`}
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-      >
+      <div className="animate-fade-in-up">
         <ThemePreview config={config} templateId={selectedTemplateId} nicheLabel={nicheLabel} />
-      </motion.div>
+      </div>
 
-      <div className="card-base space-y-4">
+      <section className="wizard-panel space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-            <LayoutTemplate size={18} className="text-promo-accent" />
-            Templates
-          </h2>
-          <span className="text-xs text-text-muted">{READY_TEMPLATES.length} options</span>
+          <div className="flex items-center gap-3">
+            <div className="wizard-panel-icon">
+              <LayoutTemplate size={18} />
+            </div>
+            <h2 className="ds-h4">Templates</h2>
+          </div>
+          <span className="text-xs font-medium text-text-muted">{READY_TEMPLATES.length} options</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {READY_TEMPLATES.map((template) => {
             const isSelected = selectedTemplateId === template.id;
             const accent = readyTemplateAccent(template);
@@ -225,26 +213,26 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                 type="button"
                 onClick={() => handleTemplateSelect(template.id)}
                 className={clsx(
-                  "group rounded-xl border text-left transition-all overflow-hidden",
+                  "group overflow-hidden rounded-xl border text-left transition-all",
                   isSelected
-                    ? "border-promo-accent/50 bg-promo-accent/10 ring-1 ring-promo-accent/30"
-                    : "border-border-dim hover:border-promo-accent/25 hover:bg-slate-50"
+                    ? "border-accent/55 bg-accent/10 ring-1 ring-accent/25"
+                    : "border-border-dim bg-page hover:border-accent/35 hover:bg-white"
                 )}
               >
                 <div className="flex h-16 items-end gap-1.5 px-3 pb-2 pt-3" style={{ backgroundColor: `${accent}14` }}>
                   <div className="h-8 flex-1 rounded-md opacity-90" style={{ backgroundColor: accent }} />
                   <div className="h-5 w-1/3 rounded-md bg-black/10" />
                 </div>
-                <div className="p-3.5 border-t border-black/5">
+                <div className="border-t border-border-dim/60 p-3.5">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-semibold text-text-primary">{template.name}</p>
                     {isSelected && (
-                      <span className="shrink-0 w-5 h-5 rounded-full bg-promo-accent flex items-center justify-center">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent">
                         <Check size={12} className="text-text-on-accent" />
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-promo-accent/80 mt-1.5">
+                  <p className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-accent">
                     {template.toneLabel}
                   </p>
                 </div>
@@ -252,16 +240,18 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
             );
           })}
         </div>
-      </div>
+      </section>
 
-      <div className="card-base space-y-5">
-        <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-          <Palette size={18} className="text-promo-accent" />
-          Customize look
-        </h2>
+      <section className="wizard-panel space-y-5">
+        <div className="flex items-center gap-3">
+          <div className="wizard-panel-icon">
+            <Palette size={18} />
+          </div>
+          <h2 className="ds-h4">Customize look</h2>
+        </div>
 
         <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Color theme</p>
+          <p className="wizard-form-label">Color theme</p>
           <div className="flex flex-wrap gap-2.5">
             {accentOptions.map((color) => {
               const isActive = config.accentOverride === color;
@@ -273,19 +263,22 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                   onClick={() => updateConfig({ accentOverride: color })}
                   className={clsx(
                     "h-10 w-10 rounded-full border-2 transition-all",
-                    isActive ? "border-white scale-110 shadow-lg" : "border-transparent hover:scale-105"
+                    isActive
+                      ? "scale-110 border-text-heading shadow-md ring-2 ring-accent/30"
+                      : "border-transparent hover:scale-105 hover:border-border-dim"
                   )}
                   style={{ backgroundColor: color }}
                   aria-label={`Accent color ${color}`}
+                  aria-pressed={isActive}
                 />
               );
             })}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="heading-font" className="text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
+            <label htmlFor="heading-font" className="wizard-form-label flex items-center gap-1.5">
               <Type size={14} />
               Heading font
             </label>
@@ -293,7 +286,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
               id="heading-font"
               value={config.headingFont ?? ""}
               onChange={(e) => updateConfig({ headingFont: e.target.value })}
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary focus:border-promo-accent/50 focus:outline-none"
+              className="input-base w-full"
             >
               {HEADING_FONT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -304,7 +297,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="body-font" className="text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
+            <label htmlFor="body-font" className="wizard-form-label flex items-center gap-1.5">
               <Type size={14} />
               Body font
             </label>
@@ -312,7 +305,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
               id="body-font"
               value={config.bodyFont ?? ""}
               onChange={(e) => updateConfig({ bodyFont: e.target.value })}
-              className="w-full rounded-xl border border-border-dim bg-page px-4 py-3 text-sm text-text-primary focus:border-promo-accent/50 focus:outline-none"
+              className="input-base w-full"
             >
               {BODY_FONT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -322,13 +315,13 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
             </select>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-1">
+      <div className="wizard-action-bar">
         <button
           type="button"
           onClick={() => (onBack ? onBack() : router.push("/territory"))}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary"
+          className="btn-subtle sm:min-w-[8rem]"
         >
           <ArrowLeft size={18} />
           Back
@@ -337,7 +330,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
           type="button"
           onClick={handleFinish}
           disabled={loading}
-          className="flex-1 btn-primary inline-flex items-center justify-center gap-2 py-3"
+          className="btn-primary flex-1 inline-flex items-center justify-center gap-2 py-3"
         >
           {loading ? <Loader2 size={18} className="animate-spin" /> : null}
           Continue with {selectedTemplate.name}

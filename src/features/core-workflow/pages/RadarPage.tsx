@@ -66,7 +66,7 @@ function AdCard({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1 text-[10px] text-text-muted hover:text-accent transition-colors"
+                        className="flex items-center gap-1 text-[10px] text-text-muted hover:text-amber-800 transition-colors"
                     >
                         <ExternalLink size={10} />
                         <span>View original</span>
@@ -234,7 +234,7 @@ export default function RadarPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/analysis")}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-amber-800 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 2</span>

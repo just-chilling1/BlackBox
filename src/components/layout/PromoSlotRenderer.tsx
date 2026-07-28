@@ -49,7 +49,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
                   <button
                     type="button"
                     onClick={() => window.open(content.ctaUrl, "_blank")}
-                    className="hover:opacity-90 transition-opacity text-black font-bold px-4 sm:px-6 py-2.5 rounded-md shadow-sm text-sm sm:text-[15px] w-full sm:w-auto"
+                    className="cursor-pointer font-bold px-4 sm:px-6 py-2.5 rounded-md shadow-sm text-sm sm:text-[15px] w-full sm:w-auto transition-all duration-200 hover:brightness-110 hover:shadow-md active:scale-[0.98] text-black"
                     style={{ backgroundColor: brand.colors.promoCta }}
                   >
                     {content.ctaLabel}
@@ -159,7 +159,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 text-text-muted hover:text-text-heading"
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading"
               aria-label="Close"
             >
               ×
@@ -222,7 +222,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           <button
             type="button"
             onClick={() => window.open(content.ctaUrl, "_blank")}
-            className="text-xs text-accent font-bold mt-2 hover:underline"
+            className="text-xs text-amber-800 font-bold mt-2 cursor-pointer transition-colors hover:text-amber-950 hover:underline"
           >
             {content.ctaLabel}
           </button>
@@ -231,7 +231,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-2 right-2 text-text-muted text-xs"
+            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-text-muted text-xs cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading"
           >
             ×
           </button>

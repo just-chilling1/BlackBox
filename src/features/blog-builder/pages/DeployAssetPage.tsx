@@ -350,7 +350,7 @@ export default function DeployAssetPage({
     : "Selected template";
 
   return (
-    <div className={embedded ? "space-y-6" : "page-stack w-full max-w-2xl mx-auto"}>
+    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-2xl mx-auto"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />
@@ -368,11 +368,7 @@ export default function DeployAssetPage({
       )}
 
       {embedded && !isComplete && onBack && (
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border-dim text-text-secondary hover:text-text-primary"
-        >
+        <button type="button" onClick={onBack} className="btn-subtle">
           Back to Template
         </button>
       )}

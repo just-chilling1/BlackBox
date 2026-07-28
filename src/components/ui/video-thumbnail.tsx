@@ -32,7 +32,7 @@ export function VideoThumbnail({
       onClick={onPlay}
       aria-label={`Play ${title}`}
       className={clsx(
-        "group relative w-full overflow-hidden rounded-xl border border-border-dim/40 bg-black text-left",
+        "group relative w-full overflow-hidden rounded-xl border border-border-dim/40 bg-black text-left cursor-pointer transition-all duration-200 hover:border-accent/40 hover:shadow-md",
         className
       )}
     >

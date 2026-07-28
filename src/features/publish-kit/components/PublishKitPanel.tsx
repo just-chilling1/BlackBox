@@ -108,12 +108,12 @@ function KitButton({
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-60";
+    "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60";
   const styles =
     variant === "primary"
-      ? "bg-gradient-to-br from-accent to-[#C9970D] text-text-on-accent shadow-gold hover:brightness-110"
+      ? "bg-gradient-to-br from-accent to-[#C9970D] text-text-on-accent shadow-gold hover:brightness-110 hover:shadow-[0_0_20px_rgba(238,179,16,0.22)] active:scale-[0.98]"
       : variant === "ghost"
-        ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        ? "text-slate-700 hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98]"
         : "btn-subtle";
 
   return (

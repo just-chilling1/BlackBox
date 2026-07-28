@@ -13,7 +13,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-accent/5"
+        className="flex w-full items-center justify-between p-4 text-left cursor-pointer transition-colors duration-200 hover:bg-accent/8"
       >
         <div className="flex items-center gap-3">
           <HelpCircle size={15} className="shrink-0 text-accent" />

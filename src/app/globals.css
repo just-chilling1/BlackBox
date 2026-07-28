@@ -20,11 +20,12 @@
   --color-success: #10B981;
   --color-error: #EF4444;
 
-  --color-text-primary: #1E293B;
-  --color-text-secondary: #475569;
-  --color-text-muted: #64748B;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #475569;
   --color-text-heading: var(--text-heading);
   --color-text-on-accent: #000000;
+  --color-accent-readable: var(--brand-primary-readable);
 }
 
 :root {
@@ -37,6 +38,7 @@
 
   /* Brand Colors - Duke Mustard Yellow & Indigo */
   --brand-primary: #EEB310;
+  --brand-primary-readable: #B45309;
   --brand-secondary: #6366F1;
   --brand-tint: rgba(238, 179, 16, 0.1);
 
@@ -51,7 +53,7 @@
   --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
 
   /* Semantic text */
-  --text-primary: #1E293B;
+  --text-primary: #0F172A;
   --text-heading: #0F172A;
 
   --sidebar-w: 280px;
@@ -111,6 +113,20 @@ html[data-sidebar="collapsed"] {
     font-family: var(--font-brand);
     @apply font-bold tracking-tight;
   }
+
+  button:not(:disabled),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [type="button"]:disabled,
+  [type="submit"]:disabled,
+  [type="reset"]:disabled {
+    cursor: not-allowed;
+  }
 }
 
 @layer components {
@@ -144,41 +160,41 @@ html[data-sidebar="collapsed"] {
 
   /* Refined Buttons */
   .btn-primary {
-    @apply bg-accent text-text-on-accent px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50;
+    @apply bg-accent text-text-on-accent px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:brightness-105 hover:shadow-gold active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:shadow-none;
   }
 
   .btn-primary-prominent {
-    @apply inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl font-bold uppercase tracking-widest text-sm bg-accent text-text-on-accent shadow-gold transition-all duration-300 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl font-bold uppercase tracking-widest text-sm bg-accent text-text-on-accent shadow-gold cursor-pointer transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_24px_rgba(238,179,16,0.28)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:shadow-gold;
   }
 
   .btn-secondary {
-    @apply bg-surface border border-border-dim text-text-primary px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-border-dim active:scale-[0.98];
+    @apply bg-surface border border-border-dim text-text-primary px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .text-link-action {
-    @apply inline-flex items-center gap-2 text-sm font-semibold text-amber-800 underline-offset-2 hover:text-amber-950 hover:underline transition-colors;
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-amber-800 underline-offset-2 cursor-pointer hover:text-amber-950 hover:underline transition-colors;
   }
 
   .btn-ghost {
-    @apply text-text-secondary hover:text-text-primary hover:bg-surface/50 px-4 py-2 rounded-lg transition-all flex items-center gap-2;
+    @apply text-text-secondary hover:text-text-primary hover:bg-slate-100 px-4 py-2 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2;
   }
 
   /* Navigation */
   .nav-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-text-secondary hover:text-text-primary hover:bg-surface/50 relative;
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 text-text-secondary hover:text-text-primary hover:bg-slate-100 relative;
   }
 
   .nav-link-active {
-    @apply text-accent bg-brand-tint border-r-2 border-accent rounded-r-none;
+    @apply text-amber-800 bg-brand-tint border-r-2 border-accent rounded-r-none;
   }
 
   .command-nav-link {
-    @apply flex items-center justify-between px-3 sm:px-4 py-2.5 rounded-xl text-sm transition-all duration-200 relative overflow-hidden;
+    @apply flex items-center justify-between px-3 sm:px-4 py-2.5 rounded-xl text-sm cursor-pointer transition-all duration-200 relative overflow-hidden;
     @apply text-text-secondary hover:text-text-primary hover:bg-slate-100;
   }
 
   .command-nav-link.active {
-    @apply text-accent bg-accent/10;
+    @apply text-amber-800 bg-accent/10;
   }
 
   .sidebar-scroll {
@@ -526,12 +542,12 @@ html[data-sidebar="collapsed"] {
   }
 
   .sidebar-sign-out {
-    @apply text-text-secondary;
+    @apply text-text-secondary cursor-pointer;
     transition: all 0.2s ease;
   }
 
   .sidebar-sign-out:hover {
-    background: #ef4444;
+    background: #dc2626;
     color: #ffffff;
   }
 
@@ -688,7 +704,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .btn-subtle {
-    @apply inline-flex items-center gap-2 rounded-lg border border-border-dim bg-page px-3 py-2 text-sm font-medium text-text-heading transition-colors hover:bg-slate-100;
+    @apply inline-flex items-center gap-2 rounded-lg border border-border-dim bg-page px-3 py-2 text-sm font-medium text-text-heading cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm active:scale-[0.98];
   }
 
   .hover-surface {
@@ -761,12 +777,12 @@ html[data-sidebar="collapsed"] {
   }
 
   .wizard-selection-card {
-    @apply relative rounded-xl border border-border-dim bg-page p-4 text-left transition-all duration-200;
+    @apply relative rounded-xl border border-border-dim bg-page p-4 text-left cursor-pointer transition-all duration-200;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
   }
 
   .wizard-selection-card:hover {
-    @apply border-accent/35 bg-white;
+    @apply border-accent/35 bg-white shadow-sm;
   }
 
   .wizard-selection-card.is-selected {

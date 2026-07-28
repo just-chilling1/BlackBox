@@ -303,6 +303,18 @@ export function buildThemedQuestionnairePage(input: ThemedQuestionnaireInput): s
       cursor: pointer;
       margin-top: 12px;
       width: 100%;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .questionnaire-root .btn-secondary:hover {
+      background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+      border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+    .questionnaire-root .btn-secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
     }
     .questionnaire-root .result-icon {
       width: 56px;
