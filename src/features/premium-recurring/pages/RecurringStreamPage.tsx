@@ -271,7 +271,6 @@ export default function RecurringStreamPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                   {previewArticle.niche}
                 </p>
-                <h3 className="mt-1 font-bold text-text-primary">{previewArticle.title}</h3>
                 <span className="mt-2 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-text-muted">
                   {formatAngle(previewArticle.angle)}
                 </span>
@@ -286,8 +285,10 @@ export default function RecurringStreamPage() {
               </button>
             </div>
             <div
-              className="prose prose-slate max-h-[560px] max-w-none overflow-y-auto p-4 md:p-6 text-sm"
-              dangerouslySetInnerHTML={{ __html: articleHtml[previewArticle.id] }}
+              className="recurring-article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-white px-5 py-6 md:px-8 md:py-8"
+              dangerouslySetInnerHTML={{
+                __html: wrapArticleWithTitle(previewArticle.title, articleHtml[previewArticle.id]),
+              }}
             />
             <div className="flex flex-wrap gap-2 border-t border-divider p-4 md:p-5">
               <button
