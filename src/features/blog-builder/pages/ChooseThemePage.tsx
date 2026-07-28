@@ -188,8 +188,18 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
         </>
       )}
 
-      <div className="animate-fade-in-up">
-        <ThemePreview config={config} templateId={selectedTemplateId} nicheLabel={nicheLabel} />
+      <div className="space-y-2">
+        <p className="px-1 text-xs text-text-secondary">
+          Updates live as you pick a template below
+        </p>
+        <div className="theme-preview-linked rounded-2xl overflow-hidden">
+          <ThemePreview
+            config={config}
+            templateId={selectedTemplateId}
+            nicheLabel={nicheLabel}
+            linkedSelection
+          />
+        </div>
       </div>
 
       <section className="wizard-panel space-y-4">
@@ -198,7 +208,12 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
             <div className="wizard-panel-icon">
               <LayoutTemplate size={18} />
             </div>
-            <h2 className="ds-h4">Templates</h2>
+            <div>
+              <h2 className="ds-h4">Templates</h2>
+              <p className="mt-0.5 text-xs text-text-muted">
+                Selected: <span className="font-semibold text-amber-800">{selectedTemplate.name}</span>
+              </p>
+            </div>
           </div>
           <span className="text-xs font-medium text-text-muted">{READY_TEMPLATES.length} options</span>
         </div>
@@ -212,12 +227,8 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                 key={template.id}
                 type="button"
                 onClick={() => handleTemplateSelect(template.id)}
-                className={clsx(
-                  "group overflow-hidden rounded-xl border text-left transition-all",
-                  isSelected
-                    ? "border-accent/55 bg-accent/10 ring-1 ring-accent/25"
-                    : "border-border-dim bg-page hover:border-accent/35 hover:bg-white"
-                )}
+                aria-pressed={isSelected}
+                className={clsx("wizard-template-card", isSelected && "is-selected")}
               >
                 <div className="flex h-16 items-end gap-1.5 px-3 pb-2 pt-3" style={{ backgroundColor: `${accent}14` }}>
                   <div className="h-8 flex-1 rounded-md opacity-90" style={{ backgroundColor: accent }} />
@@ -225,16 +236,14 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                 </div>
                 <div className="border-t border-border-dim/60 p-3.5">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold text-text-primary">{template.name}</p>
+                    <p className="wizard-template-card-title">{template.name}</p>
                     {isSelected && (
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent">
-                        <Check size={12} className="text-text-on-accent" />
+                      <span className="wizard-template-card-check" aria-hidden>
+                        <Check size={16} strokeWidth={3} />
                       </span>
                     )}
                   </div>
-                  <p className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-accent">
-                    {template.toneLabel}
-                  </p>
+                  <p className="wizard-template-card-tone">{template.toneLabel}</p>
                 </div>
               </button>
             );
@@ -251,8 +260,8 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
         </div>
 
         <div className="space-y-3">
-          <p className="wizard-form-label">Color theme</p>
-          <div className="flex flex-wrap gap-2.5">
+          <p className="wizard-font-field-label">Color theme</p>
+          <div className="flex flex-wrap gap-3">
             {accentOptions.map((color) => {
               const isActive = config.accentOverride === color;
               return (
@@ -261,16 +270,17 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                   type="button"
                   title={color}
                   onClick={() => updateConfig({ accentOverride: color })}
-                  className={clsx(
-                    "h-10 w-10 rounded-full border-2 transition-all",
-                    isActive
-                      ? "scale-110 border-text-heading shadow-md ring-2 ring-accent/30"
-                      : "border-transparent hover:scale-105 hover:border-border-dim"
-                  )}
+                  className={clsx("wizard-color-swatch", isActive && "is-selected")}
                   style={{ backgroundColor: color }}
                   aria-label={`Accent color ${color}`}
                   aria-pressed={isActive}
-                />
+                >
+                  {isActive && (
+                    <span className="wizard-color-swatch-check" aria-hidden>
+                      <Check size={18} strokeWidth={3} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
+                    </span>
+                  )}
+                </button>
               );
             })}
           </div>
@@ -278,18 +288,22 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="heading-font" className="wizard-form-label flex items-center gap-1.5">
-              <Type size={14} />
-              Heading font
-            </label>
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="heading-font" className="wizard-font-field-label flex items-center gap-1.5">
+                <Type size={14} />
+                Heading font
+              </label>
+              <span className="wizard-font-selected-badge">Selected</span>
+            </div>
             <select
               id="heading-font"
               value={config.headingFont ?? ""}
               onChange={(e) => updateConfig({ headingFont: e.target.value })}
-              className="input-base w-full"
+              className="wizard-font-select"
+              style={{ fontFamily: config.headingFont ?? HEADING_FONT_OPTIONS[0]?.value }}
             >
               {HEADING_FONT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option key={opt.value} value={opt.value} style={{ fontFamily: opt.value }}>
                   {opt.label}
                 </option>
               ))}
@@ -297,18 +311,22 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="body-font" className="wizard-form-label flex items-center gap-1.5">
-              <Type size={14} />
-              Body font
-            </label>
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="body-font" className="wizard-font-field-label flex items-center gap-1.5">
+                <Type size={14} />
+                Body font
+              </label>
+              <span className="wizard-font-selected-badge">Selected</span>
+            </div>
             <select
               id="body-font"
               value={config.bodyFont ?? ""}
               onChange={(e) => updateConfig({ bodyFont: e.target.value })}
-              className="input-base w-full"
+              className="wizard-font-select"
+              style={{ fontFamily: config.bodyFont ?? BODY_FONT_OPTIONS[0]?.value }}
             >
               {BODY_FONT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option key={opt.value} value={opt.value} style={{ fontFamily: opt.value }}>
                   {opt.label}
                 </option>
               ))}

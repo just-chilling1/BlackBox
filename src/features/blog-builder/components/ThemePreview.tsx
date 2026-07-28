@@ -8,19 +8,29 @@ interface ThemePreviewProps {
   templateId?: string;
   nicheLabel?: string;
   compact?: boolean;
+  /** When true, emphasizes link to the selected template card below */
+  linkedSelection?: boolean;
 }
 
-export function ThemePreview({ config, templateId, nicheLabel, compact = false }: ThemePreviewProps) {
+export function ThemePreview({
+  config,
+  templateId,
+  nicheLabel,
+  compact = false,
+  linkedSelection = false,
+}: ThemePreviewProps) {
   const { colors, headingFont, bodyFont } = resolveThemeConfig(config);
   const template = getReadyTemplate(templateId ?? config.templateId ?? "editorial-sage");
   const accent = colors.accent;
   const isDark = template.structureId === "conversion";
+  const previewKey = templateId ?? config.templateId ?? "editorial-sage";
 
   return (
     <div
-      className="rounded-2xl border overflow-hidden"
+      key={previewKey}
+      className={linkedSelection ? "theme-preview-animate overflow-hidden" : "rounded-2xl border overflow-hidden"}
       style={{
-        borderColor: isDark ? "rgba(255,255,255,0.1)" : colors.border,
+        borderColor: linkedSelection ? undefined : isDark ? "rgba(255,255,255,0.1)" : colors.border,
         backgroundColor: isDark ? "#0f0f10" : colors.bg,
         color: isDark ? "#f4f4f5" : colors.text,
       }}
@@ -29,11 +39,17 @@ export function ThemePreview({ config, templateId, nicheLabel, compact = false }
         className="flex flex-col gap-4 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5"
         style={{
           borderColor: isDark ? "rgba(255,255,255,0.08)" : colors.border,
-          backgroundColor: isDark ? "#18181b" : colors.surface,
+          backgroundColor: linkedSelection
+            ? "rgba(238, 179, 16, 0.1)"
+            : isDark
+              ? "#18181b"
+              : colors.surface,
         }}
       >
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Questionnaire preview</p>
+          <p className={linkedSelection ? "page-eyebrow" : "text-[10px] font-bold uppercase tracking-widest opacity-60"}>
+            {linkedSelection ? `Previewing: ${template.name}` : "Questionnaire preview"}
+          </p>
           <p className="text-base font-bold truncate sm:text-lg" style={{ fontFamily: headingFont }}>
             {template.name}
           </p>
@@ -43,7 +59,10 @@ export function ThemePreview({ config, templateId, nicheLabel, compact = false }
         </div>
         <span
           className="shrink-0 self-start rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide sm:self-center"
-          style={{ backgroundColor: `${accent}22`, color: accent }}
+          style={{
+            backgroundColor: linkedSelection ? "rgba(238, 179, 16, 0.2)" : `${accent}22`,
+            color: linkedSelection ? "#92400e" : accent,
+          }}
         >
           {template.toneLabel}
         </span>

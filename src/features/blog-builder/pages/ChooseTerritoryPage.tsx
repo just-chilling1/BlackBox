@@ -90,11 +90,11 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
                 className={clsx("wizard-selection-card", isSelected && "is-selected")}
               >
                 {isSelected && (
-                  <span className="absolute top-3 right-3 text-accent">
-                    <Check size={16} strokeWidth={2.5} />
+                  <span className="wizard-selection-card-check" aria-hidden>
+                    <Check size={20} strokeWidth={3} />
                   </span>
                 )}
-                <p className="pr-6 text-sm font-semibold text-text-primary">{option.label}</p>
+                <p className="wizard-selection-card-label">{option.label}</p>
               </button>
             );
           })}
