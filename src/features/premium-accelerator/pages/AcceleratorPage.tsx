@@ -5,11 +5,9 @@ import {
   Rocket,
   Link as LinkIcon,
   Copy,
-  Check,
   ExternalLink,
   Loader2,
   Filter,
-  Sparkles,
   ArrowRight,
   FolderOpen,
 } from "lucide-react";
@@ -35,7 +33,7 @@ interface TemplateRow {
 interface TemplateCardProps {
   template: TemplateRow;
   cloningId: number | null;
-  copiedId: number | null;
+  clonedSiteUrl: string | null;
   hasAffiliateLink: boolean;
   onClone: (id: number) => void;
 }
@@ -43,12 +41,12 @@ interface TemplateCardProps {
 const TemplateCard = memo(function TemplateCard({
   template,
   cloningId,
-  copiedId,
+  clonedSiteUrl,
   hasAffiliateLink,
   onClone,
 }: TemplateCardProps) {
   const isCloning = cloningId === template.id;
-  const isCopied = copiedId === template.id;
+  const isCloned = Boolean(clonedSiteUrl);
 
   return (
     <article
@@ -66,21 +64,41 @@ const TemplateCard = memo(function TemplateCard({
           </span>
         )}
       </div>
-      <button
-        type="button"
-        disabled={!template.seeded || isCloning || !hasAffiliateLink}
-        onClick={() => onClone(template.id)}
-        className="btn-primary mt-auto inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
-      >
-        {isCloning ? (
-          <Loader2 size={14} className="animate-spin" />
-        ) : isCopied ? (
-          <Check size={14} />
-        ) : (
-          <Copy size={14} />
-        )}
-        {isCopied ? "Cloned!" : "Use this template"}
-      </button>
+      {isCloned ? (
+        <div className="mt-auto flex flex-col gap-2">
+          <Link
+            href={clonedSiteUrl!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary inline-flex items-center justify-center gap-2 text-sm"
+          >
+            View offer
+            <ExternalLink size={14} />
+          </Link>
+          <Link
+            href="/offers"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-divider bg-white px-4 py-2 text-sm font-semibold text-text-primary transition-colors hover:bg-slate-50"
+          >
+            <FolderOpen size={14} />
+            Offers Library
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      ) : (
+        <button
+          type="button"
+          disabled={!template.seeded || isCloning || !hasAffiliateLink}
+          onClick={() => onClone(template.id)}
+          className="btn-primary mt-auto inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
+        >
+          {isCloning ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Copy size={14} />
+          )}
+          Use this template
+        </button>
+      )}
     </article>
   );
 });
@@ -95,9 +113,8 @@ export default function AcceleratorPage() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [affiliateLink, setAffiliateLink] = useState("");
   const [cloningId, setCloningId] = useState<number | null>(null);
-  const [clonedUrl, setClonedUrl] = useState<string | null>(null);
+  const [cloneResult, setCloneResult] = useState<{ catalogId: number; siteUrl: string } | null>(null);
   const [error, setError] = useState("");
-  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   useEffect(() => {
     try {
@@ -177,7 +194,7 @@ export default function AcceleratorPage() {
     }
     setCloningId(catalogId);
     setError("");
-    setClonedUrl(null);
+    setCloneResult(null);
     try {
       const res = await fetch("/api/premium/accelerator/clone", {
         method: "POST",
@@ -186,9 +203,7 @@ export default function AcceleratorPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Clone failed");
-      setClonedUrl(data.siteUrl);
-      setCopiedId(catalogId);
-      setTimeout(() => setCopiedId(null), 2500);
+      setCloneResult({ catalogId, siteUrl: data.siteUrl });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clone failed");
     } finally {
@@ -285,33 +300,6 @@ export default function AcceleratorPage() {
             </p>
           )}
 
-          {clonedUrl && (
-            <div className="flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2 text-sm text-emerald-900">
-                <Sparkles size={16} className="shrink-0 text-emerald-700" />
-                <span className="font-semibold">Offer cloned with X threads!</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href={clonedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white shadow-sm transition-all hover:bg-emerald-800 active:scale-[0.98]"
-                >
-                  View offer
-                  <ExternalLink size={14} />
-                </Link>
-                <Link
-                  href="/offers"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-emerald-800 transition-all hover:bg-emerald-100 active:scale-[0.98]"
-                >
-                  <FolderOpen size={14} />
-                  Offers Library
-                  <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -321,7 +309,9 @@ export default function AcceleratorPage() {
             key={t.id}
             template={t}
             cloningId={cloningId}
-            copiedId={copiedId}
+            clonedSiteUrl={
+              cloneResult?.catalogId === t.id ? cloneResult.siteUrl : null
+            }
             hasAffiliateLink={hasAffiliateLink}
             onClone={handleClone}
           />
