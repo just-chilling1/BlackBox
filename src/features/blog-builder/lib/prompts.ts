@@ -86,7 +86,14 @@ export function buildArticleUserPrompt(params: {
   const wordSpec =
     tier === "deploy"
       ? "- html: 300-400 words of useful content; 3 <h2> sections; mix of <p> and <ul>/<li>; optional brief FAQ (1-2 questions)."
-      : "- html: 650-950 words of genuinely useful content; 4-5 <h2> sections; mix of <p>, <ul>/<li>, and a short FAQ (2-3 buyer questions answered in prose or a final <h2>FAQ).";
+      : tier === "authority"
+        ? `- html: 1,500-2,500 words of evergreen authority content.
+- Structure (required): introduction (100-200 words) → optional table of contents → 4-6 major <h2> sections with <h3> subsections → <h2>Frequently Asked Questions</h2> with 5-8 <h3> Q&A pairs → <h2>Conclusion</h2> → final CTA paragraph.
+- Primary keyword in title, first 100 words, one H2, and conclusion. Use secondary keywords naturally.
+- Short paragraphs (2-4 lines), bullet/numbered lists, tables when comparing, blockquotes for tips.
+- Professional, helpful, authoritative tone. No clickbait or unsubstantiated claims.
+- Do NOT use <h1> (title is stored separately). Never skip heading levels.`
+        : "- html: 650-950 words of genuinely useful content; 4-5 <h2> sections; mix of <p>, <ul>/<li>, and a short FAQ (2-3 buyer questions answered in prose or a final <h2>FAQ).";
 
   const parts = [
     `TERRITORY (exact niche — every paragraph must relate to this): ${params.territory}`,
@@ -175,8 +182,11 @@ export function buildHeroImageNegativePrompt(): string {
 export function normalizeArticleContent(
   parsed: Partial<GeneratedPostContent>,
   fallbackTitle: string,
-  territory?: string
+  territory?: string,
+  options?: { minWords?: number; requireFaq?: boolean }
 ): GeneratedPostContent | null {
+  const minWords = options?.minWords ?? 150;
+  const requireFaq = options?.requireFaq ?? false;
   if (!parsed.html?.trim() || !parsed.title?.trim()) return null;
 
   let html = parsed.html.trim();
@@ -193,7 +203,11 @@ export function normalizeArticleContent(
   }
 
   const wordCount = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
-  if (wordCount < 150) return null;
+  if (wordCount < minWords) return null;
+
+  if (requireFaq && !/frequently asked questions|faq/i.test(html)) {
+    return null;
+  }
 
   const plain = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 

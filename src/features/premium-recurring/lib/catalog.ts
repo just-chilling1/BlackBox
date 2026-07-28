@@ -1,6 +1,5 @@
-import { NICHE_OPTIONS } from "@/features/blog-builder/types";
-import type { ArticleAngle } from "@/features/blog-builder/types";
-import { buildLocalArticleContent } from "@/features/blog-builder/lib/local-article-content";
+import { NICHE_OPTIONS, type ArticleAngle } from "@/features/blog-builder/types";
+import { buildRecurringStreamArticleContent } from "@/features/blog-builder/lib/authority-article-content";
 
 export const RECURRING_STREAM_TARGET_COUNT = 100;
 
@@ -60,7 +59,7 @@ export function buildRecurringStreamCatalog(): RecurringStreamArticle[] {
       for (let t = 0; t < TOPIC_TEMPLATES.length && articles.length < RECURRING_STREAM_TARGET_COUNT; t++) {
         const title = TOPIC_TEMPLATES[t](niche.label);
         const angle = ARTICLE_ANGLES[t % ARTICLE_ANGLES.length];
-        const content = buildLocalArticleContent({
+        const content = buildRecurringStreamArticleContent({
           topic: title,
           territory: niche.label,
           hobby: niche.label,

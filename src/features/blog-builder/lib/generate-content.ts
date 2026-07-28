@@ -7,6 +7,7 @@ import {
 } from "./prompts";
 import { localTerritorySuggestions } from "./local-territory-suggestions";
 import { buildLocalArticleContent } from "./local-article-content";
+import { buildRecurringStreamArticleContent } from "./authority-article-content";
 import type { ArticleAngle, ContentTier, GeneratedPostContent } from "../types";
 
 export async function generateBlogPostContent(params: {
@@ -24,6 +25,10 @@ export async function generateBlogPostContent(params: {
   const hasAiKey = Boolean(process.env.RAPIDAPI_KEY?.trim());
 
   if (!hasAiKey) {
+    if (tier === "authority") {
+      const { wordCount: _wc, ...content } = buildRecurringStreamArticleContent(params);
+      return content;
+    }
     return buildLocalArticleContent(params);
   }
 
@@ -47,18 +52,23 @@ export async function generateBlogPostContent(params: {
         return normalizeArticleContent(
           raw as Partial<GeneratedPostContent>,
           params.topic,
-          params.territory
+          params.territory,
+          tier === "authority" ? { minWords: 1000, requireFaq: true } : undefined
         );
       },
       options: {
         temperature: 0.3,
-        maxRetries: tier === "deploy" ? 2 : 3,
-        maxRepairAttempts: tier === "deploy" ? 1 : 2,
+        maxRetries: tier === "deploy" ? 2 : tier === "authority" ? 4 : 3,
+        maxRepairAttempts: tier === "deploy" ? 1 : tier === "authority" ? 3 : 2,
       },
     });
   } catch (err) {
-    if (tier === "deploy") {
-      console.warn("[generate-content] AI failed during deploy — using local fallback", err);
+    if (tier === "deploy" || tier === "authority") {
+      console.warn("[generate-content] AI failed — using local fallback", err);
+      if (tier === "authority") {
+        const { wordCount: _wc, ...content } = buildRecurringStreamArticleContent(params);
+        return content;
+      }
       return buildLocalArticleContent(params);
     }
     throw err;

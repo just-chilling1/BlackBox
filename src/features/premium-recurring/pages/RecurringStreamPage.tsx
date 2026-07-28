@@ -14,12 +14,14 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  AlertCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
+import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
 
 interface ArticleRow {
   id: number;
@@ -149,10 +151,11 @@ export default function RecurringStreamPage() {
     const article = articles.find((a) => a.id === previewId);
     if (!html || !article) return;
 
+    const exportHtml = wrapArticleWithTitle(article.title, html);
     const payload =
       mode === "html"
-        ? html
-        : `${article.title}\n\n${htmlToPlainText(html)}`;
+        ? exportHtml
+        : `${article.title}\n\n${htmlToPlainText(exportHtml)}`;
 
     await navigator.clipboard.writeText(payload);
     setCopiedMode(mode);
@@ -172,7 +175,7 @@ export default function RecurringStreamPage() {
       <PageHeader
         eyebrow="Premium"
         title="Recurring Stream"
-        subtitle={`${seededCount} of 100 ready-to-publish authority articles — stored once, personalized with your link when you copy.`}
+        subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — stored once, personalized with your link when you copy.`}
       />
 
       <section className="glass-card overflow-hidden p-0">
@@ -185,7 +188,7 @@ export default function RecurringStreamPage() {
               <div>
                 <p className="font-bold text-text-primary">100 Authority Articles</p>
                 <p className="text-sm text-text-secondary">
-                  Publish on Medium, LinkedIn, or your blog — nothing regenerates on access.
+                  SEO-ready articles with intro, sections, FAQs, and CTAs — publish on Medium, LinkedIn, or your blog.
                 </p>
               </div>
             </div>
@@ -244,7 +247,11 @@ export default function RecurringStreamPage() {
           </div>
 
           {error && (
-            <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+            <p
+              role="alert"
+              className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800"
+            >
+              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" aria-hidden />
               {error}
             </p>
           )}
@@ -279,7 +286,7 @@ export default function RecurringStreamPage() {
               </button>
             </div>
             <div
-              className="prose prose-invert max-h-[420px] max-w-none overflow-y-auto p-4 md:p-6 text-sm text-text-secondary"
+              className="prose prose-slate max-h-[560px] max-w-none overflow-y-auto p-4 md:p-6 text-sm"
               dangerouslySetInnerHTML={{ __html: articleHtml[previewArticle.id] }}
             />
             <div className="flex flex-wrap gap-2 border-t border-divider p-4 md:p-5">
@@ -289,7 +296,7 @@ export default function RecurringStreamPage() {
                 className="btn-primary inline-flex items-center gap-2 text-sm"
               >
                 {copiedMode === "text" ? <Check size={14} /> : <Copy size={14} />}
-                {copiedMode === "text" ? "Copied!" : "Copy plain text"}
+                {copiedMode === "text" ? "Copied!" : "Copy article (plain text)"}
               </button>
               <button
                 type="button"
@@ -297,7 +304,7 @@ export default function RecurringStreamPage() {
                 className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70"
               >
                 {copiedMode === "html" ? <Check size={14} /> : <Copy size={14} />}
-                {copiedMode === "html" ? "Copied!" : "Copy HTML"}
+                {copiedMode === "html" ? "Copied!" : "Copy article (HTML)"}
               </button>
             </div>
           </motion.section>

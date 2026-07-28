@@ -13,15 +13,27 @@ export async function countSeededRecurringArticles(admin: SupabaseClient): Promi
   return count ?? 0;
 }
 
-/** Seed recurring-stream article templates once (idempotent). */
+/** Seed recurring-stream article templates once (idempotent). Pass force to replace existing rows. */
 export async function seedRecurringStreamArticles(
-  admin: SupabaseClient
-): Promise<{ inserted: number; skipped: boolean; total: number }> {
+  admin: SupabaseClient,
+  options?: { force?: boolean }
+): Promise<{ inserted: number; skipped: boolean; total: number; replaced?: boolean }> {
+  const force = options?.force ?? false;
   const existing = await countSeededRecurringArticles(admin);
-  if (existing >= RECURRING_STREAM_TARGET_COUNT) {
+
+  if (existing >= RECURRING_STREAM_TARGET_COUNT && !force) {
     return { inserted: 0, skipped: true, total: RECURRING_STREAM_TARGET_COUNT };
   }
 
+  if (force && existing > 0) {
+    const { error: deleteError } = await admin
+      .from("premium_article_templates")
+      .delete()
+      .like("template_key", "recurring-stream-%");
+    if (deleteError) throw new Error(deleteError.message);
+  }
+
+  const beforeCount = force ? 0 : existing;
   const catalog = buildRecurringStreamCatalog();
   const rows = catalog.map((article) => ({
     template_key: article.templateKey,
@@ -36,15 +48,16 @@ export async function seedRecurringStreamArticles(
 
   const { error } = await admin
     .from("premium_article_templates")
-    .upsert(rows, { onConflict: "template_key", ignoreDuplicates: true });
+    .upsert(rows, { onConflict: "template_key" });
 
   if (error) throw new Error(error.message);
 
   const after = await countSeededRecurringArticles(admin);
   return {
-    inserted: after - existing,
+    inserted: after - beforeCount,
     skipped: false,
     total: after,
+    replaced: force,
   };
 }
 

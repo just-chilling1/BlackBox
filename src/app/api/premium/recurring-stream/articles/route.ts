@@ -7,7 +7,7 @@ import {
   countSeededRecurringArticles,
   seedRecurringStreamArticles,
 } from "@/features/premium-recurring/lib/seed-articles";
-import { RECURRING_STREAM_TARGET_COUNT } from "@/features/premium-recurring/lib/catalog";
+import { RECURRING_STREAM_TARGET_COUNT, weaveAffiliateIntoArticle } from "@/features/premium-recurring/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -71,7 +71,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Article not found" }, { status: 404, headers: NO_STORE_HEADERS });
   }
 
-  const { weaveAffiliateIntoArticle } = await import("@/features/premium-recurring/lib/catalog");
   const html = weaveAffiliateIntoArticle((data as { html: string }).html, affiliateUrl);
 
   return NextResponse.json(
@@ -101,7 +100,10 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const result = await seedRecurringStreamArticles(admin);
+    const force =
+      new URL(request.url).searchParams.get("force") === "1" ||
+      request.headers.get("x-recurring-force-reseed") === "1";
+    const result = await seedRecurringStreamArticles(admin, { force });
     return NextResponse.json(result, { headers: NO_STORE_HEADERS });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Seed failed";

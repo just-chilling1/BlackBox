@@ -52,7 +52,7 @@ export interface BlogPost {
   created_at: string;
 }
 
-export type ContentTier = "deploy" | "full";
+export type ContentTier = "deploy" | "full" | "authority";
 
 export interface GeneratedPostContent {
   title: string;
@@ -60,6 +60,9 @@ export interface GeneratedPostContent {
   metaDescription: string;
   html: string;
 }
+
+/** Long-form authority article output (Recurring Stream). */
+export type GeneratedArticleContent = GeneratedPostContent & { wordCount?: number };
 
 export type ArticleAngle =
   | "pillar-guide"

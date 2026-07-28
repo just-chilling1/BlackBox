@@ -47,10 +47,13 @@ async function main() {
   });
 
   console.log(`Seeding ${RECURRING_STREAM_TARGET_COUNT} recurring stream articles...`);
-  const result = await seedRecurringStreamArticles(admin);
+  const force = process.argv.includes("--force");
+  const result = await seedRecurringStreamArticles(admin, { force });
 
   if (result.skipped) {
-    console.log(`Already complete (${result.total}/${RECURRING_STREAM_TARGET_COUNT}).`);
+    console.log(`Already complete (${result.total}/${RECURRING_STREAM_TARGET_COUNT}). Use --force to replace.`);
+  } else if (result.replaced) {
+    console.log(`Replaced catalog with ${result.total} long-form articles.`);
   } else {
     console.log(`Inserted ${result.inserted} articles. Total: ${result.total}/${RECURRING_STREAM_TARGET_COUNT}.`);
   }
