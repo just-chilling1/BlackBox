@@ -6,6 +6,7 @@ import {
   listRecurringStreamArticles,
   countSeededRecurringArticles,
   seedRecurringStreamArticles,
+  recurringStreamNeedsSeed,
 } from "@/features/premium-recurring/lib/seed-articles";
 import { RECURRING_STREAM_TARGET_COUNT, weaveAffiliateIntoArticle } from "@/features/premium-recurring/lib/catalog";
 
@@ -21,6 +22,11 @@ export async function GET(request: Request) {
   try {
     const admin = getServiceRoleClient();
     const reader = admin ?? supabase;
+
+    if (admin && (await recurringStreamNeedsSeed(admin))) {
+      await seedRecurringStreamArticles(admin);
+    }
+
     const articles = await listRecurringStreamArticles(reader, niche);
     const seededCount = admin ? await countSeededRecurringArticles(admin) : articles.length;
 
