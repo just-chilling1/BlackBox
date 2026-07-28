@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
+import { sidebarSectionLabelClass } from "@/components/layout/sidebar-nav-styles";
 
 type PremiumUpgradesWidgetProps = {
   layout?: "sidebar" | "featured";
@@ -60,8 +61,8 @@ export function PremiumUpgradesWidget({
       <div className={clsx("premium-nav-section p-2", className)}>
         {!collapsed && (
           <div className="px-3 pb-2 pt-2.5">
-            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent">
-              <Sparkles className="h-4 w-4 animate-premium-pulse shrink-0" fill="currentColor" />
+            <p className={clsx(sidebarSectionLabelClass, "flex items-center gap-2 px-0 pt-0 pb-0 first:pt-0")}>
+              <Sparkles className="h-3.5 w-3.5 animate-premium-pulse shrink-0 text-accent" fill="currentColor" />
               Premium Upgrades
             </p>
           </div>
@@ -85,21 +86,36 @@ export function PremiumUpgradesWidget({
                   onClick={onNavigate}
                   className={clsx("premium-upgrade-card group h-full", isActive && "is-active")}
                 >
+                  {isActive ? (
+                    <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent-readable">
+                      <CheckCircle2 size={10} className="shrink-0" />
+                      Current
+                    </span>
+                  ) : null}
                   <div className="flex w-full items-center gap-3">
                     <div
                       className={clsx(
                         "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br transition-all duration-300",
                         isActive
                           ? "from-accent to-indigo-600 text-white shadow-[0_0_12px_rgba(238,179,16,0.35)]"
-                          : "from-accent/20 to-indigo-600/15 text-accent group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_12px_rgba(238,179,16,0.35)]"
+                          : "from-slate-100 to-slate-50 text-slate-400 group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_12px_rgba(238,179,16,0.35)]"
                       )}
                     >
                       <Icon size={19} strokeWidth={1.5} />
                     </div>
 
-                    <span className="min-w-0 flex-1 text-sm font-bold tracking-wide text-text-heading">
+                    <span
+                      className={clsx(
+                        "min-w-0 flex-1 text-sm tracking-wide",
+                        isActive ? "font-bold text-text-heading" : "font-semibold text-text-secondary"
+                      )}
+                    >
                       {feature.label}
                     </span>
+
+                    {isActive ? (
+                      <CheckCircle2 size={18} className="shrink-0 text-accent" aria-hidden />
+                    ) : null}
                   </div>
                 </Link>
               </motion.div>
@@ -143,20 +159,31 @@ export function PremiumUpgradesWidget({
                   isActive && "is-active"
                 )}
               >
+                {isActive ? (
+                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent-readable">
+                    <CheckCircle2 size={10} className="shrink-0" />
+                    Current
+                  </span>
+                ) : null}
                 <div className="flex w-full items-start gap-3">
                   <div
                     className={clsx(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br transition-all duration-300",
                       isActive
                         ? "from-accent to-indigo-600 text-white shadow-[0_0_16px_rgba(238,179,16,0.35)]"
-                        : "from-accent/20 to-indigo-600/15 text-accent group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        : "from-slate-100 to-slate-50 text-slate-400 group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
                     )}
                   >
                     <Icon size={19} strokeWidth={1.5} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold tracking-wide text-text-heading">
+                    <span
+                      className={clsx(
+                        "block text-sm tracking-wide",
+                        isActive ? "font-bold text-text-heading" : "font-semibold text-text-secondary"
+                      )}
+                    >
                       {feature.label}
                     </span>
                     <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-text-muted">
@@ -168,11 +195,20 @@ export function PremiumUpgradesWidget({
                 <span
                   className={clsx(
                     "inline-flex items-center gap-1 text-xs font-semibold transition-colors",
-                    isActive ? "text-accent" : "text-text-muted group-hover:text-accent"
+                    isActive ? "text-accent-readable" : "text-text-muted group-hover:text-accent"
                   )}
                 >
-                  Explore
-                  <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                  {isActive ? (
+                    <>
+                      <CheckCircle2 size={12} />
+                      Active
+                    </>
+                  ) : (
+                    <>
+                      Explore
+                      <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                    </>
+                  )}
                 </span>
               </Link>
             </motion.div>

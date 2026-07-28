@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles } from "lucide-react";
+import { Sparkles, CheckCircle2 } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
@@ -43,14 +43,15 @@ export function PremiumFeatureNavList({
                   href={item.href}
                   onClick={onNavigate}
                   className={clsx(
-                    "premium-sidebar-item flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
-                    isActive ? "is-active text-text-heading" : "text-text-secondary"
+                    "premium-sidebar-item flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-sm",
+                    isActive ? "is-active font-bold text-text-heading" : "font-medium text-text-muted"
                   )}
                 >
                   <span className="premium-upgrade-icon premium-upgrade-icon--sidebar">
                     <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
                   </span>
-                  <span>{item.label}</span>
+                  <span className="flex-1">{item.label}</span>
+                  {isActive ? <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden /> : null}
                 </Link>
               </li>
             );
@@ -82,9 +83,9 @@ export function PremiumFeatureNavList({
                 onClick={onNavigate}
                 title={collapsed ? item.label : undefined}
                 className={clsx(
-                  "premium-sidebar-item flex items-center gap-3 rounded-xl py-2.5 text-sm font-medium transition-all duration-200",
+                  "premium-sidebar-item flex items-center gap-3 rounded-xl py-2.5 text-sm transition-all duration-200",
                   collapsed ? "justify-center px-0" : "px-2.5",
-                  isActive ? "is-active text-text-heading" : "text-text-secondary"
+                  isActive ? "is-active font-bold text-text-heading" : "font-medium text-text-muted"
                 )}
               >
                 <span className={clsx("premium-upgrade-icon", collapsed ? "h-8 w-8 rounded-full" : "premium-upgrade-icon--sidebar")}>
@@ -93,7 +94,10 @@ export function PremiumFeatureNavList({
                     strokeWidth={1.75}
                   />
                 </span>
-                {!collapsed && <span className="tracking-wide">{item.label}</span>}
+                {!collapsed && <span className="flex-1 tracking-wide">{item.label}</span>}
+                {!collapsed && isActive ? (
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
+                ) : null}
               </Link>
             </li>
           );

@@ -21,6 +21,7 @@ import {
   sidebarNavIconClass,
   sidebarNavItemClass,
   sidebarNavLabelClass,
+  sidebarSectionLabelClass,
   type SidebarNavColor,
 } from "@/components/layout/sidebar-nav-styles";
 
@@ -109,8 +110,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     );
   };
 
-  const sectionLabelClass =
-    "px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-text-muted first:pt-2";
+  const sectionLabelClass = sidebarSectionLabelClass;
 
   return (
     <>

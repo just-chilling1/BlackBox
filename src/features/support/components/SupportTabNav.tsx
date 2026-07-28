@@ -11,25 +11,35 @@ const tabs = [
   { href: supportRoutes.faq, label: "FAQ", icon: HelpCircle },
 ] as const;
 
+function isTabActive(pathname: string, href: string) {
+  if (href === supportRoutes.faq) {
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+  return pathname === href;
+}
+
 export function SupportTabNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mb-6 flex flex-wrap gap-2" aria-label="Support sections">
+    <nav
+      className="mb-6 flex flex-wrap gap-3 border-b border-border-dim"
+      aria-label="Support sections"
+    >
       {tabs.map(({ href, label, icon: Icon }) => {
-        const isActive = pathname === href;
+        const isActive = isTabActive(pathname, href);
         return (
           <Link
             key={href}
             href={href}
             className={clsx(
-              "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] transition-all",
+              "relative -mb-px inline-flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-[11px] uppercase tracking-[0.12em] transition-all",
               isActive
-                ? "bg-accent text-text-on-accent shadow-[0_0_20px_color-mix(in_srgb,var(--brand-primary)_25%,transparent)]"
-                : "border border-border-dim/40 bg-surface/40 text-text-primary hover:border-accent/30 hover:bg-accent/5"
+                ? "border-b-2 border-accent bg-surface font-bold text-accent-readable shadow-sm"
+                : "border-b-2 border-transparent font-medium text-text-muted hover:bg-surface/60 hover:text-text-secondary"
             )}
           >
-            <Icon size={14} />
+            <Icon size={14} className={isActive ? "text-accent" : "text-text-muted"} />
             {label}
           </Link>
         );

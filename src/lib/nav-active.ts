@@ -6,5 +6,8 @@ export function isNavPathActive(pathname: string, itemPath: string): boolean {
   if (itemPath === "/training") {
     return pathname === "/training" || pathname.startsWith("/training/") || pathname === "/academy";
   }
+  if (itemPath === "/support") {
+    return pathname === "/support" || pathname.startsWith("/support/");
+  }
   return pathname === itemPath;
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Clock, Star, Shield, Headphones, Mail, ExternalLink } from "lucide-react";
+import { clsx } from "clsx";
 import { support } from "@/config/support.config";
 import { SupportPageLayout } from "../components/SupportPageLayout";
 
@@ -32,20 +33,52 @@ export default function SupportPage() {
           {support.ctaLabel}
         </a>
 
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {support.stats.map((stat) => {
+        <ul className="grid gap-4 sm:grid-cols-3">
+          {support.stats.map((stat, index) => {
             const Icon = STAT_ICONS[stat.icon as keyof typeof STAT_ICONS] ?? Star;
+            const isPrimary = index === 0;
+
             return (
               <li
                 key={stat.label}
-                className="flex items-start gap-2 rounded-lg border border-border-dim bg-page/50 p-3 text-sm text-text-secondary"
+                className={clsx(
+                  "flex items-start gap-3 rounded-xl border p-4 text-sm transition-colors",
+                  isPrimary
+                    ? "border-accent/35 bg-accent/5 ring-1 ring-accent/15 text-text-primary"
+                    : "border-border-dim bg-page/50 text-text-secondary"
+                )}
               >
-                <Icon size={16} className="shrink-0 mt-0.5 text-accent" />
-                <span>
-                  {stat.label}{" "}
-                  {"highlight" in stat && stat.highlight ? (
-                    <span className={stat.highlightClass ?? "text-accent"}>{stat.highlight}</span>
-                  ) : null}
+                <div
+                  className={clsx(
+                    "flex shrink-0 items-center justify-center rounded-lg",
+                    isPrimary ? "h-10 w-10 bg-accent/15" : "h-8 w-8 bg-slate-100"
+                  )}
+                >
+                  <Icon
+                    size={isPrimary ? 20 : 16}
+                    className={clsx(isPrimary ? "text-accent-readable" : "text-text-muted")}
+                  />
+                </div>
+                <span className={clsx("leading-snug", isPrimary && "font-medium")}>
+                  {isPrimary ? (
+                    <>
+                      <span className="block text-xs font-bold uppercase tracking-wide text-text-muted mb-0.5">
+                        {stat.label.replace(":", "")}
+                      </span>
+                      {"highlight" in stat && stat.highlight ? (
+                        <span className={clsx("text-base font-bold", stat.highlightClass ?? "text-accent-readable")}>
+                          {stat.highlight}
+                        </span>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      {stat.label}{" "}
+                      {"highlight" in stat && stat.highlight ? (
+                        <span className={stat.highlightClass ?? "text-accent"}>{stat.highlight}</span>
+                      ) : null}
+                    </>
+                  )}
                 </span>
               </li>
             );
