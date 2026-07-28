@@ -241,6 +241,142 @@ export function extractPageImageUrl(html: string, pageUrl: string): string | nul
   return null;
 }
 
+const JUNK_IMAGE_PATTERN =
+  /(?:logo|icon|avatar|badge|sprite|pixel|tracking|spacer|1x1|emoji|favicon|banner-ad|placeholder)/i;
+
+export interface RankedPageImage {
+  url: string;
+  score: number;
+  source: string;
+}
+
+function scoreImageCandidate(params: {
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  sourceWeight: number;
+  keywords: string[];
+}): number {
+  let score = params.sourceWeight;
+  const haystack = `${params.url} ${params.alt ?? ""}`.toLowerCase();
+
+  if (JUNK_IMAGE_PATTERN.test(haystack)) score -= 80;
+  if (params.width && params.height) {
+    if (params.width < 240 || params.height < 240) score -= 50;
+    const ratio = params.width / params.height;
+    if (ratio > 0.85 && ratio < 1.15) score += 18;
+    if (params.width >= 800 || params.height >= 800) score += 12;
+  }
+
+  for (const keyword of params.keywords) {
+    if (keyword.length > 2 && haystack.includes(keyword)) score += 14;
+  }
+
+  return score;
+}
+
+/** Rank every usable image on a page — meta tags, JSON-LD, and in-content photos. */
+export function rankPageImages(
+  html: string,
+  pageUrl: string,
+  keywords: string[] = []
+): RankedPageImage[] {
+  const $ = cheerio.load(html);
+  const ranked: RankedPageImage[] = [];
+  const seen = new Set<string>();
+
+  const add = (
+    raw: string,
+    sourceWeight: number,
+    source: string,
+    alt?: string,
+    width?: number,
+    height?: number
+  ) => {
+    if (!raw?.trim()) return;
+    const abs = resolveAbsoluteUrl(pageUrl, raw);
+    if (!abs || !/^https?:\/\//i.test(abs)) return;
+    const key = abs.split("?")[0] ?? abs;
+    if (seen.has(key)) return;
+    seen.add(key);
+    ranked.push({
+      url: abs,
+      score: scoreImageCandidate({ url: abs, alt, width, height, sourceWeight, keywords }),
+      source,
+    });
+  };
+
+  add(
+    metaContent($, [
+      'meta[property="og:image:secure_url"]',
+      'meta[property="og:image"]',
+      'meta[property="og:image:url"]',
+    ]),
+    100,
+    "og:image"
+  );
+  add(
+    metaContent($, ['meta[name="twitter:image"]', 'meta[name="twitter:image:src"]']),
+    92,
+    "twitter:image"
+  );
+  add($('link[rel="image_src"]').attr("href") ?? "", 88, "image_src");
+  add(extractImageFromJsonLd($), 90, "jsonld");
+
+  $("img[src]").each((_, el) => {
+    const src = $(el).attr("src") ?? "";
+    const alt = $(el).attr("alt") ?? "";
+    const width = Number($(el).attr("width")) || undefined;
+    const height = Number($(el).attr("height")) || undefined;
+    add(src, 70, "content-img", alt, width, height);
+  });
+
+  return ranked.sort((a, b) => b.score - a.score);
+}
+
+/** Scrape a page and return image URLs ranked by relevance to keywords and post topic. */
+export async function scrapeRelevantImagesFromUrl(
+  url: string,
+  options?: { keywords?: string[]; limit?: number }
+): Promise<string[]> {
+  let safeUrl: string;
+  try {
+    safeUrl = assertPublicHttpsUrl(url).toString();
+  } catch {
+    return [];
+  }
+
+  const keywords = (options?.keywords ?? [])
+    .map((word) => word.toLowerCase().trim())
+    .filter((word) => word.length > 2);
+  const limit = options?.limit ?? 6;
+
+  const htmlSources: string[] = [];
+  const direct = await fetchDirectHtml(safeUrl);
+  if (direct) htmlSources.push(direct);
+
+  const rendered = await fetchScraperApiHtml(safeUrl);
+  if (rendered && rendered !== direct) htmlSources.push(rendered);
+
+  const ranked: RankedPageImage[] = [];
+  const seen = new Set<string>();
+
+  for (const html of htmlSources) {
+    for (const candidate of rankPageImages(html, safeUrl, keywords)) {
+      const key = candidate.url.split("?")[0] ?? candidate.url;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      ranked.push(candidate);
+    }
+  }
+
+  return ranked
+    .filter((candidate) => candidate.score > 20)
+    .slice(0, limit)
+    .map((candidate) => candidate.url);
+}
+
 /** Scrape an affiliate/product page and return its primary image URL, if any. */
 export async function scrapeImageFromUrl(url: string): Promise<string | null> {
   let safeUrl: string;

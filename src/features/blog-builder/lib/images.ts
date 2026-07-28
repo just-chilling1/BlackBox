@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildHeroImagePrompt } from "./prompts";
 import { mapWithConcurrency } from "./concurrency";
 import { SiteImagePool } from "./site-image-pool";
-import { scrapeImageFromUrl, SCRAPE_USER_AGENT } from "./scrape";
+import { scrapeImageFromUrl, scrapeRelevantImagesFromUrl, SCRAPE_USER_AGENT } from "./scrape";
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY ?? "";
 const RAPIDAPI_IMAGE_HOST =
@@ -107,6 +107,11 @@ interface ImagePickOptions {
   hobby?: string;
   /** Extra seed variation (e.g. post index) so similar titles pick different hits. */
   seedBoost?: number;
+  /** Override the built Pixabay query string. */
+  customQuery?: string;
+  orientation?: "horizontal" | "vertical" | "all";
+  /** Prefer roughly square hits — useful for social thread cards. */
+  preferSquare?: boolean;
 }
 
 export interface StockImageResult {
@@ -145,27 +150,39 @@ export async function fetchPixabayImage(
     return null;
   }
 
-  const query = buildPixabayQuery(title, subject, options?.hobby);
+  const query =
+    options?.customQuery?.trim() ||
+    buildPixabayQuery(title, subject, options?.hobby);
   if (!query) return null;
 
   const url = new URL("https://pixabay.com/api/");
   url.searchParams.set("key", PIXABAY_API_KEY);
   url.searchParams.set("q", query);
   url.searchParams.set("image_type", "photo");
-  url.searchParams.set("orientation", "horizontal");
+  url.searchParams.set("orientation", options?.orientation ?? "horizontal");
   url.searchParams.set("safesearch", "true");
   url.searchParams.set("order", "popular");
   url.searchParams.set("per_page", "40");
-  url.searchParams.set("min_width", "1200");
+  url.searchParams.set("min_width", "800");
 
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(PIXABAY_TIMEOUT_MS) });
     if (!response.ok) return null;
 
     const data = (await response.json()) as { hits?: PixabayHit[] };
-    const hits = (data.hits ?? []).filter(
-      (h) => (h.largeImageURL || h.webformatURL) && (h.imageWidth ?? 0) >= (h.imageHeight ?? 1)
-    );
+    let hits = (data.hits ?? []).filter((h) => h.largeImageURL || h.webformatURL);
+
+    if (options?.preferSquare) {
+      const squareish = hits.filter((h) => {
+        const w = h.imageWidth ?? 0;
+        const hgt = h.imageHeight ?? 1;
+        const ratio = w / hgt;
+        return ratio > 0.75 && ratio < 1.33;
+      });
+      if (squareish.length > 0) hits = squareish;
+    } else {
+      hits = hits.filter((h) => (h.imageWidth ?? 0) >= (h.imageHeight ?? 1));
+    }
     if (hits.length === 0) return null;
 
     const seed =
@@ -399,7 +416,26 @@ async function resolveScrapedImage(
   }
 }
 
-async function fetchScrapedImageUrl(scrapeUrl: string): Promise<string | null> {
+async function fetchScrapedImageUrl(
+  scrapeUrl: string,
+  scrapeKeywords?: string[],
+  pickOffset = 0
+): Promise<string | null> {
+  if (scrapeKeywords && scrapeKeywords.length > 0) {
+    const ranked = await scrapeRelevantImagesFromUrl(scrapeUrl, {
+      keywords: scrapeKeywords,
+      limit: 8,
+    });
+    for (let i = 0; i < ranked.length; i++) {
+      const candidate = ranked[(pickOffset + i) % ranked.length];
+      const buffer = await fetchImageBuffer(candidate, SCRAPE_IMAGE_TIMEOUT_MS, scrapeUrl);
+      if (buffer && buffer.length >= 800) {
+        console.info("[images] scraped relevant page image", scrapeUrl.slice(0, 64));
+        return candidate;
+      }
+    }
+  }
+
   const scraped = await resolveScrapedImage(scrapeUrl);
   return scraped?.url ?? null;
 }
@@ -645,10 +681,15 @@ export async function resolveFastImageUrl(params: {
   hobby?: string;
   /** Affiliate/product page to scrape for og:image. */
   scrapeUrl?: string;
+  /** Keywords from the thread post — used to rank scraped page images. */
+  scrapeKeywords?: string[];
   pickOffset?: number;
   seedBoost?: number;
   excludeUrls?: string[];
   excludeStockIds?: string[];
+  customQuery?: string;
+  orientation?: "horizontal" | "vertical" | "all";
+  preferSquare?: boolean;
 }): Promise<ResolvedImage> {
   const alt = `${params.title} — ${params.subject}`;
   const offset = params.pickOffset ?? 0;
@@ -656,7 +697,11 @@ export async function resolveFastImageUrl(params: {
   const excludeStockIds = params.excludeStockIds ?? [];
 
   if (params.scrapeUrl) {
-    const scraped = await fetchScrapedImageUrl(params.scrapeUrl);
+    const scraped = await fetchScrapedImageUrl(
+      params.scrapeUrl,
+      params.scrapeKeywords,
+      offset
+    );
     if (scraped && !isExcludedUrl(scraped, exclude)) {
       return { url: scraped, alt, stockId: normalizeImageUrl(scraped) };
     }
@@ -668,6 +713,9 @@ export async function resolveFastImageUrl(params: {
     excludeUrls: exclude,
     excludeStockIds,
     hobby: params.hobby,
+    customQuery: params.customQuery,
+    orientation: params.orientation ?? "all",
+    preferSquare: params.preferSquare ?? false,
   });
   if (stock && !isExcludedUrl(stock, exclude)) {
     return { url: stock, alt, stockId: normalizeImageUrl(stock) };

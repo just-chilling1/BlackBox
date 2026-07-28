@@ -24,7 +24,7 @@ import {
   saveXThreadBatch,
 } from "@/features/publish-kit/lib/x-threads-vault";
 import { listXTagsForSite } from "@/features/publish-kit/lib/x-tags-vault";
-import { generateThreadImage } from "@/features/publish-kit/lib/thread-images";
+import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
 import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -163,20 +163,15 @@ export async function POST(request: Request) {
     }
 
     const territory = context.territory;
-    const imageResults = await Promise.all(
-      THREAD_IMAGE_POST_INDEXES.map((postIndex) => {
-        const post = posts[postIndex];
-        if (!post) return Promise.resolve(null);
-        return generateThreadImage({
-          territory,
-          angle: post.angle,
-          threadText: post.text,
-          userId: user.id,
-          supabase,
-          scrapeUrl: affiliateUrl || undefined,
-        });
-      })
-    );
+    const imageResults = await generateThreadImagesForPosts({
+      posts,
+      postIndexes: THREAD_IMAGE_POST_INDEXES,
+      territory,
+      productName: site.title || context.siteName,
+      userId: user.id,
+      supabase,
+      scrapeUrl: affiliateUrl || undefined,
+    });
 
     const postsWithImages = posts.map((post, i) => {
       const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
