@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Brain, BarChart3, Shield, Zap, Search, ArrowRight, MessageSquare,
     Flame, TrendingDown, Loader2, HelpCircle, ArrowUpDown, ChevronDown,
-    ChevronUp, Info, CheckCircle2, RefreshCw
+    ChevronUp, Info, CheckCircle2, RefreshCw, Check
 } from "lucide-react";
 import { useSearch, AnalysisData } from "@/features/core-workflow/context/SearchContext";
 import { clsx } from "clsx";
@@ -336,17 +336,18 @@ export default function AnalysisPage() {
                                 transition={{ delay: i * 0.03 }}
                                 onClick={() => setActiveChip(v)}
                                 className={clsx(
-                                    "grid grid-cols-12 gap-4 px-5 py-3.5 w-full text-left transition-all hover:bg-accent/3",
-                                    isSelected && "bg-accent/5 border-l-2 border-l-accent"
+                                    "select-row grid grid-cols-12 gap-4 px-5 py-3.5",
+                                    isSelected && "is-selected"
                                 )}
                             >
                                 {/* Keyword */}
                                 <div className="col-span-4 flex items-center gap-2 min-w-0">
-                                    {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />}
-                                    <span className={clsx(
-                                        "text-sm font-medium truncate",
-                                        isSelected ? "text-accent" : "text-text-primary"
-                                    )}>{v}</span>
+                                    {isSelected && (
+                                        <span className="select-check-badge !h-6 !w-6 shrink-0" aria-hidden>
+                                            <Check size={14} strokeWidth={3} />
+                                        </span>
+                                    )}
+                                    <span className={clsx("select-row-label truncate", isSelected && "font-bold text-amber-900")}>{v}</span>
                                 </div>
 
                                 {/* Level */}

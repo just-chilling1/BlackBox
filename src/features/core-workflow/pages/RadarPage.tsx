@@ -35,20 +35,17 @@ function AdCard({
             animate={{ opacity: 1, y: 0 }}
             onClick={onToggle}
             className={clsx(
-                "p-4 rounded-xl border transition-all cursor-pointer group relative",
-                isSelected
-                    ? "border-accent/40 bg-accent/5"
-                    : "surface-inset border-border-dim/30 hover:border-accent/20"
+                "select-card p-4 cursor-pointer relative",
+                isSelected && "is-selected"
             )}
         >
-            <div className={clsx(
-                "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
-                isSelected ? "bg-accent border-accent text-black" : "border-border-dim bg-page group-hover:border-accent/40"
-            )}>
-                {isSelected && <Check size={11} strokeWidth={4} />}
-            </div>
+            {isSelected && (
+                <span className="select-check-badge select-check-badge--corner" aria-hidden>
+                    <Check size={16} strokeWidth={3} />
+                </span>
+            )}
 
-            <div className="flex flex-col gap-2.5 pr-6">
+            <div className="flex flex-col gap-2.5 pr-10">
                 <div className="flex items-center gap-2">
                     <PlatformBadge platform={post.platform} />
                     <span className="text-[9px] text-text-muted font-medium">
@@ -73,7 +70,7 @@ function AdCard({
                     </a>
                     <span className={clsx(
                         "text-[9px] font-bold uppercase tracking-widest",
-                        isSelected ? "text-accent" : "text-text-muted"
+                        isSelected ? "text-amber-800" : "text-text-muted"
                     )}>
                         {isSelected ? "✓ Selected" : "Click to select"}
                     </span>
@@ -192,12 +189,7 @@ export default function RadarPage() {
                     <button
                         key={v}
                         onClick={() => setActiveChip(v)}
-                        className={clsx(
-                            "px-3.5 py-1.5 rounded-lg border text-[12px] font-semibold transition-all",
-                            activeChip === v
-                                ? "bg-accent text-black border-accent"
-                                : "bg-surface border-border-dim/40 text-text-muted hover:border-accent/30 hover:text-text-primary"
-                        )}
+                        className={clsx("select-chip", activeChip === v && "is-selected")}
                     >
                         {v}
                     </button>

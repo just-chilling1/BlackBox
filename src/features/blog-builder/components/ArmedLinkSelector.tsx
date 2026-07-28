@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Check, Plus } from "lucide-react";
+import { clsx } from "clsx";
 import type { ArmedLink } from "../types";
 import { isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
 
@@ -133,9 +134,7 @@ export function ArmedLinkSelector({
             key={i}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`glass-card p-4 flex flex-col gap-3 border transition-colors ${
-              isSelected ? "border-accent/40 bg-accent/[0.03]" : "border-border-dim/20"
-            }`}
+            className={clsx("select-card glass-card p-4 flex flex-col gap-3", isSelected && "is-selected")}
           >
             <div className="flex items-start gap-3">
               <button
@@ -143,13 +142,9 @@ export function ArmedLinkSelector({
                 onClick={() => toggle(i)}
                 aria-pressed={isSelected}
                 aria-label={`${isSelected ? "Deselect" : "Select"} product link ${i + 1}`}
-                className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
-                  isSelected
-                    ? "border-accent bg-accent text-text-on-accent"
-                    : "border-border-dim/40 bg-black/20 text-transparent hover:border-accent/50"
-                }`}
+                className={clsx("select-toggle mt-0.5", isSelected && "is-selected")}
               >
-                <Check size={12} strokeWidth={3} />
+                <Check size={14} strokeWidth={3} />
               </button>
 
               <div className="flex flex-col gap-1 flex-1 min-w-0">

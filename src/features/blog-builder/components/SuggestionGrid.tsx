@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { clsx } from "clsx";
 import { AiLoadingBar } from "@/components/ui/AiLoadingBar";
 
 interface SuggestionGridProps {
@@ -43,13 +45,16 @@ export function SuggestionGrid({
           type="button"
           whileHover={{ scale: 1.01 }}
           onClick={() => onSelect(s)}
-          className={`text-left rounded-xl border px-4 py-3 text-sm transition-all ${
-            selected === s
-              ? "border-accent/50 glass-surface text-text-heading shadow-[var(--glow-teal)]"
-              : "glass-tile text-text-primary hover:border-accent/30"
-          }`}
+          className={clsx("select-card p-4", selected === s && "is-selected")}
         >
-          {s}
+          <span className={clsx("select-card-label block", selected === s && "font-bold text-amber-900")}>
+            {s}
+          </span>
+          {selected === s && (
+            <span className="select-check-badge select-check-badge--corner" aria-hidden>
+              <Check size={18} strokeWidth={3} />
+            </span>
+          )}
         </motion.button>
       ))}
     </div>

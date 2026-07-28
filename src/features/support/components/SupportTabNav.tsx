@@ -32,14 +32,9 @@ export function SupportTabNav() {
           <Link
             key={href}
             href={href}
-            className={clsx(
-              "relative -mb-px inline-flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-[11px] uppercase tracking-[0.12em] transition-all",
-              isActive
-                ? "border-b-2 border-accent bg-surface font-bold text-accent-readable shadow-sm"
-                : "border-b-2 border-transparent font-medium text-text-muted hover:bg-surface/60 hover:text-text-secondary"
-            )}
+            className={clsx("tab-pill", isActive && "is-active")}
           >
-            <Icon size={14} className={isActive ? "text-accent" : "text-text-muted"} />
+            <Icon size={14} className={isActive ? "text-amber-800" : "text-text-muted"} />
             {label}
           </Link>
         );

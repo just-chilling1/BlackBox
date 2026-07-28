@@ -277,12 +277,7 @@ export default function AcceleratorPage() {
                 key={n}
                 type="button"
                 onClick={() => setNiche(n)}
-                className={clsx(
-                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-                  niche === n
-                    ? "bg-accent text-black"
-                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
-                )}
+                className={clsx("select-chip-pill", niche === n && "is-selected")}
               >
                 {n}
               </button>

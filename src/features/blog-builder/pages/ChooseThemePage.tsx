@@ -236,9 +236,9 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
                 </div>
                 <div className="border-t border-border-dim/60 p-3.5">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="wizard-template-card-title">{template.name}</p>
+                    <p className={clsx("wizard-template-card-title select-card-label", isSelected && "font-bold text-amber-900")}>{template.name}</p>
                     {isSelected && (
-                      <span className="wizard-template-card-check" aria-hidden>
+                      <span className="wizard-template-card-check select-check-badge" aria-hidden>
                         <Check size={16} strokeWidth={3} />
                       </span>
                     )}

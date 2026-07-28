@@ -25,28 +25,25 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
               type="button"
               onClick={() => onSelect(isSelected ? null : link)}
               className={clsx(
-                "flex w-full items-center gap-3 rounded-xl border p-3 text-left cursor-pointer transition-all duration-200",
-                isSelected
-                  ? "border-accent/55 bg-accent/10 ring-1 ring-accent/20"
-                  : "border-border-dim bg-page hover:border-accent/35 hover:bg-white"
+                "select-card flex w-full items-center gap-3 p-3",
+                isSelected && "is-selected"
               )}
             >
               <Link2
                 size={16}
-                className={clsx("shrink-0", isSelected ? "text-accent" : "text-text-muted")}
+                className={clsx("shrink-0", isSelected ? "text-amber-800" : "text-text-muted")}
               />
               <div className="min-w-0 flex-1">
-                <p
-                  className={clsx(
-                    "truncate text-sm font-medium",
-                    isSelected ? "text-text-heading" : "text-text-primary"
-                  )}
-                >
+                <p className={clsx("select-card-label truncate", isSelected && "font-bold text-amber-900")}>
                   {link.label || "Untitled Link"}
                 </p>
                 <p className="truncate text-xs text-text-muted">{link.url}</p>
               </div>
-              {isSelected && <Check size={16} className="shrink-0 text-accent" strokeWidth={2.5} />}
+              {isSelected && (
+                <span className="select-check-badge" aria-hidden>
+                  <Check size={18} strokeWidth={3} />
+                </span>
+              )}
             </button>
           );
         })}

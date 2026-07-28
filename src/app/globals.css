@@ -807,36 +807,6 @@ html[data-sidebar="collapsed"] {
     @apply text-xs font-bold uppercase tracking-[0.12em] text-text-secondary;
   }
 
-  .wizard-selection-card {
-    @apply relative rounded-xl border border-border-dim/70 bg-white p-4 text-left cursor-pointer transition-all duration-200;
-  }
-
-  .wizard-selection-card:hover:not(.is-selected) {
-    @apply border-slate-300 bg-slate-50/60;
-  }
-
-  .wizard-selection-card.is-selected {
-    border-width: 3px;
-    border-color: #C9970D;
-    background: rgba(238, 179, 16, 0.2);
-    box-shadow:
-      0 4px 16px rgba(238, 179, 16, 0.22),
-      0 1px 3px rgba(15, 23, 42, 0.06);
-  }
-
-  .wizard-selection-card-label {
-    @apply pr-8 text-sm font-medium text-text-secondary transition-colors duration-200;
-  }
-
-  .wizard-selection-card.is-selected .wizard-selection-card-label {
-    @apply font-bold text-amber-900;
-  }
-
-  .wizard-selection-card-check {
-    @apply absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-text-on-accent;
-    box-shadow: 0 2px 10px rgba(238, 179, 16, 0.45);
-  }
-
   .wizard-template-card {
     @apply relative overflow-hidden rounded-xl border border-border-dim/70 bg-white text-left cursor-pointer transition-all duration-200;
   }
@@ -927,6 +897,152 @@ html[data-sidebar="collapsed"] {
 
   .theme-preview-animate {
     animation: theme-preview-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* ── Global selection affordances (cards, chips, rows, toggles) ── */
+  .select-card,
+  .wizard-selection-card {
+    @apply relative rounded-xl border border-border-dim/70 bg-white p-4 text-left cursor-pointer transition-all duration-200;
+  }
+
+  .select-card:hover:not(.is-selected),
+  .wizard-selection-card:hover:not(.is-selected) {
+    @apply border-slate-300 bg-slate-50/60;
+  }
+
+  .select-card.is-selected,
+  .wizard-selection-card.is-selected {
+    border-width: 3px;
+    border-color: #C9970D;
+    background: rgba(238, 179, 16, 0.2);
+    box-shadow:
+      0 4px 16px rgba(238, 179, 16, 0.22),
+      0 1px 3px rgba(15, 23, 42, 0.06);
+  }
+
+  .select-card-label,
+  .wizard-selection-card-label {
+    @apply text-sm font-medium text-text-secondary transition-colors duration-200;
+  }
+
+  .wizard-selection-card-label {
+    @apply pr-8;
+  }
+
+  .select-card.is-selected .select-card-label,
+  .wizard-selection-card.is-selected .wizard-selection-card-label {
+    @apply font-bold text-amber-900;
+  }
+
+  .select-check-badge,
+  .wizard-selection-card-check {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-text-on-accent;
+    box-shadow: 0 2px 10px rgba(238, 179, 16, 0.45);
+  }
+
+  .wizard-selection-card-check {
+    @apply absolute top-3 right-3;
+  }
+
+  .select-check-badge--corner {
+    @apply absolute top-3 right-3;
+  }
+
+  .select-chip {
+    @apply rounded-lg border border-border-dim/80 bg-white px-3.5 py-1.5 text-xs font-semibold text-text-muted cursor-pointer transition-all duration-200;
+  }
+
+  .select-chip:hover:not(.is-selected) {
+    @apply border-slate-300 bg-slate-50 text-text-secondary;
+  }
+
+  .select-chip.is-selected {
+    border-width: 2px;
+    border-color: #C9970D;
+    background: rgba(238, 179, 16, 0.22);
+    color: #78350f;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(238, 179, 16, 0.2);
+  }
+
+  .select-chip-pill {
+    @apply rounded-full border border-border-dim/80 bg-white px-3.5 py-1.5 text-xs font-semibold text-text-secondary cursor-pointer transition-all duration-200;
+  }
+
+  .select-chip-pill:hover:not(.is-selected) {
+    @apply border-slate-300 bg-slate-50;
+  }
+
+  .select-chip-pill.is-selected {
+    border-width: 2px;
+    border-color: #C9970D;
+    background: rgba(238, 179, 16, 0.22);
+    color: #78350f;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(238, 179, 16, 0.2);
+  }
+
+  .select-row {
+    @apply w-full text-left cursor-pointer transition-all duration-200 border-l-[3px] border-l-transparent;
+  }
+
+  .select-row:hover:not(.is-selected) {
+    @apply bg-slate-50/80;
+  }
+
+  .select-row.is-selected {
+    border-left-color: #C9970D;
+    background: rgba(238, 179, 16, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(201, 151, 13, 0.12);
+  }
+
+  .select-row.is-selected .select-row-label {
+    @apply font-bold text-amber-900;
+  }
+
+  .select-row-label {
+    @apply text-sm font-medium text-text-primary transition-colors duration-200;
+  }
+
+  .select-toggle {
+    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 border-border-dim/80 bg-white text-transparent transition-all duration-200 cursor-pointer;
+  }
+
+  .select-toggle:hover:not(.is-selected) {
+    border-color: rgba(201, 151, 13, 0.45);
+    background: rgba(238, 179, 16, 0.08);
+  }
+
+  .select-toggle.is-selected {
+    border-color: #C9970D;
+    background: #EEB310;
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(238, 179, 16, 0.35);
+  }
+
+  .tab-pill {
+    @apply relative inline-flex items-center gap-2 rounded-t-lg border-b-2 border-transparent px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted transition-all duration-200 cursor-pointer;
+  }
+
+  .tab-pill:hover:not(.is-active) {
+    @apply bg-slate-50 text-text-secondary;
+  }
+
+  .tab-pill.is-active {
+    border-bottom-color: #C9970D;
+    background: rgba(238, 179, 16, 0.12);
+    color: #92400e;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(238, 179, 16, 0.12);
+  }
+
+  .nav-item-selected {
+    border-width: 2px;
+    border-color: #C9970D;
+    background: rgba(238, 179, 16, 0.16);
+    color: #92400e;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(238, 179, 16, 0.14);
   }
 
   .wizard-inset-row {

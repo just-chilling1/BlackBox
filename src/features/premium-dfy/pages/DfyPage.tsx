@@ -215,16 +215,14 @@ export default function DfyPage() {
                 ].map((s, i) => (
                     <div key={s.num} className="flex items-center gap-3">
                         <div className={clsx(
-                            "flex items-center gap-2.5 px-4 py-2 rounded-full border transition-all",
-                            step >= s.num
-                                ? "bg-accent/10 border-accent/30 text-accent"
-                                : "bg-surface border-border-dim text-text-muted"
+                            "select-chip-pill flex items-center gap-2.5 px-4 py-2",
+                            step >= s.num && "is-selected"
                         )}>
                             <span className={clsx(
-                                "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black",
-                                step >= s.num ? "bg-accent text-black" : "bg-black/5 text-text-muted"
+                                "flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-black",
+                                step >= s.num ? "bg-accent text-black shadow-gold" : "bg-slate-100 text-text-muted"
                             )}>
-                                {step > s.num ? <Check size={12} /> : s.num}
+                                {step > s.num ? <Check size={12} strokeWidth={3} /> : s.num}
                             </span>
                             <span className="text-[12px] font-bold uppercase tracking-wider">{s.label}</span>
                         </div>
