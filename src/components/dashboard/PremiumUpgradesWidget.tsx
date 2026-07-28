@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
@@ -86,12 +86,6 @@ export function PremiumUpgradesWidget({
                   onClick={onNavigate}
                   className={clsx("premium-upgrade-card group h-full", isActive && "is-active")}
                 >
-                  {isActive ? (
-                    <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent-readable">
-                      <CheckCircle2 size={10} className="shrink-0" />
-                      Current
-                    </span>
-                  ) : null}
                   <div className="flex w-full items-center gap-3">
                     <div
                       className={clsx(
@@ -112,10 +106,6 @@ export function PremiumUpgradesWidget({
                     >
                       {feature.label}
                     </span>
-
-                    {isActive ? (
-                      <CheckCircle2 size={18} className="shrink-0 text-accent" aria-hidden />
-                    ) : null}
                   </div>
                 </Link>
               </motion.div>
@@ -159,12 +149,6 @@ export function PremiumUpgradesWidget({
                   isActive && "is-active"
                 )}
               >
-                {isActive ? (
-                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-accent/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent-readable">
-                    <CheckCircle2 size={10} className="shrink-0" />
-                    Current
-                  </span>
-                ) : null}
                 <div className="flex w-full items-start gap-3">
                   <div
                     className={clsx(
@@ -199,10 +183,7 @@ export function PremiumUpgradesWidget({
                   )}
                 >
                   {isActive ? (
-                    <>
-                      <CheckCircle2 size={12} />
-                      Active
-                    </>
+                    "Active"
                   ) : (
                     <>
                       Explore

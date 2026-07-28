@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, CheckCircle2 } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
@@ -51,7 +51,6 @@ export function PremiumFeatureNavList({
                     <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
                   </span>
                   <span className="flex-1">{item.label}</span>
-                  {isActive ? <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden /> : null}
                 </Link>
               </li>
             );
@@ -95,9 +94,6 @@ export function PremiumFeatureNavList({
                   />
                 </span>
                 {!collapsed && <span className="flex-1 tracking-wide">{item.label}</span>}
-                {!collapsed && isActive ? (
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
-                ) : null}
               </Link>
             </li>
           );
