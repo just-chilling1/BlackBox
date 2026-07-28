@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Lightbulb, Link2, Rocket, CheckCircle2 } from "lucide-react";
 import { brand } from "@/config/brand.config";
 import { storageKeys } from "@/lib/storage-keys";
-import { supabase } from "@/lib/supabase";
+import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { getVisibleWorkflowSteps } from "@/lib/features";
 import { DashboardSection } from "./DashboardSection";
 
@@ -40,7 +40,7 @@ export function HonestActivity() {
     setTopicsExplored(readJsonArray(storageKeys.workflowHistory).length);
     setAutopilotDone(readJsonArray(storageKeys.autopilotCompleted).length);
 
-    void supabase.auth.getUser().then(({ data: { user } }) => {
+    void getCachedClientUser().then((user) => {
       const uid = user?.id ?? "anonymous";
       setLinksSaved(readJsonArray(`${brand.storagePrefix}_money_links_${uid}`).length);
     });

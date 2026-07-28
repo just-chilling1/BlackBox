@@ -8,7 +8,7 @@ import { brand } from "@/config/brand.config";
 import { dashboardContent } from "@/config/dashboard.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps, getDashboardQuickActions } from "@/lib/dashboard-steps";
-import { supabase } from "@/lib/supabase";
+import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { HowItWorks } from "@/components/ui/how-it-works";
 import { QuickActionCard } from "@/components/ui/quick-action-card";
 import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSection";
@@ -79,7 +79,7 @@ export default function DashboardPage() {
   }, [router]);
 
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data: { user } }) => {
+    void getCachedClientUser().then((user) => {
       if (!user) return;
       const metaName = user.user_metadata?.full_name as string | undefined;
       if (metaName) {

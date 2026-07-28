@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 
-/** Light route enter animation without framer-motion on every navigation. */
+/** Route wrapper — content renders immediately (no enter fade delay). */
 export function PageMotion({ children }: { children: ReactNode }) {
-  return <div className="page-enter min-h-full">{children}</div>;
+  return <div className="min-h-full">{children}</div>;
 }

@@ -2,7 +2,6 @@
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Megaphone,
   Copy,
@@ -17,7 +16,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
@@ -104,7 +103,7 @@ export default function SocialPayoutsPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/blog/site", { cache: "no-store" });
+        const res = await fetch("/api/blog/site?lite=1", { cache: "no-store" });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load offers");
         const list = Array.isArray(data.summaries) ? (data.summaries as SiteVaultSummary[]) : [];
@@ -236,15 +235,20 @@ export default function SocialPayoutsPage() {
   };
 
   if (loading) {
-    return <PageLoading message="Loading Social Payouts..." />;
+    return (
+      <div className="page-stack max-w-4xl">
+        <PageHeader
+          eyebrow="Premium"
+          title="Social Payouts"
+          subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+        />
+        <PageSkeleton cards={2} />
+      </div>
+    );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="page-stack max-w-4xl"
-    >
+    <div className="page-stack max-w-4xl">
       <PageHeader
         eyebrow="Premium"
         title="Social Payouts"
@@ -368,6 +372,6 @@ export default function SocialPayoutsPage() {
       <p className="text-xs text-text-muted">
         {brand.productName} Social Payouts — powered by the 10X bulk post engine.
       </p>
-    </motion.div>
+    </div>
   );
 }

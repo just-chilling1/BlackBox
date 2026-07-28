@@ -21,6 +21,10 @@ export async function resolveOnboardingGate(
         return { ok: true, isComplete: true };
     }
 
+    if (metaFlag === false) {
+        return { ok: true, isComplete: false };
+    }
+
     let timestampQueryFailed = false;
 
     try {

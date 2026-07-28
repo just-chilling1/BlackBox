@@ -2,7 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Headphones, Loader2, Mail } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support";
 import { trainingContent } from "@/config/training.config";
 import { DashboardSection } from "./DashboardSection";
@@ -37,7 +37,7 @@ export function ContactSupportWidget() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data: { user } }) => {
+    void getCachedClientUser().then((user) => {
       if (user?.email) setEmail(user.email);
     });
   }, []);

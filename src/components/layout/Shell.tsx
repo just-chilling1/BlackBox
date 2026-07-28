@@ -5,8 +5,12 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "./BrandLogo";
 import { PageMotion } from "@/components/motion/PageMotion";
-import { ParticleBackground } from "@/components/ui/particle-background";
 import { SupportCtaBanner } from "@/components/support/SupportCtaBanner";
+
+const ParticleBackground = dynamic(
+  () => import("@/components/ui/particle-background").then((m) => ({ default: m.ParticleBackground })),
+  { ssr: false }
+);
 
 const Sidebar = dynamic(() => import("./Sidebar").then((m) => ({ default: m.Sidebar })), {
   ssr: false,

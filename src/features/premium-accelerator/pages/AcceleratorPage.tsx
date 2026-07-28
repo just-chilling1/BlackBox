@@ -1,7 +1,6 @@
 "use client";
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import {
   Rocket,
   Link as LinkIcon,
@@ -18,7 +17,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 
 const PAGE_SIZE = 24;
@@ -198,15 +197,20 @@ export default function AcceleratorPage() {
   }, [affiliateLink]);
 
   if (loading && templates.length === 0) {
-    return <PageLoading message="Loading Accelerator templates..." />;
+    return (
+      <div className="page-stack max-w-6xl">
+        <PageHeader
+          eyebrow="Premium"
+          title="Accelerator"
+          subtitle="200 pre-made sales pages + X threads across every niche."
+        />
+        <PageSkeleton cards={6} className="max-w-6xl" />
+      </div>
+    );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="page-stack max-w-6xl"
-    >
+    <div className="page-stack max-w-6xl">
       <PageHeader
         eyebrow="Premium"
         title="Accelerator"
@@ -343,6 +347,6 @@ export default function AcceleratorPage() {
       <p className="text-xs text-text-muted">
         Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
       </p>
-    </motion.div>
+    </div>
   );
 }

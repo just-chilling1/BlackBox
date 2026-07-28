@@ -37,13 +37,8 @@ export async function GET(request: Request) {
   }
 
   const siteId = new URL(request.url).searchParams.get("siteId");
+  const lite = new URL(request.url).searchParams.get("lite") === "1";
   const quota = await getDailyGenerationQuota(supabase, user.id);
-
-  const { data: session } = await supabase
-    .from("blog_builder_sessions")
-    .select("site_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
 
   const { data: sites } = await supabase
     .from("sites")
@@ -57,10 +52,33 @@ export async function GET(request: Request) {
 
   if (siteIds.length === 0) {
     return NextResponse.json(
-      { summaries: [], site: null, posts: [], clicks: 0, quota, activeSiteId: session?.site_id ?? null },
+      { summaries: [], site: null, posts: [], clicks: 0, quota, activeSiteId: null },
       { headers: NO_STORE_HEADERS }
     );
   }
+
+  if (lite && !siteId) {
+    const xThreadCounts = await countXThreadsBySite(supabase, user.id, siteIds).catch(
+      () => ({} as Record<string, number>)
+    );
+
+    const summaries: SiteVaultSummary[] = siteList.map((site) => ({
+      site,
+      postCount: 0,
+      livePostCount: 0,
+      clickCount: 0,
+      facebookPostCount: 0,
+      xThreadCount: xThreadCounts[site.id] ?? 0,
+    }));
+
+    return NextResponse.json({ summaries, quota }, { headers: NO_STORE_HEADERS });
+  }
+
+  const { data: session } = await supabase
+    .from("blog_builder_sessions")
+    .select("site_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   const [{ data: postRows }, { data: clickRows }, facebookPostCounts, xThreadCounts] = await Promise.all([
     supabase.from("posts").select("site_id, status").in("site_id", siteIds),

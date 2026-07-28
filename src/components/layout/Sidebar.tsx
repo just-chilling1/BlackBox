@@ -31,6 +31,7 @@ import { homeNav, supportNav, type NavItem } from "@/config/navigation.config";
 import { getExclusiveOffers } from "@/config/offers.config";
 import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
+import { getCachedClientUser } from "@/lib/auth-client-cache";
 import {
   sidebarNavIconClass,
   sidebarNavItemClass,
@@ -74,7 +75,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const [userInitials, setUserInitials] = useState("BC");
 
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data: { user } }) => {
+    void getCachedClientUser().then((user) => {
       if (!user) return;
       const handle = user.email?.split("@")[0] || "Member";
       const name =

@@ -14,7 +14,7 @@ import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
 import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
@@ -151,7 +151,7 @@ export default function OffersLibraryPage() {
   const [loadingThreadsId, setLoadingThreadsId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/blog/site", { cache: "no-store" })
+    fetch("/api/blog/site?lite=1", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         setSummaries(Array.isArray(data.summaries) ? data.summaries : []);
@@ -193,7 +193,16 @@ export default function OffersLibraryPage() {
   };
 
   if (loading) {
-    return <PageLoading message="Loading your offers..." />;
+    return (
+      <div className="page-stack w-full max-w-4xl mx-auto">
+        <PageHeader
+          eyebrow="Offers library"
+          title="Your generated sales offers"
+          subtitle="Every launched sales page lives here with its saved X promotion threads."
+        />
+        <PageSkeleton cards={3} />
+      </div>
+    );
   }
 
   if (summaries.length === 0) {

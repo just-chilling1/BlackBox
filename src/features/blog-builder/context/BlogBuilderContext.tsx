@@ -202,6 +202,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
   const [state, setState] = useState<BlogBuilderState>(defaultState);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const persistReady = useRef(false);
+  const sessionFetched = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -213,10 +214,22 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       };
     }
 
+    if (sessionFetched.current) {
+      setSessionLoaded(true);
+      return () => {
+        cancelled = true;
+      };
+    }
+
     async function load() {
       try {
-        const sessionRes = await fetch("/api/blog/session", { cache: "no-store" });
+        const [sessionRes, vaultRes] = await Promise.all([
+          fetch("/api/blog/session", { cache: "no-store" }),
+          fetch("/api/blog/link-vault", { cache: "no-store" }),
+        ]);
+
         const sessionJson = sessionRes.ok ? await sessionRes.json() : { session: null };
+        const vaultJson = vaultRes.ok ? await vaultRes.json() : { links: [] };
 
         if (cancelled) return;
 
@@ -224,24 +237,16 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
           ? mapSessionFromDb(sessionJson.session as DbSessionRow)
           : {};
 
+        const vaultLinks = Array.isArray(vaultJson.links) ? (vaultJson.links as ArmedLink[]) : [];
+
         setState((s) => ({
           ...s,
           ...fromSession,
+          armedLinks: vaultLinks.length > 0 ? vaultLinks : s.armedLinks,
         }));
-
-        const vaultRes = await fetch("/api/blog/link-vault", { cache: "no-store" });
-        const vaultJson = vaultRes.ok ? await vaultRes.json() : { links: [] };
-        if (cancelled) return;
-
-        const vaultLinks = Array.isArray(vaultJson.links) ? (vaultJson.links as ArmedLink[]) : [];
-        if (vaultLinks.length > 0) {
-          setState((s) => ({
-            ...s,
-            armedLinks: vaultLinks,
-          }));
-        }
       } finally {
         if (!cancelled) {
+          sessionFetched.current = true;
           setSessionLoaded(true);
           persistReady.current = true;
         }

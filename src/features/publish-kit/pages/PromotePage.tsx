@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Megaphone, Globe } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
@@ -43,27 +43,9 @@ export default function PromotePage() {
   const [selectedSiteId, setSelectedSiteId] = useState("");
   const [selectedSite, setSelectedSite] = useState<BlogSite | null>(null);
   const [loading, setLoading] = useState(true);
-  const [detailLoading, setDetailLoading] = useState(false);
-
-  const loadSite = useCallback(async (siteId: string) => {
-    setSelectedSiteId(siteId);
-    setDetailLoading(true);
-    setSelectedSite(null);
-
-    try {
-      const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, {
-        cache: "no-store",
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load site");
-      setSelectedSite(data.site as BlogSite);
-    } finally {
-      setDetailLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
-    fetch("/api/blog/site", { cache: "no-store" })
+    fetch("/api/blog/site?lite=1", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         const list = Array.isArray(data.summaries) ? data.summaries : [];
@@ -75,10 +57,12 @@ export default function PromotePage() {
             ? initialSiteId
             : list[0].site.id;
 
-        void loadSite(preferredId);
+        const summary = list.find((s: SiteVaultSummary) => s.site.id === preferredId);
+        setSelectedSiteId(preferredId);
+        if (summary) setSelectedSite(summary.site);
       })
       .finally(() => setLoading(false));
-  }, [initialSiteId, loadSite]);
+  }, [initialSiteId]);
 
   const selectedSummary = useMemo(
     () => summaries.find((s) => s.site.id === selectedSiteId),
@@ -96,8 +80,23 @@ export default function PromotePage() {
     return toPublishKitSite(selectedSite, siteUrl);
   }, [selectedSite, siteUrl]);
 
+  const selectSite = (siteId: string) => {
+    setSelectedSiteId(siteId);
+    const summary = summaries.find((s) => s.site.id === siteId);
+    setSelectedSite(summary?.site ?? null);
+  };
+
   if (loading) {
-    return <PageLoading message="Loading your websites..." />;
+    return (
+      <div className="page-stack w-full max-w-4xl mx-auto">
+        <PageHeader
+          eyebrow="X-Power Promotions"
+          title="Generate X story thread"
+          subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
+        />
+        <PageSkeleton cards={2} />
+      </div>
+    );
   }
 
   if (summaries.length === 0) {
@@ -144,7 +143,7 @@ export default function PromotePage() {
           <select
             value={selectedSiteId}
             onChange={(e) => {
-              if (e.target.value) void loadSite(e.target.value);
+              if (e.target.value) selectSite(e.target.value);
             }}
             className="input-base w-full"
           >
@@ -170,11 +169,7 @@ export default function PromotePage() {
       </section>
 
       <section className="min-w-0">
-        {detailLoading ? (
-          <PageLoading message="Loading site details..." className="max-w-none" />
-        ) : kitSite ? (
-          <PublishKitPanel site={kitSite} />
-        ) : null}
+        {kitSite ? <PublishKitPanel site={kitSite} /> : null}
       </section>
     </div>
   );

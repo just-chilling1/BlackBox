@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { WizardStepper } from "../components/WizardStepper";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 import ArmLinksPage from "./ArmLinksPage";
@@ -110,7 +110,16 @@ export default function SalesOfferGeneratorPage() {
   };
 
   if (!sessionLoaded) {
-    return <PageLoading message="Loading Sales Offer Generator..." />;
+    return (
+      <div className="page-stack w-full max-w-4xl mx-auto">
+        <PageHeader
+          eyebrow="Sales Offer Generator"
+          title="Launch Your Offer"
+          subtitle="Generate niche-specific quiz questions and publish your sales page."
+        />
+        <PageSkeleton cards={2} />
+      </div>
+    );
   }
 
   const step = wizardUiStep;
