@@ -64,7 +64,7 @@ const INSTRUCTION_STEPS = [
   },
   {
     number: 5,
-    text: 'Paste it below and click "Save to Content Reserve"',
+    text: 'Paste it below and click "Save to Links Library"',
     icon: ClipboardPaste,
   },
 ];
@@ -138,7 +138,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
       setLinkSaved(true);
       warmScrapeCache(url);
     } catch {
-      setError("Could not save to Content Reserve. Try again.");
+      setError("Could not save to Links Library. Try again.");
     } finally {
       setLoading(false);
     }
@@ -187,7 +187,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
           <PageHeader
             eyebrow="Step 1"
             title="Add Your Link"
-            subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Content Reserve" if you want to reuse it later.'
+            subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Links Library" if you want to reuse it later.'
           />
           <WizardStepper currentStep={1} />
         </>
@@ -332,7 +332,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                 ) : (
                   <Save size={18} />
                 )}
-                {linkSaved ? "Link Saved" : "Save to Content Reserve"}
+                {linkSaved ? "Link Saved" : "Save to Links Library"}
               </button>
               {linkSaved && (
                 <span className="text-sm font-medium text-emerald-700 flex items-center gap-1.5">

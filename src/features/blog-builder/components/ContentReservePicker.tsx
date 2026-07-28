@@ -16,7 +16,7 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
   return (
     <div>
       <label className="block text-sm font-medium text-text-primary mb-2">
-        Select from Content Reserve
+        Select from Links Library
       </label>
       <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
         {links.map((link, index) => {
