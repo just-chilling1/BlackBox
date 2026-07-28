@@ -12,9 +12,13 @@ import {
 } from "@/features/publish-kit/lib/thread-generation-quota";
 import {
   THREADS_PER_GENERATION,
-  THREAD_POST_ANGLES,
-  THREADS_WITH_IMAGES,
+  THREAD_IMAGE_POST_INDEXES,
+  THREAD_POST_ROLES,
 } from "@/features/publish-kit/lib/promote-constants";
+import {
+  buildThreadSystemPrompt,
+  buildThreadUserPrompt,
+} from "@/features/publish-kit/lib/x-thread-rules";
 import {
   listXThreadsForSite,
   saveXThreadBatch,
@@ -29,17 +33,8 @@ export const maxDuration = 120;
 interface SocialPostRow {
   text: string;
   angle?: string;
+  role?: string;
   imageUrl?: string;
-}
-
-function platformInstructions(): string {
-  return `Write exactly ${THREADS_PER_GENERATION} X (Twitter) posts:
-- Max 280 characters each INCLUDING the URL and any hashtags
-- Punchy, scroll-stopping, conversational
-- 0-2 hashtags max per post
-- Each post must use a different angle
-- Do NOT invent fake stats, prices, or testimonials
-- Ready to copy and paste as-is`;
 }
 
 export async function GET(request: Request) {
@@ -132,29 +127,12 @@ export async function POST(request: Request) {
   }
 
   const platformLabel = "X (Twitter)";
-  const anglesText = THREAD_POST_ANGLES.map((a, i) => `${i + 1}. ${a}`).join("\n");
-
-  const system = `You are an expert ${platformLabel} copywriter for affiliate marketers.
-Analyze the product and website context internally, then write platform-native posts that drive clicks without sounding spammy.
-Return ONLY valid JSON — no markdown fences.`;
-
-  const userPrompt = `Using this product + website context, write ${THREADS_PER_GENERATION} ${platformLabel} posts.
-
-${context.fullContext}
-
-Promotion URL to include in every post: ${promoLink}
-
-${platformInstructions()}
-
-Use these ${THREADS_PER_GENERATION} distinct angles (one per post):
-${anglesText}
-
-Return ONLY this JSON shape:
-{
-  "posts": [
-    { "text": "full ready-to-paste post", "angle": "short label" }
-  ]
-}`;
+  const system = buildThreadSystemPrompt(platformLabel);
+  const userPrompt = buildThreadUserPrompt({
+    fullContext: context.fullContext,
+    promoLink,
+    postCount: THREADS_PER_GENERATION,
+  });
 
   try {
     const raw = await generateWithGPT(system, userPrompt, {
@@ -170,35 +148,45 @@ Return ONLY this JSON shape:
       .slice(0, THREADS_PER_GENERATION)
       .map((row, i) => ({
         text: row.text.trim(),
-        angle: typeof row.angle === "string" ? row.angle : THREAD_POST_ANGLES[i] || `Thread ${i + 1}`,
+        angle: typeof row.angle === "string"
+          ? row.angle
+          : typeof row.role === "string"
+            ? row.role
+            : THREAD_POST_ROLES[i] || `Post ${i + 1}`,
       }));
 
     if (posts.length === 0) {
       return NextResponse.json(
-        { error: "The generator returned no threads. Please try again." },
+        { error: "The generator returned no thread posts. Please try again." },
         { status: 502, headers: NO_STORE_HEADERS }
       );
     }
 
     const territory = context.territory;
-    const threadsForImages = posts.slice(0, THREADS_WITH_IMAGES);
     const imageResults = await Promise.all(
-      threadsForImages.map((post) =>
-        generateThreadImage({
+      THREAD_IMAGE_POST_INDEXES.map((postIndex) => {
+        const post = posts[postIndex];
+        if (!post) return Promise.resolve(null);
+        return generateThreadImage({
           territory,
           angle: post.angle,
           threadText: post.text,
           userId: user.id,
           supabase,
           scrapeUrl: affiliateUrl || undefined,
-        })
-      )
+        });
+      })
     );
 
-    const postsWithImages = posts.map((post, i) => ({
-      ...post,
-      imageUrl: i < THREADS_WITH_IMAGES ? imageResults[i] || undefined : undefined,
-    }));
+    const postsWithImages = posts.map((post, i) => {
+      const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
+        i as (typeof THREAD_IMAGE_POST_INDEXES)[number]
+      );
+      return {
+        ...post,
+        imageUrl: imageSlot >= 0 ? imageResults[imageSlot] || undefined : undefined,
+      };
+    });
 
     await recordThreadGeneration(supabase, user.id, siteId);
     await saveXThreadBatch(supabase, user.id, siteId, postsWithImages);
@@ -214,7 +202,7 @@ Return ONLY this JSON shape:
       { headers: NO_STORE_HEADERS }
     );
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Failed to generate X threads";
+    const msg = e instanceof Error ? e.message : "Failed to generate X thread";
     return NextResponse.json({ error: msg }, { status: 500, headers: NO_STORE_HEADERS });
   }
 }

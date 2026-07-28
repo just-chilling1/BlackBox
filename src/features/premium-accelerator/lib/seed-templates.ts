@@ -10,7 +10,7 @@ import {
 } from "./catalog";
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
-  buildAcceleratorXThreadSeeds,
+  buildAcceleratorXThreadSeedRows,
 } from "./x-thread-seeds";
 
 function newSlug(seed: string): string {
@@ -127,13 +127,13 @@ export async function seedAcceleratorTemplate(
   if ((existing?.threadCount ?? 0) < 10) {
     await admin.from("site_x_threads").delete().eq("site_id", site!.id);
 
-    const threads = buildAcceleratorXThreadSeeds(entry.productName, entry.nicheLabel);
+    const threadRows = buildAcceleratorXThreadSeedRows(entry.productName, entry.nicheLabel);
     const batchId = crypto.randomUUID();
-    const rows = threads.map((text, i) => ({
+    const rows = threadRows.map((thread) => ({
       user_id: ownerId,
       site_id: site!.id,
-      text,
-      angle: `Thread ${i + 1}`,
+      text: thread.text,
+      angle: thread.angle,
       batch_id: batchId,
     }));
 

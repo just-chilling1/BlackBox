@@ -69,7 +69,7 @@ function OfferCard({
               {site.status}
             </span>
             <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
-              {hasThreads ? `${xThreadCount} X threads` : "No X threads yet"}
+              {hasThreads ? `${xThreadCount}-post thread saved` : "No story thread yet"}
             </span>
           </div>
         </div>
@@ -110,7 +110,7 @@ function OfferCard({
               className="inline-flex items-center gap-1.5 rounded-lg bg-promo-accent px-3 py-2 text-xs font-semibold text-[#0B0C10] hover:brightness-110"
             >
               <Megaphone size={14} />
-              {hasThreads ? "Regenerate X threads" : "Generate X threads"}
+              {hasThreads ? "Regenerate story thread" : "Generate story thread"}
             </Link>
           </div>
 
@@ -120,12 +120,12 @@ function OfferCard({
               Loading threads...
             </div>
           ) : threads.length > 0 ? (
-            <ThreadListSection title="Saved X threads" count={threads.length}>
+            <ThreadListSection title="Story thread" count={threads.length}>
               {threads.map((thread, i) => (
                 <ThreadCard
                   key={thread.id}
                   index={i + 1}
-                  label={thread.angle || `Thread ${i + 1}`}
+                  label={`Post ${i + 1} · ${thread.angle || "Post"}`}
                   text={thread.text}
                   imageUrl={thread.image_url}
                   defaultOpen={i === 0}
@@ -134,7 +134,7 @@ function OfferCard({
             </ThreadListSection>
           ) : (
             <p className="text-sm text-text-secondary">
-              No X threads saved for this offer yet. Open X-Power Promotions to generate a batch.
+              No story thread saved for this offer yet. Open X-Power Promotions to generate one.
             </p>
           )}
         </div>

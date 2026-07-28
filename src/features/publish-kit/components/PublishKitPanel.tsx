@@ -12,7 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { fetchJson } from "@/lib/fetch-json";
-import { THREADS_PER_GENERATION, THREADS_WITH_IMAGES } from "../lib/promote-constants";
+import { THREADS_PER_GENERATION, THREAD_IMAGE_POST_INDEXES } from "../lib/promote-constants";
 import { ThreadCard } from "./ThreadCard";
 import { ThreadListSection } from "./ThreadListSection";
 import type {
@@ -22,7 +22,8 @@ import type {
 } from "../types";
 import type { ThreadGenerationQuota } from "../lib/thread-generation-quota";
 
-const THREAD_COUNT = THREADS_PER_GENERATION;
+const THREAD_POST_COUNT = THREADS_PER_GENERATION;
+const THREAD_IMAGE_COUNT = THREAD_IMAGE_POST_INDEXES.length;
 const PROMOTE_PLATFORM = "twitter" as const;
 
 function CollapsibleResultSection({
@@ -220,7 +221,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
     setPosts(res.data.posts || []);
     if (res.data.quota) setQuota(res.data.quota);
-    showToast(`${THREAD_COUNT} X threads ready — first ${THREADS_WITH_IMAGES} include niche images`, "success");
+    showToast(`Story thread ready — ${THREAD_POST_COUNT} posts, ${THREAD_IMAGE_COUNT} niche images on posts 1, 4, and 7`, "success");
   };
 
   const runTags = async () => {
@@ -297,11 +298,11 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
               <Sparkles size={16} className="text-accent" />
-              Generate threads
+              Generate story thread
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Generate {THREAD_COUNT} ready-to-copy X threads based on your product and website.
-              The first {THREADS_WITH_IMAGES} threads include scraped product or stock niche images.
+              Generate one {THREAD_POST_COUNT}-post product story thread — hook, failure, mechanism, proof, and a single CTA.
+              Posts 1, 4, and 7 include scraped product or stock niche images.
             </p>
             {contentLoading ? (
               <p className="text-sm text-text-muted flex items-center gap-2">
@@ -323,18 +324,18 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             >
               <Megaphone size={14} />
               {generateLoading
-                ? `Generating ${THREAD_COUNT} threads + ${THREADS_WITH_IMAGES} images`
-                : `Generate ${THREAD_COUNT} threads`}
+                ? `Generating ${THREAD_POST_COUNT}-post thread + ${THREAD_IMAGE_COUNT} images`
+                : `Generate story thread`}
             </KitButton>
           </div>
 
           {visiblePosts.length > 0 && (
-            <ThreadListSection title="X threads" count={visiblePosts.length}>
+            <ThreadListSection title="Story thread" count={visiblePosts.length}>
               {visiblePosts.map((post, i) => (
                 <ThreadCard
                   key={i}
                   index={i + 1}
-                  label={post.angle || `Thread ${i + 1}`}
+                  label={`Post ${i + 1} · ${post.angle || "Post"}`}
                   text={post.text}
                   imageUrl={post.imageUrl}
                   defaultOpen={i === 0}

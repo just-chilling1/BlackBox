@@ -1,17 +1,7 @@
 export const THREADS_PER_GENERATION = 10;
 
-/** First N threads receive scraped/stock niche images on each generation run. */
-export const THREADS_WITH_IMAGES = 3;
+/** Posts that receive niche visuals — 1-based posts 1, 4, and 7 (not consecutive). */
+export { THREAD_IMAGE_POST_INDEXES } from "./x-thread-rules";
 
-export const THREAD_POST_ANGLES = [
-  "Urgency",
-  "Social proof",
-  "Personal story",
-  "Curiosity hook",
-  "Pain point",
-  "Benefit highlight",
-  "Question hook",
-  "Contrarian take",
-  "Before and after",
-  "Direct call to action",
-] as const;
+/** Story role for each post in the generated thread. */
+export { THREAD_POST_ROLES } from "./x-thread-rules";

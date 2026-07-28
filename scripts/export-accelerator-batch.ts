@@ -16,7 +16,7 @@ import {
 } from "../src/features/premium-accelerator/lib/catalog";
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
-  buildAcceleratorXThreadSeeds,
+  buildAcceleratorXThreadSeedRows,
 } from "../src/features/premium-accelerator/lib/x-thread-seeds";
 
 const TEMPLATE_OWNER_ID =
@@ -54,10 +54,10 @@ function buildEntryPayload(entry: AcceleratorCatalogEntry) {
   });
 
   const batchId = randomUUID();
-  const threads = buildAcceleratorXThreadSeeds(entry.productName, entry.nicheLabel).map(
-    (text, i) => ({
-      text,
-      angle: `Thread ${i + 1}`,
+  const threads = buildAcceleratorXThreadSeedRows(entry.productName, entry.nicheLabel).map(
+    (thread) => ({
+      text: thread.text,
+      angle: thread.angle,
       batch_id: batchId,
     })
   );
