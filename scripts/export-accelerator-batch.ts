@@ -54,7 +54,11 @@ function buildEntryPayload(entry: AcceleratorCatalogEntry) {
   });
 
   const batchId = randomUUID();
-  const threads = buildAcceleratorXThreadSeedRows(entry.productName, entry.nicheLabel).map(
+  const threads = buildAcceleratorXThreadSeedRows(
+    entry.productName,
+    entry.nicheLabel,
+    entry.nicheKey
+  ).map(
     (thread) => ({
       text: thread.text,
       angle: thread.angle,

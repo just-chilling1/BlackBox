@@ -3,6 +3,8 @@ import { buildSeededQuestionnaireCopy } from "@/features/blog-builder/lib/questi
 import { buildThemedQuestionnairePage } from "@/features/blog-builder/lib/questionnaire-page-html";
 import { getReadyTemplateFromConfig } from "@/features/blog-builder/themes";
 import type { BlogSite } from "@/features/blog-builder/types";
+import { THREAD_IMAGE_POST_INDEXES } from "@/features/publish-kit/lib/promote-constants";
+import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
 import {
   acceleratorTemplateKey,
   buildAcceleratorCatalog,
@@ -11,16 +13,23 @@ import {
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
   buildAcceleratorXThreadSeedRows,
+  type AcceleratorThreadSeedRow,
 } from "./x-thread-seeds";
 
 function newSlug(seed: string): string {
   return `${seed}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
+interface SeededTemplateState {
+  site: BlogSite;
+  threadCount: number;
+  imagesReady: boolean;
+}
+
 async function loadSeededTemplate(
   admin: SupabaseClient,
   catalogId: number
-): Promise<{ site: BlogSite; threadCount: number } | null> {
+): Promise<SeededTemplateState | null> {
   const key = acceleratorTemplateKey(catalogId);
   const { data: sites } = await admin
     .from("sites")
@@ -32,12 +41,18 @@ async function loadSeededTemplate(
   const site = (sites ?? [])[0] as BlogSite | undefined;
   if (!site) return null;
 
-  const { count } = await admin
+  const { data: threads } = await admin
     .from("site_x_threads")
-    .select("id", { count: "exact", head: true })
-    .eq("site_id", site.id);
+    .select("image_url")
+    .eq("site_id", site.id)
+    .order("created_at", { ascending: true });
 
-  return { site, threadCount: count ?? 0 };
+  const rows = threads ?? [];
+  const imagesReady = THREAD_IMAGE_POST_INDEXES.every(
+    (index) => Boolean(rows[index]?.image_url)
+  );
+
+  return { site, threadCount: rows.length, imagesReady };
 }
 
 function buildSalesPageForTemplate(entry: AcceleratorCatalogEntry, siteId: string) {
@@ -61,6 +76,32 @@ function buildSalesPageForTemplate(entry: AcceleratorCatalogEntry, siteId: strin
   return { copy, salesPageHtml };
 }
 
+async function attachAcceleratorThreadImages(params: {
+  admin: SupabaseClient;
+  ownerId: string;
+  entry: AcceleratorCatalogEntry;
+  threadRows: AcceleratorThreadSeedRow[];
+}): Promise<(AcceleratorThreadSeedRow & { image_url: string | null })[]> {
+  const imageResults = await generateThreadImagesForPosts({
+    posts: params.threadRows.map((row) => ({ text: row.text, angle: row.angle })),
+    postIndexes: THREAD_IMAGE_POST_INDEXES,
+    territory: params.entry.nicheLabel,
+    productName: params.entry.productName,
+    userId: params.ownerId,
+    supabase: params.admin,
+  });
+
+  return params.threadRows.map((row, index) => {
+    const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
+      index as (typeof THREAD_IMAGE_POST_INDEXES)[number]
+    );
+    return {
+      ...row,
+      image_url: imageSlot >= 0 ? imageResults[imageSlot] ?? null : null,
+    };
+  });
+}
+
 /** Seed one accelerator template (idempotent — skips if already complete). */
 export async function seedAcceleratorTemplate(
   admin: SupabaseClient,
@@ -72,7 +113,13 @@ export async function seedAcceleratorTemplate(
   }
 
   const existing = await loadSeededTemplate(admin, entry.id);
-  if (existing && existing.site.sales_page_html && existing.threadCount >= 10) {
+  const threadsComplete =
+    existing &&
+    existing.site.sales_page_html &&
+    existing.threadCount >= 10 &&
+    existing.imagesReady;
+
+  if (threadsComplete) {
     return { skipped: true, siteId: existing.site.id };
   }
 
@@ -124,16 +171,32 @@ export async function seedAcceleratorTemplate(
     if (error) throw new Error(error.message);
   }
 
-  if ((existing?.threadCount ?? 0) < 10) {
+  const needsThreads =
+    !existing || existing.threadCount < 10 || !existing.imagesReady;
+
+  if (needsThreads) {
     await admin.from("site_x_threads").delete().eq("site_id", site!.id);
 
-    const threadRows = buildAcceleratorXThreadSeedRows(entry.productName, entry.nicheLabel);
+    const threadRows = buildAcceleratorXThreadSeedRows(
+      entry.productName,
+      entry.nicheLabel,
+      entry.nicheKey
+    );
+
+    const rowsWithImages = await attachAcceleratorThreadImages({
+      admin,
+      ownerId,
+      entry,
+      threadRows,
+    });
+
     const batchId = crypto.randomUUID();
-    const rows = threadRows.map((thread) => ({
+    const rows = rowsWithImages.map((thread) => ({
       user_id: ownerId,
       site_id: site!.id,
       text: thread.text,
       angle: thread.angle,
+      image_url: thread.image_url,
       batch_id: batchId,
     }));
 

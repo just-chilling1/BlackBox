@@ -77,7 +77,7 @@ export async function cloneAcceleratorTemplate(params: {
 
   const { data: templateThreads } = await db
     .from("site_x_threads")
-    .select("text, angle")
+    .select("text, angle, image_url")
     .eq("site_id", template.id)
     .order("created_at", { ascending: true });
 
@@ -89,6 +89,7 @@ export async function cloneAcceleratorTemplate(params: {
       site_id: site.id,
       text: substituteThreadText((row as { text: string }).text, url),
       angle: (row as { angle: string | null }).angle,
+      image_url: (row as { image_url: string | null }).image_url,
       batch_id: batchId,
     }));
 

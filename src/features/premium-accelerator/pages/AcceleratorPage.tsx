@@ -217,7 +217,7 @@ export default function AcceleratorPage() {
         <PageHeader
           eyebrow="Premium"
           title="Accelerator"
-          subtitle="200 pre-made sales pages + X threads across every niche."
+          subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
         />
         <PageSkeleton cards={6} className="max-w-6xl" />
       </div>
@@ -229,7 +229,7 @@ export default function AcceleratorPage() {
       <PageHeader
         eyebrow="Premium"
         title="Accelerator"
-        subtitle={`${seededCount} of 200 pre-made sales pages + X threads across every niche. Pick a template, add your link, and deploy — nothing regenerates on access.`}
+        subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
       />
 
       <section className="glass-card overflow-hidden p-0">
@@ -240,9 +240,9 @@ export default function AcceleratorPage() {
                 <Rocket size={24} />
               </div>
               <div>
-                <p className="font-bold text-text-primary">200 Sales Pages + X Threads</p>
+                <p className="font-bold text-text-primary">200 Sales Pages + Story Threads</p>
                 <p className="text-sm text-text-secondary">
-                  Templates are generated once and stored — your picks clone instantly.
+                  Each template includes a ready-made 10-post X story thread with niche images — clone instantly with your link.
                 </p>
               </div>
             </div>
