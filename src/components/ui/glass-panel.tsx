@@ -22,14 +22,14 @@ export function GlassPanel({
       transition={{ duration: 0.4 }}
       className={cn(
         "glass-panel rounded-2xl relative overflow-hidden",
-        "border-white/5 shadow-xl",
+        "border-border-dim shadow-sm",
         intensity === "low" && "backdrop-blur-sm",
         intensity === "medium" && "backdrop-blur-md",
         intensity === "high" && "backdrop-blur-xl",
         className
       )}
     >
-      <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-emerald-50/40 to-transparent pointer-events-none" />
       <div className={cn("relative z-10 h-full min-h-0", contentClassName)}>{children}</div>
     </motion.div>
   );
