@@ -899,6 +899,33 @@ html[data-sidebar="collapsed"] {
     animation: theme-preview-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  .theme-custom-carousel-track {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .theme-custom-carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .theme-custom-carousel-slide {
+    @apply min-w-full shrink-0;
+  }
+
+  .theme-custom-carousel-slide-inner {
+    @apply flex min-h-[280px] flex-col px-5 py-5 sm:min-h-[300px];
+  }
+
+  .theme-preview-sticky {
+    @apply sticky top-0 z-10 pb-2;
+    background: linear-gradient(
+      to bottom,
+      var(--bg-page) 0%,
+      var(--bg-page) 88%,
+      transparent 100%
+    );
+  }
+
   /* ── Global selection affordances (cards, chips, rows, toggles) ── */
   .select-card,
   .wizard-selection-card {
