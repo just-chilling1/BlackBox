@@ -807,7 +807,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .wizard-template-card {
-    @apply group relative overflow-hidden rounded-xl border border-border-dim/70 bg-white text-left cursor-pointer transition-all duration-200;
+    @apply relative overflow-hidden rounded-xl border border-border-dim/70 bg-white text-left cursor-pointer transition-all duration-200;
   }
 
   .wizard-template-card:hover:not(.is-selected) {
