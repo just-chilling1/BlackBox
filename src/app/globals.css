@@ -875,10 +875,6 @@ html[data-sidebar="collapsed"] {
     @apply rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800;
   }
 
-  .wizard-font-select {
-    @apply input-base w-full font-medium text-text-primary;
-  }
-
   .theme-preview-linked {
     border-width: 3px;
     border-color: #C9970D;

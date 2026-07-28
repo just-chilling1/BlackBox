@@ -299,7 +299,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
               id="heading-font"
               value={config.headingFont ?? ""}
               onChange={(e) => updateConfig({ headingFont: e.target.value })}
-              className="wizard-font-select"
+              className="input-base w-full font-medium text-text-primary"
               style={{ fontFamily: config.headingFont ?? HEADING_FONT_OPTIONS[0]?.value }}
             >
               {HEADING_FONT_OPTIONS.map((opt) => (
@@ -322,7 +322,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
               id="body-font"
               value={config.bodyFont ?? ""}
               onChange={(e) => updateConfig({ bodyFont: e.target.value })}
-              className="wizard-font-select"
+              className="input-base w-full font-medium text-text-primary"
               style={{ fontFamily: config.bodyFont ?? BODY_FONT_OPTIONS[0]?.value }}
             >
               {BODY_FONT_OPTIONS.map((opt) => (
