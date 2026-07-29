@@ -64,7 +64,7 @@ export function DeployCompletePanel({
           className="w-full rounded-xl border border-accent/35 bg-white px-4 py-4 text-base font-bold text-accent shadow-sm transition-colors hover:border-accent/50 hover:bg-accent/5"
         >
           <span className="flex items-center justify-center gap-2">
-            View Asset Vault
+            View offers library
             <ArrowRight size={18} />
           </span>
         </motion.button>
