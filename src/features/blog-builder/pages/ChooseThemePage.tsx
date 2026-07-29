@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { clsx } from "clsx";
 import {
   Loader2,
   ArrowLeft,
@@ -202,7 +203,12 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
           <p className="px-1 text-xs text-text-secondary">
             Live preview — updates as you pick template, color, and font
           </p>
-          <div className="theme-preview-linked theme-preview-compact-wrap overflow-hidden rounded-xl">
+          <div
+            className={clsx(
+              "theme-preview-linked theme-preview-compact-wrap overflow-hidden rounded-xl",
+              selectedTemplate.structureId === "conversion" && "theme-preview-linked-dark"
+            )}
+          >
             <ThemePreview
               config={config}
               templateId={selectedTemplateId}
