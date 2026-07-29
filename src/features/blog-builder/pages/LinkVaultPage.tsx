@@ -75,7 +75,7 @@ export default function LinkVaultPage() {
   const canSave = hasValidLink(links) && !saving;
 
   return (
-    <div className="page-stack w-full max-w-3xl mx-auto">
+    <div className="page-container">
       <PageHeader
         eyebrow="Links library"
         title="Saved promotion links"

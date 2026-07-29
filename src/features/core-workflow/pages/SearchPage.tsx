@@ -55,7 +55,7 @@ export default function SearchPage() {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center min-h-[70vh] gap-10 max-w-xl mx-auto w-full"
+            className="page-container flex min-h-[70vh] flex-col items-center justify-center gap-10"
         >
             <SuccessCelebration
                 show={showCelebration}
@@ -65,6 +65,7 @@ export default function SearchPage() {
             />
 
             {/* Header */}
+            <div className="flex w-full max-w-xl flex-col items-center gap-10">
             <div className="text-center flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent/5 rounded-full border border-accent/15">
                     <Zap size={12} className="text-accent" />
@@ -159,6 +160,7 @@ export default function SearchPage() {
                         </div>
                     ))}
                 </div>
+            </div>
             </div>
         </motion.div>
     );

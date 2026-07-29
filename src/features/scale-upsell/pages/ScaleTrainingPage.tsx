@@ -8,7 +8,7 @@ const CTA_URL = "https://www.breakoutai.net/5k-passive-9";
 
 export default function ScaleTrainingPage() {
     return (
-        <div className="flex flex-col gap-10 pb-10">
+        <div className="page-container pb-10">
             {/* Main Content */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}

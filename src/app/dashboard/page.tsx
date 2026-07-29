@@ -95,7 +95,7 @@ export default function DashboardPage() {
     : dashboardContent.title;
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+    <div className="page-container">
       <DashboardSection as="header">
         <div className="flex flex-col gap-2 min-w-0">
           {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}

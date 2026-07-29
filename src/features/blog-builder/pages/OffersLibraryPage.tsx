@@ -194,7 +194,7 @@ export default function OffersLibraryPage() {
 
   if (loading) {
     return (
-      <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="page-container">
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
@@ -207,7 +207,7 @@ export default function OffersLibraryPage() {
 
   if (summaries.length === 0) {
     return (
-      <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="page-container">
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
@@ -224,7 +224,7 @@ export default function OffersLibraryPage() {
   }
 
   return (
-    <div className="page-stack w-full max-w-4xl mx-auto">
+    <div className="page-container">
       <PageHeader
         eyebrow="Offers library"
         title="Your generated sales offers"

@@ -88,7 +88,7 @@ export default function PromotePage() {
 
   if (loading) {
     return (
-      <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="page-container">
         <PageHeader
           eyebrow="X-Power Promotions"
           title="Generate X story thread"
@@ -101,7 +101,7 @@ export default function PromotePage() {
 
   if (summaries.length === 0) {
     return (
-      <div className="page-stack w-full max-w-4xl mx-auto">
+      <div className="page-container">
         <PageHeader
           eyebrow="X-Power Promotions"
           title="Generate X story thread"
@@ -118,7 +118,7 @@ export default function PromotePage() {
   }
 
   return (
-    <div className="page-stack w-full max-w-4xl mx-auto">
+    <div className="page-container">
       <PageHeader
         eyebrow="X-Power Promotions"
         title="Generate X story thread"

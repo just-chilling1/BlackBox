@@ -179,7 +179,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-3xl mx-auto"}>
+    <div className={embedded ? "space-y-6" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Link" step={1} />

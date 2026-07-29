@@ -52,7 +52,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-4xl mx-auto"}>
+    <div className={embedded ? "space-y-6" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Niche" step={2} />

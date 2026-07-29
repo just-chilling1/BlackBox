@@ -112,7 +112,7 @@ export default function AssetCommandPage() {
 
   if (summaries.length === 0) {
     return (
-      <div className="page-stack w-full max-w-5xl mx-auto">
+      <div className="page-container">
         <PageHeader
           eyebrow="My Websites"
           title="Your websites"
@@ -130,7 +130,7 @@ export default function AssetCommandPage() {
 
   if (openSiteId) {
     return (
-      <div className="page-stack w-full max-w-3xl mx-auto">
+      <div className="page-container">
         <button
           type="button"
           onClick={closeFolder}
@@ -236,7 +236,7 @@ export default function AssetCommandPage() {
   const latestSiteId = activeSiteId ?? summaries[0]?.site.id ?? null;
 
   return (
-    <div className="page-stack w-full max-w-5xl mx-auto">
+    <div className="page-container">
       <PageHeader
         eyebrow="My Websites"
         title="Your websites"

@@ -138,7 +138,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
     const link = deployArmedLinks[0];
 
     return (
-      <div className="wizard-shell w-full max-w-2xl mx-auto">
+      <div className="wizard-shell w-full">
         <WizardStepBar breadcrumb="Site Builder / Wrap-up" step={3} />
 
         <section className="wizard-panel animate-fade-in-up space-y-6 py-10 text-center">
@@ -184,7 +184,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
   }
 
   return (
-    <div className={embedded ? "space-y-4" : "wizard-shell w-full max-w-6xl mx-auto"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Template" step={3} />

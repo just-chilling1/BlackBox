@@ -353,7 +353,7 @@ export default function DeployAssetPage({
     : "Selected template";
 
   return (
-    <div className={embedded ? "space-y-4" : "wizard-shell w-full max-w-2xl mx-auto"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />

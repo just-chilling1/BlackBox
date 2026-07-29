@@ -11,7 +11,7 @@ export function TrainingPageLayout({ children }: { children: ReactNode }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-auto flex w-full max-w-7xl flex-col gap-8 py-6"
+      className="page-container py-6"
     >
       <PageHeader
         eyebrow="Academy"

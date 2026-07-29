@@ -192,7 +192,7 @@ export default function AnalysisPage() {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-6 max-w-6xl mx-auto w-full py-6"
+            className="page-container py-6"
         >
             {/* Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
