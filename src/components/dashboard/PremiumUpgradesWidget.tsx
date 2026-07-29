@@ -19,10 +19,10 @@ export function PremiumUpgradesWidget({ onNavigate, className }: PremiumUpgrades
   if (PREMIUM_FEATURES.length === 0) return null;
 
   return (
-    <div className={clsx("premium-nav-section p-3 md:p-4", className)}>
-      <div className="px-3 pb-3 pt-2.5 text-center md:text-left">
-        <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-accent md:justify-start">
-          <Sparkles className="h-4 w-4 animate-premium-pulse shrink-0" fill="currentColor" />
+    <div className={clsx("premium-upgrades-panel premium-upgrades-panel--featured", className)}>
+      <div className="mb-4 text-center md:text-left">
+        <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-accent-readable md:justify-start">
+          <Sparkles className="h-4 w-4 shrink-0 text-amber-600" fill="currentColor" />
           Premium Features
         </p>
         <p className="mx-auto mt-1.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:mx-0">
@@ -54,10 +54,10 @@ export function PremiumUpgradesWidget({ onNavigate, className }: PremiumUpgrades
                 <div className="flex w-full items-start gap-3">
                   <div
                     className={clsx(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br transition-all duration-300",
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all duration-300",
                       isActive
-                        ? "from-accent to-indigo-600 text-white shadow-[0_0_16px_rgba(238,179,16,0.35)]"
-                        : "from-slate-100 to-slate-50 text-slate-400 group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        ? "border-amber-300 bg-linear-to-br from-accent to-indigo-600 text-white shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        : "border-amber-200 bg-amber-50 text-amber-700 group-hover:border-amber-300 group-hover:bg-linear-to-br group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
                     )}
                   >
                     <Icon size={19} strokeWidth={1.5} />
@@ -66,24 +66,19 @@ export function PremiumUpgradesWidget({ onNavigate, className }: PremiumUpgrades
                   <div className="min-w-0 flex-1">
                     <span
                       className={clsx(
-                        "block text-sm tracking-wide",
-                        isActive ? "font-bold text-text-heading" : "font-semibold text-text-secondary"
+                        "block text-sm tracking-wide text-text-heading",
+                        isActive ? "font-bold" : "font-semibold"
                       )}
                     >
                       {feature.label}
                     </span>
-                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-text-muted">
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-text-secondary">
                       {feature.description}
                     </p>
                   </div>
                 </div>
 
-                <span
-                  className={clsx(
-                    "inline-flex items-center gap-1 text-xs font-semibold transition-colors",
-                    isActive ? "text-accent-readable" : "text-text-muted group-hover:text-accent"
-                  )}
-                >
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-readable transition-colors group-hover:text-amber-700">
                   {isActive ? (
                     "Active"
                   ) : (
