@@ -20,7 +20,7 @@ import {
   isNavItemLocked,
 } from "@/lib/features";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
-import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
+import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
 import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
 import { isFeatureEnabled } from "@/config/features.config";
@@ -198,6 +198,10 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             {resourceNav.map((step) => renderNavLink(step))}
           </div>
 
+          {PREMIUM_FEATURES.length > 0 ? (
+            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
+          ) : null}
+
           {!collapsed && exclusiveOffers.length > 0 && (
             <div className="mt-4 space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
               <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600">
@@ -219,17 +223,6 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             </div>
           )}
         </nav>
-
-        {PREMIUM_FEATURES.length > 0 && (
-          <div className="px-2 pb-2 pt-2 md:px-3 md:pb-3">
-            <PremiumUpgradesWidget
-              layout="sidebar"
-              collapsed={collapsed}
-              onNavigate={handleNavClick}
-              className={collapsed ? "mt-5" : "mt-6 md:mt-8"}
-            />
-          </div>
-        )}
       </div>
 
       <div className="shrink-0 space-y-2 border-t border-[var(--sidebar-border)] p-2 md:p-4">
