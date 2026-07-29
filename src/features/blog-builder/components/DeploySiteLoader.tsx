@@ -247,6 +247,10 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       aria-live="polite"
       aria-label={displayMessage}
     >
+      <div className="mb-5">
+        <EarningsBanner prominent />
+      </div>
+
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           <motion.div
@@ -378,10 +382,6 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
           eta={etaLabel}
           active
         />
-      </div>
-
-      <div className="mt-5">
-        <EarningsBanner prominent />
       </div>
     </motion.div>
   );

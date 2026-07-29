@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Repeat,
-  Link as LinkIcon,
   Copy,
   Check,
   Loader2,
@@ -14,17 +14,19 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  AlertCircle,
+  FolderOpen,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
+import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
-import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
+import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
 import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
+import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
+import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
 interface ArticleRow {
   id: number;
@@ -35,6 +37,7 @@ interface ArticleRow {
 }
 
 const PAGE_SIZE = 24;
+const SITE_STORAGE_KEY = `${brand.storagePrefix}_recurring_stream_site`;
 
 function formatAngle(angle: string | null): string {
   if (!angle) return "Guide";
@@ -55,14 +58,23 @@ function htmlToPlainText(html: string): string {
     .trim();
 }
 
+function offerLabel(summary: SiteVaultSummary): string {
+  const title = summary.site.title || getSiteTerritory(summary.site);
+  if (summary.recurringArticleCount > 0) {
+    return `${title} (${summary.recurringArticleCount} saved)`;
+  }
+  return title;
+}
+
 export default function RecurringStreamPage() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [articles, setArticles] = useState<ArticleRow[]>([]);
   const [seededCount, setSeededCount] = useState(0);
   const [niche, setNiche] = useState("All");
-  const [affiliateLink, setAffiliateLink] = useState("");
-  const [appliedLink, setAppliedLink] = useState("");
+  const [offers, setOffers] = useState<SiteVaultSummary[]>([]);
+  const [selectedSiteId, setSelectedSiteId] = useState("");
+  const [savedTemplateIds, setSavedTemplateIds] = useState<Set<number>>(new Set());
   const [previewId, setPreviewId] = useState<number | null>(null);
   const [articleHtml, setArticleHtml] = useState<Record<number, string>>({});
   const [loadingArticle, setLoadingArticle] = useState<number | null>(null);
@@ -94,9 +106,79 @@ export default function RecurringStreamPage() {
     [niche]
   );
 
+  const loadOffers = useCallback(async () => {
+    const res = await fetch("/api/blog/site?lite=1", { cache: "no-store" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to load offers");
+    const list = Array.isArray(data.summaries) ? (data.summaries as SiteVaultSummary[]) : [];
+    setOffers(list);
+
+    if (list.length === 0) return;
+
+    let fromStorage: string | null = null;
+    try {
+      fromStorage = localStorage.getItem(SITE_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+
+    const preferred =
+      fromStorage && list.some((o) => o.site.id === fromStorage) ? fromStorage : list[0].site.id;
+    setSelectedSiteId(preferred);
+  }, []);
+
+  const loadSavedForOffer = useCallback(async (siteId: string) => {
+    if (!siteId) {
+      setSavedTemplateIds(new Set());
+      setArticleHtml({});
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      const saved = Array.isArray(data.recurringArticles) ? data.recurringArticles : [];
+      const ids = new Set<number>(saved.map((row: { template_id: number }) => row.template_id));
+      setSavedTemplateIds(ids);
+
+      const htmlMap: Record<number, string> = {};
+      for (const row of saved) {
+        htmlMap[row.template_id] = row.html;
+      }
+      setArticleHtml(htmlMap);
+    } catch {
+      setSavedTemplateIds(new Set());
+    }
+  }, []);
+
   useEffect(() => {
-    void loadArticles(true);
-  }, [loadArticles]);
+    void (async () => {
+      try {
+        await Promise.all([loadArticles(true), loadOffers()]);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to load");
+        setInitialLoading(false);
+      }
+    })();
+  }, [loadArticles, loadOffers]);
+
+  useEffect(() => {
+    if (!selectedSiteId) return;
+    try {
+      localStorage.setItem(SITE_STORAGE_KEY, selectedSiteId);
+    } catch {
+      /* ignore */
+    }
+    setPreviewId(null);
+    void loadSavedForOffer(selectedSiteId);
+  }, [selectedSiteId, loadSavedForOffer]);
+
+  const selectedOffer = useMemo(
+    () => offers.find((o) => o.site.id === selectedSiteId),
+    [offers, selectedSiteId]
+  );
 
   const pageCount = Math.max(1, Math.ceil(articles.length / PAGE_SIZE));
   const paged = useMemo(
@@ -106,22 +188,13 @@ export default function RecurringStreamPage() {
 
   const previewArticle = previewId != null ? articles.find((a) => a.id === previewId) : null;
 
-  const applyAffiliateLink = () => {
-    const next = affiliateLink.trim();
-    if (next !== appliedLink) {
-      setAppliedLink(next);
-      setArticleHtml({});
-      setPreviewId(null);
-    }
-  };
-
   const openPreview = async (articleId: number) => {
     if (previewId === articleId && articleHtml[articleId]) {
       setPreviewId(null);
       return;
     }
-    if (!appliedLink) {
-      setError("Enter your affiliate link and click Apply link before previewing.");
+    if (!selectedSiteId) {
+      setError("Select an offer before previewing.");
       return;
     }
     if (articleHtml[articleId]) {
@@ -135,11 +208,19 @@ export default function RecurringStreamPage() {
       const res = await fetch("/api/premium/recurring-stream/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ articleId, affiliateUrl: appliedLink }),
+        body: JSON.stringify({ articleId, siteId: selectedSiteId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to load article");
       setArticleHtml((prev) => ({ ...prev, [articleId]: data.html }));
+      setSavedTemplateIds((prev) => new Set([...prev, articleId]));
+      setOffers((prev) =>
+        prev.map((o) =>
+          o.site.id === selectedSiteId && !savedTemplateIds.has(articleId)
+            ? { ...o, recurringArticleCount: o.recurringArticleCount + 1 }
+            : o
+        )
+      );
       setPreviewId(articleId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load article");
@@ -170,71 +251,119 @@ export default function RecurringStreamPage() {
   }
 
   return (
-    <PremiumPageLayout
-      title="Recurring Stream"
-      subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — stored once, personalized with your link when you copy.`}
-      footer={
-        <PremiumFooter>
-          Powered by {brand.productName}. Recurring Stream articles are seeded once — members always copy stored templates with their link.
-        </PremiumFooter>
-      }
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="page-container"
     >
-      <PremiumControlCard
-        icon={Repeat}
-        title="100 Authority Articles"
-        description="SEO-ready articles with intro, sections, FAQs, and CTAs — publish on Medium, LinkedIn, or your blog."
-      >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          <label className="block flex-1">
-            <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-primary">
-              <LinkIcon size={14} className="text-accent" />
-              Your affiliate link
-            </span>
-            <input
-              type="url"
-              value={affiliateLink}
-              onChange={(e) => setAffiliateLink(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && applyAffiliateLink()}
-              placeholder="https://..."
-              className="input-base w-full"
-            />
-          </label>
-          <button
-            type="button"
-            onClick={applyAffiliateLink}
-            disabled={!affiliateLink.trim()}
-            className="btn-primary shrink-0 px-5 py-2.5 text-sm disabled:opacity-40"
-          >
-            Apply link
-          </button>
-        </div>
-        {appliedLink && (
-          <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
-            <Sparkles size={14} className="shrink-0 text-emerald-600" />
-            Link applied — previews and copies will include your URL.
-          </p>
-        )}
+      <PageHeader
+        eyebrow="Premium"
+        title="Recurring Stream"
+        subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — pick an offer, preview with your link, and publish across platforms.`}
+      />
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Filter size={14} className="text-text-muted" />
-          {["All", ...RECURRING_STREAM_NICHES].map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setNiche(n)}
-              className={clsx("select-chip-pill", niche === n && "is-selected")}
+      <section className="glass-card overflow-hidden p-0">
+        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+                <Repeat size={24} />
+              </div>
+              <div>
+                <p className="font-bold text-text-primary">100 Authority Articles</p>
+                <p className="text-sm text-text-secondary">
+                  SEO-ready articles with intro, sections, FAQs, and CTAs — saved to your offer when you preview.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 p-6 md:p-8">
+          {offers.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-accent/30 p-6 text-center">
+              <FolderOpen className="mx-auto mb-2 text-text-muted" size={28} />
+              <p className="text-sm text-text-secondary">
+                Create an offer first, then personalize and save authority articles to it.
+              </p>
+              <Link href="/sales-offer-generator" className="btn-primary mt-4 inline-flex">
+                Create an offer
+              </Link>
+            </div>
+          ) : (
+            <>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+                <select
+                  value={selectedSiteId}
+                  onChange={(e) => setSelectedSiteId(e.target.value)}
+                  className="input-base w-full"
+                >
+                  {offers.map((o) => (
+                    <option key={o.site.id} value={o.site.id}>
+                      {offerLabel(o)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {selectedOffer && (
+                <p className="text-xs text-text-muted">
+                  Niche: {getSiteTerritory(selectedOffer.site)}
+                  {selectedOffer.site.armed_links?.[0]?.url
+                    ? " · Affiliate link armed"
+                    : " · Add a link in Sales Offer Generator for best results"}
+                  {selectedOffer.recurringArticleCount > 0
+                    ? ` · ${selectedOffer.recurringArticleCount} article${selectedOffer.recurringArticleCount !== 1 ? "s" : ""} saved`
+                    : ""}
+                </p>
+              )}
+
+              {selectedSiteId && selectedOffer?.site.armed_links?.[0]?.url && (
+                <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
+                  <Sparkles size={14} className="shrink-0 text-emerald-600" />
+                  Offer selected — previews and copies will include your affiliate link and save to this offer.
+                </p>
+              )}
+            </>
+          )}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Filter size={14} className="text-text-muted" />
+            {["All", ...RECURRING_STREAM_NICHES].map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setNiche(n)}
+                className={clsx(
+                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                  niche === n
+                    ? "bg-accent text-black"
+                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
+                )}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+
+          {error && (
+            <p
+              role="alert"
+              className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800"
             >
-              {n}
-            </button>
-          ))}
+              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" aria-hidden />
+              {error}
+            </p>
+          )}
         </div>
+      </section>
 
-        {error && <PremiumErrorAlert message={error} />}
-      </PremiumControlCard>
+      <CrossPlatformGuide />
 
       <GenerationProgress
         active={loadingArticle !== null}
-        label="Personalizing article with your affiliate link..."
+        label="Personalizing article with your offer link..."
       />
 
       <AnimatePresence>
@@ -251,9 +380,15 @@ export default function RecurringStreamPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                   {previewArticle.niche}
                 </p>
+                <h2 className="mt-1 font-bold text-text-primary">{previewArticle.title}</h2>
                 <span className="mt-2 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-text-muted">
                   {formatAngle(previewArticle.angle)}
                 </span>
+                {savedTemplateIds.has(previewArticle.id) && (
+                  <span className="ml-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                    Saved to offer
+                  </span>
+                )}
               </div>
               <button
                 type="button"
@@ -320,9 +455,16 @@ export default function RecurringStreamPage() {
                   <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                     {article.niche}
                   </p>
-                  <span className="shrink-0 rounded bg-slate-100 px-2 py-0.5 text-[10px] text-text-muted">
-                    {formatAngle(article.angle)}
-                  </span>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] text-text-muted">
+                      {formatAngle(article.angle)}
+                    </span>
+                    {savedTemplateIds.has(article.id) && (
+                      <span className="rounded bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                        Saved
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <h3 className="mt-1 line-clamp-2 font-bold text-text-primary">{article.title}</h3>
                 {article.excerpt && (
@@ -333,7 +475,7 @@ export default function RecurringStreamPage() {
               </div>
               <button
                 type="button"
-                disabled={loadingArticle === article.id}
+                disabled={loadingArticle === article.id || !selectedSiteId}
                 onClick={() => void openPreview(article.id)}
                 className="btn-primary mt-auto inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
               >
@@ -379,6 +521,9 @@ export default function RecurringStreamPage() {
         )}
       </div>
 
-    </PremiumPageLayout>
+      <p className="text-xs text-text-muted">
+        Powered by {brand.productName}. Articles are saved to your offer when previewed — view them anytime in Offers Library.
+      </p>
+    </motion.div>
   );
 }

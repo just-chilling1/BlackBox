@@ -9,6 +9,10 @@ import {
   Megaphone,
   ChevronDown,
   Loader2,
+  FileText,
+  Repeat,
+  Copy,
+  Check,
 } from "lucide-react";
 import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
 import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
@@ -19,26 +23,30 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 import type { SavedXThread } from "@/features/publish-kit/lib/x-threads-vault";
+import type { SavedRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
 
 function OfferCard({
   summary,
   siteUrl,
   threads,
-  loadingThreads,
+  recurringArticles,
+  loadingContent,
   onExpand,
   expanded,
 }: {
   summary: SiteVaultSummary;
   siteUrl: string;
   threads: SavedXThread[];
-  loadingThreads: boolean;
+  recurringArticles: SavedRecurringArticle[];
+  loadingContent: boolean;
   onExpand: () => void;
   expanded: boolean;
 }) {
-  const { site, xThreadCount = 0 } = summary;
+  const { site, xThreadCount = 0, recurringArticleCount = 0 } = summary;
   const territory = getSiteTerritory(site);
   const affiliate = site.armed_links?.[0];
   const hasThreads = xThreadCount > 0;
+  const hasArticles = recurringArticleCount > 0;
 
   return (
     <article className="glass-card overflow-hidden">
@@ -70,6 +78,11 @@ function OfferCard({
             </span>
             <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
               {hasThreads ? `${xThreadCount}-post thread saved` : "No story thread yet"}
+            </span>
+            <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
+              {hasArticles
+                ? `${recurringArticleCount} authority article${recurringArticleCount !== 1 ? "s" : ""}`
+                : "No authority articles yet"}
             </span>
           </div>
         </div>
@@ -112,34 +125,117 @@ function OfferCard({
               <Megaphone size={14} />
               {hasThreads ? "Regenerate story thread" : "Generate story thread"}
             </Link>
+            <Link
+              href="/recurring-wealth"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-xs font-medium text-text-heading hover:bg-slate-200/70"
+            >
+              <Repeat size={14} />
+              {hasArticles ? "Browse authority articles" : "Add authority articles"}
+            </Link>
           </div>
 
-          {loadingThreads ? (
+          {loadingContent ? (
             <div className="flex items-center gap-2 text-sm text-text-muted">
               <Loader2 size={14} className="animate-spin" />
-              Loading threads...
+              Loading saved content...
             </div>
-          ) : threads.length > 0 ? (
-            <ThreadListSection title="Story thread" count={threads.length}>
-              {threads.map((thread, i) => (
-                <ThreadCard
-                  key={thread.id}
-                  index={i + 1}
-                  label={`Post ${i + 1} · ${thread.angle || "Post"}`}
-                  text={thread.text}
-                  imageUrl={thread.image_url}
-                  defaultOpen={i === 0}
-                />
-              ))}
-            </ThreadListSection>
           ) : (
-            <p className="text-sm text-text-secondary">
-              No story thread saved for this offer yet. Open X-Power Promotions to generate one.
-            </p>
+            <>
+              {threads.length > 0 ? (
+                <ThreadListSection title="Story thread" count={threads.length}>
+                  {threads.map((thread, i) => (
+                    <ThreadCard
+                      key={thread.id}
+                      index={i + 1}
+                      label={`Post ${i + 1} · ${thread.angle || "Post"}`}
+                      text={thread.text}
+                      imageUrl={thread.image_url}
+                      defaultOpen={i === 0}
+                    />
+                  ))}
+                </ThreadListSection>
+              ) : (
+                <p className="text-sm text-text-secondary">
+                  No story thread saved for this offer yet. Open X-Power Promotions to generate one.
+                </p>
+              )}
+
+              {recurringArticles.length > 0 ? (
+                <SavedArticlesSection articles={recurringArticles} />
+              ) : (
+                <p className="text-sm text-text-secondary">
+                  No authority articles saved for this offer yet. Open Recurring Stream to preview and save articles.
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
     </article>
+  );
+}
+
+function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function SavedArticlesSection({ articles }: { articles: SavedRecurringArticle[] }) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = async (article: SavedRecurringArticle) => {
+    const text = `${article.title}\n\n${htmlToPlainText(article.html)}`;
+    await navigator.clipboard.writeText(text);
+    setCopiedId(article.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <FileText size={14} className="text-accent" />
+        <h4 className="text-sm font-bold text-text-primary">
+          Authority articles ({articles.length})
+        </h4>
+      </div>
+      <div className="space-y-2">
+        {articles.map((article) => (
+          <details
+            key={article.id}
+            className="group rounded-xl border border-border-dim bg-page/60 overflow-hidden"
+          >
+            <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
+              <ChevronDown
+                size={14}
+                className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
+              />
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-text-primary">
+                {article.title}
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleCopy(article);
+                }}
+                className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-text-secondary hover:bg-slate-200/70"
+              >
+                {copiedId === article.id ? <Check size={12} /> : <Copy size={12} />}
+                {copiedId === article.id ? "Copied" : "Copy"}
+              </button>
+            </summary>
+            <div
+              className="recurring-article-body border-t border-divider px-4 py-3 text-sm max-h-64 overflow-y-auto"
+              dangerouslySetInnerHTML={{ __html: article.html }}
+            />
+          </details>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -148,7 +244,8 @@ export default function OffersLibraryPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [threadsBySite, setThreadsBySite] = useState<Record<string, SavedXThread[]>>({});
-  const [loadingThreadsId, setLoadingThreadsId] = useState<string | null>(null);
+  const [articlesBySite, setArticlesBySite] = useState<Record<string, SavedRecurringArticle[]>>({});
+  const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/blog/site?lite=1", { cache: "no-store" })
@@ -169,17 +266,25 @@ export default function OffersLibraryPage() {
     return map;
   }, [summaries, origin]);
 
-  const loadThreads = async (siteId: string) => {
-    if (threadsBySite[siteId]) return;
-    setLoadingThreadsId(siteId);
+  const loadOfferContent = async (siteId: string) => {
+    if (threadsBySite[siteId] && articlesBySite[siteId]) return;
+    setLoadingContentId(siteId);
     try {
       const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, { cache: "no-store" });
       const data = await res.json();
-      if (res.ok && Array.isArray(data.xThreads)) {
-        setThreadsBySite((prev) => ({ ...prev, [siteId]: data.xThreads as SavedXThread[] }));
+      if (res.ok) {
+        if (Array.isArray(data.xThreads)) {
+          setThreadsBySite((prev) => ({ ...prev, [siteId]: data.xThreads as SavedXThread[] }));
+        }
+        if (Array.isArray(data.recurringArticles)) {
+          setArticlesBySite((prev) => ({
+            ...prev,
+            [siteId]: data.recurringArticles as SavedRecurringArticle[],
+          }));
+        }
       }
     } finally {
-      setLoadingThreadsId(null);
+      setLoadingContentId(null);
     }
   };
 
@@ -189,7 +294,7 @@ export default function OffersLibraryPage() {
       return;
     }
     setExpandedId(siteId);
-    void loadThreads(siteId);
+    void loadOfferContent(siteId);
   };
 
   if (loading) {
@@ -198,7 +303,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X promotion threads."
+          subtitle="Every launched sales page lives here with its saved X threads and authority articles."
         />
         <PageSkeleton cards={3} />
       </div>
@@ -211,7 +316,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X promotion threads."
+          subtitle="Every launched sales page lives here with its saved X threads and authority articles."
         />
         <EmptyState
           icon={FolderOpen}
@@ -228,7 +333,7 @@ export default function OffersLibraryPage() {
       <PageHeader
         eyebrow="Offers library"
         title="Your generated sales offers"
-        subtitle="Browse every sales page you launched. Expand an offer to view its saved X threads or generate new ones."
+        subtitle="Browse every sales page you launched. Expand an offer to view saved threads, authority articles, or generate new content."
       />
 
       <div className="space-y-4">
@@ -238,7 +343,8 @@ export default function OffersLibraryPage() {
             summary={summary}
             siteUrl={siteUrls[summary.site.id] ?? ""}
             threads={threadsBySite[summary.site.id] ?? []}
-            loadingThreads={loadingThreadsId === summary.site.id}
+            recurringArticles={articlesBySite[summary.site.id] ?? []}
+            loadingContent={loadingContentId === summary.site.id}
             expanded={expandedId === summary.site.id}
             onExpand={() => toggleExpand(summary.site.id)}
           />

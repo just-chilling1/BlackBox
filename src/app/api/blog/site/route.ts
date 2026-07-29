@@ -5,6 +5,10 @@ import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { getDailyGenerationQuota } from "@/features/blog-builder/lib/site-quota";
 import { countFacebookPostsBySite, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { countXThreadsBySite, listXThreadsForSite } from "@/features/publish-kit/lib/x-threads-vault";
+import {
+  countRecurringArticlesBySite,
+  listRecurringArticlesForSite,
+} from "@/features/premium-recurring/lib/recurring-articles-vault";
 import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +20,7 @@ export interface SiteVaultSummary {
   clickCount: number;
   facebookPostCount: number;
   xThreadCount: number;
+  recurringArticleCount: number;
 }
 
 function countBySite(rows: { site_id: string | null }[] | null): Record<string, number> {
@@ -58,9 +63,10 @@ export async function GET(request: Request) {
   }
 
   if (lite && !siteId) {
-    const xThreadCounts = await countXThreadsBySite(supabase, user.id, siteIds).catch(
-      () => ({} as Record<string, number>)
-    );
+    const [xThreadCounts, recurringArticleCounts] = await Promise.all([
+      countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+      countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+    ]);
 
     const summaries: SiteVaultSummary[] = siteList.map((site) => ({
       site,
@@ -69,6 +75,7 @@ export async function GET(request: Request) {
       clickCount: 0,
       facebookPostCount: 0,
       xThreadCount: xThreadCounts[site.id] ?? 0,
+      recurringArticleCount: recurringArticleCounts[site.id] ?? 0,
     }));
 
     return NextResponse.json({ summaries, quota }, { headers: NO_STORE_HEADERS });
@@ -80,11 +87,13 @@ export async function GET(request: Request) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  const [{ data: postRows }, { data: clickRows }, facebookPostCounts, xThreadCounts] = await Promise.all([
+  const [{ data: postRows }, { data: clickRows }, facebookPostCounts, xThreadCounts, recurringArticleCounts] =
+    await Promise.all([
     supabase.from("posts").select("site_id, status").in("site_id", siteIds),
     supabase.from("affiliate_clicks").select("site_id").in("site_id", siteIds),
     countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
     countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+    countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
   ]);
 
   const postCounts = countBySite(postRows);
@@ -102,6 +111,7 @@ export async function GET(request: Request) {
     clickCount: clickCounts[site.id] ?? 0,
     facebookPostCount: facebookPostCounts[site.id] ?? 0,
     xThreadCount: xThreadCounts[site.id] ?? 0,
+    recurringArticleCount: recurringArticleCounts[site.id] ?? 0,
   }));
 
   if (siteId) {
@@ -119,6 +129,7 @@ export async function GET(request: Request) {
 
     const facebookPosts = await listFacebookPostsForSite(supabase, user.id, siteId).catch(() => []);
     const xThreads = await listXThreadsForSite(supabase, user.id, siteId).catch(() => []);
+    const recurringArticles = await listRecurringArticlesForSite(supabase, user.id, siteId).catch(() => []);
 
     return NextResponse.json(
       {
@@ -127,6 +138,7 @@ export async function GET(request: Request) {
         posts: posts ?? [],
         facebookPosts,
         xThreads,
+        recurringArticles,
         clicks: summary.clickCount,
         quota,
         activeSiteId: session?.site_id ?? null,
@@ -185,6 +197,7 @@ export async function DELETE(request: Request) {
   await supabase.from("site_facebook_posts").delete().eq("user_id", user.id).eq("site_id", siteId);
   await supabase.from("site_x_threads").delete().eq("user_id", user.id).eq("site_id", siteId);
   await supabase.from("site_x_tags").delete().eq("user_id", user.id).eq("site_id", siteId);
+  await supabase.from("site_recurring_articles").delete().eq("user_id", user.id).eq("site_id", siteId);
 
   const { error } = await supabase.from("sites").delete().eq("id", siteId).eq("user_id", user.id);
 

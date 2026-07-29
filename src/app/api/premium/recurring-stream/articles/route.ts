@@ -9,6 +9,8 @@ import {
   recurringStreamNeedsSeed,
 } from "@/features/premium-recurring/lib/seed-articles";
 import { RECURRING_STREAM_TARGET_COUNT, weaveAffiliateIntoArticle } from "@/features/premium-recurring/lib/catalog";
+import { saveRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
+import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
 
@@ -51,19 +53,41 @@ export async function GET(request: Request) {
   }
 }
 
-/** Return full article HTML with affiliate link woven in. */
+/** Return full article HTML with offer affiliate link woven in; saves to the offer. */
 export async function POST(request: Request) {
   const guard = featureApiGuard("premium-recurring");
   if (guard) return guard;
 
-  const { supabase } = await getApiUser();
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
   const body = await request.json().catch(() => ({}));
   const articleId = typeof body.articleId === "number" ? body.articleId : Number(body.articleId);
-  const affiliateUrl = typeof body.affiliateUrl === "string" ? body.affiliateUrl.trim() : "";
+  const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
 
   if (!articleId || Number.isNaN(articleId)) {
     return NextResponse.json({ error: "articleId is required" }, { status: 400, headers: NO_STORE_HEADERS });
   }
+
+  if (!siteId) {
+    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
+  }
+
+  const { data: siteRow } = await supabase
+    .from("sites")
+    .select("*")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!siteRow) {
+    return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  const site = siteRow as BlogSite;
+  const affiliateUrl = site.armed_links?.[0]?.url?.trim() ?? "";
 
   const admin = getServiceRoleClient();
   const reader = admin ?? supabase;
@@ -79,6 +103,15 @@ export async function POST(request: Request) {
 
   const html = weaveAffiliateIntoArticle((data as { html: string }).html, affiliateUrl);
 
+  const saved = await saveRecurringArticle(
+    supabase,
+    user.id,
+    siteId,
+    articleId,
+    (data as { title: string }).title,
+    html
+  );
+
   return NextResponse.json(
     {
       id: data.id,
@@ -86,6 +119,8 @@ export async function POST(request: Request) {
       html,
       excerpt: data.excerpt,
       metaDescription: data.meta_description,
+      savedId: saved.id,
+      promoLink: affiliateUrl || null,
     },
     { headers: NO_STORE_HEADERS }
   );
