@@ -23,16 +23,16 @@ export function buildThreadStoryStructure(): string {
 }
 
 const THREAD_POST_ROLE_HINTS = [
-  "Standalone hook: bold claim, concrete benefit, or story loop. Include a specific number, date, or named result. No link, hashtag, 🧵, or the word \"thread\" or \"introducing.\"",
-  "Place the hero in a concrete scene: a date, a place, and at least one number.",
-  "Raise the stakes — what happens if nothing changes.",
-  "2–3 failed attempts and why they failed. Mandatory — a thread without failure reads as an ad.",
-  "The turning point in one quotable sentence.",
-  "Teach the mechanism clearly enough that the reader could do it manually without buying anything.",
-  "Introduce the product as the thing that makes step 6 fast or repeatable — one sentence, casual, no launch language. No link yet.",
-  "Deliver proof: a specific number, a timeframe, or reference a screenshot.",
-  "Handle the biggest objection or state who this is NOT for.",
-  "Recap in 3 lines max. End with exactly ONE call to action and the promotion URL.",
+  "Standalone hook: bold claim, concrete benefit, or story loop. Include a specific number, date, or named result. Open with 2–3 sentences that pull the reader in — not a one-liner. No link, hashtag, 🧵, or the word \"thread\" or \"introducing.\"",
+  "Place the hero in a concrete scene: a date, a place, and at least one number. Use 2–3 sentences to set the scene.",
+  "Raise the stakes — what happens if nothing changes. Use 2–3 sentences so the cost feels real.",
+  "2–3 failed attempts and why they failed — expand each attempt with a sentence of detail. Mandatory — a thread without failure reads as an ad.",
+  "The turning point in 1–2 vivid sentences — enough context that it feels earned, not a punchline.",
+  "Teach the mechanism clearly enough that the reader could do it manually without buying anything. Use 2–4 sentences with concrete steps or examples.",
+  "Introduce the product as the thing that makes step 6 fast or repeatable — 2–3 sentences, casual, no launch language. No link yet.",
+  "Deliver proof: a specific number, a timeframe, and enough detail that the result feels believable — 2–3 sentences.",
+  "Handle the biggest objection or state who this is NOT for — 2–3 sentences with a clear reason.",
+  "Recap in 4–5 lines. End with exactly ONE call to action and the promotion URL.",
 ];
 
 export function buildThreadSystemPrompt(platformLabel: string): string {
@@ -60,12 +60,13 @@ Promotion URL (ONLY in the final post): ${params.promoLink}
 ${rolesText}
 
 ## Length and rhythm
-- Each post: 1–3 short sentences, roughly 100–180 characters
-- Each post: exactly one idea
-- If a post needs "and" or "but" joining two ideas, split into two posts (keep total at ${count})
+- Each post: 2–4 sentences, roughly 220–280 characters — use the full post space; avoid terse one-liners
+- Each post: one main idea, but develop it with enough detail to stand alone
+- If a post needs "and" or "but" joining two unrelated ideas, split into two posts (keep total at ${count})
 - Do not repeat the same sentence shape in consecutive posts
 - At least 3 posts should end on an open loop the next post resolves
 - Use prose OR bullets consistently — never alternate formats mid-thread
+- Reject any draft post under 180 characters — expand with scene, emotion, or a concrete detail
 
 ## Voice
 - Product name appears in exactly 2 posts: the reveal (post 7) and the CTA (post 10)
@@ -88,7 +89,7 @@ ${rolesText}
 ## Generation order (follow internally)
 1. Write the proof number for post 8 first
 2. Work backwards to the failure in post 4
-3. Write the turning point in post 5 as one sentence
+3. Write the turning point in post 5 in 1–2 developed sentences
 4. Consider 5 hook candidates; select the best for post 1
 5. Fill posts 2, 3, 6, 7
 6. Write the objection in post 9
@@ -98,7 +99,8 @@ ${rolesText}
 - Post 1 requires the rest of the thread to make sense
 - No failure or setback in post 4
 - Product appears before post 7
-- Any post exceeds 3 sentences
+- Any post exceeds 5 sentences
+- Any post is under 180 characters
 - Final post has two or more asks
 - No specific number anywhere in the thread
 - Thread reads the same whether the product exists or not
