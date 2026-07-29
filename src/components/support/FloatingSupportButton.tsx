@@ -34,9 +34,9 @@ export function FloatingSupportButton() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label={floatingWidget.ariaLabel}
-          className="support-float-trigger fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-accent/40 bg-white/95 px-4 py-2.5 text-sm font-semibold text-accent-readable shadow-gold backdrop-blur transition-all hover:border-accent/70 hover:shadow-[0_0_28px_rgba(238,179,16,0.28)] sm:bottom-6 sm:right-6 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"
+          className="support-float-trigger fixed bottom-4 right-4 z-50 flex items-center gap-2.5 rounded-full border border-amber-600/25 bg-accent px-5 py-3 text-sm font-bold text-text-on-accent shadow-[0_4px_16px_rgba(0,0,0,0.12),0_0_24px_rgba(238,179,16,0.35)] ring-2 ring-white/80 transition-all hover:brightness-110 hover:shadow-[0_6px_20px_rgba(0,0,0,0.16),0_0_32px_rgba(238,179,16,0.45)] active:scale-[0.98] sm:bottom-6 sm:right-6 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"
         >
-          <HelpCircle className="h-4 w-4" />
+          <HelpCircle className="h-5 w-5 shrink-0" aria-hidden />
           {floatingWidget.label}
         </button>
       ) : null}
