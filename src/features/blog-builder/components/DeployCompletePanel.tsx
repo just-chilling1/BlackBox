@@ -26,13 +26,13 @@ export function DeployCompletePanel({
       animate={{ opacity: 1, y: 0 }}
       className="flex min-w-0 max-w-full flex-col gap-5 scroll-mt-24 overflow-x-clip"
     >
-      <div className="rounded-2xl border border-accent/20 bg-gradient-to-r from-accent/[0.08] via-accent/[0.04] to-transparent p-5 sm:p-6">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/90 p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 ring-1 ring-accent/25">
-            <CheckCircle2 className="shrink-0 text-accent" size={24} />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 ring-1 ring-emerald-300">
+            <CheckCircle2 className="shrink-0 text-emerald-700" size={24} />
           </div>
           <div className="min-w-0">
-            <p className="brand-font text-lg text-text-primary sm:text-xl">
+            <p className="brand-font text-lg text-text-heading sm:text-xl">
               {productName || site.title}
             </p>
             <p className="mt-1 text-sm text-text-secondary">
@@ -49,7 +49,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onGenerateAnother}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-accent/40 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
+          className="w-full rounded-xl border border-amber-400 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
         >
           <span className="flex items-center justify-center gap-2">
             <Rocket size={18} />
@@ -61,7 +61,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onViewVault}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-accent/35 bg-white px-4 py-4 text-base font-bold text-accent shadow-sm transition-colors hover:border-accent/50 hover:bg-accent/5"
+          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-4 text-base font-bold text-text-primary shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-accent-readable"
         >
           <span className="flex items-center justify-center gap-2">
             View offers library

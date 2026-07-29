@@ -35,7 +35,11 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                 <p
                   className={clsx(
                     "mt-2 text-xs font-semibold leading-snug sm:text-sm",
-                    isActive ? "text-text-heading" : currentStep >= step.number ? "text-text-primary" : "text-text-muted"
+                    isActive
+                      ? "text-text-heading"
+                      : isComplete
+                        ? "text-text-primary"
+                        : "text-text-muted"
                   )}
                 >
                   {step.title}
@@ -43,7 +47,7 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                 <p
                   className={clsx(
                     "mt-0.5 hidden text-[10px] leading-snug sm:block sm:text-xs",
-                    isActive ? "text-text-secondary" : "text-text-muted"
+                    isActive ? "text-text-secondary" : isComplete ? "text-text-muted" : "text-text-muted/80"
                   )}
                 >
                   {step.description}

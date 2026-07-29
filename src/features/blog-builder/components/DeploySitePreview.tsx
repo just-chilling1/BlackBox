@@ -19,10 +19,10 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-w-0 max-w-full rounded-xl border border-accent/30 bg-gradient-to-br from-accent/[0.07] via-white to-accent/[0.03] p-5 sm:p-6 shadow-sm"
+      className="min-w-0 max-w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm ring-1 ring-amber-100 sm:p-6"
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-readable">
           Cash asset initialized
         </p>
         {isLive && (
@@ -32,25 +32,25 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
             rel="noopener noreferrer"
             title="View website"
             aria-label={`View ${site.title}`}
-            className="-mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/30 bg-accent/10 text-accent transition-colors hover:border-accent/45 hover:bg-accent/15"
+            className="-mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-accent-readable transition-colors hover:border-amber-300 hover:bg-amber-100"
           >
             <Eye size={18} strokeWidth={2} />
           </Link>
         )}
       </div>
       <h2 className="brand-font text-xl tracking-tight text-text-heading sm:text-2xl">{site.title}</h2>
-      {site.tagline && <p className="mt-1 text-sm text-text-muted">{site.tagline}</p>}
+      {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
 
       <div className="mt-4 flex flex-wrap gap-3 text-xs">
-        <span className="inline-flex items-center gap-1.5 rounded-lg border border-accent/25 bg-accent/10 px-3 py-1.5 font-medium text-accent">
-          <Globe size={14} />
+        <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 font-semibold text-accent-readable">
+          <Globe size={14} aria-hidden />
           Topic: {site.hobby}
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-lg border border-accent/20 bg-accent/5 px-3 py-1.5 text-text-secondary">
-          <Link2 size={14} className="text-accent" />
+        <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-medium text-text-secondary">
+          <Link2 size={14} className="text-accent-readable" aria-hidden />
           {armedCount} product link{armedCount === 1 ? "" : "s"}
         </span>
-        <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-lg border border-border-dim bg-page px-3 py-1.5 font-mono text-text-muted">
+        <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-text-secondary">
           {publicPath}
         </span>
       </div>
@@ -62,9 +62,9 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
           rel="noopener noreferrer"
           title="View website"
           aria-label={`View ${site.title}`}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/35 bg-white px-5 py-3 text-sm font-semibold text-accent transition-colors hover:border-accent/50 hover:bg-accent/5 sm:w-auto"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-accent to-[#C9970D] px-5 py-3 text-sm font-bold text-text-on-accent shadow-gold transition-all hover:brightness-105 sm:w-auto"
         >
-          <Eye size={16} />
+          <Eye size={16} aria-hidden />
           View live questionnaire
         </Link>
       )}
