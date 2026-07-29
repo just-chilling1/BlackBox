@@ -1,6 +1,16 @@
 "use client";
 
-import { Globe, Linkedin, BookOpen, MessageSquare, Rss } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Globe,
+  Linkedin,
+  BookOpen,
+  MessageSquare,
+  Rss,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 const PLATFORMS = [
   {
@@ -56,35 +66,60 @@ const PLATFORMS = [
 ] as const;
 
 export function CrossPlatformGuide() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <section className="glass-card space-y-4 p-5 md:p-6">
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
-          How to use across platforms
-        </p>
-        <p className="mt-1 text-sm text-text-secondary">
-          Each article is ready to copy. Pick a platform below and follow the steps — your offer link is
-          already woven in when you preview and save.
-        </p>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {PLATFORMS.map((platform) => (
-          <div
-            key={platform.name}
-            className="rounded-xl border border-border-dim/70 bg-page/60 p-4"
+    <section className="glass-card overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        className="flex w-full items-start justify-between gap-4 p-5 text-left transition-colors hover:bg-slate-50/80 md:p-6"
+      >
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
+            How to use across platforms
+          </p>
+          <p className="mt-1 text-sm text-text-secondary">
+            Each article is ready to copy. Pick a platform and follow the steps — your offer link is
+            already woven in when you preview and save.
+          </p>
+        </div>
+        <span className="mt-0.5 shrink-0 text-text-muted" aria-hidden>
+          {open ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="overflow-hidden"
           >
-            <div className="mb-2 flex items-center gap-2">
-              <platform.icon size={16} className="shrink-0 text-accent" aria-hidden />
-              <h3 className="text-sm font-bold text-text-primary">{platform.name}</h3>
-            </div>
-            <ol className="list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-text-secondary">
-              {platform.steps.map((step) => (
-                <li key={step}>{step}</li>
+            <div className="grid gap-3 border-t border-divider px-5 pb-5 pt-4 sm:grid-cols-2 md:px-6 md:pb-6">
+              {PLATFORMS.map((platform) => (
+                <div
+                  key={platform.name}
+                  className="rounded-xl border border-border-dim/70 bg-page/60 p-4"
+                >
+                  <div className="mb-2 flex items-center gap-2">
+                    <platform.icon size={16} className="shrink-0 text-accent" aria-hidden />
+                    <h3 className="text-sm font-bold text-text-primary">{platform.name}</h3>
+                  </div>
+                  <ol className="list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-text-secondary">
+                    {platform.steps.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
               ))}
-            </ol>
-          </div>
-        ))}
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
