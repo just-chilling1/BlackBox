@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getApiUserFromRequest } from "@/lib/api-auth";
-import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support";
+import { APP_SUPPORT_NAME, RESEND_SENDER_EMAIL, SUPPORT_EMAIL } from "@/lib/support";
 
 const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN || "neoaifreshdesk";
 
@@ -18,7 +18,8 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
 
-  const from = process.env.RESEND_FROM_EMAIL || `${APP_SUPPORT_NAME} <support@reliteagency.com>`;
+  const from =
+    process.env.RESEND_FROM_EMAIL || `${APP_SUPPORT_NAME} <${RESEND_SENDER_EMAIL}>`;
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -27,7 +28,7 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
       from,
       to: [SUPPORT_EMAIL],
       reply_to: email,
-      subject: `Support request from ${email}`,
+      subject: `${APP_SUPPORT_NAME} support request from ${email}`,
       text: `Customer email: ${email}\nSoftware: ${APP_SUPPORT_NAME}\n\nCustomer inquiry is:\n${message}\n\n---\nUser ID: ${userId}`,
       html: `<p><strong>Customer email:</strong> ${escapeHtml(email)}<br><strong>Software:</strong> ${APP_SUPPORT_NAME}</p><p><strong>Customer inquiry is:</strong></p><p>${escapeHtml(message)}</p><p><em>User ID: ${userId}</em></p>`,
     }),
@@ -35,7 +36,7 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
 
   if (!res.ok) {
     const detail = await res.text();
-    console.error("Resend email error:", res.status, detail);
+    console.error("[blackbox-cash] Resend error:", res.status, detail);
     return false;
   }
 
@@ -62,7 +63,7 @@ async function sendViaFreshdesk(email: string, message: string, userId: string):
 
   if (!res.ok) {
     const detail = await res.text();
-    console.error("Freshdesk ticket error:", res.status, detail);
+    console.error("[blackbox-cash] Freshdesk error:", res.status, detail);
     return false;
   }
 
@@ -88,27 +89,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Message is too short" }, { status: 400 });
     }
 
-    if (await sendViaFreshdesk(email, message, userId)) {
-      return NextResponse.json({ success: true, channel: "freshdesk" });
+    const sent =
+      (await sendViaFreshdesk(email, message, userId)) ||
+      (await sendViaResend(email, message, userId));
+
+    if (!sent) {
+      return NextResponse.json(
+        {
+          error: "Could not send automatically — opening your email app instead.",
+          useMailto: true,
+        },
+        { status: 503 }
+      );
     }
 
-    if (await sendViaResend(email, message, userId)) {
-      return NextResponse.json({ success: true, channel: "resend" });
-    }
-
-    return NextResponse.json(
-      {
-        error:
-          "We couldn't send your message right now. Please try again in a few minutes or email us directly.",
-      },
-      { status: 503 }
-    );
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Support request error:", error);
+    console.error("[blackbox-cash] Support error:", error);
     return NextResponse.json(
       {
-        error:
-          "We couldn't send your message right now. Please try again in a few minutes or email us directly.",
+        error: "Could not send automatically — opening your email app instead.",
+        useMailto: true,
       },
       { status: 500 }
     );

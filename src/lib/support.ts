@@ -8,6 +8,9 @@ export const SUPPORT_MAILTO = `mailto:${support.email}`;
 export const APP_SUPPORT_NAME = brand.productName;
 export const FREE_TRAINING_URL = offers.exclusiveOffer3;
 
+/** Verified sending domain on Resend — outbound sender only, not a support contact. */
+export const RESEND_SENDER_EMAIL = "support@reliteagency.com";
+
 export function vimeoEmbedUrl(videoId: string): string {
   return `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0`;
 }

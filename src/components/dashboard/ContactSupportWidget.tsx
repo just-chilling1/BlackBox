@@ -14,10 +14,10 @@ const fieldClass =
   "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all";
 
 const embeddedFieldClass =
-  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none focus:shadow-[0_0_16px_rgba(238,179,16,0.12)] transition-all";
+  "w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all";
 
 const embeddedLabelClass =
-  "mb-2 block text-xs font-semibold uppercase tracking-wide text-accent-readable";
+  "mb-2 block text-xs font-bold uppercase tracking-wide text-text-heading";
 
 function trainingUpsellUrl(): string | null {
   const external = trainingContent.externalTrainingUrl?.trim();
@@ -29,25 +29,47 @@ function trainingUpsellUrl(): string | null {
 
 async function parseJsonResponse(res: Response): Promise<{
   error?: string;
+  useMailto?: boolean;
   success?: boolean;
 } | null> {
   const text = await res.text();
   if (!text.trim()) return {};
 
   try {
-    return JSON.parse(text) as { error?: string; success?: boolean };
+    return JSON.parse(text) as { error?: string; useMailto?: boolean; success?: boolean };
   } catch {
     return null;
   }
 }
 
+function openSupportMailto(email: string, message: string) {
+  const subject = `${APP_SUPPORT_NAME} — Support Request`;
+  const body = `Please reply to: ${email}\n\n${message}`;
+  window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function finishWithMailto(
+  email: string,
+  message: string,
+  setSubmittedEmail: (value: string) => void,
+  setSentViaMailto: (value: boolean) => void,
+  setFormState: (value: FormState) => void
+) {
+  openSupportMailto(email, message);
+  setSubmittedEmail(email);
+  setSentViaMailto(true);
+  setFormState("success");
+}
+
 function SupportSuccessPanel({
   embedded,
   submittedEmail,
+  sentViaMailto,
   onReset,
 }: {
   embedded: boolean;
   submittedEmail: string;
+  sentViaMailto: boolean;
   onReset: () => void;
 }) {
   const upsellUrl = trainingUpsellUrl();
@@ -65,14 +87,26 @@ function SupportSuccessPanel({
               : "ds-h3"
           }
         >
-          Message sent
+          {sentViaMailto ? "Check your email app" : "Message sent"}
         </h3>
         <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-secondary" : "text-text-secondary text-left"}`}>
-          We&apos;ll reply to{" "}
-          <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
-          We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+          {sentViaMailto ? (
+            <>
+              Your email app should open with your message ready to send. Tap{" "}
+              <span className="font-semibold text-text-heading">Send</span> to deliver it — then
+              we&apos;ll reply to{" "}
+              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
+              We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+            </>
+          ) : (
+            <>
+              We&apos;ll reply to{" "}
+              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
+              We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+            </>
+          )}
         </p>
-        <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-muted" : "text-text-muted text-left"}`}>
+        <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-secondary" : "text-text-secondary text-left"}`}>
           Remember: our reply will go to{" "}
           <span className="break-all font-semibold text-text-primary">{submittedEmail}</span> only — not
           another inbox you may use elsewhere. If you don&apos;t see it within 48 hours, check that
@@ -111,7 +145,7 @@ function SupportSuccessPanel({
 
   if (embedded) {
     return (
-      <div className="support-widget-card min-w-0 overflow-hidden rounded-xl border border-accent/20 bg-white p-5">
+      <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
         {content}
       </div>
     );
@@ -125,6 +159,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const [message, setMessage] = useState("");
   const [formState, setFormState] = useState<FormState>("idle");
   const [submittedEmail, setSubmittedEmail] = useState("");
+  const [sentViaMailto, setSentViaMailto] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -136,6 +171,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const resetForm = () => {
     setFormState("idle");
     setMessage("");
+    setSentViaMailto(false);
     setErrorMessage("");
   };
 
@@ -184,16 +220,42 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         const data = await parseJsonResponse(res);
 
         if (data === null) {
-          throw new Error("Unexpected response from the server. Please try again.");
+          finishWithMailto(
+            trimmedEmail,
+            trimmedMessage,
+            setSubmittedEmail,
+            setSentViaMailto,
+            setFormState
+          );
+          return;
         }
 
         if (res.status === 401) {
-          throw new Error("Your session expired. Please refresh the page and try again.");
+          finishWithMailto(
+            trimmedEmail,
+            trimmedMessage,
+            setSubmittedEmail,
+            setSentViaMailto,
+            setFormState
+          );
+          return;
         }
 
         if (res.ok && data.success) {
           setSubmittedEmail(trimmedEmail);
+          setSentViaMailto(false);
           setFormState("success");
+          return;
+        }
+
+        if (data.useMailto) {
+          finishWithMailto(
+            trimmedEmail,
+            trimmedMessage,
+            setSubmittedEmail,
+            setSentViaMailto,
+            setFormState
+          );
           return;
         }
 
@@ -211,6 +273,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       <SupportSuccessPanel
         embedded={embedded}
         submittedEmail={submittedEmail}
+        sentViaMailto={sentViaMailto}
         onReset={resetForm}
       />
     );
@@ -267,13 +330,15 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       </div>
 
       {formState === "error" && errorMessage ? (
-        <p className="text-sm text-red-500">{errorMessage}</p>
+        <p className="text-sm font-medium text-red-600" role="alert">
+          {errorMessage}
+        </p>
       ) : null}
 
       <p
         className={
           embedded
-            ? "rounded-lg border border-border-dim/70 bg-page/60 px-3.5 py-3 text-xs leading-relaxed text-text-muted"
+            ? "rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3 text-xs leading-relaxed text-text-secondary"
             : "rounded-lg border border-border-dim/70 bg-page/60 px-3.5 py-3 text-xs leading-relaxed text-text-muted"
         }
       >
@@ -303,19 +368,19 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     <div
       className={
         embedded
-          ? "rounded-xl border border-border-dim/60 bg-page/50 px-4 py-3.5"
+          ? "rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5"
           : "dashboard-nested-card flex gap-3 px-4 py-3.5"
       }
     >
-      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" />
+      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
       <div className="min-w-0">
-        <p className="text-xs text-text-muted">
+        <p className="text-xs text-text-secondary">
           {embedded ? "If the form doesn't work, copy our support email:" : "If the form doesn't work, copy our support email:"}
         </p>
         <button
           type="button"
           onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-          className="block break-all text-left text-sm font-semibold text-accent hover:underline"
+          className="block break-all text-left text-sm font-semibold text-accent-readable hover:underline"
         >
           {SUPPORT_EMAIL}
         </button>
@@ -325,10 +390,10 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
 
   if (embedded) {
     return (
-      <div className="support-widget-card min-w-0 overflow-hidden rounded-xl border border-accent/20 bg-white p-5">
+      <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
         <div className="mb-4 flex min-w-0 items-center gap-3">
-          <div className="shrink-0 rounded-xl border border-accent/20 bg-accent/10 p-2.5">
-            <Headphones className="h-5 w-5 text-accent-readable" />
+          <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 p-2.5">
+            <Headphones className="h-5 w-5 text-amber-700" />
           </div>
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-heading">Contact Support</h3>
         </div>
