@@ -42,14 +42,15 @@ export function FeaturedVideoSection({ onPlayWithoutVideo }: FeaturedVideoSectio
           </div>
         </div>
 
-        <VideoThumbnail
-          videoId={introVideoId}
-          title={dashboardContent.introVideoTitle}
-          caption={`▶ ${dashboardContent.introVideoSubtitle}`}
-          onPlay={handlePlay}
-          eager
-          className="rounded-none border-0 border-y border-border-dim/30"
-        />
+        <div className="px-5 py-4">
+          <VideoThumbnail
+            videoId={introVideoId}
+            title={dashboardContent.introVideoTitle}
+            caption={`▶ ${dashboardContent.introVideoSubtitle}`}
+            onPlay={handlePlay}
+            eager
+          />
+        </div>
 
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
