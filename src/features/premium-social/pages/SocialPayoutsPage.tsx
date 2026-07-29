@@ -9,15 +9,17 @@ import {
   Loader2,
   Sparkles,
   FolderOpen,
-  ChevronDown,
   ClipboardCopy,
 } from "lucide-react";
-import Link from "next/link";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
-import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
@@ -39,28 +41,16 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
   const isCopied = copiedId === post.id;
 
   return (
-    <details className="group glass-card overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_120px]">
-      <summary className="flex cursor-pointer list-none items-start gap-3 p-4 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
-        <ChevronDown
-          size={16}
-          className="mt-0.5 shrink-0 text-text-muted transition-transform group-open:rotate-180"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-            Variant {index + 1}
-          </p>
-          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-text-secondary group-open:hidden">
-            {post.body}
-          </p>
-        </div>
+    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-accent/20 [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
+          Variant {index + 1}
+        </p>
         <button
           type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            onCopy(post);
-          }}
+          onClick={() => onCopy(post)}
           className={clsx(
-            "shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
+            "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
             isCopied
               ? "bg-accent/20 text-accent"
               : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
@@ -69,11 +59,9 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
           {isCopied ? <Check size={12} /> : <Copy size={12} />}
           {isCopied ? "Copied" : "Copy"}
         </button>
-      </summary>
-      <div className="border-t border-divider px-4 pb-4 pl-11">
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.body}</p>
       </div>
-    </details>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.body}</p>
+    </article>
   );
 });
 
@@ -237,107 +225,91 @@ export default function SocialPayoutsPage() {
 
   if (loading) {
     return (
-      <div className="page-stack max-w-4xl">
-        <PageHeader
-          eyebrow="Premium"
-          title="Social Payouts"
-          subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
-        />
+      <PremiumPageLayout
+        title="Social Payouts"
+        subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+        animate={false}
+      >
         <PageSkeleton cards={2} />
-      </div>
+      </PremiumPageLayout>
     );
   }
 
   return (
-    <div className="page-stack max-w-4xl">
-      <PageHeader
-        eyebrow="Premium"
-        title="Social Payouts"
-        subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+    <PremiumPageLayout
+      title="Social Payouts"
+      subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+      footer={
+        <PremiumFooter>
+          Powered by {brand.productName}. Social Payouts uses the 10X bulk post engine.
+        </PremiumFooter>
+      }
+    >
+      {offers.length === 0 ? (
+        <EmptyState
+          icon={FolderOpen}
+          title="No offers yet"
+          description="Create an offer first, then generate social posts for it."
+          action={{ label: "Create an offer", href: "/sales-offer-generator" }}
+        />
+      ) : (
+        <PremiumControlCard
+          icon={Megaphone}
+          title="Bulk post generator (10X)"
+          description="One offer → many scroll-stopping posts with your link baked in."
+        >
+          <label className="block">
+            <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+            <select
+              value={selectedSiteId}
+              onChange={(e) => setSelectedSiteId(e.target.value)}
+              className="input-base w-full"
+            >
+              {offers.map((o) => (
+                <option key={o.site.id} value={o.site.id}>
+                  {offerLabel(o)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {selectedOffer && (
+            <p className="text-xs text-text-muted">
+              Niche: {getSiteTerritory(selectedOffer.site)}
+              {selectedOffer.site.armed_links?.[0]?.url
+                ? " · Link armed"
+                : " · Add a link in Links Library for best results"}
+              {selectedOffer.facebookPostCount > 0
+                ? ` · ${selectedOffer.facebookPostCount} saved posts`
+                : ""}
+            </p>
+          )}
+
+          {error && <PremiumErrorAlert message={error} />}
+
+          <button
+            type="button"
+            disabled={generating || !selectedSiteId}
+            onClick={() => void handleGenerate()}
+            className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+            {generating
+              ? "Generating 10 posts…"
+              : hasExistingPosts
+                ? "Regenerate 10X posts"
+                : "Generate 10X posts"}
+          </button>
+        </PremiumControlCard>
+      )}
+
+      <GenerationProgress
+        active={generating}
+        label="Generating 10 scroll-stopping Facebook post variants..."
       />
 
-      <section className="glass-card space-y-5 p-6 md:p-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/15 text-accent">
-            <Megaphone size={22} />
-          </div>
-          <div>
-            <p className="font-bold text-text-primary">Bulk post generator (10X)</p>
-            <p className="text-sm text-text-secondary">
-              One offer → many scroll-stopping posts with your link baked in.
-            </p>
-          </div>
-        </div>
-
-        {offers.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-accent/30 p-6 text-center">
-            <FolderOpen className="mx-auto mb-2 text-text-muted" size={28} />
-            <p className="text-sm text-text-secondary">
-              Create an offer first, then generate social posts for it.
-            </p>
-            <Link href="/sales-offer-generator" className="btn-primary mt-4 inline-flex">
-              Create an offer
-            </Link>
-          </div>
-        ) : (
-          <>
-            <label className="block">
-              <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
-              <select
-                value={selectedSiteId}
-                onChange={(e) => setSelectedSiteId(e.target.value)}
-                className="input-base w-full"
-              >
-                {offers.map((o) => (
-                  <option key={o.site.id} value={o.site.id}>
-                    {offerLabel(o)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            {selectedOffer && (
-              <p className="text-xs text-text-muted">
-                Niche: {getSiteTerritory(selectedOffer.site)}
-                {selectedOffer.site.armed_links?.[0]?.url
-                  ? " · Link armed"
-                  : " · Add a link in Links Library for best results"}
-                {selectedOffer.facebookPostCount > 0
-                  ? ` · ${selectedOffer.facebookPostCount} saved posts`
-                  : ""}
-              </p>
-            )}
-
-            <GenerationProgress
-              active={generating}
-              label="Generating 10 scroll-stopping Facebook post variants..."
-            />
-
-            <button
-              type="button"
-              disabled={generating || !selectedSiteId}
-              onClick={() => void handleGenerate()}
-              className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-            >
-              {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-              {generating
-                ? "Generating 10 posts…"
-                : hasExistingPosts
-                  ? "Regenerate 10X posts"
-                  : "Generate 10X posts"}
-            </button>
-          </>
-        )}
-
-        {error && (
-          <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-            {error}
-          </p>
-        )}
-      </section>
-
       {(loadingPosts || posts.length > 0) && (
-        <section id={GENERATION_RESULTS_ID} className="space-y-3 scroll-mt-24">
+        <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-text-primary">
               {loadingPosts && posts.length === 0
@@ -362,22 +334,20 @@ export default function SocialPayoutsPage() {
               Loading saved posts…
             </div>
           ) : (
-            posts.map((post, i) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                index={i}
-                copiedId={copiedId}
-                onCopy={handleCopy}
-              />
-            ))
+            <div className="grid gap-3 sm:grid-cols-2">
+              {posts.map((post, i) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  index={i}
+                  copiedId={copiedId}
+                  onCopy={handleCopy}
+                />
+              ))}
+            </div>
           )}
         </section>
       )}
-
-      <p className="text-xs text-text-muted">
-        {brand.productName} Social Payouts — powered by the 10X bulk post engine.
-      </p>
-    </div>
+    </PremiumPageLayout>
   );
 }

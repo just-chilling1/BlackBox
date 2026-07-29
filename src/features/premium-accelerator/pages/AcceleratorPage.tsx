@@ -15,9 +15,12 @@ import {
 import Link from "next/link";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
-import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
 import type { AcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
@@ -286,90 +289,74 @@ export default function AcceleratorPage() {
 
   if (loading && templates.length === 0) {
     return (
-      <div className="page-stack max-w-6xl">
-        <PageHeader
-          eyebrow="Premium"
-          title="Accelerator"
-          subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
-        />
-        <PageSkeleton cards={6} className="max-w-6xl" />
-      </div>
+      <PremiumPageLayout
+        title="Accelerator"
+        subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
+        animate={false}
+      >
+        <PageSkeleton cards={6} />
+      </PremiumPageLayout>
     );
   }
 
   return (
-    <div className="page-stack max-w-6xl">
-      <PageHeader
-        eyebrow="Premium"
-        title="Accelerator"
-        subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
-      />
-
-      <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
-                <Rocket size={24} />
-              </div>
-              <div>
-                <p className="font-bold text-text-primary">200 Sales Pages + Story Threads</p>
-                <p className="text-sm text-text-secondary">
-                  Each template includes a ready-made 10-post X story thread with niche images — clone instantly with your link.
-                </p>
-              </div>
-            </div>
-            {!ready && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-800">
-                {refreshing && <Loader2 size={12} className="animate-spin" />}
-                Seeding in progress ({seededCount}/200)
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-4 p-6 md:p-8">
-          <label className="block">
-            <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-primary">
-              <LinkIcon size={14} className="text-accent" />
-              Your affiliate link
+    <PremiumPageLayout
+      title="Accelerator"
+      subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
+      footer={
+        <PremiumFooter>
+          Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
+        </PremiumFooter>
+      }
+    >
+      <PremiumControlCard
+        icon={Rocket}
+        title="200 Sales Pages + Story Threads"
+        description="Each template includes a ready-made 10-post X story thread with niche images — clone instantly with your link."
+        badge={
+          !ready ? (
+            <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-800">
+              {refreshing && <Loader2 size={12} className="animate-spin" />}
+              Seeding in progress ({seededCount}/200)
             </span>
-            <input
-              type="url"
-              value={affiliateLink}
-              onChange={(e) => setAffiliateLink(e.target.value)}
-              placeholder="https://..."
-              className="input-base w-full"
-            />
-          </label>
+          ) : undefined
+        }
+      >
+        <label className="block">
+          <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-primary">
+            <LinkIcon size={14} className="text-accent" />
+            Your affiliate link
+          </span>
+          <input
+            type="url"
+            value={affiliateLink}
+            onChange={(e) => setAffiliateLink(e.target.value)}
+            placeholder="https://..."
+            className="input-base w-full"
+          />
+        </label>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Filter size={14} className="text-text-muted" />
-            {["All", ...ACCELERATOR_NICHES].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setNiche(n)}
-                className={clsx("select-chip-pill", niche === n && "is-selected")}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-
-          <p className="text-xs text-text-muted">
-            Showing {visibleTemplates.length} of {filtered.length} template{filtered.length !== 1 ? "s" : ""}
-            {filtered.length !== templates.length ? ` (${templates.length} total)` : ""}
-          </p>
-
-          {error && (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-              {error}
-            </p>
-          )}
-
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter size={14} className="text-text-muted" />
+          {["All", ...ACCELERATOR_NICHES].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setNiche(n)}
+              className={clsx("select-chip-pill", niche === n && "is-selected")}
+            >
+              {n}
+            </button>
+          ))}
         </div>
-      </section>
+
+        <p className="text-xs text-text-muted">
+          Showing {visibleTemplates.length} of {filtered.length} template{filtered.length !== 1 ? "s" : ""}
+          {filtered.length !== templates.length ? ` (${templates.length} total)` : ""}
+        </p>
+
+        {error && <PremiumErrorAlert message={error} />}
+      </PremiumControlCard>
 
       <GenerationProgress
         active={cloningId !== null}
@@ -409,10 +396,6 @@ export default function AcceleratorPage() {
         </div>
       )}
 
-      <p className="text-xs text-text-muted">
-        Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
-      </p>
-
       <TemplatePreviewOverlay
         open={previewOpen}
         onClose={closePreview}
@@ -426,6 +409,6 @@ export default function AcceleratorPage() {
           if (previewCatalogId != null) void handleClone(previewCatalogId);
         }}
       />
-    </div>
+    </PremiumPageLayout>
   );
 }

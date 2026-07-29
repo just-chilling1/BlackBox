@@ -9,6 +9,9 @@ import {
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
 
 interface Post {
     id: string;
@@ -159,53 +162,17 @@ export default function DfyPage() {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-10 py-10 max-w-5xl mx-auto w-full"
+        <PremiumPageLayout
+            title="Done-For-You"
+            subtitle="50 proven search angles and keywords — pick one, add your link, and get ready-made replies you can post in minutes."
+            footer={<PremiumFooter />}
         >
-            {/* Header */}
-            <header className="flex flex-col items-center text-center gap-5">
-                <div className="w-16 h-16 bg-accent/10 border border-accent/20 flex items-center justify-center rounded-2xl shadow-gold">
-                    <Crown size={32} className="text-accent fill-accent/20" />
-                </div>
-                <div className="flex flex-col gap-3">
-                    <h1 className="text-[40px] text-text-heading font-black leading-tight tracking-tight">
-                        Done-For-You <span className="text-accent">Vault</span>
-                    </h1>
-                    <p className="text-[18px] font-bold text-accent/80 tracking-wide uppercase">
-                        50 Proven Search Angles & Keywords Ready to Hunt & Earn
-                    </p>
-                </div>
-            </header>
-
-            {/* Video Tutorial */}
-            <section className="glass-card p-0 overflow-hidden">
-                <div className="flex flex-col md:flex-row">
-                    <div className="md:w-1/2 relative bg-black/40">
-                        <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                            <iframe
-                                src="https://player.vimeo.com/video/1171728175?badge=0&autopause=0&player_id=0&app_id=58479"
-                                className="absolute inset-0 w-full h-full"
-                                frameBorder="0"
-                                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                                allowFullScreen
-                                title="Done-For-You Tutorial"
-                            />
-                        </div>
-                    </div>
-                    <div className="md:w-1/2 p-8 md:p-10 flex flex-col justify-center gap-4">
-                        <div className="flex items-center gap-2">
-                            <Sparkles size={14} className="text-accent" />
-                            <span className="text-[11px] font-bold text-accent uppercase tracking-[0.2em]">Watch First</span>
-                        </div>
-                        <h2 className="text-2xl font-bold text-text-heading">How to Use Done-For-You</h2>
-                        <p className="text-text-secondary leading-relaxed">
-                            Watch this quick tutorial to learn how to pick a keyword, add your link, and get ready-made replies you can post in minutes.
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <PremiumVideoTutorial
+                vimeoId="1171728175"
+                iframeTitle="Done-For-You Tutorial"
+                title="How to Use Done-For-You"
+                description="Watch this quick tutorial to learn how to pick a keyword, add your link, and get ready-made replies you can post in minutes."
+            />
 
             {/* Progress Steps */}
             <div className="flex items-center justify-center gap-3">
@@ -298,7 +265,7 @@ export default function DfyPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="flex flex-col gap-6 max-w-2xl mx-auto w-full"
+                        className="mx-auto flex w-full max-w-2xl flex-col gap-6"
                     >
                         <div className="glass-card p-5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -506,21 +473,6 @@ export default function DfyPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {/* Footer */}
-            <footer className="mt-10 pt-8 border-t border-black/5 flex flex-col items-center gap-4 pb-10">
-                <div className="flex items-center gap-8">
-                    {["5 Hot Keywords", "Real Posts Found", "AI Replies + Your Link", "Copy & Earn"].map((b, i) => (
-                        <div key={i} className="flex items-center gap-2 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
-                            <div className="w-1 h-1 rounded-full bg-accent" />
-                            {b}
-                        </div>
-                    ))}
-                </div>
-                <p className="text-[12px] text-text-muted font-medium">
-                    © {new Date().getFullYear()} {brand.productName}. All rights reserved.
-                </p>
-            </footer>
-        </motion.div>
+        </PremiumPageLayout>
     );
 }

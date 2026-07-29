@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { PageLoading } from "@/components/ui/page-loading";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
@@ -115,36 +118,25 @@ export default function ProtectorPage() {
   }
 
   return (
-    <div className="space-y-8 pb-20 max-w-6xl font-heading">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="p-8 md:p-10 rounded-2xl border border-emerald-200 bg-linear-to-br from-emerald-50 via-white to-white shadow-sm"
-      >
-        <div className="flex flex-col md:flex-row md:items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-8 h-8 text-emerald-600" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-extrabold text-text-heading tracking-tight mb-1">
-              Wealth Protector
-            </h1>
-            <p className="text-text-secondary text-sm">
-              Your account security overview. Everything is monitored in real time.
-            </p>
-          </div>
-          <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-50 border border-emerald-200">
-            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
-            <span className="text-sm font-bold text-emerald-700 uppercase tracking-wider">
+    <PremiumPageLayout
+      title="Protector"
+      subtitle="Your account security overview — membership verification, encryption status, and activity monitoring in real time."
+      footer={<PremiumFooter>Wealth Protector — powered by {brand.productName}.</PremiumFooter>}
+    >
+      <PremiumControlCard
+        icon={ShieldCheck}
+        title="Wealth Protector"
+        description="Your account security overview. Everything is monitored in real time."
+        badge={
+          <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3">
+            <div className="h-3 w-3 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
+            <span className="text-sm font-bold uppercase tracking-wider text-emerald-700">
               All Systems Secure
             </span>
           </div>
-        </div>
-      </motion.div>
-
-      <div className="rounded-2xl border border-border-dim bg-white p-6 md:p-8 space-y-8 shadow-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        }
+      >
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-emerald-600" },
             { label: "Account Status", value: "Verified", icon: CheckCircle, color: "text-emerald-600" },
@@ -158,9 +150,9 @@ export default function ProtectorPage() {
               transition={{ delay: i * 0.08 }}
             >
               <GlassPanel intensity="low" className="p-5 hover:border-emerald-200 transition-colors">
-                <div className="flex items-center gap-3 mb-3">
-                  <stat.icon className={cn("w-5 h-5", stat.color)} />
-                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                <div className="mb-3 flex items-center gap-3">
+                  <stat.icon className={cn("h-5 w-5", stat.color)} />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                     {stat.label}
                   </span>
                 </div>
@@ -169,9 +161,11 @@ export default function ProtectorPage() {
             </motion.div>
           ))}
         </div>
+      </PremiumControlCard>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
+      <div className="glass-card space-y-8 p-6 md:p-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-2">
             <h2 className="text-lg font-bold text-text-heading mb-1">Security Checks</h2>
             <div className="space-y-3">
               {securityChecks.map((check, i) => (
@@ -251,6 +245,6 @@ export default function ProtectorPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   );
 }

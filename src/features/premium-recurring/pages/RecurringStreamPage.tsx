@@ -14,13 +14,15 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  AlertCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
-import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
 
@@ -168,96 +170,67 @@ export default function RecurringStreamPage() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="page-stack max-w-6xl"
+    <PremiumPageLayout
+      title="Recurring Stream"
+      subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — stored once, personalized with your link when you copy.`}
+      footer={
+        <PremiumFooter>
+          Powered by {brand.productName}. Recurring Stream articles are seeded once — members always copy stored templates with their link.
+        </PremiumFooter>
+      }
     >
-      <PageHeader
-        eyebrow="Premium"
-        title="Recurring Stream"
-        subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — stored once, personalized with your link when you copy.`}
-      />
-
-      <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
-                <Repeat size={24} />
-              </div>
-              <div>
-                <p className="font-bold text-text-primary">100 Authority Articles</p>
-                <p className="text-sm text-text-secondary">
-                  SEO-ready articles with intro, sections, FAQs, and CTAs — publish on Medium, LinkedIn, or your blog.
-                </p>
-              </div>
-            </div>
-          </div>
+      <PremiumControlCard
+        icon={Repeat}
+        title="100 Authority Articles"
+        description="SEO-ready articles with intro, sections, FAQs, and CTAs — publish on Medium, LinkedIn, or your blog."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <label className="block flex-1">
+            <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-primary">
+              <LinkIcon size={14} className="text-accent" />
+              Your affiliate link
+            </span>
+            <input
+              type="url"
+              value={affiliateLink}
+              onChange={(e) => setAffiliateLink(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && applyAffiliateLink()}
+              placeholder="https://..."
+              className="input-base w-full"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={applyAffiliateLink}
+            disabled={!affiliateLink.trim()}
+            className="btn-primary shrink-0 px-5 py-2.5 text-sm disabled:opacity-40"
+          >
+            Apply link
+          </button>
         </div>
+        {appliedLink && (
+          <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
+            <Sparkles size={14} className="shrink-0 text-emerald-600" />
+            Link applied — previews and copies will include your URL.
+          </p>
+        )}
 
-        <div className="space-y-4 p-6 md:p-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <label className="block flex-1">
-              <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-text-primary">
-                <LinkIcon size={14} className="text-accent" />
-                Your affiliate link
-              </span>
-              <input
-                type="url"
-                value={affiliateLink}
-                onChange={(e) => setAffiliateLink(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && applyAffiliateLink()}
-                placeholder="https://..."
-                className="input-base w-full"
-              />
-            </label>
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter size={14} className="text-text-muted" />
+          {["All", ...RECURRING_STREAM_NICHES].map((n) => (
             <button
+              key={n}
               type="button"
-              onClick={applyAffiliateLink}
-              disabled={!affiliateLink.trim()}
-              className="btn-primary shrink-0 px-5 py-2.5 text-sm disabled:opacity-40"
+              onClick={() => setNiche(n)}
+              className={clsx("select-chip-pill", niche === n && "is-selected")}
             >
-              Apply link
+              {n}
             </button>
-          </div>
-          {appliedLink && (
-            <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
-              <Sparkles size={14} className="shrink-0 text-emerald-600" />
-              Link applied — previews and copies will include your URL.
-            </p>
-          )}
-
-          <div className="flex flex-wrap items-center gap-2">
-            <Filter size={14} className="text-text-muted" />
-            {["All", ...RECURRING_STREAM_NICHES].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setNiche(n)}
-                className={clsx(
-                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-                  niche === n
-                    ? "bg-accent text-black"
-                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
-                )}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-
-          {error && (
-            <p
-              role="alert"
-              className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800"
-            >
-              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" aria-hidden />
-              {error}
-            </p>
-          )}
+          ))}
         </div>
-      </section>
+
+        {error && <PremiumErrorAlert message={error} />}
+      </PremiumControlCard>
 
       <GenerationProgress
         active={loadingArticle !== null}
@@ -406,9 +379,6 @@ export default function RecurringStreamPage() {
         )}
       </div>
 
-      <p className="text-xs text-text-muted">
-        Powered by {brand.productName}. Recurring Stream articles are seeded once — members always copy stored templates with their link.
-      </p>
-    </motion.div>
+    </PremiumPageLayout>
   );
 }

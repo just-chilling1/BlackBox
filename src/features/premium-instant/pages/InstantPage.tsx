@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
 
 const NICHES = [
     "All Niches",
@@ -148,104 +152,40 @@ export default function InstantIncomePage() {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-0 max-w-5xl mx-auto w-full py-6"
+        <PremiumPageLayout
+            title="Instant Income"
+            subtitle="200+ ready-to-post Facebook messages — copy, paste in groups, and start earning today. No tech skills needed."
+            footer={<PremiumFooter />}
         >
-            {/* Hero Section */}
-            <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/10 via-surface to-accent-muted/10 border border-accent/20 p-10 md:p-16 flex flex-col items-center text-center gap-6">
-                <div className="absolute top-0 right-0 w-60 h-60 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-accent-muted/10 rounded-full blur-[80px] pointer-events-none" />
+            <PremiumVideoTutorial
+                vimeoId="1171721099"
+                iframeTitle="Instant Access Tutorial"
+                title="How to Use Instant Income"
+                description="Watch this quick tutorial to learn how to copy these Facebook posts and start making money instantly. Simple and easy!"
+            />
 
-                <div className="relative z-10 flex flex-col items-center gap-6">
-                    <div className="w-20 h-20 bg-accent/15 border border-accent/30 rounded-3xl flex items-center justify-center">
-                        <Facebook size={40} className="text-accent" />
-                    </div>
-
-                    <h1 className="text-4xl md:text-5xl font-black text-text-primary tracking-tight leading-tight">
-                        Instant Income: Facebook Posts
-                    </h1>
-
-                    <p className="text-lg md:text-xl font-bold text-accent">
-                        200+ Ready-to-Post Messages for Facebook Groups
-                    </p>
-
-                    <p className="text-text-secondary text-base max-w-2xl leading-relaxed">
-                        Copy these proven posts, paste them in Facebook groups, and start making money TODAY. No tech skills needed!
-                    </p>
-                </div>
-            </section>
-
-            {/* Video Tutorial Section */}
-            <section className="mt-10 glass-card p-0 overflow-hidden">
-                <div className="flex flex-col md:flex-row">
-                    <div className="md:w-1/2 relative bg-black/40">
-                        <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                            <iframe
-                                src="https://player.vimeo.com/video/1171721099?badge=0&autopause=0&player_id=0&app_id=58479"
-                                className="absolute inset-0 w-full h-full"
-                                frameBorder="0"
-                                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                                allowFullScreen
-                                title="Instant Access Tutorial"
-                            />
-                        </div>
-                    </div>
-                    <div className="md:w-1/2 p-8 md:p-10 flex flex-col justify-center gap-4">
-                        <div className="flex items-center gap-2">
-                            <Sparkles size={14} className="text-accent" />
-                            <span className="text-[11px] font-bold text-accent uppercase tracking-[0.2em]">Watch First</span>
-                        </div>
-                        <h2 className="text-2xl font-bold text-text-primary">How to Use Instant Income</h2>
-                        <p className="text-text-secondary leading-relaxed">
-                            Watch this quick tutorial to learn how to copy these Facebook posts and start making money instantly. Simple and easy!
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* 3 Steps Section */}
-            <section className="mt-10 glass-card p-8">
-                <div className="flex items-center gap-3 mb-8">
-                    <CheckCircle2 size={22} className="text-accent" />
-                    <h2 className="text-xl font-bold text-text-primary">How to Use This (3 Simple Steps)</h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {[
-                        {
-                            num: "1",
-                            title: "Pick Your Niche",
-                            desc: "Choose the niche that matches your affiliate offer. We have posts for Weight Loss, Make Money Online, Health, Beauty, and more!",
-                            icon: MessageSquare
-                        },
-                        {
-                            num: "2",
-                            title: "Enter Your Link",
-                            desc: "Paste your affiliate link below. We'll automatically add it to all the posts for you. No manual work!",
-                            icon: LinkIcon
-                        },
-                        {
-                            num: "3",
-                            title: "Copy & Post",
-                            desc: 'Click "Copy" on any post and paste it into Facebook groups. Post 3-5 times per day for best results!',
-                            icon: Copy
-                        }
-                    ].map((step) => (
-                        <div key={step.num} className="bg-accent/5 border border-accent/15 rounded-2xl p-6 flex flex-col gap-4">
-                            <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-black font-black text-sm">
-                                {step.num}
-                            </div>
-                            <h3 className="text-lg font-bold text-text-primary">{step.title}</h3>
-                            <p className="text-sm text-text-secondary leading-relaxed">{step.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            <PremiumStepsSection
+                steps={[
+                    {
+                        num: "1",
+                        title: "Pick Your Niche",
+                        desc: "Choose the niche that matches your affiliate offer. We have posts for Weight Loss, Make Money Online, Health, Beauty, and more!",
+                    },
+                    {
+                        num: "2",
+                        title: "Enter Your Link",
+                        desc: "Paste your affiliate link below. We'll automatically add it to all the posts for you. No manual work!",
+                    },
+                    {
+                        num: "3",
+                        title: "Copy & Post",
+                        desc: 'Click "Copy" on any post and paste it into Facebook groups. Post 3-5 times per day for best results!',
+                    },
+                ]}
+            />
 
             {/* How to Find & Post Guide (Collapsible) */}
-            <section className="mt-10 glass-card overflow-hidden">
+            <section className="glass-card overflow-hidden">
                 <button
                     onClick={() => setShowGuide(!showGuide)}
                     className="w-full p-8 flex items-center justify-between text-left"
@@ -304,7 +244,7 @@ export default function InstantIncomePage() {
             </section>
 
             {/* How Much Can You Make? */}
-            <section className="mt-10 glass-card p-8">
+            <section className="glass-card p-8">
                 <div className="flex items-center gap-3 mb-6">
                     <DollarSign size={22} className="text-accent" />
                     <h2 className="text-xl font-bold text-text-primary">How Much Can You Make?</h2>
@@ -327,7 +267,7 @@ export default function InstantIncomePage() {
             </section>
 
             {/* ====== GET YOUR POSTS NOW ====== */}
-            <section className="mt-14 flex flex-col gap-8">
+            <section className="flex flex-col gap-8">
                 <h2 className="text-2xl font-black text-text-primary">Get Your Posts Now</h2>
 
                 {/* Step 1: Niche Selector */}
@@ -411,7 +351,7 @@ export default function InstantIncomePage() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="mt-10 flex flex-col gap-5"
+                        className="flex flex-col gap-5"
                     >
                         <div className="flex items-center justify-between">
                             <h2 className="text-xl font-bold text-text-primary">
@@ -468,21 +408,6 @@ export default function InstantIncomePage() {
                     </motion.section>
                 )}
             </AnimatePresence>
-
-            {/* Footer */}
-            <footer className="mt-16 pt-8 border-t border-black/5 flex flex-col items-center gap-4 pb-10">
-                <div className="flex items-center gap-6 flex-wrap justify-center">
-                    {["200+ Posts", "9 Niches", "Auto Link Insertion", "Copy & Earn"].map((b, i) => (
-                        <div key={i} className="flex items-center gap-2 text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
-                            <div className="w-1 h-1 rounded-full bg-accent" />
-                            {b}
-                        </div>
-                    ))}
-                </div>
-                <p className="text-[12px] text-text-muted font-medium">
-                    © {new Date().getFullYear()} {brand.productName}. All rights reserved.
-                </p>
-            </footer>
-        </motion.div>
+        </PremiumPageLayout>
     );
 }
