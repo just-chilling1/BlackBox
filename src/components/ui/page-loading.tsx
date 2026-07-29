@@ -8,7 +8,7 @@ interface PageLoadingProps {
 
 export function PageLoading({ message = "Loading...", className }: PageLoadingProps) {
   return (
-    <div className={clsx("page-stack w-full", className)}>
+    <div className={clsx("page-container", className)}>
       <div className="page-loading" role="status" aria-live="polite">
         <Loader2 size={22} className="animate-spin text-promo-accent" aria-hidden />
         <p>{message}</p>

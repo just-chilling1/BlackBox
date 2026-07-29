@@ -6,7 +6,7 @@ function Block({ className }: { className?: string }) {
 
 export function PageSkeleton({ cards = 3, className }: { cards?: number; className?: string }) {
   return (
-    <div className={clsx("page-stack w-full max-w-4xl mx-auto", className)} aria-busy="true" aria-live="polite">
+    <div className={clsx("page-container", className)} aria-busy="true" aria-live="polite">
       <div className="space-y-3">
         <Block className="h-3 w-24" />
         <Block className="h-8 w-2/3 max-w-md" />

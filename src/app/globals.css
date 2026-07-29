@@ -59,6 +59,7 @@
   --sidebar-w: 280px;
   --sidebar-gap: 2rem;
   --mobile-header-h: 3.5rem;
+  --layout-content-max: 80rem;
   --sidebar-bg: #ffffff;
   --sidebar-shell-bg: #ffffff;
   --sidebar-border: #e2e8f0;
@@ -311,6 +312,8 @@ html[data-sidebar="collapsed"] {
     z-index: 1;
     width: 100%;
     min-width: 0;
+    max-width: var(--layout-content-max);
+    margin-inline: auto;
   }
 
   .page-enter {
@@ -639,6 +642,10 @@ html[data-sidebar="collapsed"] {
   /* Page layout utilities */
   .page-stack {
     @apply flex w-full flex-col gap-6 sm:gap-8;
+  }
+
+  .page-container {
+    @apply page-stack min-w-0 w-full;
   }
 
   .glass-tile {
