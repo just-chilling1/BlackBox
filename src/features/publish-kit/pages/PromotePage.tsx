@@ -91,8 +91,8 @@ export default function PromotePage() {
       <div className="page-container">
         <PageHeader
           eyebrow="X-Power Promotions"
-          title="Generate X story thread"
-          subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
+          title="Generate X conversion thread"
+          subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post conversion-optimized X thread.`}
         />
         <PageSkeleton cards={2} />
       </div>
@@ -104,13 +104,13 @@ export default function PromotePage() {
       <div className="page-container">
         <PageHeader
           eyebrow="X-Power Promotions"
-          title="Generate X story thread"
-          subtitle="Analyze your product and website, then generate a ready-to-copy story thread."
+          title="Generate X conversion thread"
+          subtitle="Analyze your product and website, then generate a ready-to-copy conversion thread."
         />
         <EmptyState
           icon={Globe}
           title="No offers to promote yet"
-          description="Launch a sales offer first — then come back here to generate your X story thread."
+          description="Launch a sales offer first — then come back here to generate your X conversion thread."
           action={{ label: "Start Sales Offer Generator", href: "/sales-offer-generator" }}
         />
       </div>
@@ -121,8 +121,8 @@ export default function PromotePage() {
     <div className="page-container">
       <PageHeader
         eyebrow="X-Power Promotions"
-        title="Generate X story thread"
-        subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
+        title="Generate X conversion thread"
+        subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post conversion-optimized X thread.`}
       />
 
       <section className="glass-card space-y-5 p-6 md:p-8">
@@ -131,9 +131,9 @@ export default function PromotePage() {
             <Megaphone size={22} />
           </div>
           <div>
-            <p className="font-bold text-text-primary">X story thread generator</p>
+            <p className="font-bold text-text-primary">X conversion thread generator</p>
             <p className="text-sm text-text-secondary">
-              Pick an offer, analyze your product, and generate a 10-post story thread.
+              Pick an offer, analyze your product, and generate a 10-post hook → steps → TL;DR → CTA thread.
             </p>
           </div>
         </div>
