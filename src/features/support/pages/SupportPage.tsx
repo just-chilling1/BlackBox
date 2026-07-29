@@ -1,21 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Headphones, Mail } from "lucide-react";
-import { support } from "@/config/support.config";
+import { faqSections } from "@/config/faq.config";
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { SupportPageLayout } from "../components/SupportPageLayout";
 import { SupportChannelCards } from "../components/SupportChannelCards";
-import { SupportStatCards } from "../components/SupportStatCards";
+import {
+  SupportFaqAccordion,
+  SupportFaqCardHeader,
+} from "../components/SupportFaqAccordion";
 import {
   SupportRefundSection,
   containerVariants,
   itemVariants,
 } from "../components/SupportRefundSection";
 
-export default function SupportPage() {
-  const contactHref = support.contactUrl || `mailto:${support.email}`;
+const allFaqs = faqSections.flatMap((section) => section.items);
 
+export default function SupportPage() {
   return (
     <SupportPageLayout>
       <motion.div
@@ -28,27 +30,17 @@ export default function SupportPage() {
           <SupportChannelCards />
         </motion.div>
 
-        <motion.div variants={itemVariants} className="card-base flex flex-col gap-6">
-          <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 shadow-sm">
-              <Headphones className="text-accent-readable" size={24} />
-            </div>
-            <div className="min-w-0">
-              <h2 className="brand-font text-xl text-text-heading sm:text-2xl">{support.headline}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-text-secondary">{support.subcopy}</p>
+        <motion.div variants={itemVariants} className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          <div id="faq" className="card-base overflow-hidden p-0 lg:col-span-3">
+            <SupportFaqCardHeader />
+            <div className="px-4 pb-2 sm:px-6">
+              <SupportFaqAccordion items={allFaqs} />
             </div>
           </div>
 
-          <a href={contactHref} className="btn-primary-prominent w-full sm:w-fit">
-            <Mail size={18} />
-            {support.ctaLabel}
-          </a>
-
-          <SupportStatCards />
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <ContactSupportWidget />
+          <div id="contact" className="lg:col-span-2">
+            <ContactSupportWidget />
+          </div>
         </motion.div>
 
         <SupportRefundSection />

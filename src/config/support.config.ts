@@ -1,23 +1,24 @@
 export const supportRoutes = {
   contact: "/support",
-  faq: "/support/faq",
+  /** @deprecated FAQ lives on the main support page */
+  faq: "/support#faq",
 } as const;
 
 export const support = {
-  email: "support@example.com",
+  email: "BlackBoxCash@neoai.freshdesk.com",
   /** mailto: or https:// helpdesk / ticketing URL */
-  contactUrl: "mailto:support@example.com",
+  contactUrl: "mailto:BlackBoxCash@neoai.freshdesk.com",
   helpCenterUrl: "",
   headline: "Need Help?",
   pageTitle: "Support",
-  pageSubtitle: "Our support team is here for you 24/7",
+  pageSubtitle: "Documentation and assistance resources",
   subcopy: "Our support team is here for you 24/7",
   ctaLabel: "Contact Support",
   floatingWidget: {
-    label: "Get Support",
-    panelTitle: "We're here to help",
+    label: "Need help?",
+    panelTitle: "Need help?",
     panelSubtitle: "Send us a message — we typically reply within 2 hours",
-    ariaLabel: "Open support panel",
+    ariaLabel: "Need help? Contact support",
   },
   stats: [
     { icon: "clock", label: "Avg response", highlight: "under 2 hours", highlightClass: "text-success" },

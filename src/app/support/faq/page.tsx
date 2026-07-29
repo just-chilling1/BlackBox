@@ -1,5 +1,6 @@
-import SupportFaqPage from "@/features/support/pages/SupportFaqPage";
+import { redirect } from "next/navigation";
+import { supportRoutes } from "@/config/support.config";
 
 export default function Page() {
-  return <SupportFaqPage />;
+  redirect(supportRoutes.contact);
 }
