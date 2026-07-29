@@ -63,7 +63,8 @@ export async function GET(request: Request) {
   }
 
   if (lite && !siteId) {
-    const [xThreadCounts, recurringArticleCounts] = await Promise.all([
+    const [facebookPostCounts, xThreadCounts, recurringArticleCounts] = await Promise.all([
+      countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
       countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
       countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
     ]);
@@ -73,7 +74,7 @@ export async function GET(request: Request) {
       postCount: 0,
       livePostCount: 0,
       clickCount: 0,
-      facebookPostCount: 0,
+      facebookPostCount: facebookPostCounts[site.id] ?? 0,
       xThreadCount: xThreadCounts[site.id] ?? 0,
       recurringArticleCount: recurringArticleCounts[site.id] ?? 0,
     }));
