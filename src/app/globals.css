@@ -645,7 +645,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .page-container {
-    @apply page-stack min-w-0 w-full;
+    @apply flex min-w-0 w-full flex-col gap-6 sm:gap-8;
   }
 
   .glass-tile {
