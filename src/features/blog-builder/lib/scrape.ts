@@ -270,8 +270,14 @@ function scoreImageCandidate(params: {
   }
 
   for (const keyword of params.keywords) {
-    if (keyword.length > 2 && haystack.includes(keyword)) score += 14;
+    if (keyword.length > 2 && haystack.includes(keyword)) score += 18;
   }
+
+  // Boost when multiple keywords match — signals a post-specific image, not a generic hero.
+  const matchCount = params.keywords.filter(
+    (keyword) => keyword.length > 2 && haystack.includes(keyword)
+  ).length;
+  if (matchCount >= 2) score += matchCount * 6;
 
   return score;
 }

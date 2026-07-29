@@ -47,7 +47,7 @@ const STOP_WORDS = new Set([
 ]);
 
 /** Visual search phrases that match what stock libraries actually have. */
-const HOBBY_VISUAL_QUERIES: Record<string, string> = {
+export const HOBBY_VISUAL_QUERIES: Record<string, string> = {
   "YouTube / AI Tools": "youtube creator video editing laptop studio",
   "Pet Training": "dog training happy owner puppy",
   "Health Supplements": "health wellness vitamins supplements",
@@ -112,6 +112,8 @@ interface ImagePickOptions {
   orientation?: "horizontal" | "vertical" | "all";
   /** Prefer roughly square hits — useful for social thread cards. */
   preferSquare?: boolean;
+  /** When set, try stock photos before scraping the affiliate page. */
+  preferStock?: boolean;
 }
 
 export interface StockImageResult {
@@ -675,12 +677,53 @@ export interface ResolvedImage {
 /**
  * FAST path: return a directly-usable image URL with NO download/upload.
  */
+async function resolveStockImageUrl(
+  params: {
+    title: string;
+    subject: string;
+    hobby?: string;
+    pickOffset?: number;
+    seedBoost?: number;
+    excludeUrls?: string[];
+    excludeStockIds?: string[];
+    customQuery?: string;
+    orientation?: "horizontal" | "vertical" | "all";
+    preferSquare?: boolean;
+  },
+  exclude: string[],
+  excludeStockIds: string[]
+): Promise<string | null> {
+  return fetchPixabayImageUrl(params.title, params.subject, {
+    pickOffset: params.pickOffset,
+    seedBoost: params.seedBoost,
+    excludeUrls: exclude,
+    excludeStockIds,
+    hobby: params.hobby,
+    customQuery: params.customQuery,
+    orientation: params.orientation ?? "all",
+    preferSquare: params.preferSquare ?? false,
+  });
+}
+
+async function resolveScrapedImageUrl(
+  scrapeUrl: string,
+  scrapeKeywords: string[] | undefined,
+  offset: number,
+  exclude: string[]
+): Promise<string | null> {
+  const scraped = await fetchScrapedImageUrl(scrapeUrl, scrapeKeywords, offset);
+  if (scraped && !isExcludedUrl(scraped, exclude)) return scraped;
+  return null;
+}
+
 export async function resolveFastImageUrl(params: {
   title: string;
   subject: string;
   hobby?: string;
   /** Affiliate/product page to scrape for og:image. */
   scrapeUrl?: string;
+  /** Extra pages (e.g. offer page) to scrape when the primary URL has no match. */
+  scrapeUrls?: string[];
   /** Keywords from the thread post — used to rank scraped page images. */
   scrapeKeywords?: string[];
   pickOffset?: number;
@@ -690,35 +733,54 @@ export async function resolveFastImageUrl(params: {
   customQuery?: string;
   orientation?: "horizontal" | "vertical" | "all";
   preferSquare?: boolean;
+  /** Story/lifestyle posts: stock first. Product/proof posts: scrape first (default). */
+  preferStock?: boolean;
 }): Promise<ResolvedImage> {
   const alt = `${params.title} — ${params.subject}`;
   const offset = params.pickOffset ?? 0;
   const exclude = params.excludeUrls ?? [];
   const excludeStockIds = params.excludeStockIds ?? [];
-
-  if (params.scrapeUrl) {
-    const scraped = await fetchScrapedImageUrl(
-      params.scrapeUrl,
-      params.scrapeKeywords,
-      offset
-    );
-    if (scraped && !isExcludedUrl(scraped, exclude)) {
-      return { url: scraped, alt, stockId: normalizeImageUrl(scraped) };
-    }
-  }
-
-  const stock = await fetchPixabayImageUrl(params.title, params.subject, {
+  const stockParams = {
+    title: params.title,
+    subject: params.subject,
+    hobby: params.hobby,
     pickOffset: offset,
     seedBoost: params.seedBoost,
-    excludeUrls: exclude,
-    excludeStockIds,
-    hobby: params.hobby,
     customQuery: params.customQuery,
-    orientation: params.orientation ?? "all",
-    preferSquare: params.preferSquare ?? false,
-  });
-  if (stock && !isExcludedUrl(stock, exclude)) {
-    return { url: stock, alt, stockId: normalizeImageUrl(stock) };
+    orientation: params.orientation,
+    preferSquare: params.preferSquare,
+  };
+
+  const tryStock = () =>
+    resolveStockImageUrl(stockParams, exclude, excludeStockIds);
+
+  const scrapeTargets = [
+    params.scrapeUrl,
+    ...(params.scrapeUrls ?? []),
+  ].filter((url): url is string => Boolean(url?.trim()));
+
+  const tryScrape = async () => {
+    for (let i = 0; i < scrapeTargets.length; i++) {
+      const scraped = await resolveScrapedImageUrl(
+        scrapeTargets[i],
+        params.scrapeKeywords,
+        offset + i,
+        exclude
+      );
+      if (scraped) return scraped;
+    }
+    return null;
+  };
+
+  const stockFirst = params.preferStock === true;
+  const primary = stockFirst ? await tryStock() : await tryScrape();
+  if (primary) {
+    return { url: primary, alt, stockId: normalizeImageUrl(primary) };
+  }
+
+  const fallback = stockFirst ? await tryScrape() : await tryStock();
+  if (fallback) {
+    return { url: fallback, alt, stockId: normalizeImageUrl(fallback) };
   }
 
   const picsum = picsumFallbackUrl(params.title, offset + (params.seedBoost ?? 0));
