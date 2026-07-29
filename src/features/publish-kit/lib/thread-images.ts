@@ -11,32 +11,32 @@ const THREAD_STOP_WORDS = new Set([
   "same", "over", "under", "link", "thread", "post", "start", "skip", "read", "click",
 ]);
 
-/** Post-role visuals aligned with the 10-post conversion thread structure. */
+/** Story-role visuals aligned with the 10-post thread structure. */
 const ROLE_VISUAL_HINTS: Record<string, string> = {
-  "The Hook": "bold problem statement, scroll-stopping contrast, high-impact headline moment",
-  "The Context": "authority expert perspective, timely relevance, shift in viewpoint",
-  "Core Step 1": "quick win, easy first step, low-friction action start",
-  "Core Step 2": "better method, challenge conventional approach, smarter alternative",
-  "Core Step 3": "remove friction, simplify workflow, bottleneck breakthrough",
-  "Core Step 4": "behavioral psychology, habit formation, strategic mindset shift",
-  "Core Step 5": "final value stack, product in use, repeatable system complete",
-  "The Bridge": "common mistake warning, pitfall avoidance, connecting insight",
-  "The TL;DR": "scannable summary, checklist recap, save-worthy bullet points",
-  "The CTA": "clear next step forward, invitation to act, confident forward motion",
+  Hook: "bold payoff preview, aspirational outcome, high contrast hero moment",
+  Scene: "authentic everyday scene, relatable person in a real place, candid documentary",
+  Stakes: "pressure and consequence, deadline tension, what's at risk mood",
+  Failure: "frustrated stuck learning curve, failed attempts, messy desk reality",
+  "Turning point": "breakthrough clarity moment, lightbulb insight, calm focus",
+  Mechanism: "simple repeatable process, checklist workflow, hands doing the steps",
+  "Product reveal": "product in use, clean tool on desk, professional software workflow",
+  Proof: "measurable results, progress chart, before-after improvement metrics",
+  Objection: "thoughtful evaluation, honest skepticism, deciding if it's a fit",
+  CTA: "clear next step forward, invitation to act, confident forward motion",
 };
 
 /** Stock search phrases that pair well with niche + post keywords. */
 const ROLE_STOCK_TERMS: Record<string, string> = {
-  "The Hook": "attention problem challenge breakthrough",
-  "The Context": "expert authority insight perspective",
-  "Core Step 1": "quick win first step easy start",
-  "Core Step 2": "better way smarter method alternative",
-  "Core Step 3": "simplify workflow remove friction efficiency",
-  "Core Step 4": "habit mindset strategy psychology focus",
-  "Core Step 5": "system process tool workflow results",
-  "The Bridge": "mistake warning caution decision",
-  "The TL;DR": "summary checklist notes planning",
-  "The CTA": "starting journey forward path action",
+  Hook: "success achievement goal breakthrough",
+  Scene: "person home office kitchen table night",
+  Stakes: "stress worry deadline pressure",
+  Failure: "frustrated confused stuck overwhelmed",
+  "Turning point": "insight clarity focus breakthrough idea",
+  Mechanism: "planning checklist notebook workflow process",
+  "Product reveal": "laptop software online business tool",
+  Proof: "growth chart analytics results dashboard progress",
+  Objection: "thinking decision evaluate choice",
+  CTA: "starting journey forward path action",
 };
 
 const NICHE_VISUAL_HINTS: Record<string, string> = {
@@ -116,7 +116,7 @@ export function buildThreadImagePrompt(params: {
   productName?: string;
   postIndex?: number;
 }) {
-  const role = params.angle.trim() || "The Hook";
+  const role = params.angle.trim() || "Hook";
   const roleHint = ROLE_VISUAL_HINTS[role] ?? "engaging social media scene";
   const excerpt = cleanPostText(params.threadText).slice(0, 140);
   const keywords = extractThreadPostKeywords({

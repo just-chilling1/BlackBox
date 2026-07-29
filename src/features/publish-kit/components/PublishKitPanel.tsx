@@ -219,7 +219,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
   const downloadThread = () => {
     if (visiblePosts.length === 0) return;
     downloadTextFile(threadExportFilename(site.siteName), formatThreadPosts(visiblePosts));
-    showToast("Conversion thread downloaded", "success");
+    showToast("Story thread downloaded", "success");
   };
 
   const downloadPromotionKit = () => {
@@ -269,7 +269,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
     setPosts(res.data.posts || []);
     if (res.data.quota) setQuota(res.data.quota);
-    showToast(`Conversion thread ready — ${THREAD_POST_COUNT} posts, ${THREAD_IMAGE_COUNT} niche images on posts 1, 4, and 7`, "success");
+    showToast(`Story thread ready — ${THREAD_POST_COUNT} posts, ${THREAD_IMAGE_COUNT} niche images on posts 1, 4, and 7`, "success");
   };
 
   const runTags = async () => {
@@ -346,10 +346,10 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
               <Sparkles size={16} className="text-accent" />
-              Generate conversion thread
+              Generate story thread
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Generate one {THREAD_POST_COUNT}-post conversion thread — hook, 5 core steps, bridge, TL;DR, and a single CTA.
+              Generate one {THREAD_POST_COUNT}-post product story thread — hook, failure, mechanism, proof, and a single CTA.
               Posts 1, 4, and 7 include scraped product or stock niche images.
             </p>
             {contentLoading ? (
@@ -388,7 +388,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               <Megaphone size={14} />
               {generateLoading
                 ? `Generating ${THREAD_POST_COUNT}-post thread + ${THREAD_IMAGE_COUNT} images`
-                : `Generate conversion thread`}
+                : `Generate story thread`}
             </KitButton>
           </div>
 
@@ -415,7 +415,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                   )}
                 </div>
               </div>
-            <ThreadListSection title="Conversion thread" count={visiblePosts.length}>
+            <ThreadListSection title="Story thread" count={visiblePosts.length}>
               {visiblePosts.map((post, i) => (
                 <ThreadCard
                   key={i}
