@@ -4,6 +4,7 @@ import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
+import { getAppUrl } from "@/lib/brand-vars";
 import { saveFacebookPostBatch, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
 import type { BlogSite } from "@/features/blog-builder/types";
 
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
 
   const site = siteRow as BlogSite;
   const territory = getSiteTerritory(site);
-  const promoLink = site.armed_links?.[0]?.url?.trim() || "[LINK]";
+  const base = process.env.NEXT_PUBLIC_APP_URL || getAppUrl();
+  const promoLink = `${base}/sites/${site.slug}`;
 
   const contextParts = [
     `Niche: ${territory}`,
