@@ -260,7 +260,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
                 </p>
                 <a
                   href={`mailto:${SUPPORT_EMAIL}`}
-                  className="block break-all text-sm font-semibold leading-snug text-accent-readable hover:underline"
+                  className="block whitespace-nowrap text-sm font-semibold leading-snug text-accent-readable hover:underline"
                 >
                   {SUPPORT_EMAIL}
                 </a>
@@ -330,7 +330,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         <Mail className="shrink-0 text-text-muted" size={16} />
         <div className="min-w-0">
           <p className="text-xs text-text-muted">If the form doesn&apos;t work, email us:</p>
-          <a href={`mailto:${SUPPORT_EMAIL}`} className="block break-all text-sm font-semibold text-accent hover:underline">
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="block whitespace-nowrap text-sm font-semibold text-accent hover:underline">
             {SUPPORT_EMAIL}
           </a>
         </div>
