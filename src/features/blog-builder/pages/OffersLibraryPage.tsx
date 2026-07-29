@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
 import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
+import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
+import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { getAppUrl } from "@/lib/brand-vars";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -29,6 +31,7 @@ function OfferCard({
   summary,
   siteUrl,
   threads,
+  facebookPosts,
   recurringArticles,
   loadingContent,
   onExpand,
@@ -37,15 +40,17 @@ function OfferCard({
   summary: SiteVaultSummary;
   siteUrl: string;
   threads: SavedXThread[];
+  facebookPosts: SavedFacebookPost[];
   recurringArticles: SavedRecurringArticle[];
   loadingContent: boolean;
   onExpand: () => void;
   expanded: boolean;
 }) {
-  const { site, xThreadCount = 0, recurringArticleCount = 0 } = summary;
+  const { site, xThreadCount = 0, facebookPostCount = 0, recurringArticleCount = 0 } = summary;
   const territory = getSiteTerritory(site);
   const affiliate = site.armed_links?.[0];
   const hasThreads = xThreadCount > 0;
+  const hasFacebookPosts = facebookPostCount > 0;
   const hasArticles = recurringArticleCount > 0;
 
   return (
@@ -78,6 +83,11 @@ function OfferCard({
             </span>
             <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
               {hasThreads ? `${xThreadCount}-post thread saved` : "No story thread yet"}
+            </span>
+            <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
+              {hasFacebookPosts
+                ? `${facebookPostCount} Facebook post${facebookPostCount !== 1 ? "s" : ""}`
+                : "No Facebook posts yet"}
             </span>
             <span className="rounded-full bg-black/10 px-2 py-0.5 text-[10px] font-medium text-text-muted">
               {hasArticles
@@ -126,6 +136,13 @@ function OfferCard({
               {hasThreads ? "Regenerate story thread" : "Generate story thread"}
             </Link>
             <Link
+              href={`/social-payouts?siteId=${encodeURIComponent(site.id)}`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-xs font-medium text-text-heading hover:bg-slate-200/70"
+            >
+              <Megaphone size={14} />
+              {hasFacebookPosts ? "Regenerate Facebook posts" : "Generate Facebook posts"}
+            </Link>
+            <Link
               href="/recurring-wealth"
               className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-xs font-medium text-text-heading hover:bg-slate-200/70"
             >
@@ -157,6 +174,18 @@ function OfferCard({
               ) : (
                 <p className="text-sm text-text-secondary">
                   No story thread saved for this offer yet. Open X-Power Promotions to generate one.
+                </p>
+              )}
+
+              {facebookPosts.length > 0 ? (
+                <ThreadListSection title="Facebook posts (Social Payouts)" count={facebookPosts.length}>
+                  {facebookPosts.map((post) => (
+                    <FacebookPostCard key={post.id} post={post} resolvedText={post.body} />
+                  ))}
+                </ThreadListSection>
+              ) : (
+                <p className="text-sm text-text-secondary">
+                  No Facebook posts saved for this offer yet. Open Social Payouts to generate 10X variants.
                 </p>
               )}
 
@@ -244,6 +273,7 @@ export default function OffersLibraryPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [threadsBySite, setThreadsBySite] = useState<Record<string, SavedXThread[]>>({});
+  const [facebookPostsBySite, setFacebookPostsBySite] = useState<Record<string, SavedFacebookPost[]>>({});
   const [articlesBySite, setArticlesBySite] = useState<Record<string, SavedRecurringArticle[]>>({});
   const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
 
@@ -267,7 +297,7 @@ export default function OffersLibraryPage() {
   }, [summaries, origin]);
 
   const loadOfferContent = async (siteId: string) => {
-    if (threadsBySite[siteId] && articlesBySite[siteId]) return;
+    if (threadsBySite[siteId] && facebookPostsBySite[siteId] && articlesBySite[siteId]) return;
     setLoadingContentId(siteId);
     try {
       const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, { cache: "no-store" });
@@ -275,6 +305,12 @@ export default function OffersLibraryPage() {
       if (res.ok) {
         if (Array.isArray(data.xThreads)) {
           setThreadsBySite((prev) => ({ ...prev, [siteId]: data.xThreads as SavedXThread[] }));
+        }
+        if (Array.isArray(data.facebookPosts)) {
+          setFacebookPostsBySite((prev) => ({
+            ...prev,
+            [siteId]: data.facebookPosts as SavedFacebookPost[],
+          }));
         }
         if (Array.isArray(data.recurringArticles)) {
           setArticlesBySite((prev) => ({
@@ -303,7 +339,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X threads and authority articles."
+          subtitle="Every launched sales page lives here with its saved X threads, Facebook posts, and authority articles."
         />
         <PageSkeleton cards={3} />
       </div>
@@ -316,7 +352,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X threads and authority articles."
+          subtitle="Every launched sales page lives here with its saved X threads, Facebook posts, and authority articles."
         />
         <EmptyState
           icon={FolderOpen}
@@ -333,7 +369,7 @@ export default function OffersLibraryPage() {
       <PageHeader
         eyebrow="Offers library"
         title="Your generated sales offers"
-        subtitle="Browse every sales page you launched. Expand an offer to view saved threads, authority articles, or generate new content."
+        subtitle="Browse every sales page you launched. Expand an offer to view saved threads, Facebook posts, authority articles, or generate new content."
       />
 
       <div className="space-y-4">
@@ -343,6 +379,7 @@ export default function OffersLibraryPage() {
             summary={summary}
             siteUrl={siteUrls[summary.site.id] ?? ""}
             threads={threadsBySite[summary.site.id] ?? []}
+            facebookPosts={facebookPostsBySite[summary.site.id] ?? []}
             recurringArticles={articlesBySite[summary.site.id] ?? []}
             loadingContent={loadingContentId === summary.site.id}
             expanded={expandedId === summary.site.id}
