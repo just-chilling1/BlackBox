@@ -20,6 +20,15 @@ export function FloatingSupportButton() {
 
   return (
     <>
+      {open ? (
+        <button
+          type="button"
+          aria-label="Close support panel"
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        />
+      ) : null}
+
       {!open ? (
         <button
           type="button"
@@ -40,9 +49,14 @@ export function FloatingSupportButton() {
           className="support-float-panel fixed bottom-4 right-4 z-50 flex max-h-[min(80vh,640px)] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-accent/25 bg-white/95 shadow-[0_0_40px_rgba(99,102,241,0.12),0_0_25px_rgba(238,179,16,0.18)] backdrop-blur-md sm:bottom-6 sm:right-6 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"
         >
           <div className="flex items-center justify-between border-b border-border-dim/80 bg-gradient-to-r from-accent/10 via-white to-accent-muted/10 px-4 py-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-text-heading">
-              {floatingWidget.panelTitle}
-            </span>
+            <div className="min-w-0">
+              <span className="block text-xs font-bold uppercase tracking-widest text-text-heading">
+                {floatingWidget.panelTitle}
+              </span>
+              {floatingWidget.panelSubtitle ? (
+                <span className="mt-0.5 block text-[11px] text-text-muted">{floatingWidget.panelSubtitle}</span>
+              ) : null}
+            </div>
             <button
               type="button"
               onClick={() => setOpen(false)}

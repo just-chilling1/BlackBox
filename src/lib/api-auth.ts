@@ -94,6 +94,24 @@ export async function createApiSupabaseClient() {
   );
 }
 
+/** Cookie session first, then optional Bearer token (auth pages / client widgets). */
+export async function getApiUserFromRequest(request: Request) {
+  const cookieAuth = await getApiUser();
+  if (cookieAuth.user) return cookieAuth;
+
+  const authHeader = request.headers.get("Authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+  if (!token) return cookieAuth;
+
+  const supabase = await createApiSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(token);
+
+  if (user) return { supabase, user };
+  return cookieAuth;
+}
+
 export async function getApiUser() {
   if (isDevAuthBypassEnabled()) {
     const admin = createServiceRoleClient();

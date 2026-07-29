@@ -6,9 +6,10 @@ export const supportRoutes = {
 
 export const support = {
   email: "BlackBoxCash@neoai.freshdesk.com",
-  /** mailto: or https:// helpdesk / ticketing URL */
-  contactUrl: "mailto:BlackBoxCash@neoai.freshdesk.com",
-  helpCenterUrl: "",
+  /** In-app contact form anchor on the support page */
+  contactUrl: "/support#contact",
+  /** Freshdesk help portal — browse articles and track tickets */
+  helpCenterUrl: "https://neoaifreshdesk.freshdesk.com",
   headline: "Need Help?",
   pageTitle: "Support",
   pageSubtitle: "Documentation and assistance resources",

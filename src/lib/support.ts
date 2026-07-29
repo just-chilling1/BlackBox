@@ -3,6 +3,8 @@ import { support } from "@/config/support.config";
 import { offers } from "@/config/offers.config";
 
 export const SUPPORT_EMAIL = support.email;
+export const SUPPORT_PORTAL_URL = support.helpCenterUrl;
+export const SUPPORT_MAILTO = `mailto:${support.email}`;
 export const APP_SUPPORT_NAME = brand.productName;
 export const FREE_TRAINING_URL = offers.exclusiveOffer3;
 

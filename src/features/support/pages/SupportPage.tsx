@@ -5,6 +5,7 @@ import { faqSections } from "@/config/faq.config";
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { SupportPageLayout } from "../components/SupportPageLayout";
 import { SupportChannelCards } from "../components/SupportChannelCards";
+import { SupportStatCards } from "../components/SupportStatCards";
 import {
   SupportFaqAccordion,
   SupportFaqCardHeader,
@@ -26,6 +27,10 @@ export default function SupportPage() {
         animate="visible"
         className="flex flex-col gap-6"
       >
+        <motion.div variants={itemVariants}>
+          <SupportStatCards />
+        </motion.div>
+
         <motion.div variants={itemVariants}>
           <SupportChannelCards />
         </motion.div>
