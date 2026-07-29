@@ -6,6 +6,71 @@ export const ACCELERATOR_LINK_PLACEHOLDER = "[AFFILIATE_LINK]";
 /** Placeholder in thread post 10 — replaced with the member's affiliate link on clone. */
 export const ACCELERATOR_THREAD_LINK_PLACEHOLDER = "[LINK]";
 
+/** Minimum character counts per post role — used to detect corrupted stored threads. */
+const THREAD_MIN_CHARS = [75, 70, 60, 80, 35, 80, 50, 55, 50, 65] as const;
+
+const LINK_CTA_SUFFIX =
+  /\s*(?:start here|grab it|get it|check it out|learn more|link in bio|link below)\s*:?\s*$/i;
+
+/** Literal replace — never use RegExp ([LINK] is a regex character class). */
+export function removeThreadLinkPlaceholder(text: string): string {
+  return text.split(ACCELERATOR_THREAD_LINK_PLACEHOLDER).join("");
+}
+
+export function substituteThreadLinkPlaceholder(text: string, affiliateUrl: string): string {
+  return text.split(ACCELERATOR_THREAD_LINK_PLACEHOLDER).join(affiliateUrl);
+}
+
+export function ensureFinalPostHasLink(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed.includes(ACCELERATOR_THREAD_LINK_PLACEHOLDER)) {
+    return `${trimmed}\n\nStart here: ${ACCELERATOR_THREAD_LINK_PLACEHOLDER}`;
+  }
+  return trimmed;
+}
+
+/** Remove all link placeholders and CTA tails from posts 1–9. */
+export function stripLinkFromNonFinalPost(text: string): string {
+  let cleaned = text.replace(/https?:\/\/[^\s]+/g, "");
+  cleaned = removeThreadLinkPlaceholder(cleaned);
+  cleaned = cleaned.split(ACCELERATOR_LINK_PLACEHOLDER).join("");
+  cleaned = cleaned.replace(LINK_CTA_SUFFIX, "").trim();
+  return cleaned.replace(/\s{2,}/g, " ").trim();
+}
+
+/** Normalize the CTA post — link only in the final line. */
+export function normalizeFinalThreadPost(text: string): string {
+  let cleaned = text.replace(/https?:\/\/[^\s]+/g, "");
+  cleaned = removeThreadLinkPlaceholder(cleaned);
+  cleaned = cleaned.split(ACCELERATOR_LINK_PLACEHOLDER).join("");
+  cleaned = cleaned.replace(LINK_CTA_SUFFIX, "").trim();
+  cleaned = cleaned.replace(/\s{2,}/g, " ").trim();
+  return ensureFinalPostHasLink(cleaned);
+}
+
+export function isValidAcceleratorThreadRows(
+  rows: Pick<AcceleratorThreadSeedRow, "text">[]
+): boolean {
+  if (rows.length < THREAD_MIN_CHARS.length) return false;
+
+  for (let i = 0; i < THREAD_MIN_CHARS.length; i++) {
+    const text = rows[i]?.text?.trim() ?? "";
+    if (text.length < THREAD_MIN_CHARS[i]) return false;
+    if (i < THREAD_MIN_CHARS.length - 1 && text.includes(ACCELERATOR_THREAD_LINK_PLACEHOLDER)) {
+      return false;
+    }
+  }
+
+  return rows[THREAD_MIN_CHARS.length - 1]?.text.includes(ACCELERATOR_THREAD_LINK_PLACEHOLDER) ?? false;
+}
+
+/** Detect threads corrupted by regex placeholder handling (stripped letters / injected links). */
+export function isAcceleratorThreadCorrupted(
+  rows: Pick<AcceleratorThreadSeedRow, "text">[]
+): boolean {
+  return !isValidAcceleratorThreadRows(rows);
+}
+
 export interface AcceleratorThreadSeedRow {
   text: string;
   angle: string;

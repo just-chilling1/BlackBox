@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
 import { acceleratorTemplateKey, getAcceleratorCatalogEntry } from "./catalog";
-import { ACCELERATOR_LINK_PLACEHOLDER, ACCELERATOR_THREAD_LINK_PLACEHOLDER } from "./x-thread-seeds";
+import { ACCELERATOR_LINK_PLACEHOLDER, substituteThreadLinkPlaceholder } from "./x-thread-seeds";
 import { slugify } from "@/features/blog-builder/lib/seo";
 
 function newSlug(seed: string): string {
@@ -13,7 +13,7 @@ function substituteLink(html: string, affiliateUrl: string): string {
 }
 
 function substituteThreadText(text: string, affiliateUrl: string): string {
-  return text.replace(new RegExp(ACCELERATOR_THREAD_LINK_PLACEHOLDER, "g"), affiliateUrl);
+  return substituteThreadLinkPlaceholder(text, affiliateUrl);
 }
 
 /** Clone an accelerator template into the member's offers library. */

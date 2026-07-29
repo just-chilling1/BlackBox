@@ -12,6 +12,7 @@ import {
 } from "./catalog";
 import {
   ACCELERATOR_LINK_PLACEHOLDER,
+  isAcceleratorThreadCorrupted,
   type AcceleratorThreadSeedRow,
 } from "./x-thread-seeds";
 import { generateAcceleratorXThreadRows } from "./generate-accelerator-thread";
@@ -24,6 +25,7 @@ interface SeededTemplateState {
   site: BlogSite;
   threadCount: number;
   imagesReady: boolean;
+  threadsCorrupted: boolean;
 }
 
 async function loadSeededTemplate(
@@ -51,8 +53,10 @@ async function loadSeededTemplate(
   const imagesReady = THREAD_IMAGE_POST_INDEXES.every(
     (index) => Boolean(rows[index]?.image_url)
   );
+  const threadsCorrupted =
+    rows.length >= 10 && isAcceleratorThreadCorrupted(rows as { text: string }[]);
 
-  return { site, threadCount: rows.length, imagesReady };
+  return { site, threadCount: rows.length, imagesReady, threadsCorrupted };
 }
 
 function buildSalesPageForTemplate(entry: AcceleratorCatalogEntry, siteId: string) {
@@ -117,7 +121,8 @@ export async function seedAcceleratorTemplate(
     existing &&
     existing.site.sales_page_html &&
     existing.threadCount >= 10 &&
-    existing.imagesReady;
+    existing.imagesReady &&
+    !existing.threadsCorrupted;
 
   if (threadsComplete) {
     return { skipped: true, siteId: existing.site.id };
@@ -178,7 +183,10 @@ export async function seedAcceleratorTemplate(
       .eq("site_id", site!.id)
       .order("created_at", { ascending: true })).data ?? [];
 
-  const needsNewThreads = !existing || existingThreads.length < 10;
+  const needsNewThreads =
+    !existing ||
+    existingThreads.length < 10 ||
+    existing?.threadsCorrupted === true;
   const needsImagesOnly =
     existing &&
     existingThreads.length >= 10 &&

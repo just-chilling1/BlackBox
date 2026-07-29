@@ -12,6 +12,9 @@ import type { AcceleratorCatalogEntry } from "./catalog";
 import {
   ACCELERATOR_THREAD_LINK_PLACEHOLDER,
   buildStaticAcceleratorXThreadSeedRows,
+  isValidAcceleratorThreadRows,
+  normalizeFinalThreadPost,
+  stripLinkFromNonFinalPost,
   type AcceleratorThreadSeedRow,
 } from "./x-thread-seeds";
 
@@ -43,14 +46,7 @@ function buildAcceleratorThreadContext(
 
 /** Strip accidental URLs from posts 1–9; normalize the CTA link to the clone placeholder. */
 function normalizeThreadText(text: string, isFinalPost: boolean): string {
-  const withoutUrls = text.replace(/https?:\/\/[^\s]+/g, ACCELERATOR_THREAD_LINK_PLACEHOLDER);
-  if (!isFinalPost) {
-    return withoutUrls.replace(new RegExp(ACCELERATOR_THREAD_LINK_PLACEHOLDER, "g"), "").trim();
-  }
-  if (!withoutUrls.includes(ACCELERATOR_THREAD_LINK_PLACEHOLDER)) {
-    return `${withoutUrls.trim()}\n\nStart here: ${ACCELERATOR_THREAD_LINK_PLACEHOLDER}`;
-  }
-  return withoutUrls.trim();
+  return isFinalPost ? normalizeFinalThreadPost(text) : stripLinkFromNonFinalPost(text);
 }
 
 function parseGeneratedThreadPosts(raw: unknown): AcceleratorThreadSeedRow[] | null {
@@ -70,7 +66,7 @@ function parseGeneratedThreadPosts(raw: unknown): AcceleratorThreadSeedRow[] | n
             : THREAD_POST_ROLES[i] ?? `Post ${i + 1}`,
     }));
 
-  return rows.length >= THREADS_PER_GENERATION ? rows : null;
+  return rows.length >= THREADS_PER_GENERATION && isValidAcceleratorThreadRows(rows) ? rows : null;
 }
 
 /**
