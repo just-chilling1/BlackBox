@@ -159,7 +159,7 @@ export function TemplatePreviewOverlay({
           {!loading && !error && preview && tab === "thread" && (
             <div className="space-y-4 p-4 sm:p-5">
               {preview.threads.length > 0 ? (
-                <ThreadListSection title="Conversion thread" count={preview.threads.length}>
+                <ThreadListSection title="Story thread" count={preview.threads.length}>
                   {preview.threads.map((thread, i) => (
                     <ThreadCard
                       key={i}

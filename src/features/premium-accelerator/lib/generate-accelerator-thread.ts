@@ -70,7 +70,7 @@ function parseGeneratedThreadPosts(raw: unknown): AcceleratorThreadSeedRow[] | n
 }
 
 /**
- * Generate a 10-post X conversion thread using the same rules as X-Power Promotions.
+ * Generate a 10-post X story thread using the same rules as X-Power Promotions.
  * Falls back to static seeds if the model call fails.
  */
 export async function generateAcceleratorXThreadRows(params: {
