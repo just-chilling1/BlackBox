@@ -114,6 +114,32 @@ export function getDashboardHowItWorksSteps(): HowItWorksStep[] {
   return defaultSteps();
 }
 
+export type DashboardStepStatus = "completed" | "current" | "upcoming";
+
+function statusesFromCompleted(completed: boolean[]): DashboardStepStatus[] {
+  const firstIncomplete = completed.findIndex((done) => !done);
+  return completed.map((done, index) => {
+    if (done) return "completed";
+    if (index === firstIncomplete) return "current";
+    return "upcoming";
+  });
+}
+
+function blogBuilderStepStatuses(progress: number): DashboardStepStatus[] {
+  return statusesFromCompleted([progress >= 1, progress >= 4, false]);
+}
+
+function coreWorkflowStepStatuses(progress: number): DashboardStepStatus[] {
+  return statusesFromCompleted([progress >= 1, progress >= 3, progress >= 4]);
+}
+
+/** Maps workflow progress to per-card completed / current / upcoming states. */
+export function getDashboardStepStatuses(progress: number): DashboardStepStatus[] {
+  if (isFeatureEnabled("blog-builder")) return blogBuilderStepStatuses(progress);
+  if (isFeatureEnabled("core-workflow")) return coreWorkflowStepStatuses(progress);
+  return statusesFromCompleted([false, false, false]);
+}
+
 export function getDashboardQuickActions(): QuickAction[] {
   if (isFeatureEnabled("blog-builder")) {
     return [
