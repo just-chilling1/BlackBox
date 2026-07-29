@@ -4,6 +4,7 @@ import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { getDailyGenerationQuota } from "@/features/blog-builder/lib/site-quota";
 import { countFacebookPostsBySite, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
+import { buildOfferPageUrl, getServerAppUrl, resolveOfferPageLinksInText } from "@/lib/app-url";
 import { countXThreadsBySite, listXThreadsForSite } from "@/features/publish-kit/lib/x-threads-vault";
 import {
   countRecurringArticlesBySite,
@@ -128,7 +129,12 @@ export async function GET(request: Request) {
       .order("is_pillar", { ascending: false })
       .order("created_at", { ascending: true });
 
-    const facebookPosts = await listFacebookPostsForSite(supabase, user.id, siteId).catch(() => []);
+    const facebookPostsRaw = await listFacebookPostsForSite(supabase, user.id, siteId).catch(() => []);
+    const offerPageUrl = buildOfferPageUrl(getServerAppUrl(request), summary.site.slug);
+    const facebookPosts = facebookPostsRaw.map((post) => ({
+      ...post,
+      body: resolveOfferPageLinksInText(post.body, offerPageUrl, summary.site.slug),
+    }));
     const xThreads = await listXThreadsForSite(supabase, user.id, siteId).catch(() => []);
     const recurringArticles = await listRecurringArticlesForSite(supabase, user.id, siteId).catch(() => []);
 

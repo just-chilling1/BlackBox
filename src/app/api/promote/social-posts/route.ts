@@ -4,7 +4,7 @@ import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
 import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
-import { getAppUrl } from "@/lib/brand-vars";
+import { getServerAppUrl, buildOfferPageUrl } from "@/lib/app-url";
 import { buildSitePromoteContext } from "@/features/publish-kit/lib/site-context";
 import {
   getThreadGenerationQuota,
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
   }
 
   const offerPageUrl =
-    siteUrlInput || `${process.env.NEXT_PUBLIC_APP_URL || getAppUrl()}/sites/${site.slug}`;
+    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug);
   const context = buildSitePromoteContext({ site, siteUrl: offerPageUrl, scrapedProductContext });
   const promoLink = offerPageUrl;
 

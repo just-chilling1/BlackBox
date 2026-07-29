@@ -21,6 +21,7 @@ import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
+import { getAppUrl } from "@/lib/brand-vars";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
 const SITE_STORAGE_KEY = `${brand.storagePrefix}_social_payouts_site`;
@@ -168,6 +169,12 @@ export default function SocialPayoutsPage() {
     [offers, selectedSiteId]
   );
 
+  const offerPageUrl = useMemo(() => {
+    if (!selectedOffer) return "";
+    const origin = typeof window !== "undefined" ? window.location.origin : getAppUrl();
+    return `${origin}/sites/${selectedOffer.site.slug}`;
+  }, [selectedOffer]);
+
   const hasExistingPosts = (selectedOffer?.facebookPostCount ?? 0) > 0 || posts.length > 0;
 
   const handleGenerate = async () => {
@@ -181,7 +188,7 @@ export default function SocialPayoutsPage() {
       const res = await fetch("/api/premium/social-payouts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ siteId: selectedSiteId }),
+        body: JSON.stringify({ siteId: selectedSiteId, siteUrl: offerPageUrl }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");

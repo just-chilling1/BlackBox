@@ -4,7 +4,11 @@ import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
-import { getAppUrl } from "@/lib/brand-vars";
+import {
+  buildOfferPageUrl,
+  getServerAppUrl,
+  resolveOfferPageLinksInText,
+} from "@/lib/app-url";
 import { saveFacebookPostBatch, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
 import type { BlogSite } from "@/features/blog-builder/types";
 
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
+  const siteUrlInput = typeof body.siteUrl === "string" ? body.siteUrl.trim() : "";
 
   if (!siteId) {
     return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
@@ -43,8 +48,8 @@ export async function POST(request: Request) {
 
   const site = siteRow as BlogSite;
   const territory = getSiteTerritory(site);
-  const base = process.env.NEXT_PUBLIC_APP_URL || getAppUrl();
-  const promoLink = `${base}/sites/${site.slug}`;
+  const promoLink =
+    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug);
 
   const contextParts = [
     `Niche: ${territory}`,
@@ -118,10 +123,27 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
   }
 
+  const { data: siteRow } = await supabase
+    .from("sites")
+    .select("slug")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!siteRow?.slug) {
+    return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  const offerPageUrl = buildOfferPageUrl(getServerAppUrl(request), siteRow.slug);
   const posts = await listFacebookPostsForSite(supabase, user.id, siteId);
 
   return NextResponse.json(
-    { posts: posts.map((p) => ({ id: p.id, body: p.body })) },
+    {
+      posts: posts.map((p) => ({
+        id: p.id,
+        body: resolveOfferPageLinksInText(p.body, offerPageUrl, siteRow.slug),
+      })),
+    },
     { headers: NO_STORE_HEADERS }
   );
 }
