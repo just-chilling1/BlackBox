@@ -74,84 +74,61 @@ function SupportSuccessPanel({
 }) {
   const upsellUrl = trainingUpsellUrl();
 
-  const content = (
-    <>
-      <div className={embedded ? "flex flex-col items-center space-y-5" : "flex flex-col items-center text-center space-y-5"}>
-        <div className="rounded-full border border-green-500/30 bg-green-500/10 p-3">
-          <CheckCircle2 className={`h-6 w-6 ${embedded ? "text-green-500" : "text-green-400"}`} />
+  return (
+    <div className={`support-success-panel space-y-5 ${embedded ? "p-5" : "p-6"}`}>
+      <div className="flex flex-col items-center space-y-4 text-center">
+        <div className="support-success-icon">
+          <CheckCircle2 className="h-6 w-6" aria-hidden />
         </div>
-        <h3
-          className={
-            embedded
-              ? "text-base font-bold uppercase tracking-tight text-text-heading"
-              : "ds-h3"
-          }
-        >
+        <h3 className="support-success-title">
           {sentViaMailto ? "Check your email app" : "Message sent"}
         </h3>
-        <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-secondary" : "text-text-secondary text-left"}`}>
+        <p className="support-success-body">
           {sentViaMailto ? (
             <>
               Your email app should open with your message ready to send. Tap{" "}
-              <span className="font-semibold text-text-heading">Send</span> to deliver it — then
-              we&apos;ll reply to{" "}
-              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
-              We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+              <span className="font-semibold text-white">Send</span> to deliver it — then we&apos;ll
+              reply to <span className="support-success-email">{submittedEmail}</span>.
             </>
           ) : (
             <>
-              We&apos;ll reply to{" "}
-              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
-              We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+              We&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
             </>
-          )}
+          )}{" "}
+          We usually respond within about 2 hours — allow 24–48 hours when volume is high.
         </p>
-        <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-secondary" : "text-text-secondary text-left"}`}>
+        <p className="support-success-body">
           Remember: our reply will go to{" "}
-          <span className="break-all font-semibold text-text-primary">{submittedEmail}</span> only — not
-          another inbox you may use elsewhere. If you don&apos;t see it within 48 hours, check that
-          inbox&apos;s spam or junk folder.
+          <span className="support-success-email">{submittedEmail}</span> only — not another inbox
+          you may use elsewhere. If you don&apos;t see it within 48 hours, check that inbox&apos;s
+          spam or junk folder.
         </p>
       </div>
 
       {upsellUrl ? (
-        <div className="border-t border-border-dim/70 pt-5">
-          <p className="text-sm leading-relaxed text-text-secondary">
-            While you wait, start with our{" "}
-            <span className="font-semibold text-accent-readable">free training</span> — discover how to
-            wake up with an extra{" "}
-            <span className="font-semibold text-accent-readable">$1,000–$5,000</span> in your account and
-            scale to $1k–$5k per day without extra grind.
+        <div className="support-success-upsell">
+          <p className="support-success-upsell-text">
+            While you wait, watch our{" "}
+            <span className="support-success-upsell-highlight">free training</span> on scaling to
+            $1k–$5k per day.
           </p>
-          <p className="mt-3 text-xs font-bold uppercase tracking-wide text-red-500">
-            Warning: This may be taken down soon
-          </p>
+          <p className="support-success-warning">Warning: This may be taken down soon</p>
           <a
             href={upsellUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 block w-full rounded-lg bg-accent px-4 py-3 text-center text-xs font-black uppercase text-black shadow-gold transition-all hover:brightness-105"
+            className="support-success-cta"
           >
             Watch The Free Training &gt;&gt;
           </a>
         </div>
       ) : null}
 
-      <button type="button" onClick={onReset} className="btn-secondary w-full min-h-[44px] py-2.5">
+      <button type="button" onClick={onReset} className="support-success-secondary-btn">
         Send another message
       </button>
-    </>
+    </div>
   );
-
-  if (embedded) {
-    return (
-      <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
-        {content}
-      </div>
-    );
-  }
-
-  return <DashboardSection className="min-w-0 space-y-5">{content}</DashboardSection>;
 }
 
 export function ContactSupportWidget({ embedded = false }: { embedded?: boolean }) {
