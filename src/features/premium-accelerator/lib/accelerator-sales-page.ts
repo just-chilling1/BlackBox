@@ -38,6 +38,8 @@ export function buildAcceleratorSalesPageHtml(params: {
   copy: QuestionnaireCopy;
   affiliateUrl: string;
   themeConfig: BlogSite["theme_config"];
+  /** Preview before clone — link directly to the affiliate URL (no track-click). */
+  previewMode?: boolean;
 }): string {
   const affiliateUrl = params.affiliateUrl.trim() || ACCELERATOR_LINK_PLACEHOLDER;
 
@@ -48,5 +50,6 @@ export function buildAcceleratorSalesPageHtml(params: {
     copy: params.copy,
     affiliateUrl,
     themeConfig: params.themeConfig,
+    directAffiliateLink: params.previewMode,
   });
 }

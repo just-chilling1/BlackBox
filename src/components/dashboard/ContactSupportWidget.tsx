@@ -21,9 +21,9 @@ const embeddedLabelClass =
 
 function trainingUpsellUrl(): string | null {
   const external = trainingContent.externalTrainingUrl?.trim();
-  if (external && !external.includes("example.com")) return external;
+  if (external) return external;
   const free = FREE_TRAINING_URL?.trim();
-  if (free && !free.includes("example.com")) return free;
+  if (free) return free;
   return null;
 }
 
@@ -75,7 +75,7 @@ function SupportSuccessPanel({
   const upsellUrl = trainingUpsellUrl();
 
   return (
-    <div className={`support-success-panel space-y-5 ${embedded ? "p-5" : "p-6"}`}>
+    <div className={`support-success-panel space-y-5 ${embedded ? "p-4" : "p-6"}`}>
       <div className="flex flex-col items-center space-y-4 text-center">
         <div className="support-success-icon">
           <CheckCircle2 className="h-6 w-6" aria-hidden />
@@ -87,15 +87,15 @@ function SupportSuccessPanel({
           {sentViaMailto ? (
             <>
               Your email app should open with your message ready to send. Tap{" "}
-              <span className="font-semibold text-white">Send</span> to deliver it — then we&apos;ll
-              reply to <span className="support-success-email">{submittedEmail}</span>.
+              <span className="font-semibold text-text-heading">Send</span> to deliver it — then
+              we&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
             </>
           ) : (
             <>
               We&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
             </>
           )}{" "}
-          We usually respond within about 2 hours — allow 24–48 hours when volume is high.
+          We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
         </p>
         <p className="support-success-body">
           Remember: our reply will go to{" "}
@@ -108,9 +108,11 @@ function SupportSuccessPanel({
       {upsellUrl ? (
         <div className="support-success-upsell">
           <p className="support-success-upsell-text">
-            While you wait, watch our{" "}
-            <span className="support-success-upsell-highlight">free training</span> on scaling to
-            $1k–$5k per day.
+            While you wait, start with our{" "}
+            <span className="support-success-upsell-highlight">free training</span> — discover how to
+            wake up with an extra{" "}
+            <span className="support-success-upsell-highlight">$1,000–$5,000</span> in your account
+            and scale to $1k–$5k per day without extra grind.
           </p>
           <p className="support-success-warning">Warning: This may be taken down soon</p>
           <a

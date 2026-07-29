@@ -1,6 +1,7 @@
 import type { ThemeConfig } from "../types";
 import { resolveThemeConfig, THEME_PRESETS, getReadyTemplateFromConfig } from "../themes";
 import type { QuestionnaireCopy } from "./questionnaire-copy";
+import { normalizeAffiliateUrl } from "./affiliate-url";
 
 export interface ThemedQuestionnaireInput {
   siteId: string;
@@ -9,6 +10,8 @@ export interface ThemedQuestionnaireInput {
   copy: QuestionnaireCopy;
   affiliateUrl: string;
   themeConfig?: ThemeConfig | null;
+  /** Skip track-click and link straight to the affiliate URL (accelerator preview). */
+  directAffiliateLink?: boolean;
 }
 
 function escapeHtml(value: string): string {
@@ -20,7 +23,8 @@ function escapeHtml(value: string): string {
 }
 
 function trackClickHref(siteId: string, affiliateUrl: string): string {
-  return `/api/blog/track-click?site=${encodeURIComponent(siteId)}&to=${encodeURIComponent(affiliateUrl)}`;
+  const url = normalizeAffiliateUrl(affiliateUrl);
+  return `/api/blog/track-click?site=${encodeURIComponent(siteId)}&to=${encodeURIComponent(url)}`;
 }
 
 function parseHexColor(value: string): { r: number; g: number; b: number } | null {
@@ -73,7 +77,10 @@ export function buildThemedQuestionnairePage(input: ThemedQuestionnaireInput): s
   const { preset, colors, headingFont, bodyFont } = resolveThemeConfig(input.themeConfig);
   const presetDef = THEME_PRESETS[preset.id] ?? THEME_PRESETS.editorial;
   const googleFontsUrl = template.googleFontsUrl ?? presetDef.fonts.googleUrl;
-  const ctaHref = trackClickHref(input.siteId, input.affiliateUrl);
+  const normalizedAffiliate = normalizeAffiliateUrl(input.affiliateUrl);
+  const ctaHref = input.directAffiliateLink
+    ? normalizedAffiliate
+    : trackClickHref(input.siteId, normalizedAffiliate);
 
   const isDark = template.structureId === "conversion";
   const isMinimal = template.structureId === "minimal";

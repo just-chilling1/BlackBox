@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
+import { normalizeAffiliateUrl } from "@/features/blog-builder/lib/affiliate-url";
 import { buildOfferPageUrl } from "@/lib/app-url";
 import { acceleratorTemplateKey, getAcceleratorCatalogEntry } from "./catalog";
 import {
@@ -27,7 +28,7 @@ export async function cloneAcceleratorTemplate(params: {
   appUrl: string;
 }): Promise<{ site: BlogSite; threadsCopied: number }> {
   const { db, userId, catalogId, affiliateUrl, appUrl } = params;
-  const url = affiliateUrl.trim();
+  const url = normalizeAffiliateUrl(affiliateUrl.trim());
   if (!url) throw new Error("Affiliate URL is required");
 
   const entry = getAcceleratorCatalogEntry(catalogId);

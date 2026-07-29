@@ -28,9 +28,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing destination or site" }, { status: 400 });
   }
 
+  const normalizedTo = normalizeAffiliateUrl(to);
+  if (!normalizedTo) {
+    return NextResponse.json({ error: "Invalid destination" }, { status: 400 });
+  }
+
   let target: URL;
   try {
-    target = assertPublicHttpUrl(to);
+    target = assertPublicHttpUrl(normalizedTo);
   } catch {
     return NextResponse.json({ error: "Invalid destination" }, { status: 400 });
   }

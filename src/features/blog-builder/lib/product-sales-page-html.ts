@@ -1,6 +1,7 @@
 import type { ThemeConfig } from "../types";
 import { resolveThemeConfig, THEME_PRESETS, getReadyTemplateFromConfig } from "../themes";
 import type { ProductSalesCopy } from "./product-sales-copy";
+import { normalizeAffiliateUrl } from "./affiliate-url";
 import { buildSalesPageBody, structureLayoutCss } from "./sales-page-layouts";
 
 export interface ThemedSalesPageInput {
@@ -20,7 +21,8 @@ function escapeHtml(value: string): string {
 }
 
 function trackClickHref(siteId: string, affiliateUrl: string): string {
-  return `/api/blog/track-click?site=${encodeURIComponent(siteId)}&to=${encodeURIComponent(affiliateUrl)}`;
+  const url = normalizeAffiliateUrl(affiliateUrl);
+  return `/api/blog/track-click?site=${encodeURIComponent(siteId)}&to=${encodeURIComponent(url)}`;
 }
 
 function parseHexColor(value: string): { r: number; g: number; b: number } | null {

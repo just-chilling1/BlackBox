@@ -76,6 +76,7 @@ export async function loadAcceleratorTemplatePreview(params: {
       copy,
       affiliateUrl: affiliate,
       themeConfig: template.theme_config,
+      previewMode: true,
     }),
     offerPageUrl,
     threads: (templateThreads ?? []).map((row) => ({
