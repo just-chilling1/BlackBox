@@ -183,8 +183,8 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-divider bg-surface px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
           <p className="text-xs text-text-muted">
             {hasAffiliateLink
-              ? "Preview includes your affiliate link where placeholders appear."
-              : "Add your affiliate link above to preview with your URL."}
+              ? "Sales page CTAs use your affiliate link. Thread post 10 links to your offer page."
+              : "Add your affiliate link above to preview the sales page CTA."}
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={onClose} className="btn-secondary px-4 py-2 text-sm">

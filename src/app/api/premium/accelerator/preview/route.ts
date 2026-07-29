@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { getServerAppUrl } from "@/lib/app-url";
 import { loadAcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,12 @@ export async function GET(request: Request) {
   }
 
   try {
-    const preview = await loadAcceleratorTemplatePreview({ db, catalogId, affiliateUrl });
+    const preview = await loadAcceleratorTemplatePreview({
+      db,
+      catalogId,
+      affiliateUrl,
+      appUrl: getServerAppUrl(request),
+    });
     return NextResponse.json(preview, { headers: NO_STORE_HEADERS });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Failed to load preview";

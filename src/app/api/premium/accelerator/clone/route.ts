@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { getServerAppUrl } from "@/lib/app-url";
 import { cloneAcceleratorTemplate } from "@/features/premium-accelerator/lib/clone-template";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
       userId: user.id,
       catalogId,
       affiliateUrl,
+      appUrl: getServerAppUrl(request),
     });
 
     return NextResponse.json(

@@ -3,7 +3,7 @@ import { THREAD_POST_ROLES } from "@/features/publish-kit/lib/promote-constants"
 /** Placeholder used in template HTML — replaced when a member clones. */
 export const ACCELERATOR_LINK_PLACEHOLDER = "[AFFILIATE_LINK]";
 
-/** Placeholder in thread post 10 — replaced with the member's affiliate link on clone. */
+/** Placeholder in thread post 10 — replaced with the member's offer page URL on clone. */
 export const ACCELERATOR_THREAD_LINK_PLACEHOLDER = "[LINK]";
 
 /** Minimum character counts per post role — used to detect corrupted stored threads. */
@@ -17,8 +17,8 @@ export function removeThreadLinkPlaceholder(text: string): string {
   return text.split(ACCELERATOR_THREAD_LINK_PLACEHOLDER).join("");
 }
 
-export function substituteThreadLinkPlaceholder(text: string, affiliateUrl: string): string {
-  return text.split(ACCELERATOR_THREAD_LINK_PLACEHOLDER).join(affiliateUrl);
+export function substituteThreadLinkPlaceholder(text: string, linkUrl: string): string {
+  return text.split(ACCELERATOR_THREAD_LINK_PLACEHOLDER).join(linkUrl);
 }
 
 export function ensureFinalPostHasLink(text: string): string {

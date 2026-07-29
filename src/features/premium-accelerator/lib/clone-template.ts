@@ -1,7 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
+import { buildOfferPageUrl } from "@/lib/app-url";
 import { acceleratorTemplateKey, getAcceleratorCatalogEntry } from "./catalog";
-import { ACCELERATOR_LINK_PLACEHOLDER, substituteThreadLinkPlaceholder } from "./x-thread-seeds";
+import {
+  buildAcceleratorSalesPageHtml,
+  resolveAcceleratorQuestionnaireCopy,
+} from "./accelerator-sales-page";
+import { substituteThreadLinkPlaceholder } from "./x-thread-seeds";
 import { slugify } from "@/features/blog-builder/lib/seo";
 import {
   THREAD_IMAGE_POST_INDEXES,
@@ -13,22 +18,15 @@ function newSlug(seed: string): string {
   return `${slugify(seed) || "offer"}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
-function substituteLink(html: string, affiliateUrl: string): string {
-  return html.split(ACCELERATOR_LINK_PLACEHOLDER).join(affiliateUrl);
-}
-
-function substituteThreadText(text: string, affiliateUrl: string): string {
-  return substituteThreadLinkPlaceholder(text, affiliateUrl);
-}
-
 /** Clone an accelerator template into the member's offers library. */
 export async function cloneAcceleratorTemplate(params: {
   db: SupabaseClient;
   userId: string;
   catalogId: number;
   affiliateUrl: string;
+  appUrl: string;
 }): Promise<{ site: BlogSite; threadsCopied: number }> {
-  const { db, userId, catalogId, affiliateUrl } = params;
+  const { db, userId, catalogId, affiliateUrl, appUrl } = params;
   const url = affiliateUrl.trim();
   if (!url) throw new Error("Affiliate URL is required");
 
@@ -53,7 +51,7 @@ export async function cloneAcceleratorTemplate(params: {
   ];
 
   const slug = newSlug(entry.productSlug);
-  const salesPageHtml = substituteLink(template.sales_page_html, url);
+  const copy = resolveAcceleratorQuestionnaireCopy(entry, template);
 
   const { data: siteData, error: siteErr } = await db
     .from("sites")
@@ -71,14 +69,30 @@ export async function cloneAcceleratorTemplate(params: {
       site_type: "product",
       is_template: false,
       template_key: key,
-      sales_page_html: salesPageHtml,
-      sales_page_json: template.sales_page_json,
+      sales_page_json: template.sales_page_json ?? copy,
     })
     .select()
     .single();
 
   if (siteErr || !siteData) throw new Error(siteErr?.message ?? "Failed to clone template");
+
   const site = siteData as BlogSite;
+  const offerPageUrl = buildOfferPageUrl(appUrl, slug);
+  const salesPageHtml = buildAcceleratorSalesPageHtml({
+    siteId: site.id,
+    entry,
+    copy,
+    affiliateUrl: url,
+    themeConfig: site.theme_config,
+  });
+
+  const { error: htmlErr } = await db
+    .from("sites")
+    .update({ sales_page_html: salesPageHtml })
+    .eq("id", site.id);
+
+  if (htmlErr) throw new Error(htmlErr.message);
+  site.sales_page_html = salesPageHtml;
 
   const { data: templateThreads } = await db
     .from("site_x_threads")
@@ -89,7 +103,7 @@ export async function cloneAcceleratorTemplate(params: {
   let threadsCopied = 0;
   if (templateThreads && templateThreads.length > 0) {
     const posts = templateThreads.map((row, i) => ({
-      text: substituteThreadText((row as { text: string }).text, url),
+      text: substituteThreadLinkPlaceholder((row as { text: string }).text, offerPageUrl),
       angle:
         (row as { angle: string | null }).angle?.trim() ||
         THREAD_POST_ROLES[i] ||
