@@ -88,27 +88,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Message is too short" }, { status: 400 });
     }
 
-    const sent =
-      (await sendViaFreshdesk(email, message, userId)) ||
-      (await sendViaResend(email, message, userId));
-
-    if (!sent) {
-      return NextResponse.json(
-        {
-          error: "Could not send automatically — opening your email app instead.",
-          useMailto: true,
-        },
-        { status: 503 }
-      );
+    if (await sendViaFreshdesk(email, message, userId)) {
+      return NextResponse.json({ success: true, channel: "freshdesk" });
     }
 
-    return NextResponse.json({ success: true });
+    if (await sendViaResend(email, message, userId)) {
+      return NextResponse.json({ success: true, channel: "resend" });
+    }
+
+    return NextResponse.json(
+      {
+        error:
+          "We couldn't send your message right now. Please try again in a few minutes or email us directly.",
+      },
+      { status: 503 }
+    );
   } catch (error) {
     console.error("Support request error:", error);
     return NextResponse.json(
       {
-        error: "Could not send automatically — opening your email app instead.",
-        useMailto: true,
+        error:
+          "We couldn't send your message right now. Please try again in a few minutes or email us directly.",
       },
       { status: 500 }
     );

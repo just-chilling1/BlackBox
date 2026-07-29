@@ -2,7 +2,7 @@
 
 import { ExternalLink, Headphones, Mail, MessageCircle } from "lucide-react";
 import { support, supportRoutes } from "@/config/support.config";
-import { SUPPORT_MAILTO, SUPPORT_PORTAL_URL } from "@/lib/support";
+import { SUPPORT_PORTAL_URL } from "@/lib/support";
 
 export function SupportChannelCards() {
   return (
@@ -35,7 +35,7 @@ export function SupportChannelCards() {
         </a>
       ) : null}
 
-      <a href={SUPPORT_MAILTO} className="group">
+      <a href={support.contactUrl} className="group">
         <div className="card-base flex h-full items-center gap-4 transition-colors hover:border-success/30 hover:bg-success/5">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-success/20 bg-success/10 transition-colors group-hover:bg-success/15">
             <Mail className="h-6 w-6 text-success" />

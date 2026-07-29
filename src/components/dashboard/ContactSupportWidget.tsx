@@ -27,35 +27,15 @@ function trainingUpsellUrl(): string | null {
   return null;
 }
 
-function openSupportMailto(email: string, message: string) {
-  const subject = `${APP_SUPPORT_NAME} — Support Request`;
-  const body = `Please reply to: ${email}\n\n${message}`;
-  window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
-function finishWithMailto(
-  email: string,
-  message: string,
-  setSubmittedEmail: (value: string) => void,
-  setSentViaMailto: (value: boolean) => void,
-  setFormState: (value: FormState) => void
-) {
-  openSupportMailto(email, message);
-  setSubmittedEmail(email);
-  setSentViaMailto(true);
-  setFormState("success");
-}
-
 async function parseJsonResponse(res: Response): Promise<{
   error?: string;
-  useMailto?: boolean;
   success?: boolean;
 } | null> {
   const text = await res.text();
   if (!text.trim()) return {};
 
   try {
-    return JSON.parse(text) as { error?: string; useMailto?: boolean; success?: boolean };
+    return JSON.parse(text) as { error?: string; success?: boolean };
   } catch {
     return null;
   }
@@ -63,12 +43,10 @@ async function parseJsonResponse(res: Response): Promise<{
 
 function SupportSuccessPanel({
   embedded,
-  sentViaMailto,
   submittedEmail,
   onReset,
 }: {
   embedded: boolean;
-  sentViaMailto: boolean;
   submittedEmail: string;
   onReset: () => void;
 }) {
@@ -87,26 +65,12 @@ function SupportSuccessPanel({
               : "ds-h3"
           }
         >
-          {sentViaMailto ? "Check your email app" : "Message sent"}
+          Message sent
         </h3>
         <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-secondary" : "text-text-secondary text-left"}`}>
-          {sentViaMailto ? (
-            <>
-              Your email app should open with your message ready to send. Tap{" "}
-              <span className="font-semibold text-text-primary">Send</span> to deliver it — then
-              we&apos;ll reply to{" "}
-              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
-              We usually respond within about 2 hours — during busy periods, please allow 24–48
-              hours.
-            </>
-          ) : (
-            <>
-              We&apos;ll reply to{" "}
-              <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
-              We usually respond within about 2 hours — during busy periods, please allow 24–48
-              hours.
-            </>
-          )}
+          We&apos;ll reply to{" "}
+          <span className="break-all font-semibold text-accent-readable">{submittedEmail}</span>.
+          We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
         </p>
         <p className={`w-full text-sm leading-relaxed ${embedded ? "text-text-muted" : "text-text-muted text-left"}`}>
           Remember: our reply will go to{" "}
@@ -161,7 +125,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const [message, setMessage] = useState("");
   const [formState, setFormState] = useState<FormState>("idle");
   const [submittedEmail, setSubmittedEmail] = useState("");
-  const [sentViaMailto, setSentViaMailto] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -173,7 +136,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const resetForm = () => {
     setFormState("idle");
     setMessage("");
-    setSentViaMailto(false);
     setErrorMessage("");
   };
 
@@ -222,45 +184,16 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         const data = await parseJsonResponse(res);
 
         if (data === null) {
-          finishWithMailto(
-            trimmedEmail,
-            trimmedMessage,
-            setSubmittedEmail,
-            setSentViaMailto,
-            setFormState
-          );
-          return;
+          throw new Error("Unexpected response from the server. Please try again.");
         }
 
         if (res.status === 401) {
-          if (!session?.access_token) {
-            finishWithMailto(
-              trimmedEmail,
-              trimmedMessage,
-              setSubmittedEmail,
-              setSentViaMailto,
-              setFormState
-            );
-            return;
-          }
           throw new Error("Your session expired. Please refresh the page and try again.");
         }
 
         if (res.ok && data.success) {
           setSubmittedEmail(trimmedEmail);
-          setSentViaMailto(false);
           setFormState("success");
-          return;
-        }
-
-        if (data.useMailto) {
-          finishWithMailto(
-            trimmedEmail,
-            trimmedMessage,
-            setSubmittedEmail,
-            setSentViaMailto,
-            setFormState
-          );
           return;
         }
 
@@ -277,7 +210,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     return (
       <SupportSuccessPanel
         embedded={embedded}
-        sentViaMailto={sentViaMailto}
         submittedEmail={submittedEmail}
         onReset={resetForm}
       />
@@ -378,14 +310,15 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" />
       <div className="min-w-0">
         <p className="text-xs text-text-muted">
-          {embedded ? "If the form doesn't work, email us directly:" : "If the form doesn't work, email us:"}
+          {embedded ? "If the form doesn't work, copy our support email:" : "If the form doesn't work, copy our support email:"}
         </p>
-        <a
-          href={`mailto:${SUPPORT_EMAIL}`}
-          className="block break-all text-sm font-semibold text-accent hover:underline"
+        <button
+          type="button"
+          onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
+          className="block break-all text-left text-sm font-semibold text-accent hover:underline"
         >
           {SUPPORT_EMAIL}
-        </a>
+        </button>
       </div>
     </div>
   );
