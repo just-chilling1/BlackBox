@@ -20,10 +20,10 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
   };
 
   return (
-    <div className="rounded-xl bg-black/30 border border-black/5 p-4 flex flex-col gap-3">
+    <div className="flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-text-muted">
-          <Facebook size={12} className="text-accent" />
+        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          <Facebook size={12} className="text-accent-readable" aria-hidden />
           {new Date(post.created_at).toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -32,24 +32,28 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
           })}
         </span>
       </div>
-      <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap flex-1">
+      <p className="flex-1 whitespace-pre-wrap text-sm leading-relaxed text-text-primary">
         {resolvedText}
       </p>
       <button
         type="button"
         onClick={handleCopy}
         className={clsx(
-          "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all self-start",
-          copied ? "bg-green-500 text-black" : "btn-primary"
+          "inline-flex items-center justify-center gap-2 self-start rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 active:scale-[0.98]",
+          copied
+            ? "bg-emerald-600 text-white"
+            : "bg-accent text-text-on-accent shadow-gold hover:brightness-110 hover:shadow-[0_0_16px_rgba(238,179,16,0.22)]"
         )}
       >
         {copied ? (
           <>
-            <Check className="w-3.5 h-3.5" /> Copied!
+            <Check className="h-3.5 w-3.5" aria-hidden />
+            Copied!
           </>
         ) : (
           <>
-            <Copy className="w-3.5 h-3.5" /> Copy Post
+            <Copy className="h-3.5 w-3.5" aria-hidden />
+            Copy post
           </>
         )}
       </button>
