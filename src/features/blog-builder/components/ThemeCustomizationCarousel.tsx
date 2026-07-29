@@ -197,7 +197,14 @@ export function ThemeCustomizationCarousel({
                           </span>
                         )}
                       </div>
-                      <p className="wizard-template-card-tone">{template.toneLabel}</p>
+                      <p
+                        className={clsx(
+                          "wizard-template-card-tone",
+                          template.structureId === "conversion" && isSelected && "text-emerald-900"
+                        )}
+                      >
+                        {template.toneLabel}
+                      </p>
                     </div>
                   </button>
                 );
