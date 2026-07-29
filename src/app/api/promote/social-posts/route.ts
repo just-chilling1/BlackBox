@@ -4,6 +4,7 @@ import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
 import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
+import { getAppUrl } from "@/lib/brand-vars";
 import { buildSitePromoteContext } from "@/features/publish-kit/lib/site-context";
 import {
   getThreadGenerationQuota,
@@ -115,16 +116,10 @@ export async function POST(request: Request) {
     }
   }
 
-  const siteUrl = siteUrlInput || "";
-  const context = buildSitePromoteContext({ site, siteUrl, scrapedProductContext });
-  const promoLink = context.affiliateLink || siteUrl;
-
-  if (!promoLink) {
-    return NextResponse.json(
-      { error: "Add an affiliate link or publish your site before generating threads." },
-      { status: 400, headers: NO_STORE_HEADERS }
-    );
-  }
+  const offerPageUrl =
+    siteUrlInput || `${process.env.NEXT_PUBLIC_APP_URL || getAppUrl()}/sites/${site.slug}`;
+  const context = buildSitePromoteContext({ site, siteUrl: offerPageUrl, scrapedProductContext });
+  const promoLink = offerPageUrl;
 
   const platformLabel = "X (Twitter)";
   const system = buildThreadSystemPrompt(platformLabel);
