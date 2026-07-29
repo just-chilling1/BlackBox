@@ -24,6 +24,7 @@ import {
   sidebarSectionLabelClass,
   type SidebarNavColor,
 } from "@/components/layout/sidebar-nav-styles";
+import { SidebarTooltip } from "@/components/ui/sidebar-tooltip";
 
 interface BlogBuilderNavProps {
   pathname: string;
@@ -74,18 +75,19 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     }
 
     return (
-      <Link
-        key={item.path}
-        href={item.path}
-        onClick={onNavClick}
-        title={collapsed ? item.label : undefined}
-        className="block group"
-      >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
-          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
-        </div>
-      </Link>
+      <SidebarTooltip key={item.path} label={item.label} show={collapsed}>
+        <Link href={item.path} onClick={onNavClick} className="block group w-full">
+          <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+            <Icon
+              className={sidebarNavIconClass(isActive, color)}
+              size={20}
+              fill={isActive ? "currentColor" : "none"}
+              strokeWidth={isActive ? 2.25 : 2}
+            />
+            {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
+          </div>
+        </Link>
+      </SidebarTooltip>
     );
   };
 
@@ -95,18 +97,19 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     const color = NAV_COLORS[item.icon] ?? "gold";
 
     return (
-      <Link
-        key={item.path}
-        href={item.path}
-        onClick={onNavClick}
-        title={collapsed ? item.label : undefined}
-        className="block group"
-      >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
-          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
-        </div>
-      </Link>
+      <SidebarTooltip key={item.path} label={item.label} show={collapsed}>
+        <Link href={item.path} onClick={onNavClick} className="block group w-full">
+          <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+            <Icon
+              className={sidebarNavIconClass(isActive, color)}
+              size={20}
+              fill={isActive ? "currentColor" : "none"}
+              strokeWidth={isActive ? 2.25 : 2}
+            />
+            {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
+          </div>
+        </Link>
+      </SidebarTooltip>
     );
   };
 

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { DeploySiteLoader } from "../components/DeploySiteLoader";
 import { PageHeader } from "@/components/ui/page-header";
 import { WizardStepBar } from "@/components/ui/wizard-step-bar";
@@ -350,7 +351,7 @@ export default function DeployAssetPage({
     : "Selected template";
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-2xl mx-auto"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full max-w-2xl mx-auto"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Launch" step={4} />
@@ -368,9 +369,16 @@ export default function DeployAssetPage({
       )}
 
       {embedded && !isComplete && onBack && (
-        <button type="button" onClick={onBack} className="btn-subtle">
-          Back to Template
-        </button>
+        <div className="-mb-2">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center gap-2 rounded-xl border border-border-dim bg-white px-4 py-2.5 text-sm font-semibold text-text-secondary transition-colors hover:border-accent/30 hover:bg-accent/5 hover:text-text-primary"
+          >
+            <ArrowLeft size={16} aria-hidden />
+            Back to Template
+          </button>
+        </div>
       )}
 
       {isLoading && (

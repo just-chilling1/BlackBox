@@ -27,8 +27,8 @@ export function sidebarNavItemClass(
 
 export function sidebarNavIconClass(isActive: boolean, color: SidebarNavColor = "gold") {
   return clsx(
-    "w-5 h-5 shrink-0 transition-all duration-300",
-    isActive ? "text-accent drop-shadow-[0_0_8px_rgba(238,179,16,0.5)]" : ICON_COLOR[color]
+    "sidebar-nav-icon w-5 h-5 shrink-0 transition-all duration-300",
+    isActive ? "sidebar-nav-icon--active text-accent drop-shadow-[0_0_8px_rgba(238,179,16,0.5)]" : ICON_COLOR[color]
   );
 }
 

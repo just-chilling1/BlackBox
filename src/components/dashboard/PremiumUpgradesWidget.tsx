@@ -8,6 +8,7 @@ import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { isNavPathActive } from "@/lib/nav-active";
 import { sidebarSectionLabelClass } from "@/components/layout/sidebar-nav-styles";
+import { SidebarTooltip } from "@/components/ui/sidebar-tooltip";
 
 type PremiumUpgradesWidgetProps = {
   layout?: "sidebar" | "featured";
@@ -36,20 +37,20 @@ export function PremiumUpgradesWidget({
           const Icon = feature.icon;
 
           return (
-            <Link
-              key={feature.href}
-              href={feature.href}
-              onClick={onNavigate}
-              title={feature.label}
-              className={clsx(
-                "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300",
-                isActive
-                  ? "border-accent/50 bg-accent/15 text-accent shadow-sm"
-                  : "border-border-dim bg-white text-accent/80 hover:border-accent/35 hover:bg-accent/10"
-              )}
-            >
-              <Icon size={18} strokeWidth={1.5} />
-            </Link>
+            <SidebarTooltip key={feature.href} label={feature.label} show>
+              <Link
+                href={feature.href}
+                onClick={onNavigate}
+                className={clsx(
+                  "flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300",
+                  isActive
+                    ? "border-accent/50 bg-accent/15 text-accent shadow-sm"
+                    : "border-border-dim bg-white text-accent/80 hover:border-accent/35 hover:bg-accent/10"
+                )}
+              >
+                <Icon size={18} strokeWidth={1.5} fill={isActive ? "currentColor" : "none"} />
+              </Link>
+            </SidebarTooltip>
           );
         })}
       </div>

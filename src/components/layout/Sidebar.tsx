@@ -38,6 +38,7 @@ import {
   sidebarNavLabelClass,
   type SidebarNavColor,
 } from "./sidebar-nav-styles";
+import { SidebarTooltip } from "@/components/ui/sidebar-tooltip";
 
 interface SidebarContentProps {
   collapsed: boolean;
@@ -126,18 +127,23 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
     }
 
     return (
-      <Link
-        key={item.path}
-        href={item.path}
-        onClick={handleNavClick}
-        title={collapsed ? item.label : undefined}
-        className="block group"
-      >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
-          {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
-        </div>
-      </Link>
+      <SidebarTooltip key={item.path} label={item.label} show={collapsed}>
+        <Link
+          href={item.path}
+          onClick={handleNavClick}
+          className="block group w-full"
+        >
+          <div className={sidebarNavItemClass(isActive, collapsed, color)}>
+            <Icon
+              className={sidebarNavIconClass(isActive, color)}
+              size={20}
+              fill={isActive ? "currentColor" : "none"}
+              strokeWidth={isActive ? 2.25 : 2}
+            />
+            {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
+          </div>
+        </Link>
+      </SidebarTooltip>
     );
   };
 
@@ -172,14 +178,16 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
               />
             )}
           </Link>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-slate-100 hover:text-text-primary"
-          >
-            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-          </button>
+          <SidebarTooltip label={collapsed ? "Expand sidebar" : "Collapse sidebar"} show={collapsed}>
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-slate-100 hover:text-text-primary"
+            >
+              {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            </button>
+          </SidebarTooltip>
         </div>
       </div>
 
@@ -246,14 +254,15 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
                 <div className="text-xs text-text-secondary">Active Member</div>
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => void handleLogout()}
-              className="sidebar-sign-out rounded-lg p-2"
-              title="Sign Out"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+            <SidebarTooltip label="Sign Out" show={collapsed}>
+              <button
+                type="button"
+                onClick={() => void handleLogout()}
+                className="sidebar-sign-out rounded-lg p-2"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </SidebarTooltip>
           </div>
         </div>
       </div>

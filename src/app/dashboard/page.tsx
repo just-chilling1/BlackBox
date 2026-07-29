@@ -15,7 +15,6 @@ import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSectio
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
-import { HonestActivity } from "@/components/dashboard/HonestActivity";
 import { DashboardSection } from "@/components/dashboard/DashboardSection";
 
 const SETUP_STEPS = [
@@ -138,12 +137,6 @@ export default function DashboardPage() {
           </DashboardSection>
 
           {hasPremium ? <PremiumUpgradesWidget /> : null}
-
-          <HonestActivity />
-
-          <DashboardSection className="py-4 text-center">
-            <p className="text-xs text-text-muted italic">Individual results vary.</p>
-          </DashboardSection>
         </div>
 
         <aside className="flex flex-col gap-6 xl:col-span-1">

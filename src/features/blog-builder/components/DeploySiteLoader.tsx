@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Globe, Rocket, Sparkles } from "lucide-react";
+import { Check, Globe, Loader2, Rocket, Sparkles } from "lucide-react";
 import { AiLoadingBar } from "@/components/ui/AiLoadingBar";
 import { cn } from "@/lib/utils";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
@@ -25,6 +25,12 @@ const PHASE_MESSAGES: Record<DeployLoaderPhase, string> = {
   setup: "Creating your questionnaire site record…",
   generating: "Writing quiz questions and building pages…",
   publishing: "Publishing your site to the web…",
+};
+
+const SKELETON_CAPTIONS: Record<DeployLoaderPhase, string> = {
+  setup: "Preparing template…",
+  generating: "Generating questionnaire preview…",
+  publishing: "Building landing page…",
 };
 
 const PHASE_TICKERS: Record<DeployLoaderPhase, string[]> = {
@@ -55,6 +61,12 @@ const PHASE_PROGRESS: Record<DeployLoaderPhase, { start: number; cap: number }> 
   publishing: { start: 88, cap: 99 },
 };
 
+const PHASE_ETA_SECONDS: Record<DeployLoaderPhase, number> = {
+  setup: 35,
+  generating: 90,
+  publishing: 20,
+};
+
 const SKELETON_BLOCKS = [
   { className: "h-14 w-full" },
   { className: "h-3 w-2/3" },
@@ -81,6 +93,13 @@ function TypingDots() {
       ))}
     </span>
   );
+}
+
+function formatEta(seconds: number): string {
+  if (seconds <= 5) return "Almost done";
+  if (seconds < 60) return `~${seconds}s left`;
+  const mins = Math.ceil(seconds / 60);
+  return mins === 1 ? "~1 min left" : `~${mins} min left`;
 }
 
 function BrowserChrome() {
@@ -159,12 +178,14 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
   const activeIndex = PHASE_INDEX[phase];
   const [tickerIndex, setTickerIndex] = useState(0);
   const [progress, setProgress] = useState(PHASE_PROGRESS[phase].start);
+  const [elapsedSec, setElapsedSec] = useState(0);
 
   const latestLog = generationLog.length > 0 ? generationLog[generationLog.length - 1] : null;
-  const recentLogs = generationLog.slice(-3);
+  const completedLogs = generationLog.slice(0, -1).slice(-3);
 
   const displayMessage = latestLog ?? PHASE_MESSAGES[phase];
   const tickerMessage = PHASE_TICKERS[phase][tickerIndex % PHASE_TICKERS[phase].length];
+  const skeletonCaption = SKELETON_CAPTIONS[phase];
 
   const progressLabel = useMemo(() => {
     if (phase === "publishing") return "Going live";
@@ -172,8 +193,18 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
     return "Preparing site";
   }, [phase]);
 
+  const etaLabel = useMemo(() => {
+    const total = PHASE_ETA_SECONDS[phase];
+    const { start, cap } = PHASE_PROGRESS[phase];
+    const phaseSpan = cap - start;
+    const phaseProgress = phaseSpan > 0 ? (progress - start) / phaseSpan : 1;
+    const remaining = Math.max(0, Math.round(total * (1 - phaseProgress) - elapsedSec * 0.15));
+    return formatEta(remaining);
+  }, [phase, progress, elapsedSec]);
+
   useEffect(() => {
     setProgress(PHASE_PROGRESS[phase].start);
+    setElapsedSec(0);
   }, [phase]);
 
   useEffect(() => {
@@ -189,11 +220,18 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
   }, [phase]);
 
   useEffect(() => {
+    const id = window.setInterval(() => setElapsedSec((s) => s + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [phase]);
+
+  useEffect(() => {
     const id = window.setInterval(() => {
       setTickerIndex((i) => i + 1);
     }, 2800);
     return () => window.clearInterval(id);
   }, [phase]);
+
+  const roundedProgress = Math.round(progress);
 
   return (
     <motion.div
@@ -208,32 +246,37 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       aria-live="polite"
       aria-label={displayMessage}
     >
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-2.5">
           <motion.div
-            className="deploy-rocket-wrap flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10"
+            className="deploy-rocket-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-accent/15"
             aria-hidden
           >
-            <Rocket size={16} className="text-accent" />
+            <Rocket size={18} className="text-accent" />
           </motion.div>
-          <div className="min-w-0">
+          <div className="min-w-0 space-y-2">
             <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
               <Sparkles size={11} className="deploy-sparkle shrink-0" aria-hidden />
               Site Assembly
             </p>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={displayMessage}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="truncate text-sm font-semibold text-text-primary"
-              >
-                {displayMessage}
-                {!latestLog && <TypingDots />}
-              </motion.p>
-            </AnimatePresence>
+            <div className="rounded-xl border border-accent/25 bg-accent/5 px-3 py-2.5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={displayMessage}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex items-start gap-2"
+                >
+                  <Loader2 size={16} className="mt-0.5 shrink-0 animate-spin text-accent" aria-hidden />
+                  <p className="text-sm font-bold leading-snug text-text-primary sm:text-base">
+                    {displayMessage}
+                    {!latestLog && <TypingDots />}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
         <Globe size={18} className="deploy-globe shrink-0 text-text-muted/60" aria-hidden />
@@ -242,6 +285,10 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       <div className="relative overflow-hidden rounded-xl border border-border-dim bg-page/80 p-3 sm:p-4">
         <BrowserChrome />
         <SkeletonPreview phase={phase} />
+        <p className="mt-3 flex items-center justify-center gap-2 text-center text-xs font-semibold text-text-secondary">
+          <Loader2 size={12} className="animate-spin text-accent/70" aria-hidden />
+          {skeletonCaption}
+        </p>
       </div>
 
       <AnimatePresence mode="wait">
@@ -251,83 +298,86 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 8 }}
           transition={{ duration: 0.3 }}
-          className="mt-3 flex items-center gap-2 text-[11px] text-text-muted"
+          className="mt-3 flex items-center gap-2 rounded-lg border border-accent/15 bg-accent/5 px-3 py-2 text-xs font-medium text-text-primary"
         >
-          <span className="deploy-activity-pulse h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+          <span className="deploy-activity-pulse h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden />
           <span className="truncate">{tickerMessage}</span>
         </motion.p>
       </AnimatePresence>
 
-      {recentLogs.length > 1 && (
-        <ul className="mt-2 space-y-1 border-t border-divider pt-2" aria-label="Recent activity">
-          {recentLogs.slice(0, -1).map((line, i) => (
+      {completedLogs.length > 0 && (
+        <ul className="mt-2 space-y-1 border-t border-divider pt-2" aria-label="Completed steps">
+          {completedLogs.map((line, i) => (
             <motion.li
               key={`${line}-${i}`}
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 0.55, height: "auto" }}
-              className="truncate text-[10px] text-text-muted/80"
+              animate={{ opacity: 0.65, height: "auto" }}
+              className="flex items-center gap-2 truncate text-[11px] text-text-muted"
             >
-              {line}
+              <Check size={12} className="shrink-0 text-accent/70" aria-hidden />
+              <span className="line-through decoration-text-muted/40">{line}</span>
             </motion.li>
           ))}
         </ul>
       )}
 
-      <ol className="mt-4 flex items-center gap-1.5 sm:gap-2" aria-label="Deployment progress">
-        {PHASES.map((step, index) => {
-          const isActive = index === activeIndex;
-          const isDone = index < activeIndex;
+      <div className="mt-5 space-y-3">
+        <ol className="flex items-center gap-1.5 sm:gap-2" aria-label="Deployment progress">
+          {PHASES.map((step, index) => {
+            const isActive = index === activeIndex;
+            const isDone = index < activeIndex;
 
-          return (
-            <li key={step.id} className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
-              <motion.span
-                layout
-                animate={
-                  isActive
-                    ? { scale: [1, 1.08, 1], boxShadow: "0 0 12px rgba(238,179,16,0.35)" }
-                    : { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }
-                }
-                transition={isActive ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}
-                className={cn(
-                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors duration-300",
-                  isDone && "bg-accent text-text-on-accent",
-                  isActive && "bg-accent/15 text-accent ring-1 ring-accent/40",
-                  !isDone && !isActive && "bg-slate-100 text-text-muted"
-                )}
-                aria-current={isActive ? "step" : undefined}
-              >
-                {isDone ? "✓" : index + 1}
-              </motion.span>
-              <span
-                className={cn(
-                  "hidden truncate text-[11px] font-semibold uppercase tracking-wider sm:inline",
-                  isActive ? "text-text-primary" : "text-text-muted"
-                )}
-              >
-                {step.label}
-              </span>
-              {index < PHASES.length - 1 && (
-                <span className="relative hidden h-px flex-1 overflow-hidden sm:block" aria-hidden>
-                  <span className="absolute inset-0 bg-black/[0.08]" />
-                  <motion.span
-                    className="absolute inset-y-0 left-0 bg-accent/50"
-                    initial={{ width: "0%" }}
-                    animate={{ width: isDone ? "100%" : isActive ? "50%" : "0%" }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  />
+            return (
+              <li key={step.id} className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+                <motion.span
+                  layout
+                  animate={
+                    isActive
+                      ? { scale: [1, 1.06, 1], boxShadow: "0 0 16px rgba(238,179,16,0.4)" }
+                      : { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }
+                  }
+                  transition={isActive ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}
+                  className={cn(
+                    "flex shrink-0 items-center justify-center rounded-full font-bold transition-colors duration-300",
+                    isDone && "h-7 w-7 bg-accent text-text-on-accent text-[11px]",
+                    isActive && "h-9 w-9 bg-accent text-text-on-accent text-sm ring-2 ring-accent/30 ring-offset-2 ring-offset-surface",
+                    !isDone && !isActive && "h-7 w-7 border border-border-dim bg-slate-100 text-[11px] text-text-muted/70"
+                  )}
+                  aria-current={isActive ? "step" : undefined}
+                >
+                  {isDone ? <Check size={14} strokeWidth={3} aria-hidden /> : index + 1}
+                </motion.span>
+                <span
+                  className={cn(
+                    "hidden truncate uppercase tracking-wider sm:inline",
+                    isActive ? "text-sm font-extrabold text-text-primary" : isDone ? "text-[11px] font-semibold text-accent" : "text-[11px] font-medium text-text-muted/60"
+                  )}
+                >
+                  {step.label}
                 </span>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+                {index < PHASES.length - 1 && (
+                  <span className="relative hidden h-0.5 flex-1 overflow-hidden rounded-full sm:block" aria-hidden>
+                    <span className="absolute inset-0 bg-black/[0.06]" />
+                    <motion.span
+                      className="absolute inset-y-0 left-0 rounded-full bg-accent"
+                      initial={{ width: "0%" }}
+                      animate={{ width: isDone ? "100%" : isActive ? "55%" : "0%" }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    />
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
 
-      <AiLoadingBar
-        label={progressLabel}
-        progress={Math.round(progress)}
-        active
-        className="mt-4"
-      />
+        <AiLoadingBar
+          label={progressLabel}
+          progress={roundedProgress}
+          eta={etaLabel}
+          active
+        />
+      </div>
     </motion.div>
   );
 }
