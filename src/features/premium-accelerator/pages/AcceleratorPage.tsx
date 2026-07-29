@@ -291,7 +291,7 @@ export default function AcceleratorPage() {
     return (
       <PremiumPageLayout
         title="Accelerator"
-        subtitle="200 pre-made sales pages + 10-post X conversion threads with niche images."
+        subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
         animate={false}
       >
         <PageSkeleton cards={6} />
@@ -302,7 +302,7 @@ export default function AcceleratorPage() {
   return (
     <PremiumPageLayout
       title="Accelerator"
-      subtitle={`${seededCount} of 200 pre-made sales pages + conversion threads across every niche. Each clone includes a 10-post hook → steps → TL;DR → CTA thread with images on posts 1, 4, and 7.`}
+      subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
       footer={
         <PremiumFooter>
           Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
@@ -311,8 +311,8 @@ export default function AcceleratorPage() {
     >
       <PremiumControlCard
         icon={Rocket}
-        title="200 Sales Pages + Conversion Threads"
-        description="Each template includes a ready-made 10-post X conversion thread with niche images — hook, 5 core steps, TL;DR, and a single CTA link."
+        title="200 Sales Pages + Story Threads"
+        description="Each template includes a ready-made 10-post X story thread with niche images — clone instantly with your link."
         badge={
           !ready ? (
             <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-800">
