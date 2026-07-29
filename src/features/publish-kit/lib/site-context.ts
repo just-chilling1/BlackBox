@@ -123,7 +123,7 @@ export function buildSitePromoteContext(params: {
   const fullContext = [
     "=== WEBSITE ===",
     websiteSummary,
-    affiliateLink ? `Promotion link: ${affiliateLink}` : "",
+    siteUrl ? `Offer page URL (use in CTA): ${siteUrl}` : "",
     "",
     "=== PRODUCT / OFFER ===",
     productSummary,

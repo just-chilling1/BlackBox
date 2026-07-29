@@ -54,7 +54,7 @@ export function buildThreadUserPrompt(params: {
 
 ${params.fullContext}
 
-Promotion URL (ONLY in the final post): ${params.promoLink}
+Promotion URL (ONLY in the final post — use the offer page URL, not a raw affiliate link): ${params.promoLink}
 
 ## Structure — one post per role, in order:
 ${rolesText}

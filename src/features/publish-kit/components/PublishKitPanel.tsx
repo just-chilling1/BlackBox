@@ -148,7 +148,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
   const visiblePosts = posts;
   const visibleTags = tags;
 
-  const promoLink = useMemo(() => site.affiliateLink || site.siteUrl || "", [site]);
+  const promoLink = useMemo(() => site.siteUrl || "", [site.siteUrl]);
 
   useEffect(() => {
     if (!toast) return;
@@ -242,7 +242,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
   const runGenerate = async () => {
     if (!promoLink) {
-      showToast("Add an affiliate link or publish your site before generating threads.", "info");
+      showToast("Publish your offer page before generating threads.", "info");
       return;
     }
 
