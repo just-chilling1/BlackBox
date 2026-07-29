@@ -34,7 +34,7 @@ export function SupportTabNav() {
             href={href}
             className={clsx("tab-pill", isActive && "is-active")}
           >
-            <Icon size={14} className={isActive ? "text-amber-800" : "text-text-muted"} />
+            <Icon size={14} className={isActive ? "text-accent-readable" : "text-text-muted"} />
             {label}
           </Link>
         );

@@ -28,7 +28,7 @@ function openMailto(email: string, message: string) {
   window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-export function ContactSupportWidget() {
+export function ContactSupportWidget({ embedded = false }: { embedded?: boolean }) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [formState, setFormState] = useState<FormState>("idle");
@@ -91,9 +91,14 @@ export function ContactSupportWidget() {
     [email, message]
   );
 
+  const Wrapper = embedded ? "div" : DashboardSection;
+  const wrapperProps = embedded
+    ? { className: "min-w-0 space-y-4 px-4 py-4" }
+    : { className: "min-w-0 space-y-5" };
+
   if (formState === "success") {
     return (
-      <DashboardSection className="min-w-0 space-y-5">
+      <Wrapper {...wrapperProps}>
         <div className="flex flex-col items-center text-center">
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-green-500/30 bg-green-500/10">
             <CheckCircle2 className="h-6 w-6 text-green-400" />
@@ -126,20 +131,22 @@ export function ContactSupportWidget() {
         >
           Send another message
         </button>
-      </DashboardSection>
+      </Wrapper>
     );
   }
 
   return (
-    <DashboardSection className="min-w-0 space-y-5">
-      <div className="dashboard-section-header mb-0 pb-0">
-        <div className="dashboard-section-icon">
-          <Headphones size={22} />
+    <Wrapper {...wrapperProps}>
+      {!embedded ? (
+        <div className="dashboard-section-header mb-0 pb-0">
+          <div className="dashboard-section-icon">
+            <Headphones size={22} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="ds-h3">Contact Support</h3>
+          </div>
         </div>
-        <div className="min-w-0">
-          <h3 className="ds-h3">Contact Support</h3>
-        </div>
-      </div>
+      ) : null}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="support-email" className="mb-2 block text-xs font-bold uppercase tracking-wide text-text-muted">
@@ -193,6 +200,6 @@ export function ContactSupportWidget() {
           </a>
         </div>
       </div>
-    </DashboardSection>
+    </Wrapper>
   );
 }

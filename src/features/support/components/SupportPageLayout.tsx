@@ -7,8 +7,8 @@ import { SupportTabNav } from "./SupportTabNav";
 
 export function SupportPageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="page-stack w-full max-w-4xl">
-      <PageHeader title={support.pageTitle} subtitle={support.pageSubtitle} />
+    <div className="page-stack w-full max-w-7xl">
+      <PageHeader eyebrow="Help" title={support.pageTitle} subtitle={support.pageSubtitle} />
       <SupportTabNav />
       {children}
     </div>

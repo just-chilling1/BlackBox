@@ -1,102 +1,58 @@
 "use client";
 
-import Link from "next/link";
-import { Clock, Star, Shield, Headphones, Mail, ExternalLink } from "lucide-react";
-import { clsx } from "clsx";
+import { motion } from "framer-motion";
+import { Headphones, Mail } from "lucide-react";
 import { support } from "@/config/support.config";
+import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { SupportPageLayout } from "../components/SupportPageLayout";
-
-const STAT_ICONS = {
-  clock: Clock,
-  star: Star,
-  shield: Shield,
-} as const;
+import { SupportChannelCards } from "../components/SupportChannelCards";
+import { SupportStatCards } from "../components/SupportStatCards";
+import {
+  SupportRefundSection,
+  containerVariants,
+  itemVariants,
+} from "../components/SupportRefundSection";
 
 export default function SupportPage() {
   const contactHref = support.contactUrl || `mailto:${support.email}`;
 
   return (
     <SupportPageLayout>
-      <div className="card-base flex flex-col gap-6">
-        <div className="flex items-start gap-4">
-          <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
-            <Headphones className="text-accent" size={22} />
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col gap-6"
+      >
+        <motion.div variants={itemVariants}>
+          <SupportChannelCards />
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="card-base flex flex-col gap-6">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 shadow-sm">
+              <Headphones className="text-accent-readable" size={24} />
+            </div>
+            <div className="min-w-0">
+              <h2 className="brand-font text-xl text-text-heading sm:text-2xl">{support.headline}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary">{support.subcopy}</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <h2 className="brand-font text-lg sm:text-xl text-text-primary mb-1">{support.headline}</h2>
-            <p className="text-sm text-text-secondary leading-relaxed">{support.subcopy}</p>
-          </div>
-        </div>
 
-        <a href={contactHref} className="btn-primary w-full sm:w-fit">
-          <Mail size={18} />
-          {support.ctaLabel}
-        </a>
+          <a href={contactHref} className="btn-primary-prominent w-full sm:w-fit">
+            <Mail size={18} />
+            {support.ctaLabel}
+          </a>
 
-        <ul className="grid gap-4 sm:grid-cols-3">
-          {support.stats.map((stat, index) => {
-            const Icon = STAT_ICONS[stat.icon as keyof typeof STAT_ICONS] ?? Star;
-            const isPrimary = index === 0;
+          <SupportStatCards />
+        </motion.div>
 
-            return (
-              <li
-                key={stat.label}
-                className={clsx(
-                  "flex items-start gap-3 rounded-xl border p-4 text-sm transition-colors",
-                  isPrimary
-                    ? "border-accent/35 bg-accent/5 ring-1 ring-accent/15 text-text-primary"
-                    : "border-border-dim bg-page/50 text-text-secondary"
-                )}
-              >
-                <div
-                  className={clsx(
-                    "flex shrink-0 items-center justify-center rounded-lg",
-                    isPrimary ? "h-10 w-10 bg-accent/15" : "h-8 w-8 bg-slate-100"
-                  )}
-                >
-                  <Icon
-                    size={isPrimary ? 20 : 16}
-                    className={clsx(isPrimary ? "text-accent-readable" : "text-text-muted")}
-                  />
-                </div>
-                <span className={clsx("leading-snug", isPrimary && "font-medium")}>
-                  {isPrimary ? (
-                    <>
-                      <span className="block text-xs font-bold uppercase tracking-wide text-text-muted mb-0.5">
-                        {stat.label.replace(":", "")}
-                      </span>
-                      {"highlight" in stat && stat.highlight ? (
-                        <span className={clsx("text-base font-bold", stat.highlightClass ?? "text-accent-readable")}>
-                          {stat.highlight}
-                        </span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <>
-                      {stat.label}{" "}
-                      {"highlight" in stat && stat.highlight ? (
-                        <span className={stat.highlightClass ?? "text-accent"}>{stat.highlight}</span>
-                      ) : null}
-                    </>
-                  )}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+        <motion.div variants={itemVariants}>
+          <ContactSupportWidget />
+        </motion.div>
 
-        {support.helpCenterUrl ? (
-          <Link
-            href={support.helpCenterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-accent hover:underline"
-          >
-            Visit help center
-            <ExternalLink size={14} />
-          </Link>
-        ) : null}
-      </div>
+        <SupportRefundSection />
+      </motion.div>
     </SupportPageLayout>
   );
 }
