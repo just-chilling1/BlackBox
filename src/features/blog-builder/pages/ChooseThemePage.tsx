@@ -24,6 +24,8 @@ import {
   getReadyTemplate,
   defaultThemeConfig,
   ACCENT_VARIANTS,
+  sanitizeAccentColor,
+  MAGENTA_ACCENT_COLORS,
 } from "../themes";
 import type { WizardStepProps } from "../lib/wizard-step-props";
 
@@ -64,22 +66,31 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
   }, [embedded, sessionLoaded, linksArmed, territoryChosen, router]);
 
   useEffect(() => {
-    if (themeConfig) {
-      setConfig(themeConfig);
-      if (themeConfig.templateId) {
-        setSelectedTemplateId(themeConfig.templateId);
-      }
+    if (!themeConfig) return;
+    const templateId = themeConfig.templateId ?? findMatchingReadyTemplateId(themeConfig);
+    const template = getReadyTemplate(templateId);
+    const fallback = readyTemplateAccent(template);
+    const safeAccent = sanitizeAccentColor(themeConfig.accentOverride, fallback);
+    const next =
+      safeAccent === themeConfig.accentOverride
+        ? themeConfig
+        : { ...themeConfig, accentOverride: safeAccent };
+    setConfig(next);
+    setSelectedTemplateId(templateId);
+    if (safeAccent !== themeConfig.accentOverride) {
+      setThemeConfig(next);
     }
-  }, [themeConfig]);
+  }, [themeConfig, setThemeConfig]);
 
   const nicheLabel = NICHE_OPTIONS.find((n) => n.value === niche)?.label;
   const selectedTemplate = getReadyTemplate(selectedTemplateId);
   const templateDefaultAccent = readyTemplateAccent(selectedTemplate);
   const variants = ACCENT_VARIANTS[config.presetId] ?? ACCENT_VARIANTS.editorial;
-  const accentOptions =
+  const accentOptions = (
     selectedTemplateId === "conversion-dark"
       ? variants
-      : [...new Set([templateDefaultAccent, ...variants])];
+      : [...new Set([templateDefaultAccent, ...variants])]
+  ).filter((color) => !MAGENTA_ACCENT_COLORS.has(color.trim().toLowerCase()));
 
   useEffect(() => {
     if (selectedTemplateId !== "conversion-dark") return;
@@ -90,7 +101,12 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
   }, [selectedTemplateId, config, setThemeConfig]);
 
   const updateConfig = (patch: Partial<ThemeConfig>) => {
-    const next = { ...config, ...patch, templateId: selectedTemplateId };
+    const template = getReadyTemplate(selectedTemplateId);
+    const fallback = readyTemplateAccent(template);
+    const safePatch = patch.accentOverride
+      ? { ...patch, accentOverride: sanitizeAccentColor(patch.accentOverride, fallback) }
+      : patch;
+    const next = { ...config, ...safePatch, templateId: selectedTemplateId };
     setConfig(next);
     setThemeConfig(next);
   };
@@ -168,7 +184,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full max-w-4xl mx-auto"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full max-w-6xl mx-auto"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Template" step={3} />
@@ -181,27 +197,31 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
         </>
       )}
 
-      <div className="theme-preview-sticky space-y-2">
-        <p className="px-1 text-xs text-text-secondary">
-          Live preview — updates as you swipe through template, color, and font options
-        </p>
-        <div className="theme-preview-linked rounded-2xl overflow-hidden">
-          <ThemePreview
-            config={config}
-            templateId={selectedTemplateId}
-            nicheLabel={nicheLabel}
-            linkedSelection
-          />
+      <div className="theme-editor-split grid grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
+        <div className="min-w-0 space-y-2">
+          <p className="px-1 text-xs text-text-secondary">
+            Live preview — updates as you pick template, color, and font
+          </p>
+          <div className="theme-preview-linked theme-preview-compact-wrap overflow-hidden rounded-xl">
+            <ThemePreview
+              config={config}
+              templateId={selectedTemplateId}
+              nicheLabel={nicheLabel}
+              linkedSelection
+              compact
+            />
+          </div>
         </div>
-      </div>
 
-      <ThemeCustomizationCarousel
-        selectedTemplateId={selectedTemplateId}
-        onTemplateSelect={handleTemplateSelect}
-        config={config}
-        updateConfig={updateConfig}
-        accentOptions={accentOptions}
-      />
+        <ThemeCustomizationCarousel
+          compact
+          selectedTemplateId={selectedTemplateId}
+          onTemplateSelect={handleTemplateSelect}
+          config={config}
+          updateConfig={updateConfig}
+          accentOptions={accentOptions}
+        />
+      </div>
 
       <div className="wizard-action-bar">
         <button

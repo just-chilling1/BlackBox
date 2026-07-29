@@ -9,6 +9,7 @@ import {
 import { useSearch, Ad } from "@/features/core-workflow/context/SearchContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 
 function PlatformBadge({ platform }: { platform: string }) {
     const isReddit = platform === "Reddit";
@@ -196,8 +197,13 @@ export default function RadarPage() {
                 ))}
             </div>
 
+            <GenerationProgress
+                active={loadingChip !== null}
+                label={loadingChip ? `Finding ads for "${loadingChip}"...` : "Finding ads..."}
+            />
+
             {/* Ads grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div id={GENERATION_RESULTS_ID} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 scroll-mt-24">
                 <AnimatePresence mode="popLayout">
                     {loadingChip === activeChip ? (
                         Array.from({ length: 6 }).map((_, i) => (

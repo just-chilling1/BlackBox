@@ -11,6 +11,7 @@ import { useSearch, Ad } from "@/features/core-workflow/context/SearchContext";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
 import { SuccessCelebration } from "@/features/core-workflow/components/SuccessCelebration";
+import { GenerationProgress } from "@/components/ui/generation-progress";
 
 function PlatformBadge({ platform }: { platform: string }) {
     const isReddit = platform === "Reddit";
@@ -170,6 +171,12 @@ export default function RepliesPage() {
                 </div>
             </header>
 
+            <GenerationProgress
+                active={loadingReplyId !== null}
+                label="Creating personalized replies with your affiliate link..."
+                scrollTargetId={loadingReplyId ? `generation-results-${loadingReplyId}` : undefined}
+            />
+
             {/* Ad cards */}
             <div className="flex flex-col gap-4">
                 {currentAds.map((post, idx) => {
@@ -269,12 +276,9 @@ export default function RepliesPage() {
                                         transition={{ duration: 0.25 }}
                                         className="overflow-hidden border-t border-border-dim/15"
                                     >
-                                        <div className="p-4">
+                                        <div id={`generation-results-${post.id}`} className="p-4 scroll-mt-24">
                                             {isLoading ? (
-                                                <div className="flex flex-col items-center py-10 gap-3">
-                                                    <div className="w-10 h-10 border-2 border-border-dim border-t-accent rounded-full animate-spin" />
-                                                    <span className="text-xs text-text-muted">Writing 3 reply options...</span>
-                                                </div>
+                                                null
                                             ) : (
                                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                                                     {replies.map((reply, rIdx) => {

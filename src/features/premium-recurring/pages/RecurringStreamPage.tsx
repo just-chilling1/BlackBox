@@ -20,6 +20,7 @@ import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageLoading } from "@/components/ui/page-loading";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
 
@@ -258,13 +259,19 @@ export default function RecurringStreamPage() {
         </div>
       </section>
 
+      <GenerationProgress
+        active={loadingArticle !== null}
+        label="Personalizing article with your affiliate link..."
+      />
+
       <AnimatePresence>
         {previewArticle && articleHtml[previewArticle.id] && (
           <motion.section
+            id={GENERATION_RESULTS_ID}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="glass-card overflow-hidden border-accent/20"
+            className="glass-card overflow-hidden border-accent/20 scroll-mt-24"
           >
             <div className="flex items-start justify-between gap-3 border-b border-divider p-4 md:p-5">
               <div className="min-w-0">

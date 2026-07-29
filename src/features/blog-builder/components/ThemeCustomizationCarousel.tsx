@@ -31,6 +31,7 @@ interface ThemeCustomizationCarouselProps {
   config: ThemeConfig;
   updateConfig: (patch: Partial<ThemeConfig>) => void;
   accentOptions: string[];
+  compact?: boolean;
 }
 
 export function ThemeCustomizationCarousel({
@@ -39,6 +40,7 @@ export function ThemeCustomizationCarousel({
   config,
   updateConfig,
   accentOptions,
+  compact = false,
 }: ThemeCustomizationCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -73,8 +75,13 @@ export function ThemeCustomizationCarousel({
   };
 
   return (
-    <section className="wizard-panel space-y-4 p-0 overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-border-dim/60 px-5 py-4">
+    <section className={clsx("wizard-panel overflow-hidden p-0", compact && "theme-custom-carousel-compact")}>
+      <div
+        className={clsx(
+          "flex items-center justify-between gap-3 border-b border-border-dim/60",
+          compact ? "px-3 py-2.5" : "px-5 py-4"
+        )}
+      >
         <div className="flex items-center gap-2">
           {SLIDES.map((slide, index) => {
             const Icon = slide.icon;
@@ -149,7 +156,7 @@ export function ThemeCustomizationCarousel({
               <span className="text-xs font-medium text-text-muted">{READY_TEMPLATES.length} options</span>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {READY_TEMPLATES.map((template) => {
                 const isSelected = selectedTemplateId === template.id;
                 const accent = readyTemplateAccent(template);
@@ -162,16 +169,19 @@ export function ThemeCustomizationCarousel({
                     className={clsx("wizard-template-card h-full", isSelected && "is-selected")}
                   >
                     <div
-                      className="flex h-16 items-end gap-1.5 px-3 pb-2 pt-3"
+                      className={clsx(
+                        "flex items-end gap-1.5 px-2.5 pb-1.5 pt-2",
+                        compact ? "h-11" : "h-16"
+                      )}
                       style={{ backgroundColor: `${accent}14` }}
                     >
                       <div
-                        className="h-8 flex-1 rounded-md opacity-90"
+                        className={clsx("flex-1 rounded-md opacity-90", compact ? "h-5" : "h-8")}
                         style={{ backgroundColor: accent }}
                       />
-                      <div className="h-5 w-1/3 rounded-md bg-black/10" />
+                      <div className={clsx("w-1/3 rounded-md bg-black/10", compact ? "h-3" : "h-5")} />
                     </div>
-                    <div className="border-t border-border-dim/60 p-3.5">
+                    <div className={clsx("border-t border-border-dim/60", compact ? "p-2.5" : "p-3.5")}>
                       <div className="flex items-start justify-between gap-2">
                         <p
                           className={clsx(
@@ -214,7 +224,7 @@ export function ThemeCustomizationCarousel({
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap justify-center gap-4 sm:justify-start">
+            <div className={clsx("flex flex-wrap justify-center gap-3 sm:justify-start", compact ? "mt-4" : "mt-6")}>
               {accentOptions.map((color) => {
                 const isActive = config.accentOverride === color;
                 return (
@@ -262,7 +272,7 @@ export function ThemeCustomizationCarousel({
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className={clsx("grid grid-cols-1 gap-4 sm:grid-cols-2", compact ? "mt-4" : "mt-6")}>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <label htmlFor="heading-font" className="wizard-font-field-label flex items-center gap-1.5">
@@ -313,7 +323,7 @@ export function ThemeCustomizationCarousel({
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-2 border-t border-border-dim/60 px-5 py-3">
+      <div className={clsx("flex items-center justify-center gap-2 border-t border-border-dim/60", compact ? "px-3 py-2" : "px-5 py-3")}>
         {SLIDES.map((slide, index) => (
           <button
             key={slide.id}

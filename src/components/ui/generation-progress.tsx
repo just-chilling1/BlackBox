@@ -17,6 +17,34 @@ export function scrollToGenerationResults(targetId = GENERATION_RESULTS_ID, atte
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+/** Scroll to results when `active` transitions true → false. */
+export function useGenerationCompleteScroll(
+  active: boolean,
+  scrollTargetId?: string,
+  enabled = true
+) {
+  const wasActive = useRef(false);
+  const targetRef = useRef(scrollTargetId ?? GENERATION_RESULTS_ID);
+
+  useEffect(() => {
+    if (active && scrollTargetId) {
+      targetRef.current = scrollTargetId;
+    }
+  }, [active, scrollTargetId]);
+
+  useEffect(() => {
+    if (!enabled) {
+      wasActive.current = active;
+      return;
+    }
+
+    if (wasActive.current && !active) {
+      scrollToGenerationResults(targetRef.current);
+    }
+    wasActive.current = active;
+  }, [active, enabled]);
+}
+
 interface GenerationProgressProps {
   label: string;
   active: boolean;
@@ -33,7 +61,8 @@ export function GenerationProgress({
   scrollTargetId,
 }: GenerationProgressProps) {
   const [progress, setProgress] = useState(0);
-  const wasActive = useRef(false);
+
+  useGenerationCompleteScroll(active, scrollTargetId, scrollOnComplete);
 
   useEffect(() => {
     if (!active) {
@@ -51,17 +80,11 @@ export function GenerationProgress({
     return () => window.clearInterval(interval);
   }, [active]);
 
-  useEffect(() => {
-    if (wasActive.current && !active && scrollOnComplete) {
-      scrollToGenerationResults(scrollTargetId ?? GENERATION_RESULTS_ID);
-    }
-    wasActive.current = active;
-  }, [active, scrollOnComplete, scrollTargetId]);
-
   if (!active) return null;
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="sticky top-4 z-30 flex flex-col gap-4 w-full">
+      {showBanner ? <EarningsBanner prominent /> : null}
       <div className="rounded-2xl border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
         <div className="flex items-center gap-3 mb-2.5">
           <Loader2 size={16} className="animate-spin text-accent shrink-0" />
@@ -74,7 +97,6 @@ export function GenerationProgress({
           />
         </div>
       </div>
-      {showBanner ? <EarningsBanner compact /> : null}
     </div>
   );
 }

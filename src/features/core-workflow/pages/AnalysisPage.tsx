@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useSearch, AnalysisData } from "@/features/core-workflow/context/SearchContext";
 import { clsx } from "clsx";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 
 function Tooltip({ text }: { text: string }) {
     return (
@@ -123,6 +124,7 @@ export default function AnalysisPage() {
 
     const analyzedCount = variations.filter(v => analysisByVariation[v]).length;
     const allAnalyzed = analyzedCount === variations.length;
+    const isAnalyzing = loadingChips.size > 0;
 
     const handleSort = (key: SortKey) => {
         if (sortKey === key) {
@@ -226,6 +228,11 @@ export default function AnalysisPage() {
                 </div>
             </header>
 
+            <GenerationProgress
+                active={isAnalyzing}
+                label="Analyzing demand levels for each keyword..."
+            />
+
             {/* Progress bar */}
             <div className="flex items-center gap-3">
                 <div className="flex-1 h-1.5 bg-surface rounded-full overflow-hidden border border-border-dim/20">
@@ -301,7 +308,7 @@ export default function AnalysisPage() {
             </AnimatePresence>
 
             {/* Data Table */}
-            <div className="border border-border-dim rounded-xl overflow-hidden bg-page">
+            <div id={GENERATION_RESULTS_ID} className="border border-border-dim rounded-xl overflow-hidden bg-page scroll-mt-24">
                 {/* Table Header */}
                 <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-white border-b border-border-dim/20">
                     <div className="col-span-4">

@@ -4,6 +4,7 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Globe, Loader2, Rocket, Sparkles } from "lucide-react";
 import { AiLoadingBar } from "@/components/ui/AiLoadingBar";
+import { EarningsBanner } from "@/components/ui/earnings-banner";
 import { cn } from "@/lib/utils";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 
@@ -377,6 +378,10 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
           eta={etaLabel}
           active
         />
+      </div>
+
+      <div className="mt-5">
+        <EarningsBanner prominent />
       </div>
     </motion.div>
   );

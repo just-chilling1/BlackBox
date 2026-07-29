@@ -12,6 +12,7 @@ import { DeployCompletePanel } from "../components/DeployCompletePanel";
 import { DeployLaunchPanel } from "../components/DeployLaunchPanel";
 import { DeploySitePreview } from "../components/DeploySitePreview";
 import { WizardStepper } from "../components/WizardStepper";
+import { useGenerationCompleteScroll } from "@/components/ui/generation-progress";
 import { getReadyTemplateFromConfig } from "../themes";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { ArmedLink, BlogSite } from "../types";
@@ -105,8 +106,12 @@ export default function DeployAssetPage({
   const [canResume, setCanResume] = useState(false);
   const [resumeLabel, setResumeLabel] = useState("");
   const [quota, setQuota] = useState<GenerationQuota | null>(null);
-  const [showOfferBanner, setShowOfferBanner] = useState(false);
   const deployRunning = useRef(false);
+
+  const isLoading = phase === "setup" || phase === "generating" || phase === "publishing";
+  const isComplete = phase === "complete" && Boolean(site);
+
+  useGenerationCompleteScroll(isLoading, undefined, isComplete || isLoading);
 
   useEffect(() => {
     if (embedded) return;
@@ -194,7 +199,6 @@ export default function DeployAssetPage({
     setError(null);
     setCanResume(false);
     setGenerating(true);
-    setShowOfferBanner(true);
 
     const deployNicheLabel =
       NICHE_OPTIONS.find((n) => n.value === niche)?.label ??
@@ -339,8 +343,6 @@ export default function DeployAssetPage({
     return <PageLoading message="Loading your deploy session..." />;
   }
 
-  const isLoading = phase === "setup" || phase === "generating" || phase === "publishing";
-  const isComplete = phase === "complete" && Boolean(site);
   const showErrorPreview = Boolean(site) && phase === "error";
 
   const nicheLabel =
@@ -413,8 +415,6 @@ export default function DeployAssetPage({
         <DeployCompletePanel
           site={site}
           productName={productName}
-          showOfferBanner={showOfferBanner}
-          onDismissBanner={() => setShowOfferBanner(false)}
           onGenerateAnother={() => {
             prepareFreshDeploy();
             if (onGenerateAnother) {

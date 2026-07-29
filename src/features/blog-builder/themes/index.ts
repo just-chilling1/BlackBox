@@ -52,12 +52,32 @@ export const BODY_FONT_OPTIONS = [
 ];
 
 export const ACCENT_VARIANTS: Record<string, string[]> = {
-  editorial: ["#0f766e", "#0369a1", "#7c3aed", "#b45309"],
-  magazine: ["#ea580c", "#dc2626", "#9333ea", "#ca8a04"],
-  minimal: ["#2563eb", "#0d9488", "#7c3aed", "#18181b"],
-  authority: ["#0369a1", "#0f766e", "#4338ca", "#b45309"],
-  "affiliate-pro": ["#059669", "#0284c7", "#d97706", "#7c3aed"],
+  editorial: ["#0f766e", "#0369a1", "#059669", "#b45309"],
+  magazine: ["#ea580c", "#dc2626", "#0369a1", "#ca8a04"],
+  minimal: ["#2563eb", "#0d9488", "#0369a1", "#18181b"],
+  authority: ["#0369a1", "#0f766e", "#059669", "#b45309"],
+  "affiliate-pro": ["#059669", "#0284c7", "#d97706", "#0369a1"],
 };
+
+/** Purple / magenta accent swatches removed from the picker — remap if stored in session. */
+export const MAGENTA_ACCENT_COLORS = new Set([
+  "#7c3aed",
+  "#9333ea",
+  "#4338ca",
+  "#6366f1",
+  "#a855f7",
+  "#c026d3",
+  "#d946ef",
+  "#db2777",
+  "#ec4899",
+]);
+
+export function sanitizeAccentColor(accent: string | undefined, fallback: string): string {
+  if (!accent) return fallback;
+  const normalized = accent.trim().toLowerCase();
+  if (MAGENTA_ACCENT_COLORS.has(normalized)) return fallback;
+  return accent;
+}
 
 export function getPreset(id: string): ThemePresetDef {
   return THEME_PRESETS[id] ?? THEME_PRESETS.editorial;
@@ -71,7 +91,7 @@ export function resolveThemeConfig(config: ThemeConfig | null | undefined): {
 } {
   const presetId = config?.presetId && THEME_PRESETS[config.presetId] ? config.presetId : "editorial";
   const preset = getPreset(presetId);
-  const accent = config?.accentOverride ?? preset.colors.accent;
+  const accent = sanitizeAccentColor(config?.accentOverride, preset.colors.accent);
 
   return {
     preset,

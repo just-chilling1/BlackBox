@@ -16,6 +16,7 @@ import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 
 const PAGE_SIZE = 24;
@@ -298,7 +299,12 @@ export default function AcceleratorPage() {
         </div>
       </section>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <GenerationProgress
+        active={cloningId !== null}
+        label="Cloning pre-made sales page with your affiliate link..."
+      />
+
+      <div id={GENERATION_RESULTS_ID} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 scroll-mt-24">
         {visibleTemplates.map((t) => (
           <TemplateCard
             key={t.id}

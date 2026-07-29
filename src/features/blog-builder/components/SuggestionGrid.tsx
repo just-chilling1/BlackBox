@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { clsx } from "clsx";
-import { AiLoadingBar } from "@/components/ui/AiLoadingBar";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 
 interface SuggestionGridProps {
   suggestions: string[];
@@ -21,7 +21,10 @@ export function SuggestionGrid({
   if (loading) {
     return (
       <div className="glass-card p-6 flex flex-col gap-4">
-        <AiLoadingBar label="Finding good topics for you" />
+        <GenerationProgress
+          active
+          label="Finding good topics for you..."
+        />
         <p className="text-sm text-text-muted text-center">
           This can take 10–30 seconds. Hang tight.
         </p>
@@ -38,7 +41,7 @@ export function SuggestionGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div id={GENERATION_RESULTS_ID} className="grid grid-cols-1 sm:grid-cols-2 gap-3 scroll-mt-24">
       {suggestions.map((s) => (
         <motion.button
           key={s}

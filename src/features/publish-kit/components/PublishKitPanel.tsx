@@ -10,11 +10,21 @@ import {
   Megaphone,
   ChevronDown,
   Loader2,
+  Download,
+  ClipboardCopy,
 } from "lucide-react";
 import { fetchJson } from "@/lib/fetch-json";
 import { THREADS_PER_GENERATION, THREAD_IMAGE_POST_INDEXES } from "../lib/promote-constants";
+import {
+  downloadTextFile,
+  formatPromotionKit,
+  formatThreadPosts,
+  promotionKitFilename,
+  threadExportFilename,
+} from "../lib/thread-export";
 import { ThreadCard } from "./ThreadCard";
 import { ThreadListSection } from "./ThreadListSection";
+import { GenerationProgress } from "@/components/ui/generation-progress";
 import type {
   PromotePlatform,
   PublishKitSite,
@@ -132,6 +142,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
   const [tagsLoading, setTagsLoading] = useState(false);
   const [quota, setQuota] = useState<ThreadGenerationQuota | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [copiedAllThread, setCopiedAllThread] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" | "info" } | null>(null);
 
   const visiblePosts = posts;
@@ -177,6 +188,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
   }, [site.siteId]);
 
   const quotaBlocked = quota !== null && quota.remaining <= 0;
+  const isGenerating = generateLoading || tagsLoading;
 
   const showToast = (message: string, variant: "success" | "error" | "info" = "info") => {
     setToast({ message, variant });
@@ -190,6 +202,42 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     } catch {
       showToast("Could not copy to clipboard", "error");
     }
+  };
+
+  const copyAllThread = async () => {
+    if (visiblePosts.length === 0) return;
+    try {
+      await navigator.clipboard.writeText(formatThreadPosts(visiblePosts));
+      setCopiedAllThread(true);
+      showToast(`Copied all ${visiblePosts.length} posts to clipboard`, "success");
+      setTimeout(() => setCopiedAllThread(false), 2000);
+    } catch {
+      showToast("Could not copy to clipboard", "error");
+    }
+  };
+
+  const downloadThread = () => {
+    if (visiblePosts.length === 0) return;
+    downloadTextFile(threadExportFilename(site.siteName), formatThreadPosts(visiblePosts));
+    showToast("Story thread downloaded", "success");
+  };
+
+  const downloadPromotionKit = () => {
+    if (visiblePosts.length === 0 && visibleTags.length === 0) {
+      showToast("Generate a thread or hashtags first", "info");
+      return;
+    }
+    downloadTextFile(
+      promotionKitFilename(site.siteName),
+      formatPromotionKit({
+        siteName: site.siteName,
+        territory: site.territory,
+        promoLink: promoLink || undefined,
+        posts: visiblePosts,
+        tags: visibleTags,
+      })
+    );
+    showToast("Full promotion kit downloaded", "success");
   };
 
   const runGenerate = async () => {
@@ -315,6 +363,21 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                 {quota.remaining} of {quota.limit} generations remaining today
               </p>
             )}
+            <GenerationProgress
+              active={isGenerating}
+              label={
+                generateLoading
+                  ? `Generating ${THREAD_POST_COUNT}-post thread + ${THREAD_IMAGE_COUNT} niche images...`
+                  : "Suggesting hashtags for your promotion..."
+              }
+              scrollTargetId={
+                generateLoading
+                  ? "generation-results-thread"
+                  : tagsLoading
+                    ? "generation-results-tags"
+                    : undefined
+              }
+            />
             <KitButton
               variant="primary"
               onClick={runGenerate}
@@ -330,6 +393,28 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           </div>
 
           {visiblePosts.length > 0 && (
+            <div id="generation-results-thread" className="scroll-mt-24 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-semibold text-text-secondary">
+                  {visiblePosts.length} post{visiblePosts.length !== 1 ? "s" : ""} ready to publish
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <KitButton variant="secondary" onClick={() => void copyAllThread()}>
+                    {copiedAllThread ? <Check size={14} /> : <ClipboardCopy size={14} />}
+                    {copiedAllThread ? "All copied!" : "Copy all posts"}
+                  </KitButton>
+                  <KitButton variant="secondary" onClick={downloadThread}>
+                    <Download size={14} />
+                    Download thread
+                  </KitButton>
+                  {(visibleTags.length > 0 || promoLink) && (
+                    <KitButton variant="ghost" onClick={downloadPromotionKit}>
+                      <Download size={14} />
+                      Download full kit
+                    </KitButton>
+                  )}
+                </div>
+              </div>
             <ThreadListSection title="Story thread" count={visiblePosts.length}>
               {visiblePosts.map((post, i) => (
                 <ThreadCard
@@ -342,6 +427,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                 />
               ))}
             </ThreadListSection>
+            </div>
           )}
         </section>
 
@@ -356,6 +442,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             </KitButton>
           </div>
           {visibleTags.length > 0 && (
+            <div id="generation-results-tags" className="scroll-mt-24">
             <CollapsibleResultSection title="Suggested tags" count={visibleTags.length}>
               {visibleTags.map((t) => (
                 <CollapsibleResultItem key={t.tag} label={t.tag} preview={t.reason}>
@@ -375,6 +462,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                 Copy all tags
               </KitButton>
             </CollapsibleResultSection>
+            </div>
           )}
         </section>
 

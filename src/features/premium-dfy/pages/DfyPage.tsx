@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 
 interface Post {
     id: string;
@@ -386,27 +387,18 @@ export default function DfyPage() {
                         </div>
 
                         {/* Loading state */}
-                        {loadingPhase && (
-                            <div className="flex flex-col items-center py-20 gap-4">
-                                <div className="w-14 h-14 border-2 border-border-dim border-t-accent rounded-full animate-spin" />
-                                <div className="text-center flex flex-col gap-1">
-                                    <span className="text-sm font-bold text-text-primary">
-                                        {loadingPhase === "finding"
-                                            ? "Finding High-Ranking Posts..."
-                                            : "Generating Replies With Your Link..."}
-                                    </span>
-                                    <span className="text-xs text-text-muted">
-                                        {loadingPhase === "finding"
-                                            ? "Scanning Reddit & Quora for the best opportunities"
-                                            : "Crafting personalized replies for each post"}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
+                        <GenerationProgress
+                            active={Boolean(loadingPhase)}
+                            label={
+                                loadingPhase === "finding"
+                                    ? "Finding high-ranking posts on Reddit & Quora..."
+                                    : "Generating replies with your affiliate link..."
+                            }
+                        />
 
                         {/* Results */}
                         {!loadingPhase && results.length > 0 && (
-                            <div className="flex flex-col gap-4">
+                            <div id={GENERATION_RESULTS_ID} className="flex flex-col gap-4 scroll-mt-24">
                                 <div className="flex items-center justify-between px-1">
                                     <h2 className="text-lg font-bold text-text-heading">
                                         {results.length} Posts Found — Replies Ready

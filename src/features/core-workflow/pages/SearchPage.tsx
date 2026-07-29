@@ -6,6 +6,7 @@ import { Search, ArrowRight, History, Loader2, Zap } from "lucide-react";
 import { useSearch } from "@/features/core-workflow/context/SearchContext";
 import { motion } from "framer-motion";
 import { SuccessCelebration } from "@/features/core-workflow/components/SuccessCelebration";
+import { GenerationProgress } from "@/components/ui/generation-progress";
 
 export default function SearchPage() {
     const {
@@ -111,6 +112,12 @@ export default function SearchPage() {
                     )}
                 </button>
             </div>
+
+            <GenerationProgress
+                active={loading}
+                label="Finding ad angles across Reddit and YouTube..."
+                scrollOnComplete={false}
+            />
 
             {/* Recent Searches */}
             {history.length > 0 && (

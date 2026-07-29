@@ -235,7 +235,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       <div className="shrink-0 space-y-2 border-t border-[var(--sidebar-border)] p-2 md:p-4">
         {renderNavLink(supportNav)}
 
-        <div className={clsx("rounded-xl border border-border-dim bg-slate-50 p-3", collapsed && "px-2")}>
+        <div className={clsx("p-3", collapsed && "px-2")}>
           <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-accent to-indigo-600 text-sm font-bold text-black shadow-sm">
               {userInitials}

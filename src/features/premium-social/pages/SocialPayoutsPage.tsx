@@ -17,6 +17,7 @@ import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
@@ -307,6 +308,11 @@ export default function SocialPayoutsPage() {
               </p>
             )}
 
+            <GenerationProgress
+              active={generating}
+              label="Generating 10 scroll-stopping Facebook post variants..."
+            />
+
             <button
               type="button"
               disabled={generating || !selectedSiteId}
@@ -331,7 +337,7 @@ export default function SocialPayoutsPage() {
       </section>
 
       {(loadingPosts || posts.length > 0) && (
-        <section className="space-y-3">
+        <section id={GENERATION_RESULTS_ID} className="space-y-3 scroll-mt-24">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-text-primary">
               {loadingPosts && posts.length === 0

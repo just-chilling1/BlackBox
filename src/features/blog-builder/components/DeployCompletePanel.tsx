@@ -3,14 +3,12 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Rocket } from "lucide-react";
 import { DeploySitePreview } from "./DeploySitePreview";
-import { EarningsBanner } from "@/components/ui/earnings-banner";
+import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import type { BlogSite } from "../types";
 
 interface DeployCompletePanelProps {
   site: BlogSite;
   productName?: string | null;
-  showOfferBanner: boolean;
-  onDismissBanner: () => void;
   onGenerateAnother: () => void;
   onViewVault: () => void;
 }
@@ -18,13 +16,12 @@ interface DeployCompletePanelProps {
 export function DeployCompletePanel({
   site,
   productName,
-  showOfferBanner,
-  onDismissBanner,
   onGenerateAnother,
   onViewVault,
 }: DeployCompletePanelProps) {
   return (
     <motion.div
+      id={GENERATION_RESULTS_ID}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="flex min-w-0 max-w-full flex-col gap-5 scroll-mt-24 overflow-x-clip"
@@ -72,8 +69,6 @@ export function DeployCompletePanel({
           </span>
         </motion.button>
       </div>
-
-      {showOfferBanner && <EarningsBanner compact onDismiss={onDismissBanner} />}
     </motion.div>
   );
 }
