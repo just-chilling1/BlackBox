@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import { resolveThemeConfig, getReadyTemplate } from "../themes";
 import type { ThemeConfig } from "../types";
 
@@ -10,6 +11,10 @@ interface ThemePreviewProps {
   compact?: boolean;
   /** When true, emphasizes link to the selected template card below */
   linkedSelection?: boolean;
+}
+
+function darkPreviewAccent(accent: string): string {
+  return accent.toLowerCase() === "#059669" ? "#34d399" : accent;
 }
 
 export function ThemePreview({
@@ -23,7 +28,60 @@ export function ThemePreview({
   const template = getReadyTemplate(templateId ?? config.templateId ?? "editorial-sage");
   const accent = colors.accent;
   const isDark = template.structureId === "conversion";
+  const previewAccent = isDark ? darkPreviewAccent(accent) : accent;
   const previewKey = templateId ?? config.templateId ?? "editorial-sage";
+
+  const headerBorderColor = linkedSelection
+    ? isDark
+      ? "rgba(255,255,255,0.14)"
+      : colors.border
+    : isDark
+      ? "rgba(255,255,255,0.08)"
+      : colors.border;
+
+  const headerBackground = linkedSelection
+    ? isDark
+      ? "#27272a"
+      : "rgba(238, 179, 16, 0.1)"
+    : isDark
+      ? "#18181b"
+      : colors.surface;
+
+  const eyebrowClass = linkedSelection
+    ? isDark
+      ? compact
+        ? "text-[9px] font-bold uppercase tracking-widest text-emerald-300"
+        : "text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300"
+      : compact
+        ? "text-[9px] font-bold uppercase tracking-widest text-amber-800"
+        : "page-eyebrow"
+    : clsx(
+        "text-[10px] font-bold uppercase tracking-widest",
+        isDark ? "text-zinc-400" : "opacity-60"
+      );
+
+  const toneBadgeStyle = linkedSelection
+    ? isDark
+      ? {
+          backgroundColor: "#047857",
+          color: "#ecfdf5",
+          border: "1px solid #6ee7b7",
+        }
+      : {
+          backgroundColor: "rgba(238, 179, 16, 0.22)",
+          color: "#78350f",
+          border: "1px solid rgba(180, 83, 9, 0.35)",
+        }
+    : isDark
+      ? {
+          backgroundColor: "rgba(4, 120, 87, 0.35)",
+          color: "#a7f3d0",
+          border: "1px solid rgba(52, 211, 153, 0.45)",
+        }
+      : {
+          backgroundColor: `${accent}22`,
+          color: accent,
+        };
 
   return (
     <div
@@ -46,33 +104,26 @@ export function ThemePreview({
             : "flex flex-col gap-4 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5"
         }
         style={{
-          borderColor: isDark ? "rgba(255,255,255,0.08)" : colors.border,
-          backgroundColor: linkedSelection
-            ? "rgba(238, 179, 16, 0.1)"
-            : isDark
-              ? "#18181b"
-              : colors.surface,
+          borderColor: headerBorderColor,
+          backgroundColor: headerBackground,
         }}
       >
         <div className="min-w-0">
-          <p
-            className={
-              linkedSelection
-                ? compact
-                  ? "text-[9px] font-bold uppercase tracking-widest text-amber-800"
-                  : "page-eyebrow"
-                : "text-[10px] font-bold uppercase tracking-widest opacity-60"
-            }
-          >
+          <p className={eyebrowClass}>
             {linkedSelection ? `Previewing: ${template.name}` : "Questionnaire preview"}
           </p>
           {!compact && (
-            <p className="text-base font-bold truncate sm:text-lg" style={{ fontFamily: headingFont }}>
+            <p
+              className="text-base font-bold truncate sm:text-lg"
+              style={{ fontFamily: headingFont, color: isDark ? "#fafafa" : undefined }}
+            >
               {template.name}
             </p>
           )}
           {!compact && (
-            <p className="text-xs text-text-muted mt-0.5 line-clamp-1">{template.tagline}</p>
+            <p className={clsx("mt-0.5 line-clamp-1 text-xs", isDark ? "text-zinc-400" : "text-text-muted")}>
+              {template.tagline}
+            </p>
           )}
         </div>
         <span
@@ -81,10 +132,7 @@ export function ThemePreview({
               ? "shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
               : "shrink-0 self-start rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide sm:self-center"
           }
-          style={{
-            backgroundColor: linkedSelection ? "rgba(238, 179, 16, 0.2)" : `${accent}22`,
-            color: linkedSelection ? "#92400e" : accent,
-          }}
+          style={toneBadgeStyle}
         >
           {template.toneLabel}
         </span>
@@ -98,28 +146,51 @@ export function ThemePreview({
           headingFont={headingFont}
           bodyFont={bodyFont}
           nicheLabel={nicheLabel}
-          accent={accent}
+          accent={previewAccent}
         />
 
         {!compact && (
-          <div className="flex flex-col justify-center gap-3 rounded-xl border border-black/5 bg-black/20 p-4">
+          <div
+            className={clsx(
+              "flex flex-col justify-center gap-3 rounded-xl border p-4",
+              isDark ? "border-white/10 bg-zinc-900/80" : "border-black/5 bg-black/20"
+            )}
+          >
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
+              <p
+                className={clsx(
+                  "mb-1 text-[10px] font-bold uppercase tracking-widest",
+                  isDark ? "text-zinc-400" : "text-text-muted"
+                )}
+              >
                 Site format
               </p>
-              <p className="text-sm text-text-secondary">Multi-step niche questionnaire</p>
+              <p className={clsx("text-sm", isDark ? "text-zinc-200" : "text-text-secondary")}>
+                Multi-step niche questionnaire
+              </p>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">
+              <p
+                className={clsx(
+                  "mb-1 text-[10px] font-bold uppercase tracking-widest",
+                  isDark ? "text-zinc-400" : "text-text-muted"
+                )}
+              >
                 Final page
               </p>
-              <p className="text-sm text-text-secondary leading-relaxed">
+              <p
+                className={clsx(
+                  "text-sm leading-relaxed",
+                  isDark ? "text-zinc-200" : "text-text-secondary"
+                )}
+              >
                 Personalized results + your affiliate offer as the recommended next step
               </p>
             </div>
             {nicheLabel && (
-              <p className="text-xs text-text-muted">
-                Tailored for <span className="text-text-primary">{nicheLabel}</span>
+              <p className={clsx("text-xs", isDark ? "text-zinc-400" : "text-text-muted")}>
+                Tailored for{" "}
+                <span className={isDark ? "text-zinc-100" : "text-text-primary"}>{nicheLabel}</span>
               </p>
             )}
           </div>
@@ -147,29 +218,33 @@ function QuestionnaireMock({
   accent: string;
 }) {
   const cardBg = isDark ? "#18181b" : colors.surface;
-  const cardBorder = isDark ? "rgba(255,255,255,0.08)" : colors.border;
+  const cardBorder = isDark ? "rgba(255,255,255,0.1)" : colors.border;
+  const mutedLabel = isDark ? "#a1a1aa" : undefined;
+  const progressTrack = isDark ? "rgba(255,255,255,0.12)" : `${accent}18`;
+  const continueBg = isDark ? "#059669" : accent;
 
   return (
     <div
-      className={compact ? "rounded-lg border p-2.5 space-y-2" : "rounded-xl border p-4 space-y-3"}
+      className={compact ? "space-y-2 rounded-lg border p-2.5" : "space-y-3 rounded-xl border p-4"}
       style={{ backgroundColor: cardBg, borderColor: cardBorder }}
     >
       <div
         className={
           compact
-            ? "flex items-center justify-between text-[9px] font-semibold uppercase tracking-wider opacity-60"
-            : "flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider opacity-60"
+            ? "flex items-center justify-between text-[9px] font-semibold uppercase tracking-wider"
+            : "flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider"
         }
+        style={{ color: mutedLabel }}
       >
         <span>Question 2 of 5</span>
         <span style={{ color: accent }}>40%</span>
       </div>
-      <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: `${accent}18` }}>
-        <div className="h-full rounded-full w-2/5" style={{ backgroundColor: accent }} />
+      <div className="h-1 overflow-hidden rounded-full" style={{ backgroundColor: progressTrack }}>
+        <div className="h-full w-2/5 rounded-full" style={{ backgroundColor: accent }} />
       </div>
       <p
-        className={compact ? "text-xs font-semibold pt-0.5" : "text-sm font-semibold pt-1"}
-        style={{ fontFamily: headingFont }}
+        className={compact ? "pt-0.5 text-xs font-semibold" : "pt-1 text-sm font-semibold"}
+        style={{ fontFamily: headingFont, color: isDark ? "#fafafa" : colors.text }}
       >
         {nicheLabel
           ? `What's your biggest challenge with ${nicheLabel.toLowerCase()}?`
@@ -185,7 +260,7 @@ function QuestionnaireMock({
           style={{
             fontFamily: bodyFont,
             borderColor: i === 1 ? accent : cardBorder,
-            backgroundColor: i === 1 ? `${accent}12` : "transparent",
+            backgroundColor: i === 1 ? (isDark ? "rgba(16, 185, 129, 0.14)" : `${accent}12`) : "transparent",
             color: isDark ? "#e4e4e7" : colors.text,
           }}
         >
@@ -195,10 +270,10 @@ function QuestionnaireMock({
       <div
         className={
           compact
-            ? "rounded-md py-1.5 text-center text-[10px] font-bold text-white mt-1"
-            : "rounded-lg py-2 text-center text-xs font-bold text-white mt-2"
+            ? "mt-1 rounded-md py-1.5 text-center text-[10px] font-bold text-white"
+            : "mt-2 rounded-lg py-2 text-center text-xs font-bold text-white"
         }
-        style={{ backgroundColor: accent }}
+        style={{ backgroundColor: continueBg }}
       >
         Continue →
       </div>
