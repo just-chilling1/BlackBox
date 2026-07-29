@@ -10,6 +10,7 @@ import {
   Filter,
   ArrowRight,
   FolderOpen,
+  Eye,
 } from "lucide-react";
 import Link from "next/link";
 import { clsx } from "clsx";
@@ -18,6 +19,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
+import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
+import type { AcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
 
 const PAGE_SIZE = 24;
 const AFFILIATE_STORAGE_KEY = `${brand.storagePrefix}_accelerator_affiliate`;
@@ -34,19 +37,24 @@ interface TemplateRow {
 interface TemplateCardProps {
   template: TemplateRow;
   cloningId: number | null;
+  viewingId: number | null;
   clonedSiteUrl: string | null;
   hasAffiliateLink: boolean;
+  onView: (id: number) => void;
   onClone: (id: number) => void;
 }
 
 const TemplateCard = memo(function TemplateCard({
   template,
   cloningId,
+  viewingId,
   clonedSiteUrl,
   hasAffiliateLink,
+  onView,
   onClone,
 }: TemplateCardProps) {
   const isCloning = cloningId === template.id;
+  const isViewing = viewingId === template.id;
   const isCloned = Boolean(clonedSiteUrl);
 
   return (
@@ -86,19 +94,34 @@ const TemplateCard = memo(function TemplateCard({
           </Link>
         </div>
       ) : (
-        <button
-          type="button"
-          disabled={!template.seeded || isCloning || !hasAffiliateLink}
-          onClick={() => onClone(template.id)}
-          className="btn-primary mt-auto inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
-        >
-          {isCloning ? (
-            <Loader2 size={14} className="animate-spin" />
-          ) : (
-            <Copy size={14} />
-          )}
-          Use this template
-        </button>
+        <div className="mt-auto flex flex-col gap-2">
+          <button
+            type="button"
+            disabled={!template.seeded || isViewing}
+            onClick={() => onView(template.id)}
+            className="btn-secondary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
+          >
+            {isViewing ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Eye size={14} />
+            )}
+            View
+          </button>
+          <button
+            type="button"
+            disabled={!template.seeded || isCloning || !hasAffiliateLink}
+            onClick={() => onClone(template.id)}
+            className="btn-primary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
+          >
+            {isCloning ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Copy size={14} />
+            )}
+            Use this template
+          </button>
+        </div>
       )}
     </article>
   );
@@ -114,6 +137,12 @@ export default function AcceleratorPage() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [affiliateLink, setAffiliateLink] = useState("");
   const [cloningId, setCloningId] = useState<number | null>(null);
+  const [viewingId, setViewingId] = useState<number | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewCatalogId, setPreviewCatalogId] = useState<number | null>(null);
+  const [previewData, setPreviewData] = useState<AcceleratorTemplatePreview | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState("");
   const [cloneResult, setCloneResult] = useState<{ catalogId: number; siteUrl: string } | null>(null);
   const [error, setError] = useState("");
 
@@ -205,12 +234,55 @@ export default function AcceleratorPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Clone failed");
       setCloneResult({ catalogId, siteUrl: data.siteUrl });
+      setPreviewOpen(false);
+      setPreviewCatalogId(null);
+      setPreviewData(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clone failed");
     } finally {
       setCloningId(null);
     }
   }, [affiliateLink]);
+
+  const handleView = useCallback(async (catalogId: number) => {
+    setPreviewCatalogId(catalogId);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewError("");
+    setPreviewData(null);
+    setViewingId(catalogId);
+
+    try {
+      const params = new URLSearchParams({ catalogId: String(catalogId) });
+      const link = affiliateLink.trim();
+      if (link) params.set("affiliateUrl", link);
+
+      const res = await fetch(`/api/premium/accelerator/preview?${params.toString()}`, {
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load preview");
+      setPreviewData(data as AcceleratorTemplatePreview);
+    } catch (e) {
+      setPreviewError(e instanceof Error ? e.message : "Failed to load preview");
+    } finally {
+      setPreviewLoading(false);
+      setViewingId(null);
+    }
+  }, [affiliateLink]);
+
+  const closePreview = useCallback(() => {
+    setPreviewOpen(false);
+    setPreviewCatalogId(null);
+    setPreviewData(null);
+    setPreviewError("");
+    setPreviewLoading(false);
+    setViewingId(null);
+  }, []);
+
+  const previewTemplate = previewCatalogId != null
+    ? templates.find((t) => t.id === previewCatalogId)
+    : undefined;
 
   if (loading && templates.length === 0) {
     return (
@@ -310,10 +382,12 @@ export default function AcceleratorPage() {
             key={t.id}
             template={t}
             cloningId={cloningId}
+            viewingId={viewingId}
             clonedSiteUrl={
               cloneResult?.catalogId === t.id ? cloneResult.siteUrl : null
             }
             hasAffiliateLink={hasAffiliateLink}
+            onView={handleView}
             onClone={handleClone}
           />
         ))}
@@ -338,6 +412,20 @@ export default function AcceleratorPage() {
       <p className="text-xs text-text-muted">
         Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
       </p>
+
+      <TemplatePreviewOverlay
+        open={previewOpen}
+        onClose={closePreview}
+        loading={previewLoading}
+        error={previewError}
+        preview={previewData}
+        productName={previewTemplate?.productName}
+        hasAffiliateLink={hasAffiliateLink}
+        isCloning={cloningId === previewCatalogId}
+        onUseTemplate={() => {
+          if (previewCatalogId != null) void handleClone(previewCatalogId);
+        }}
+      />
     </div>
   );
 }
