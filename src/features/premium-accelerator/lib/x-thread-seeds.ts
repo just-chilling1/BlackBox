@@ -7,7 +7,7 @@ export const ACCELERATOR_LINK_PLACEHOLDER = "[AFFILIATE_LINK]";
 export const ACCELERATOR_THREAD_LINK_PLACEHOLDER = "[LINK]";
 
 /** Minimum character counts per post role — used to detect corrupted stored threads. */
-const THREAD_MIN_CHARS = [75, 70, 60, 80, 35, 80, 50, 55, 50, 65] as const;
+const THREAD_MIN_CHARS = [60, 50, 40, 40, 40, 40, 50, 50, 40, 65] as const;
 
 const LINK_CTA_SUFFIX =
   /\s*(?:start here|grab it|get it|check it out|learn more|link in bio|link below)\s*:?\s*$/i;
@@ -76,57 +76,52 @@ export interface AcceleratorThreadSeedRow {
   angle: string;
 }
 
-/** Niche-specific story beats — keeps threads concrete while following the 10-post arc. */
-const NICHE_STORY_BEATS: Record<
+/** Niche-specific beats for conversion threads — keeps fallbacks concrete per niche. */
+const NICHE_CONVERSION_BEATS: Record<
   string,
-  { hookMetric: string; scene: string; stakes: string; proof: string }
+  { problem: string; authority: string; proof: string }
 > = {
   fitness: {
-    hookMetric: "11 pounds in 6 weeks",
-    scene: "January 2024. Gym parking lot, 5:45am. I'd skipped workouts 4 weeks straight.",
-    stakes: "Another month like that and I'd cancel the membership — and keep buying programs I'd never open.",
-    proof: "Week 6: down 11 pounds, same 3 workouts, no extra cardio.",
+    problem: "Most fitness plans fail because they demand 6 days a week you don't have.",
+    authority: "I've coached busy adults who couldn't stick to hour-long workouts.",
+    proof: "Week 6: down 11 pounds with three 20-minute sessions — no extra cardio.",
   },
   finance: {
-    hookMetric: "$840 saved in 9 weeks",
-    scene: "April 2024. Kitchen table, bills spread out. I was $200 short every month.",
-    stakes: "One more overdraft fee and I'd stop looking at the account altogether.",
-    proof: "Nine weeks later: $840 saved with one weekly money review.",
+    problem: "Most budgeting advice fails because it tracks 47 categories you'll abandon by week 2.",
+    authority: "I've watched smart earners stay broke while spreadsheets collected dust.",
+    proof: "Nine weeks later: $840 saved with one weekly 15-minute money review.",
   },
   health: {
-    hookMetric: "energy back by week 5",
-    scene: "March 2024. Afternoon crash at 2pm — again. Third coffee didn't help.",
-    stakes: "If I kept ignoring it, I'd normalize feeling exhausted every single day.",
-    proof: "By week 5 I had steady afternoon energy with 3 small daily habits.",
+    problem: "Most wellness hacks fail because they add 8 new habits before fixing sleep.",
+    authority: "I've seen energy crashes ruin afternoons for years before one shift stuck.",
+    proof: "By week 5: steady afternoon energy from three small daily habits.",
   },
   business: {
-    hookMetric: "first $500 week in 8 weeks",
-    scene: "February 2024. Laptop open at midnight. Zero sales after 60 days of posting.",
-    stakes: "Another month of random tactics and I'd quit before I ever saw a real result.",
-    proof: "Week 8: first $500 week from the same 3 actions repeated every Monday.",
+    problem: "Most side hustles fail because you post tactics without a repeatable weekly loop.",
+    authority: "I've watched creators burn months on content that never converted.",
+    proof: "Week 8: first $500 week from the same three actions every Monday.",
   },
   default: {
-    hookMetric: "first real win in 6 weeks",
-    scene: "March 2024. Kitchen table, 11pm. I'd tried 3 approaches and still had nothing to show.",
-    stakes: "If nothing changed, I'd keep burning weekends on tactics that looked smart but never paid off.",
-    proof: "Six weeks later: first consistent result. Same 3 actions, less than an hour a day.",
+    problem: "Most people in this niche burn weekends on tactics that look smart but never convert.",
+    authority: "I've tested what works when motivation runs out mid-week.",
+    proof: "Six weeks later: first consistent result from the same three actions, under an hour a day.",
   },
 };
 
-function resolveStoryBeats(nicheKey: string | undefined, nicheLabel: string) {
+function resolveConversionBeats(nicheKey: string | undefined, nicheLabel: string) {
   const key = (nicheKey ?? nicheLabel).toLowerCase();
-  if (key.includes("fit") || key.includes("weight")) return NICHE_STORY_BEATS.fitness;
-  if (key.includes("financ") || key.includes("money")) return NICHE_STORY_BEATS.finance;
-  if (key.includes("health") || key.includes("wellness")) return NICHE_STORY_BEATS.health;
+  if (key.includes("fit") || key.includes("weight")) return NICHE_CONVERSION_BEATS.fitness;
+  if (key.includes("financ") || key.includes("money")) return NICHE_CONVERSION_BEATS.finance;
+  if (key.includes("health") || key.includes("wellness")) return NICHE_CONVERSION_BEATS.health;
   if (key.includes("business") || key.includes("market") || key.includes("affiliate")) {
-    return NICHE_STORY_BEATS.business;
+    return NICHE_CONVERSION_BEATS.business;
   }
-  return NICHE_STORY_BEATS.default;
+  return NICHE_CONVERSION_BEATS.default;
 }
 
 /**
- * Static fallback 10-post story threads when AI generation is unavailable.
- * Mirrors the x-thread-rules arc: failure in post 4, product in posts 7+10, link only in post 10.
+ * Static fallback 10-post conversion threads when AI generation is unavailable.
+ * Mirrors x-thread-rules: hook → 5 core steps → bridge → TL;DR → CTA with link only in post 10.
  */
 export function buildStaticAcceleratorXThreadSeeds(
   productName: string,
@@ -135,19 +130,19 @@ export function buildStaticAcceleratorXThreadSeeds(
 ): string[] {
   const short = productName.slice(0, 50);
   const nicheLower = niche.toLowerCase();
-  const beats = resolveStoryBeats(nicheKey, niche);
+  const beats = resolveConversionBeats(nicheKey, niche);
 
   return [
-    `I tracked ${beats.hookMetric} in ${nicheLower} before one Tuesday changed how I approached it.`,
-    beats.scene,
-    beats.stakes,
-    `Attempt 1: free YouTube deep dives — no structure. Attempt 2: a $197 course — too generic. Attempt 3: copying gurus — zero fit for my schedule.`,
-    `The shift wasn't doing more. It was following one repeatable path instead of collecting tips.`,
-    `Pick one outcome. Strip it to 3 weekly actions. Track one metric. Review every Sunday. Boring — and it works without buying anything.`,
-    `${short} is what made that weekly loop fast enough that I actually stuck with it.`,
-    beats.proof,
-    `Not for people chasing overnight wins. If you won't review one number every week, skip this.`,
-    `One path. One metric. One tool if you want speed.\n\nStart here: ${ACCELERATOR_THREAD_LINK_PLACEHOLDER}`,
+    `${beats.problem}\n\nThere's a 5-step path that works in weeks — not years.\n\n🧵👇`,
+    `${beats.authority}\n\nThe gap isn't effort.\n\nIt's structure.`,
+    `Step 1: Pick one outcome in ${nicheLower}.\n\nNot five goals.\n\nOne number you'll track for 30 days.`,
+    `Step 2: Stop copying gurus.\n\nTheir schedule isn't yours.\n\nBuild 3 weekly actions you can repeat without motivation.`,
+    `Step 3: Kill the friction.\n\nIf a step takes 45+ minutes, you'll skip it.\n\nCap each action at 15 minutes.`,
+    `Step 4: Use loss aversion.\n\nReview every Sunday.\n\nMissing one week hurts more than skipping daily hype posts.`,
+    `Step 5: Stack speed.\n\nOnce the loop works manually, use a tool to run it faster.\n\n${short} is built for that.`,
+    `The #1 mistake?\n\nCollecting tips instead of running one loop for 6 weeks.\n\nMore tactics won't save a broken system.`,
+    `TL;DR:\n\n• One outcome\n• 3 weekly actions\n• 15-min cap per step\n• Sunday review\n• Tool for speed`,
+    `Ready to run the loop?\n\n${beats.proof}\n\nStart here: ${ACCELERATOR_THREAD_LINK_PLACEHOLDER}\n\nRT post 1 if this helped 🙏`,
   ];
 }
 
