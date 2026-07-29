@@ -61,8 +61,14 @@ export function GenerationProgress({
   scrollTargetId,
 }: GenerationProgressProps) {
   const [progress, setProgress] = useState(0);
+  const [bannerPinned, setBannerPinned] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   useGenerationCompleteScroll(active, scrollTargetId, scrollOnComplete);
+
+  useEffect(() => {
+    if (active) setBannerPinned(true);
+  }, [active]);
 
   useEffect(() => {
     if (!active) {
@@ -80,23 +86,29 @@ export function GenerationProgress({
     return () => window.clearInterval(interval);
   }, [active]);
 
-  if (!active) return null;
+  const showBannerEl = showBanner && bannerPinned && !bannerDismissed;
+
+  if (!showBannerEl && !active) return null;
 
   return (
-    <div className="sticky top-4 z-30 flex flex-col gap-4 w-full">
-      {showBanner ? <EarningsBanner prominent /> : null}
-      <div className="rounded-2xl border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
-        <div className="flex items-center gap-3 mb-2.5">
-          <Loader2 size={16} className="animate-spin text-accent shrink-0" />
-          <span className="text-[13px] sm:text-sm font-semibold text-text-primary">{label}</span>
+    <div className="flex w-full flex-col gap-4">
+      {showBannerEl ? (
+        <EarningsBanner prominent onDismiss={() => setBannerDismissed(true)} />
+      ) : null}
+      {active ? (
+        <div className="rounded-2xl border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
+          <div className="mb-2.5 flex items-center gap-3">
+            <Loader2 size={16} className="shrink-0 animate-spin text-accent" />
+            <span className="text-[13px] font-semibold text-text-primary sm:text-sm">{label}</span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full border border-border-dim/30 bg-page">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-accent to-accent-muted transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
-        <div className="h-1.5 rounded-full bg-page overflow-hidden border border-border-dim/30">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-accent to-accent-muted transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 }
