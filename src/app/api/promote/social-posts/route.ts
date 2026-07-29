@@ -143,11 +143,12 @@ export async function POST(request: Request) {
       .slice(0, THREADS_PER_GENERATION)
       .map((row, i) => ({
         text: row.text.trim(),
-        angle: typeof row.angle === "string"
-          ? row.angle
-          : typeof row.role === "string"
-            ? row.role
-            : THREAD_POST_ROLES[i] || `Post ${i + 1}`,
+        angle:
+          typeof row.role === "string" && row.role.trim()
+            ? row.role.trim()
+            : typeof row.angle === "string" && row.angle.trim()
+              ? row.angle.trim()
+              : THREAD_POST_ROLES[i] || `Post ${i + 1}`,
       }));
 
     if (posts.length === 0) {
@@ -158,14 +159,17 @@ export async function POST(request: Request) {
     }
 
     const territory = context.territory;
+    const extraScrapeUrls = offerPageUrl !== affiliateUrl ? [offerPageUrl] : [];
     const imageResults = await generateThreadImagesForPosts({
       posts,
       postIndexes: THREAD_IMAGE_POST_INDEXES,
       territory,
+      hobby: site.hobby?.trim() || undefined,
       productName: site.title || context.siteName,
       userId: user.id,
       supabase,
       scrapeUrl: affiliateUrl || undefined,
+      scrapeUrls: extraScrapeUrls.length ? extraScrapeUrls : undefined,
     });
 
     const postsWithImages = posts.map((post, i) => {

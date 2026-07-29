@@ -85,14 +85,17 @@ async function attachAcceleratorThreadImages(params: {
   ownerId: string;
   entry: AcceleratorCatalogEntry;
   threadRows: AcceleratorThreadSeedRow[];
+  scrapeUrl?: string;
 }): Promise<(AcceleratorThreadSeedRow & { image_url: string | null })[]> {
   const imageResults = await generateThreadImagesForPosts({
     posts: params.threadRows.map((row) => ({ text: row.text, angle: row.angle })),
     postIndexes: THREAD_IMAGE_POST_INDEXES,
-    territory: params.entry.nicheLabel,
+    territory: `${params.entry.nicheLabel} ${params.entry.productName}`,
+    hobby: params.entry.nicheLabel,
     productName: params.entry.productName,
     userId: params.ownerId,
     supabase: params.admin,
+    scrapeUrl: params.scrapeUrl,
   });
 
   return params.threadRows.map((row, index) => {
@@ -109,8 +112,10 @@ async function attachAcceleratorThreadImages(params: {
 /** Seed one accelerator template (idempotent — skips if already complete). */
 export async function seedAcceleratorTemplate(
   admin: SupabaseClient,
-  entry: AcceleratorCatalogEntry
+  entry: AcceleratorCatalogEntry,
+  options?: { force?: boolean }
 ): Promise<{ skipped: boolean; siteId: string }> {
+  const force = options?.force === true;
   const ownerId = process.env.TEMPLATE_OWNER_ID?.trim();
   if (!ownerId) {
     throw new Error("TEMPLATE_OWNER_ID env is not set (must be a real Supabase user id).");
@@ -118,6 +123,7 @@ export async function seedAcceleratorTemplate(
 
   const existing = await loadSeededTemplate(admin, entry.id);
   const threadsComplete =
+    !force &&
     existing &&
     existing.site.sales_page_html &&
     existing.threadCount >= 10 &&
@@ -184,10 +190,12 @@ export async function seedAcceleratorTemplate(
       .order("created_at", { ascending: true })).data ?? [];
 
   const needsNewThreads =
+    force ||
     !existing ||
     existingThreads.length < 10 ||
     existing?.threadsCorrupted === true;
   const needsImagesOnly =
+    !force &&
     existing &&
     existingThreads.length >= 10 &&
     !existing.imagesReady;
@@ -266,7 +274,8 @@ export interface SeedBatchResult {
 export async function seedAcceleratorBatch(
   admin: SupabaseClient,
   offset = 0,
-  limit = 25
+  limit = 25,
+  options?: { force?: boolean }
 ): Promise<SeedBatchResult> {
   const catalog = buildAcceleratorCatalog();
   const slice = catalog.slice(offset, offset + limit);
@@ -274,7 +283,7 @@ export async function seedAcceleratorBatch(
   let skipped = 0;
 
   for (const entry of slice) {
-    const result = await seedAcceleratorTemplate(admin, entry);
+    const result = await seedAcceleratorTemplate(admin, entry, options);
     if (result.skipped) skipped++;
     else seeded++;
   }

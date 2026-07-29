@@ -13,9 +13,16 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { createClient } from "@supabase/supabase-js";
-import { seedAcceleratorBatch } from "../src/features/premium-accelerator/lib/seed-templates";
-import { ACCELERATOR_TARGET_COUNT } from "../src/features/premium-accelerator/lib/catalog";
+
+function unquoteEnvValue(value: string): string {
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
 
 function loadEnvLocal() {
   const path = join(process.cwd(), ".env.local");
@@ -27,10 +34,13 @@ function loadEnvLocal() {
     const eq = trimmed.indexOf("=");
     if (eq <= 0) continue;
     const key = trimmed.slice(0, eq).trim();
-    const value = trimmed.slice(eq + 1).trim();
-    if (!process.env[key]) process.env[key] = value;
+    const value = unquoteEnvValue(trimmed.slice(eq + 1).trim());
+    process.env[key] = value;
   }
 }
+
+// Load .env.local before any module reads process.env at import time (e.g. PIXABAY_API_KEY).
+loadEnvLocal();
 
 function parseArg(name: string, fallback: number): number {
   const prefix = `--${name}=`;
@@ -41,7 +51,13 @@ function parseArg(name: string, fallback: number): number {
 }
 
 async function main() {
-  loadEnvLocal();
+  const { createClient } = await import("@supabase/supabase-js");
+  const { seedAcceleratorBatch } = await import(
+    "../src/features/premium-accelerator/lib/seed-templates"
+  );
+  const { ACCELERATOR_TARGET_COUNT } = await import(
+    "../src/features/premium-accelerator/lib/catalog"
+  );
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
@@ -61,14 +77,17 @@ async function main() {
 
   const batchSize = parseArg("limit", 25);
   let offset = parseArg("offset", 0);
+  const force = process.argv.includes("--force");
   const admin = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  console.log(`Seeding accelerator templates (${ACCELERATOR_TARGET_COUNT} total)...`);
+  console.log(
+    `Seeding accelerator templates (${ACCELERATOR_TARGET_COUNT} total)${force ? " [force reseed]" : ""}...`
+  );
 
   while (offset < ACCELERATOR_TARGET_COUNT) {
-    const result = await seedAcceleratorBatch(admin, offset, batchSize);
+    const result = await seedAcceleratorBatch(admin, offset, batchSize, { force });
     console.log(
       `offset=${offset} seeded=${result.seeded} skipped=${result.skipped} progress=${Math.min(offset + batchSize, result.total)}/${result.total}`
     );

@@ -32,6 +32,7 @@ function buildAcceleratorThreadContext(
     copy.subtitle ? `Tagline: ${copy.subtitle}` : "",
     `Niche / territory: ${entry.nicheLabel}`,
     `Product: ${entry.productName}`,
+    copy.intro ? `Audience hook: ${copy.intro.slice(0, 280)}` : "",
     "Site type: product promotion page",
     "",
     "=== PRODUCT / OFFER ===",
@@ -39,6 +40,8 @@ function buildAcceleratorThreadContext(
     copy.promoBody ? `Description: ${copy.promoBody}` : "",
     benefitLines,
     copy.resultMessage ? `Outcome angle: ${copy.resultMessage}` : "",
+    copy.resultHeadline ? `Result framing: ${copy.resultHeadline}` : "",
+    copy.promoSubtext ? `Urgency / angle: ${copy.promoSubtext}` : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -59,10 +62,10 @@ function parseGeneratedThreadPosts(raw: unknown): AcceleratorThreadSeedRow[] | n
     .map((row, i) => ({
       text: normalizeThreadText(row.text!.trim(), i === THREADS_PER_GENERATION - 1),
       angle:
-        typeof row.role === "string"
-          ? row.role
-          : typeof row.angle === "string"
-            ? row.angle
+        typeof row.role === "string" && row.role.trim()
+          ? row.role.trim()
+          : typeof row.angle === "string" && row.angle.trim()
+            ? row.angle.trim()
             : THREAD_POST_ROLES[i] ?? `Post ${i + 1}`,
     }));
 

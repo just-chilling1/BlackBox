@@ -3,6 +3,11 @@ import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
 import { acceleratorTemplateKey, getAcceleratorCatalogEntry } from "./catalog";
 import { ACCELERATOR_LINK_PLACEHOLDER, substituteThreadLinkPlaceholder } from "./x-thread-seeds";
 import { slugify } from "@/features/blog-builder/lib/seo";
+import {
+  THREAD_IMAGE_POST_INDEXES,
+  THREAD_POST_ROLES,
+} from "@/features/publish-kit/lib/promote-constants";
+import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
 
 function newSlug(seed: string): string {
   return `${slugify(seed) || "offer"}-${crypto.randomUUID().slice(0, 8)}`;
@@ -83,15 +88,48 @@ export async function cloneAcceleratorTemplate(params: {
 
   let threadsCopied = 0;
   if (templateThreads && templateThreads.length > 0) {
-    const batchId = crypto.randomUUID();
-    const rows = templateThreads.map((row) => ({
-      user_id: userId,
-      site_id: site.id,
+    const posts = templateThreads.map((row, i) => ({
       text: substituteThreadText((row as { text: string }).text, url),
-      angle: (row as { angle: string | null }).angle,
-      image_url: (row as { image_url: string | null }).image_url,
-      batch_id: batchId,
+      angle:
+        (row as { angle: string | null }).angle?.trim() ||
+        THREAD_POST_ROLES[i] ||
+        `Post ${i + 1}`,
     }));
+
+    let imageResults: (string | null)[] = [];
+    try {
+      imageResults = await generateThreadImagesForPosts({
+        posts,
+        postIndexes: THREAD_IMAGE_POST_INDEXES,
+        territory: `${entry.nicheLabel} ${entry.productName}`,
+        hobby: entry.nicheLabel,
+        productName: entry.productName,
+        userId,
+        supabase: db,
+        scrapeUrl: url,
+      });
+    } catch {
+      /* keep template images as fallback */
+    }
+
+    const batchId = crypto.randomUUID();
+    const rows = posts.map((post, i) => {
+      const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
+        i as (typeof THREAD_IMAGE_POST_INDEXES)[number]
+      );
+      const templateImage = (templateThreads[i] as { image_url: string | null }).image_url;
+      const regeneratedImage =
+        imageSlot >= 0 ? imageResults[imageSlot] ?? null : null;
+
+      return {
+        user_id: userId,
+        site_id: site.id,
+        text: post.text,
+        angle: post.angle,
+        image_url: regeneratedImage ?? templateImage,
+        batch_id: batchId,
+      };
+    });
 
     const { error: threadErr } = await db.from("site_x_threads").insert(rows);
     if (threadErr) throw new Error(threadErr.message);
