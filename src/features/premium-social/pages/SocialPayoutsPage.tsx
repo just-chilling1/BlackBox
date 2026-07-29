@@ -135,12 +135,6 @@ export default function SocialPayoutsPage() {
   const loadPosts = useCallback(async (siteId: string) => {
     if (!siteId) return;
 
-    const summary = offers.find((o) => o.site.id === siteId);
-    if (summary?.facebookPostCount === 0) {
-      setPostsBySite((prev) => ({ ...prev, [siteId]: [] }));
-      return;
-    }
-
     setLoadingPosts(true);
     try {
       const res = await fetch(`/api/premium/social-payouts?siteId=${encodeURIComponent(siteId)}`, {
@@ -148,14 +142,20 @@ export default function SocialPayoutsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setPostsBySite((prev) => ({ ...prev, [siteId]: data.posts ?? [] }));
+        const loaded = data.posts ?? [];
+        setPostsBySite((prev) => ({ ...prev, [siteId]: loaded }));
+        setOffers((prev) =>
+          prev.map((o) =>
+            o.site.id === siteId ? { ...o, facebookPostCount: loaded.length } : o
+          )
+        );
       }
     } catch {
       /* ignore */
     } finally {
       setLoadingPosts(false);
     }
-  }, [offers]);
+  }, []);
 
   useEffect(() => {
     if (!selectedSiteId || offers.length === 0) return;
@@ -185,15 +185,7 @@ export default function SocialPayoutsPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");
-      const nextPosts = data.posts ?? [];
-      setPostsBySite((prev) => ({ ...prev, [selectedSiteId]: nextPosts }));
-      setOffers((prev) =>
-        prev.map((o) =>
-          o.site.id === selectedSiteId
-            ? { ...o, facebookPostCount: nextPosts.length }
-            : o
-        )
-      );
+      await loadPosts(selectedSiteId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Generation failed");
     } finally {
