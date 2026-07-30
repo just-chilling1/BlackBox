@@ -134,6 +134,8 @@ export default function DeployAssetPage({
 
         if (data.quota) setQuota(data.quota as GenerationQuota);
 
+        if (embedded) return;
+
         const loadedSite = data.site as BlogSite | null;
         const matchesCurrent =
           loadedSite && siteMatchesWizard(loadedSite, hobby, territory, deployArmedLinks);

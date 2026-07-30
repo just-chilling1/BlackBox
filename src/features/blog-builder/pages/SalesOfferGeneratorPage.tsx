@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { WizardStepper } from "../components/WizardStepper";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
-import ArmLinksPage from "./ArmLinksPage";
-import ChooseTerritoryPage from "./ChooseTerritoryPage";
-import ChooseThemePage from "./ChooseThemePage";
-import DeployAssetPage from "./DeployAssetPage";
 import type { WizardStepNumber } from "../lib/wizard-step-props";
+const stepLoading = () => <PageSkeleton cards={1} className="mt-4" />;
+
+const ArmLinksPage = dynamic(() => import("./ArmLinksPage"), { loading: stepLoading });
+const ChooseTerritoryPage = dynamic(() => import("./ChooseTerritoryPage"), { loading: stepLoading });
+const ChooseThemePage = dynamic(() => import("./ChooseThemePage"), { loading: stepLoading });
+const DeployAssetPage = dynamic(() => import("./DeployAssetPage"), { loading: stepLoading });
 
 const STEP_COPY: Record<
   WizardStepNumber,
@@ -42,12 +44,6 @@ const STEP_COPY: Record<
   },
 };
 
-function clampStep(value: number): WizardStepNumber {
-  if (value <= 1) return 1;
-  if (value >= 4) return 4;
-  return value as WizardStepNumber;
-}
-
 function maxAccessibleStep(
   linksArmed: boolean,
   territoryChosen: boolean,
@@ -66,7 +62,6 @@ type StepCompletionFlags = Partial<{
 }>;
 
 export default function SalesOfferGeneratorPage() {
-  const searchParams = useSearchParams();
   const {
     sessionLoaded,
     linksArmed,
@@ -74,26 +69,15 @@ export default function SalesOfferGeneratorPage() {
     themeChosen,
     wizardUiStep,
     setWizardUiStep,
-    beginNewSiteGeneration,
+    startFreshOfferWizard,
   } = useBlogBuilder();
+  const freshStarted = useRef(false);
 
   useEffect(() => {
-    if (!sessionLoaded) return;
-
-    const urlStep = searchParams.get("step");
-    if (urlStep) {
-      const fromUrl = clampStep(Number(urlStep) || 1);
-      const maxStep = maxAccessibleStep(linksArmed, territoryChosen, themeChosen);
-      setWizardUiStep(fromUrl <= maxStep ? fromUrl : maxStep);
-    }
-  }, [
-    sessionLoaded,
-    searchParams,
-    linksArmed,
-    territoryChosen,
-    themeChosen,
-    setWizardUiStep,
-  ]);
+    if (!sessionLoaded || freshStarted.current) return;
+    freshStarted.current = true;
+    startFreshOfferWizard();
+  }, [sessionLoaded, startFreshOfferWizard]);
 
   const goToStep = (next: WizardStepNumber, justCompleted?: StepCompletionFlags) => {
     const maxStep = maxAccessibleStep(
@@ -105,7 +89,7 @@ export default function SalesOfferGeneratorPage() {
   };
 
   const handleGenerateAnother = () => {
-    beginNewSiteGeneration();
+    startFreshOfferWizard();
     setWizardUiStep(1);
   };
 
@@ -117,7 +101,8 @@ export default function SalesOfferGeneratorPage() {
           title="Launch Your Offer"
           subtitle="Generate niche-specific quiz questions and publish your sales page."
         />
-        <PageSkeleton cards={2} />
+        <WizardStepper currentStep={1} />
+        <PageSkeleton cards={1} className="mt-4" />
       </div>
     );
   }
