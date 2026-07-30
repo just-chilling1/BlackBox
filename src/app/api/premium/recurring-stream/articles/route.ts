@@ -8,8 +8,9 @@ import {
   seedRecurringStreamArticles,
   recurringStreamNeedsSeed,
 } from "@/features/premium-recurring/lib/seed-articles";
-import { RECURRING_STREAM_TARGET_COUNT, weaveAffiliateIntoArticle } from "@/features/premium-recurring/lib/catalog";
+import { RECURRING_STREAM_TARGET_COUNT } from "@/features/premium-recurring/lib/catalog";
 import { saveRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
+import { loadRecurringArticlePreview } from "@/features/premium-recurring/lib/load-article-preview";
 import type { BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +19,35 @@ export async function GET(request: Request) {
   const guard = featureApiGuard("premium-recurring");
   if (guard) return guard;
 
-  const { supabase } = await getApiUser();
-  const niche = new URL(request.url).searchParams.get("niche")?.trim() || "All";
+  const { supabase, user } = await getApiUser();
+  const url = new URL(request.url);
+  const niche = url.searchParams.get("niche")?.trim() || "All";
+  const previewArticleId = Number(url.searchParams.get("articleId"));
+  const previewSiteId = url.searchParams.get("siteId")?.trim() || "";
 
   try {
     const admin = getServiceRoleClient();
     const reader = admin ?? supabase;
+
+    if (previewArticleId && !Number.isNaN(previewArticleId) && previewSiteId) {
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+      }
+
+      const { data: siteRow } = await supabase
+        .from("sites")
+        .select("*")
+        .eq("id", previewSiteId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!siteRow) {
+        return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
+      }
+
+      const preview = await loadRecurringArticlePreview(reader, previewArticleId, siteRow as BlogSite);
+      return NextResponse.json(preview, { headers: NO_STORE_HEADERS });
+    }
 
     if (admin && (await recurringStreamNeedsSeed(admin))) {
       await seedRecurringStreamArticles(admin);
@@ -87,40 +111,35 @@ export async function POST(request: Request) {
   }
 
   const site = siteRow as BlogSite;
-  const affiliateUrl = site.armed_links?.[0]?.url?.trim() ?? "";
 
   const admin = getServiceRoleClient();
   const reader = admin ?? supabase;
-  const { data, error } = await reader
-    .from("premium_article_templates")
-    .select("*")
-    .eq("id", articleId)
-    .maybeSingle();
 
-  if (error || !data) {
+  let preview;
+  try {
+    preview = await loadRecurringArticlePreview(reader, articleId, site);
+  } catch {
     return NextResponse.json({ error: "Article not found" }, { status: 404, headers: NO_STORE_HEADERS });
   }
-
-  const html = weaveAffiliateIntoArticle((data as { html: string }).html, affiliateUrl);
 
   const saved = await saveRecurringArticle(
     supabase,
     user.id,
     siteId,
     articleId,
-    (data as { title: string }).title,
-    html
+    preview.title,
+    preview.html
   );
 
   return NextResponse.json(
     {
-      id: data.id,
-      title: data.title,
-      html,
-      excerpt: data.excerpt,
-      metaDescription: data.meta_description,
+      id: preview.id,
+      title: preview.title,
+      html: preview.html,
+      excerpt: preview.excerpt,
+      metaDescription: preview.metaDescription,
       savedId: saved.id,
-      promoLink: affiliateUrl || null,
+      promoLink: preview.promoLink,
     },
     { headers: NO_STORE_HEADERS }
   );

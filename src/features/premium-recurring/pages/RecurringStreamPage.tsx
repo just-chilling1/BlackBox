@@ -78,9 +78,10 @@ export default function RecurringStreamPage() {
   const [savedTemplateIds, setSavedTemplateIds] = useState<Set<number>>(new Set());
   const [previewId, setPreviewId] = useState<number | null>(null);
   const [articleHtml, setArticleHtml] = useState<Record<number, string>>({});
-  const [loadingAction, setLoadingAction] = useState<{ articleId: number; action: "view" | "copy" } | null>(
-    null
-  );
+  const [loadingAction, setLoadingAction] = useState<{
+    articleId: number;
+    action: "view" | "copy" | "save";
+  } | null>(null);
   const [copiedMode, setCopiedMode] = useState<"text" | "html" | null>(null);
   const [copiedArticleId, setCopiedArticleId] = useState<number | null>(null);
   const [page, setPage] = useState(0);
@@ -194,7 +195,7 @@ export default function RecurringStreamPage() {
 
   const previewArticle = previewId != null ? articles.find((a) => a.id === previewId) : null;
 
-  const ensureArticleHtml = async (
+  const loadArticlePreview = async (
     articleId: number,
     action: "view" | "copy"
   ): Promise<string | null> => {
@@ -206,7 +207,40 @@ export default function RecurringStreamPage() {
       setError("");
       return articleHtml[articleId];
     }
+
     setLoadingAction({ articleId, action });
+    setError("");
+    try {
+      const params = new URLSearchParams({
+        articleId: String(articleId),
+        siteId: selectedSiteId,
+      });
+      const res = await fetch(`/api/premium/recurring-stream/articles?${params.toString()}`, {
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load preview");
+      setArticleHtml((prev) => ({ ...prev, [articleId]: data.html }));
+      return data.html as string;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load preview");
+      return null;
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const saveArticleToOffer = async (articleId: number): Promise<boolean> => {
+    if (!selectedSiteId) {
+      setError("Select an offer before continuing.");
+      return false;
+    }
+    if (savedTemplateIds.has(articleId)) {
+      setError("");
+      return true;
+    }
+
+    setLoadingAction({ articleId, action: "save" });
     setError("");
     try {
       const res = await fetch("/api/premium/recurring-stream/articles", {
@@ -215,20 +249,21 @@ export default function RecurringStreamPage() {
         body: JSON.stringify({ articleId, siteId: selectedSiteId }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load article");
+      if (!res.ok) throw new Error(data.error || "Failed to save article");
+
       setArticleHtml((prev) => ({ ...prev, [articleId]: data.html }));
       setSavedTemplateIds((prev) => new Set([...prev, articleId]));
       setOffers((prev) =>
         prev.map((o) =>
-          o.site.id === selectedSiteId && !savedTemplateIds.has(articleId)
+          o.site.id === selectedSiteId
             ? { ...o, recurringArticleCount: o.recurringArticleCount + 1 }
             : o
         )
       );
-      return data.html as string;
+      return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load article");
-      return null;
+      setError(e instanceof Error ? e.message : "Failed to save article");
+      return false;
     } finally {
       setLoadingAction(null);
     }
@@ -239,12 +274,22 @@ export default function RecurringStreamPage() {
       setPreviewId(null);
       return;
     }
-    const html = await ensureArticleHtml(articleId, "view");
+    const html = await loadArticlePreview(articleId, "view");
     if (html) setPreviewId(articleId);
   };
 
+  const useTemplate = async (articleId: number) => {
+    const saved = await saveArticleToOffer(articleId);
+    if (!saved) return;
+
+    if (previewId !== articleId) {
+      const html = articleHtml[articleId] ?? (await loadArticlePreview(articleId, "view"));
+      if (html) setPreviewId(articleId);
+    }
+  };
+
   const copyArticleFromCard = async (articleId: number) => {
-    const html = await ensureArticleHtml(articleId, "copy");
+    const html = await loadArticlePreview(articleId, "copy");
     const article = articles.find((a) => a.id === articleId);
     if (!html || !article) return;
 
@@ -307,7 +352,7 @@ export default function RecurringStreamPage() {
               <div>
                 <p className="font-bold text-text-primary">100 Authority Articles</p>
                 <p className="text-sm text-text-secondary">
-                  SEO-ready articles with intro, sections, FAQs, and CTAs — saved to your offer when you preview.
+                  SEO-ready articles with intro, sections, FAQs, and CTAs — preview first, then use a template to save it to your offer.
                 </p>
               </div>
             </div>
@@ -357,7 +402,7 @@ export default function RecurringStreamPage() {
               {selectedSiteId && selectedOffer?.site.armed_links?.[0]?.url && (
                 <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
                   <Sparkles size={14} className="shrink-0 text-emerald-600" />
-                  Offer selected — previews and copies will include your affiliate link and save to this offer.
+                  Offer selected — previews include your affiliate link. Use a template to save the article to this offer.
                 </p>
               )}
             </>
@@ -398,7 +443,11 @@ export default function RecurringStreamPage() {
 
       <GenerationProgress
         active={loadingAction !== null}
-        label="Personalizing article with your offer link..."
+        label={
+          loadingAction?.action === "save"
+            ? "Saving article to your offer..."
+            : "Loading article preview..."
+        }
       />
 
       <AnimatePresence>
@@ -441,10 +490,33 @@ export default function RecurringStreamPage() {
               }}
             />
             <div className="flex flex-wrap gap-2 border-t border-divider p-4 md:p-5">
+              {!savedTemplateIds.has(previewArticle.id) ? (
+                <button
+                  type="button"
+                  disabled={loadingAction?.articleId === previewArticle.id}
+                  onClick={() => void useTemplate(previewArticle.id)}
+                  className="btn-primary inline-flex items-center gap-2 text-sm"
+                >
+                  {loadingAction?.articleId === previewArticle.id && loadingAction.action === "save" ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={14} />
+                  )}
+                  Use this template
+                </button>
+              ) : (
+                <Link
+                  href="/offers"
+                  className="btn-primary inline-flex items-center gap-2 text-sm"
+                >
+                  <FolderOpen size={14} />
+                  View in Offers Library
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => void copyArticle("text")}
-                className="btn-primary inline-flex items-center gap-2 text-sm"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70"
               >
                 {copiedMode === "text" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "text" ? "Copied!" : "Copy article (plain text)"}
@@ -508,12 +580,12 @@ export default function RecurringStreamPage() {
                   </p>
                 )}
               </div>
-              <div className="mt-auto flex gap-2">
+              <div className="mt-auto flex flex-col gap-2">
                 <button
                   type="button"
                   disabled={loadingAction?.articleId === article.id || !selectedSiteId}
                   onClick={() => void openPreview(article.id)}
-                  className="btn-primary inline-flex flex-1 items-center justify-center gap-2 text-sm disabled:opacity-40"
+                  className="btn-secondary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
                 >
                   {loadingAction?.articleId === article.id && loadingAction.action === "view" ? (
                     <Loader2 size={14} className="animate-spin" />
@@ -524,9 +596,28 @@ export default function RecurringStreamPage() {
                 </button>
                 <button
                   type="button"
+                  disabled={
+                    loadingAction?.articleId === article.id ||
+                    !selectedSiteId ||
+                    savedTemplateIds.has(article.id)
+                  }
+                  onClick={() => void useTemplate(article.id)}
+                  className="btn-primary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
+                >
+                  {loadingAction?.articleId === article.id && loadingAction.action === "save" ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : savedTemplateIds.has(article.id) ? (
+                    <Check size={14} />
+                  ) : (
+                    <Sparkles size={14} />
+                  )}
+                  {savedTemplateIds.has(article.id) ? "Saved to offer" : "Use this template"}
+                </button>
+                <button
+                  type="button"
                   disabled={loadingAction?.articleId === article.id || !selectedSiteId}
                   onClick={() => void copyArticleFromCard(article.id)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70 disabled:opacity-40"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70 disabled:opacity-40"
                 >
                   {loadingAction?.articleId === article.id && loadingAction.action === "copy" ? (
                     <Loader2 size={14} className="animate-spin" />
@@ -574,7 +665,7 @@ export default function RecurringStreamPage() {
       </div>
 
       <p className="text-xs text-text-muted">
-        Powered by {brand.productName}. Articles are saved to your offer when previewed — view them anytime in Offers Library.
+        Powered by {brand.productName}. Use a template to save articles to your offer — view them anytime in Offers Library.
       </p>
     </motion.div>
   );
