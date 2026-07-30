@@ -11,6 +11,9 @@ const PUBLIC_ROUTE_PREFIXES = [
   '/review/',
 ]
 
+const ONBOARDING_COMPLETE_COOKIE = "bb_onboarding_complete";
+const ONBOARDING_COOKIE_MAX_AGE = 60 * 60 * 24;
+
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
@@ -82,6 +85,13 @@ export async function middleware(request: NextRequest) {
     }
 
     if (userId && !isPublicRoute) {
+        if (
+            !isOnboardingRoute &&
+            request.cookies.get(ONBOARDING_COMPLETE_COOKIE)?.value === "1"
+        ) {
+            return response;
+        }
+
         const gate = await resolveOnboardingGate(supabase, userId, userMeta)
 
         if (gate.isComplete && isOnboardingRoute) {
@@ -89,7 +99,17 @@ export async function middleware(request: NextRequest) {
         }
 
         if (!gate.isComplete && !isOnboardingRoute) {
+            response.cookies.delete(ONBOARDING_COMPLETE_COOKIE)
             return NextResponse.redirect(new URL('/onboarding', request.url))
+        }
+
+        if (gate.isComplete) {
+            response.cookies.set(ONBOARDING_COMPLETE_COOKIE, '1', {
+                maxAge: ONBOARDING_COOKIE_MAX_AGE,
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+            })
         }
     }
 

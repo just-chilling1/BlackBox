@@ -13,6 +13,7 @@ import type { BlogSite } from "@/features/blog-builder/types";
 import type { PublishKitSite } from "../types";
 import { PublishKitPanel } from "../components/PublishKitPanel";
 import { THREADS_PER_GENERATION } from "../lib/promote-constants";
+import { cachedClientFetch } from "@/lib/client-fetch-cache";
 
 function toPublishKitSite(site: BlogSite, siteUrl: string): PublishKitSite {
   const affiliate = site.armed_links?.[0];
@@ -45,23 +46,34 @@ export default function PromotePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/blog/site?lite=1", { cache: "no-store" })
-      .then((r) => r.json())
+    let cancelled = false;
+
+    void cachedClientFetch<{ summaries?: SiteVaultSummary[] }>("/api/blog/site?lite=1")
       .then((data) => {
+        if (cancelled) return;
         const list = Array.isArray(data.summaries) ? data.summaries : [];
         setSummaries(list);
         if (list.length === 0) return;
 
         const preferredId =
-          initialSiteId && list.some((s: SiteVaultSummary) => s.site.id === initialSiteId)
+          initialSiteId && list.some((s) => s.site.id === initialSiteId)
             ? initialSiteId
             : list[0].site.id;
 
-        const summary = list.find((s: SiteVaultSummary) => s.site.id === preferredId);
+        const summary = list.find((s) => s.site.id === preferredId);
         setSelectedSiteId(preferredId);
         if (summary) setSelectedSite(summary.site);
       })
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (!cancelled) setSummaries([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [initialSiteId]);
 
   const selectedSummary = useMemo(
@@ -94,7 +106,9 @@ export default function PromotePage() {
           title="Generate X story thread"
           subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
         />
-        <PageSkeleton cards={2} />
+        <section className="glass-card space-y-5 p-6 md:p-8">
+          <PageSkeleton cards={1} className="mt-0" />
+        </section>
       </div>
     );
   }

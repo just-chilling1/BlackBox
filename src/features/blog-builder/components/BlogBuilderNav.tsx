@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { clsx } from "clsx";
-import { Lock } from "lucide-react";
+import { Lock } from "lucide-react";import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import {
   getBlogBuilderWorkflowSteps,
   getBlogBuilderGenerateNav,
@@ -74,7 +73,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     }
 
     return (
-      <Link
+      <WarmNavLink
         key={item.path}
         href={item.path}
         onClick={onNavClick}
@@ -85,7 +84,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
           <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
-      </Link>
+      </WarmNavLink>
     );
   };
 
@@ -95,7 +94,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     const color = NAV_COLORS[item.icon] ?? "gold";
 
     return (
-      <Link
+      <WarmNavLink
         key={item.path}
         href={item.path}
         onClick={onNavClick}
@@ -106,7 +105,7 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
           <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
-      </Link>
+      </WarmNavLink>
     );
   };
 

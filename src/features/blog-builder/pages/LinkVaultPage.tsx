@@ -17,7 +17,7 @@ function hasValidLink(links: ArmedLink[]): boolean {
 }
 
 export default function LinkVaultPage() {
-  const { sessionLoaded, saveLinksToVault } = useBlogBuilder();
+  const { sessionLoaded, armedLinks, saveLinksToVault } = useBlogBuilder();
   const [links, setLinks] = useState<ArmedLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,25 +28,15 @@ export default function LinkVaultPage() {
   useEffect(() => {
     if (!sessionLoaded || hydrated.current) return;
 
-    fetch("/api/blog/link-vault", { cache: "no-store" })
-      .then(async (r) => {
-        if (!r.ok) throw new Error("Could not load links library");
-        return r.json();
-      })
-      .then((data) => {
-        const stored = Array.isArray(data.links) ? (data.links as ArmedLink[]) : [];
-        setLinks(
-          stored.length > 0
-            ? stored
-            : [{ label: "Promotional Offer", url: "", network: "other" }]
-        );
-      })
-      .catch(() => setError("Could not load Links Library"))
-      .finally(() => {
-        hydrated.current = true;
-        setLoading(false);
-      });
-  }, [sessionLoaded]);
+    const stored = armedLinks.length > 0 ? armedLinks : [];
+    setLinks(
+      stored.length > 0
+        ? stored
+        : [{ label: "Promotional Offer", url: "", network: "other" }]
+    );
+    hydrated.current = true;
+    setLoading(false);
+  }, [sessionLoaded, armedLinks]);
 
   const handleSave = async () => {
     if (!hasValidLink(links)) {

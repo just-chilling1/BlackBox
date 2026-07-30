@@ -13,7 +13,6 @@ const ParticleBackground = dynamic(
 );
 
 const Sidebar = dynamic(() => import("./Sidebar").then((m) => ({ default: m.Sidebar })), {
-  ssr: false,
   loading: () => <div className="hidden w-[var(--sidebar-w)] shrink-0 lg:block" aria-hidden />,
 });
 

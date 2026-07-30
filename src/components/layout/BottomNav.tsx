@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles, LogOut, ExternalLink, Headphones, ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
@@ -71,7 +72,7 @@ export function BottomNav() {
             const isActive = isNavPathActive(pathname, tab.path);
             const Icon = getNavIcon(tab.icon);
             return (
-              <Link
+              <WarmNavLink
                 key={tab.path}
                 href={tab.path}
                 className={clsx(
@@ -84,7 +85,7 @@ export function BottomNav() {
                 ) : null}
                 <Icon className="h-6 w-6" />
                 <span className="text-[11px] font-semibold leading-none">{tab.label}</span>
-              </Link>
+              </WarmNavLink>
             );
           })}
 
@@ -133,7 +134,7 @@ export function BottomNav() {
                       const Icon = getNavIcon(item.icon);
                       const isActive = isNavPathActive(pathname, item.path);
                       return (
-                        <Link
+                        <WarmNavLink
                           key={item.path}
                           href={item.path}
                           onClick={() => setMoreOpen(false)}
@@ -145,7 +146,7 @@ export function BottomNav() {
                           <Icon className="h-5 w-5" />
                           {item.label}
                           <ChevronRight className="ml-auto h-4 w-4 opacity-40" />
-                        </Link>
+                        </WarmNavLink>
                       );
                     })}
                   </div>

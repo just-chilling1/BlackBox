@@ -14,6 +14,8 @@ import { defaultThemeConfig } from "../themes";
 import { isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url";
 
 import type { WizardStepNumber } from "../lib/wizard-step-props";
+import { cachedClientFetch, invalidateClientFetchCache } from "@/lib/client-fetch-cache";
+import { warmBlogSession } from "@/lib/warm-route-data";
 
 export type BlogBuilderStep = 0 | 1 | 2 | 3;
 
@@ -54,6 +56,7 @@ interface BlogBuilderContextType extends BlogBuilderState {
   setGenerating: (v: boolean) => void;
   resetWizard: () => Promise<void>;
   beginNewSiteGeneration: () => void;
+  startFreshOfferWizard: () => void;
   setWizardUiStep: (step: WizardStepNumber) => void;
   blogProgress: number;
 }
@@ -186,7 +189,6 @@ const BLOG_SESSION_ROUTES = [
   "/offers",
   "/link-vault",
   "/deploy",
-  "/promote",
   "/accelerator",
   "/recurring-wealth",
 ] as const;
@@ -200,66 +202,58 @@ function needsBlogSession(pathname: string): boolean {
 export function BlogBuilderProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [state, setState] = useState<BlogBuilderState>(defaultState);
-  const [sessionLoaded, setSessionLoaded] = useState(false);
+  const [sessionLoaded, setSessionLoaded] = useState(() => !needsBlogSession(pathname));
   const persistReady = useRef(false);
   const sessionFetched = useRef(false);
+  const sessionLoadPromise = useRef<Promise<void> | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadSession = useCallback(async () => {
+    if (sessionFetched.current) return;
 
-    if (!needsBlogSession(pathname)) {
-      setSessionLoaded(true);
-      return () => {
-        cancelled = true;
-      };
-    }
+    if (!sessionLoadPromise.current) {
+      sessionLoadPromise.current = (async () => {
+        try {
+          const [sessionJson, vaultJson] = await Promise.all([
+            cachedClientFetch<{ session: DbSessionRow | null }>("/api/blog/session"),
+            cachedClientFetch<{ links: ArmedLink[] }>("/api/blog/link-vault"),
+          ]);
 
-    if (sessionFetched.current) {
-      setSessionLoaded(true);
-      return () => {
-        cancelled = true;
-      };
-    }
+          const fromSession = sessionJson.session ? mapSessionFromDb(sessionJson.session) : {};
+          const vaultLinks = Array.isArray(vaultJson.links) ? vaultJson.links : [];
 
-    async function load() {
-      try {
-        const [sessionRes, vaultRes] = await Promise.all([
-          fetch("/api/blog/session", { cache: "no-store" }),
-          fetch("/api/blog/link-vault", { cache: "no-store" }),
-        ]);
-
-        const sessionJson = sessionRes.ok ? await sessionRes.json() : { session: null };
-        const vaultJson = vaultRes.ok ? await vaultRes.json() : { links: [] };
-
-        if (cancelled) return;
-
-        const fromSession = sessionJson.session
-          ? mapSessionFromDb(sessionJson.session as DbSessionRow)
-          : {};
-
-        const vaultLinks = Array.isArray(vaultJson.links) ? (vaultJson.links as ArmedLink[]) : [];
-
-        setState((s) => ({
-          ...s,
-          ...fromSession,
-          armedLinks: vaultLinks.length > 0 ? vaultLinks : s.armedLinks,
-        }));
-      } finally {
-        if (!cancelled) {
+          setState((s) => ({
+            ...s,
+            ...fromSession,
+            armedLinks: vaultLinks.length > 0 ? vaultLinks : s.armedLinks,
+          }));
+        } finally {
           sessionFetched.current = true;
           setSessionLoaded(true);
           persistReady.current = true;
         }
-      }
+      })();
     }
 
+    await sessionLoadPromise.current;
+  }, []);
+
+  useEffect(() => {
+    warmBlogSession();
+    void loadSession();
+  }, [loadSession]);
+
+  useEffect(() => {
+    if (!needsBlogSession(pathname)) {
+      setSessionLoaded(true);
+      return;
+    }
+    if (sessionFetched.current) {
+      setSessionLoaded(true);
+      return;
+    }
     setSessionLoaded(false);
-    persistReady.current = false;
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
+    void loadSession();
+  }, [pathname, loadSession]);
 
   const persistToServer = useCallback((payload: ReturnType<typeof persistPayload>) => {
     void fetch("/api/blog/session", {
@@ -309,6 +303,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       const data = await res.json().catch(() => ({}));
       throw new Error(data.error || "Failed to save link vault");
     }
+    invalidateClientFetchCache("/api/blog/link-vault");
   }, []);
 
   const setHobby = useCallback((hobby: string) => {
@@ -409,6 +404,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
 
   const resetWizard = useCallback(async () => {
     await fetch("/api/blog/session", { method: "DELETE", cache: "no-store" });
+    invalidateClientFetchCache("/api/blog/session");
     setState(defaultState);
   }, []);
 
@@ -423,6 +419,29 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
       siteId: null,
       siteSlug: null,
       step: 3,
+      generationLog: [],
+    }));
+  }, []);
+
+  /** Reset wizard progress for a new offer without clearing the link vault. */
+  const startFreshOfferWizard = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      step: 0,
+      wizardUiStep: 1,
+      hobby: "",
+      territory: "",
+      niche: "",
+      suggestions: [],
+      deployArmedLinks: [],
+      territoryChosen: false,
+      linksArmed: false,
+      themeChosen: false,
+      themeConfig: defaultThemeConfig(),
+      deployed: false,
+      siteId: null,
+      siteSlug: null,
+      isGenerating: false,
       generationLog: [],
     }));
   }, []);
@@ -453,6 +472,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
         setGenerating,
         resetWizard,
         beginNewSiteGeneration,
+        startFreshOfferWizard,
         setWizardUiStep,
         blogProgress,
       }}

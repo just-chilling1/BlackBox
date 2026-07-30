@@ -19,6 +19,7 @@ import { ThreadListSection } from "@/features/publish-kit/components/ThreadListS
 import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
 import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { getAppUrl } from "@/lib/brand-vars";
+import { cachedClientFetch } from "@/lib/client-fetch-cache";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -278,11 +279,11 @@ export default function OffersLibraryPage() {
   const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/blog/site?lite=1", { cache: "no-store" })
-      .then((r) => r.json())
+    void cachedClientFetch<{ summaries?: SiteVaultSummary[] }>("/api/blog/site?lite=1")
       .then((data) => {
         setSummaries(Array.isArray(data.summaries) ? data.summaries : []);
       })
+      .catch(() => setSummaries([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -341,7 +342,7 @@ export default function OffersLibraryPage() {
           title="Your generated sales offers"
           subtitle="Every launched sales page lives here with its saved X threads, Facebook posts, and authority articles."
         />
-        <PageSkeleton cards={3} />
+        <PageSkeleton cards={2} />
       </div>
     );
   }

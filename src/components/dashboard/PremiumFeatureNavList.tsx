@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
@@ -71,7 +71,7 @@ export function PremiumFeatureNavList({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 + index * 0.05 }}
             >
-              <Link
+              <WarmNavLink
                 href={item.href}
                 onClick={onNavigate}
                 title={collapsed && !mobile ? item.label : undefined}
@@ -93,7 +93,7 @@ export function PremiumFeatureNavList({
                     style={{ boxShadow: "0 0 10px rgba(238, 179, 16, 0.7)" }}
                   />
                 )}
-              </Link>
+              </WarmNavLink>
             </motion.li>
           );
         })}

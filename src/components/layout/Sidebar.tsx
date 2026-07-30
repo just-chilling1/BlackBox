@@ -32,6 +32,7 @@ import { getExclusiveOffers } from "@/config/offers.config";
 import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
+import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import {
   sidebarNavIconClass,
   sidebarNavItemClass,
@@ -126,7 +127,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
     }
 
     return (
-      <Link
+      <WarmNavLink
         key={item.path}
         href={item.path}
         onClick={handleNavClick}
@@ -137,7 +138,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
-      </Link>
+      </WarmNavLink>
     );
   };
 
