@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Sparkles, CheckCircle2 } from "lucide-react";
 import { dashboardContent } from "@/config/dashboard.config";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
-import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSection";
+import { getDashboardSubtitle } from "@/lib/dashboard-content";
+import { DashboardVideoTrack } from "@/components/dashboard/DashboardVideoTrack";
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
@@ -77,26 +78,25 @@ export default function DashboardPage() {
   const welcomeTitle = firstName
     ? `${dashboardContent.title}, ${firstName}`
     : dashboardContent.title;
+  const welcomeSubtitle = getDashboardSubtitle();
 
   return (
     <div className="page-container">
       <header className="flex min-w-0 flex-col gap-2">
         {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
         <h1 className="ds-h1">{welcomeTitle}</h1>
-        {dashboardContent.subtitle ? (
-          <p className="ds-subtitle">{dashboardContent.subtitle}</p>
-        ) : null}
+        <p className="ds-subtitle">{welcomeSubtitle}</p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
         <div className="flex flex-col gap-6 xl:col-span-3">
-          <FeaturedVideoSection onPlayWithoutVideo={() => router.push("/training")} />
+          <DashboardVideoTrack />
         </div>
 
         <aside className="flex flex-col gap-6 xl:col-span-1">
-          <PremiumUpgradesWidget variant="sidebar" />
           <ContactSupportWidget />
           <DashboardTipsWidget />
+          <PremiumUpgradesWidget variant="sidebar" />
         </aside>
       </div>
 

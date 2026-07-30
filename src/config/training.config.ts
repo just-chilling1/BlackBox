@@ -19,5 +19,10 @@ export const trainingContent = {
       title: "Video 2 title",
       description: "Add Vimeo ID and copy in training.config.ts (optional)",
     },
+    {
+      id: "",
+      title: "Video 3 title",
+      description: "Add Vimeo ID and copy in training.config.ts (optional)",
+    },
   ],
 } as const;
