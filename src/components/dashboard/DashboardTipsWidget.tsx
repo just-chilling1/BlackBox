@@ -41,8 +41,8 @@ export function DashboardTipsWidget({ tips = DEFAULT_TIPS }: DashboardTipsWidget
   const tip = tips[tipIndex];
 
   return (
-    <DashboardSection>
-      <div className="dashboard-section-header mb-0 pb-0">
+    <DashboardSection className="min-w-0">
+      <div className="flex items-center gap-3 border-b border-border-dim/60 pb-4">
         <div className="dashboard-section-icon">
           <Lightbulb size={18} />
         </div>
@@ -51,7 +51,7 @@ export function DashboardTipsWidget({ tips = DEFAULT_TIPS }: DashboardTipsWidget
         </div>
       </div>
       <p className="mt-4 text-sm leading-relaxed text-text-muted">{tip.body}</p>
-      <p className="mt-3 text-xs text-text-muted italic">Individual results vary.</p>
+      <p className="mt-3 text-xs italic text-text-muted">Individual results vary.</p>
     </DashboardSection>
   );
 }

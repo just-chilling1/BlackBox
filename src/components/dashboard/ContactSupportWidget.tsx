@@ -396,11 +396,11 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
 
   return (
     <DashboardSection className="min-w-0">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b border-border-dim/60 pb-4">
         <div className="dashboard-section-icon">
           <Headphones size={20} />
         </div>
-        <h3 className="ds-h3">Contact Support</h3>
+        <h3 className="ds-h3 min-w-0">Contact Support</h3>
       </div>
 
       <div className="mt-4 flex flex-col gap-4">

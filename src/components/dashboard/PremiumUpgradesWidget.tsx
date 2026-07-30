@@ -25,7 +25,7 @@ export function PremiumUpgradesWidget({
 
   if (variant === "sidebar") {
     return (
-      <div className={clsx("premium-upgrades-panel premium-upgrades-panel--sidebar", className)}>
+      <div className={clsx("premium-upgrades-panel premium-upgrades-panel--sidebar min-w-0 w-full", className)}>
         <div className="premium-upgrades-sidebar-header">
           <p className="premium-upgrades-sidebar-label text-[10px]">
             <Sparkles className="h-3 w-3 shrink-0 animate-premium-pulse" fill="currentColor" />

@@ -22,8 +22,8 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
 
   return (
     <>
-      <DashboardSection>
-        <div className="mb-4 min-w-0">
+      <DashboardSection flush className="overflow-hidden">
+        <div className="border-b border-border-dim/60 px-5 py-4 sm:px-6">
           <h3 className="ds-h3">{video.title}</h3>
         </div>
 
@@ -31,24 +31,25 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
           <VideoThumbnail
             videoId={video.id}
             title={video.title}
-            caption={`▶ ${video.description}`}
+            caption="▶ Click to Play Video"
             onPlay={handlePlay}
             eager={priority}
+            className="rounded-none border-0 shadow-none hover:shadow-none"
           />
         ) : (
-          <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed border-border-dim bg-page/80 px-6 text-center">
-            <p className="text-sm text-text-muted">
+          <div className="flex aspect-video w-full items-center justify-center bg-page/80 px-6 text-center">
+            <p className="max-w-md text-sm text-text-muted">
               Add a Vimeo video ID in <code className="text-accent">dashboard.config.ts</code> or{" "}
               <code className="text-accent">training.config.ts</code>.
             </p>
           </div>
         )}
 
-        <div className="mt-4 space-y-3">
+        <div className="space-y-2 px-5 py-4 sm:px-6 sm:py-5">
           <p className="text-sm leading-relaxed text-text-secondary">{video.description}</p>
           {video.duration ? (
             <p className="flex items-center gap-1.5 text-xs text-text-muted">
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="h-3.5 w-3.5 shrink-0" />
               {video.duration}
             </p>
           ) : null}

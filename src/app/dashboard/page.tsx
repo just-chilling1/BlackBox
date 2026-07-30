@@ -81,19 +81,19 @@ export default function DashboardPage() {
   const welcomeSubtitle = getDashboardSubtitle();
 
   return (
-    <div className="page-container">
-      <header className="flex min-w-0 flex-col gap-2">
+    <div className="page-container mx-auto w-full max-w-7xl">
+      <header className="flex min-w-0 flex-col gap-2 pt-1">
         {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
         <h1 className="ds-h1">{welcomeTitle}</h1>
-        <p className="ds-subtitle">{welcomeSubtitle}</p>
+        <p className="ds-subtitle max-w-3xl">{welcomeSubtitle}</p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
-        <div className="flex flex-col gap-6 xl:col-span-3">
+      <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="min-w-0 flex flex-col gap-6 lg:gap-8">
           <DashboardVideoTrack />
         </div>
 
-        <aside className="flex flex-col gap-6 xl:col-span-1">
+        <aside className="flex min-w-0 flex-col gap-6 xl:sticky xl:top-8 xl:self-start">
           <ContactSupportWidget />
           <DashboardTipsWidget />
           <PremiumUpgradesWidget variant="sidebar" />
