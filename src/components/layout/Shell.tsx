@@ -6,11 +6,8 @@ import Link from "next/link";
 import { BrandLogo } from "./BrandLogo";
 import { PageMotion } from "@/components/motion/PageMotion";
 import { SupportCtaBanner } from "@/components/support/SupportCtaBanner";
-
-const ParticleBackground = dynamic(
-  () => import("@/components/ui/particle-background").then((m) => ({ default: m.ParticleBackground })),
-  { ssr: false }
-);
+import { hasEnabledPromoOrchestrator } from "@/config/promos.config";
+import { DeferredParticleBackground } from "@/components/ui/deferred-particle-background";
 
 const Sidebar = dynamic(() => import("./Sidebar").then((m) => ({ default: m.Sidebar })), {
   loading: () => <div className="hidden w-[var(--sidebar-w)] shrink-0 lg:block" aria-hidden />,
@@ -53,7 +50,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="app-bg flex min-h-dvh min-w-0 overflow-x-clip">
-      <ParticleBackground />
+      <DeferredParticleBackground />
       <Sidebar />
 
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
@@ -77,7 +74,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
 
       <BottomNav />
-      <PromoOrchestrator />
+      {hasEnabledPromoOrchestrator() ? <PromoOrchestrator /> : null}
     </div>
   );
 }

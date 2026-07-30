@@ -193,3 +193,10 @@ export function getPromoSlot(id: string): PromoSlot | undefined {
 export function getPromosByPlacement(placement: PromoPlacement): PromoSlot[] {
   return promoSlots.filter((s) => s.placement === placement && s.enabled);
 }
+
+/** True when modal or toast promos are enabled (skip PromoOrchestrator bundle otherwise). */
+export function hasEnabledPromoOrchestrator(): boolean {
+  return promoSlots.some(
+    (s) => s.enabled && (s.placement === "modal" || s.placement === "toast-bl")
+  );
+}

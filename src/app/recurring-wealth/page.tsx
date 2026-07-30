@@ -1,5 +1,10 @@
-import RecurringStreamPage from "@/features/premium-recurring/pages/RecurringStreamPage";
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
+import { loadFeaturePage } from "@/lib/load-feature-page";
+
+const RecurringStreamPage = loadFeaturePage(
+  () => import("@/features/premium-recurring/pages/RecurringStreamPage"),
+  "Loading Recurring Stream..."
+);
 
 export default function Page() {
   return (

@@ -1,14 +1,15 @@
-import { Suspense } from "react";
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import { PageLoading } from "@/components/ui/page-loading";
-import PromotePage from "@/features/publish-kit/pages/PromotePage";
+import { loadFeaturePage } from "@/lib/load-feature-page";
+
+const PromotePage = loadFeaturePage(
+  () => import("@/features/publish-kit/pages/PromotePage"),
+  "Loading X-Power Promotions..."
+);
 
 export default function Page() {
   return (
     <FeatureGuard feature="article-publish">
-      <Suspense fallback={<PageLoading message="Loading X-Power Promotions..." />}>
-        <PromotePage />
-      </Suspense>
+      <PromotePage />
     </FeatureGuard>
   );
 }

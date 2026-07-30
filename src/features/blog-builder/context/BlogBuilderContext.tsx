@@ -238,15 +238,11 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
   }, []);
 
   useEffect(() => {
-    warmBlogSession();
-    void loadSession();
-  }, [loadSession]);
-
-  useEffect(() => {
     if (!needsBlogSession(pathname)) {
       setSessionLoaded(true);
       return;
     }
+    warmBlogSession();
     if (sessionFetched.current) {
       setSessionLoaded(true);
       return;

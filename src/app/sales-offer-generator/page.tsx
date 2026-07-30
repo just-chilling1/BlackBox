@@ -1,14 +1,15 @@
-import { Suspense } from "react";
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import { PageLoading } from "@/components/ui/page-loading";
-import SalesOfferGeneratorPage from "@/features/blog-builder/pages/SalesOfferGeneratorPage";
+import { loadFeaturePage } from "@/lib/load-feature-page";
+
+const SalesOfferGeneratorPage = loadFeaturePage(
+  () => import("@/features/blog-builder/pages/SalesOfferGeneratorPage"),
+  "Loading Sales Offer Generator..."
+);
 
 export default function Page() {
   return (
     <FeatureGuard feature="blog-builder">
-      <Suspense fallback={<PageLoading message="Loading Sales Offer Generator..." />}>
-        <SalesOfferGeneratorPage />
-      </Suspense>
+      <SalesOfferGeneratorPage />
     </FeatureGuard>
   );
 }

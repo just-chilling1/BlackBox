@@ -1,5 +1,10 @@
-import AcceleratorPage from "@/features/premium-accelerator/pages/AcceleratorPage";
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
+import { loadFeaturePage } from "@/lib/load-feature-page";
+
+const AcceleratorPage = loadFeaturePage(
+  () => import("@/features/premium-accelerator/pages/AcceleratorPage"),
+  "Loading Accelerator..."
+);
 
 export default function Page() {
   return (

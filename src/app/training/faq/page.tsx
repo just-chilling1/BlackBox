@@ -1,5 +1,10 @@
 import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import TrainingFaqPage from "@/features/training/pages/TrainingFaqPage";
+import { loadFeaturePage } from "@/lib/load-feature-page";
+
+const TrainingFaqPage = loadFeaturePage(
+  () => import("@/features/training/pages/TrainingFaqPage"),
+  "Loading FAQ..."
+);
 
 export default function Page() {
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -7,11 +8,33 @@ import { Sparkles, CheckCircle2 } from "lucide-react";
 import { dashboardContent } from "@/config/dashboard.config";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { getDashboardSubtitle } from "@/lib/dashboard-content";
-import { DashboardVideoTrack } from "@/components/dashboard/DashboardVideoTrack";
-import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
-import { PremiumUpgradesWidget } from "@/components/dashboard/PremiumUpgradesWidget";
 import { DashboardSection } from "@/components/dashboard/DashboardSection";
+import { RouteLoading } from "@/components/ui/route-loading";
+
+const DashboardVideoTrack = dynamic(
+  () =>
+    import("@/components/dashboard/DashboardVideoTrack").then((m) => ({
+      default: m.DashboardVideoTrack,
+    })),
+  { loading: () => <RouteLoading /> }
+);
+
+const ContactSupportWidget = dynamic(
+  () =>
+    import("@/components/dashboard/ContactSupportWidget").then((m) => ({
+      default: m.ContactSupportWidget,
+    })),
+  { loading: () => <div className="dashboard-container min-h-[12rem] animate-pulse" aria-hidden /> }
+);
+
+const PremiumUpgradesWidget = dynamic(
+  () =>
+    import("@/components/dashboard/PremiumUpgradesWidget").then((m) => ({
+      default: m.PremiumUpgradesWidget,
+    })),
+  { loading: () => <div className="premium-upgrades-panel min-h-[10rem] animate-pulse" aria-hidden /> }
+);
 
 const SETUP_STEPS = [
   {
