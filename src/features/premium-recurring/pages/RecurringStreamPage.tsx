@@ -8,7 +8,7 @@ import {
   Copy,
   Check,
   Loader2,
-  FileText,
+  Eye,
   Filter,
   X,
   Sparkles,
@@ -19,8 +19,9 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
+import { cachedClientFetch } from "@/lib/client-fetch-cache";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageLoading } from "@/components/ui/page-loading";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
@@ -77,8 +78,11 @@ export default function RecurringStreamPage() {
   const [savedTemplateIds, setSavedTemplateIds] = useState<Set<number>>(new Set());
   const [previewId, setPreviewId] = useState<number | null>(null);
   const [articleHtml, setArticleHtml] = useState<Record<number, string>>({});
-  const [loadingArticle, setLoadingArticle] = useState<number | null>(null);
+  const [loadingAction, setLoadingAction] = useState<{ articleId: number; action: "view" | "copy" } | null>(
+    null
+  );
   const [copiedMode, setCopiedMode] = useState<"text" | "html" | null>(null);
+  const [copiedArticleId, setCopiedArticleId] = useState<number | null>(null);
   const [page, setPage] = useState(0);
   const [error, setError] = useState("");
 
@@ -89,9 +93,11 @@ export default function RecurringStreamPage() {
       setError("");
       try {
         const q = niche === "All" ? "" : `?niche=${encodeURIComponent(niche)}`;
-        const res = await fetch(`/api/premium/recurring-stream/articles${q}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to load");
+        const data = await cachedClientFetch<{
+          articles?: ArticleRow[];
+          seededCount?: number;
+          error?: string;
+        }>(`/api/premium/recurring-stream/articles${q}`);
         setArticles(data.articles ?? []);
         setSeededCount(data.seededCount ?? 0);
         setPage(0);
@@ -107,9 +113,9 @@ export default function RecurringStreamPage() {
   );
 
   const loadOffers = useCallback(async () => {
-    const res = await fetch("/api/blog/site?lite=1", { cache: "no-store" });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to load offers");
+    const data = await cachedClientFetch<{ summaries?: SiteVaultSummary[]; error?: string }>(
+      "/api/blog/site?lite=1"
+    );
     const list = Array.isArray(data.summaries) ? (data.summaries as SiteVaultSummary[]) : [];
     setOffers(list);
 
@@ -188,21 +194,19 @@ export default function RecurringStreamPage() {
 
   const previewArticle = previewId != null ? articles.find((a) => a.id === previewId) : null;
 
-  const openPreview = async (articleId: number) => {
-    if (previewId === articleId && articleHtml[articleId]) {
-      setPreviewId(null);
-      return;
-    }
+  const ensureArticleHtml = async (
+    articleId: number,
+    action: "view" | "copy"
+  ): Promise<string | null> => {
     if (!selectedSiteId) {
-      setError("Select an offer before previewing.");
-      return;
+      setError("Select an offer before continuing.");
+      return null;
     }
     if (articleHtml[articleId]) {
-      setPreviewId(articleId);
       setError("");
-      return;
+      return articleHtml[articleId];
     }
-    setLoadingArticle(articleId);
+    setLoadingAction({ articleId, action });
     setError("");
     try {
       const res = await fetch("/api/premium/recurring-stream/articles", {
@@ -221,12 +225,34 @@ export default function RecurringStreamPage() {
             : o
         )
       );
-      setPreviewId(articleId);
+      return data.html as string;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load article");
+      return null;
     } finally {
-      setLoadingArticle(null);
+      setLoadingAction(null);
     }
+  };
+
+  const openPreview = async (articleId: number) => {
+    if (previewId === articleId) {
+      setPreviewId(null);
+      return;
+    }
+    const html = await ensureArticleHtml(articleId, "view");
+    if (html) setPreviewId(articleId);
+  };
+
+  const copyArticleFromCard = async (articleId: number) => {
+    const html = await ensureArticleHtml(articleId, "copy");
+    const article = articles.find((a) => a.id === articleId);
+    if (!html || !article) return;
+
+    const exportHtml = wrapArticleWithTitle(article.title, html);
+    const payload = `${article.title}\n\n${htmlToPlainText(exportHtml)}`;
+    await navigator.clipboard.writeText(payload);
+    setCopiedArticleId(articleId);
+    setTimeout(() => setCopiedArticleId(null), 2000);
   };
 
   const copyArticle = async (mode: "text" | "html") => {
@@ -247,7 +273,16 @@ export default function RecurringStreamPage() {
   };
 
   if (initialLoading && articles.length === 0) {
-    return <PageLoading message="Loading Recurring Stream articles..." />;
+    return (
+      <div className="page-container">
+        <PageHeader
+          eyebrow="Premium"
+          title="Recurring Stream"
+          subtitle={`${seededCount || 100} long-form authority articles — pick an offer, preview with your link, and publish across platforms.`}
+        />
+        <PageSkeleton cards={2} />
+      </div>
+    );
   }
 
   return (
@@ -362,7 +397,7 @@ export default function RecurringStreamPage() {
       <CrossPlatformGuide />
 
       <GenerationProgress
-        active={loadingArticle !== null}
+        active={loadingAction !== null}
         label="Personalizing article with your offer link..."
       />
 
@@ -473,19 +508,36 @@ export default function RecurringStreamPage() {
                   </p>
                 )}
               </div>
-              <button
-                type="button"
-                disabled={loadingArticle === article.id || !selectedSiteId}
-                onClick={() => void openPreview(article.id)}
-                className="btn-primary mt-auto inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
-              >
-                {loadingArticle === article.id ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <FileText size={14} />
-                )}
-                {previewId === article.id ? "Close preview" : "Preview & copy"}
-              </button>
+              <div className="mt-auto flex gap-2">
+                <button
+                  type="button"
+                  disabled={loadingAction?.articleId === article.id || !selectedSiteId}
+                  onClick={() => void openPreview(article.id)}
+                  className="btn-primary inline-flex flex-1 items-center justify-center gap-2 text-sm disabled:opacity-40"
+                >
+                  {loadingAction?.articleId === article.id && loadingAction.action === "view" ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Eye size={14} />
+                  )}
+                  {previewId === article.id ? "Close" : "View"}
+                </button>
+                <button
+                  type="button"
+                  disabled={loadingAction?.articleId === article.id || !selectedSiteId}
+                  onClick={() => void copyArticleFromCard(article.id)}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70 disabled:opacity-40"
+                >
+                  {loadingAction?.articleId === article.id && loadingAction.action === "copy" ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : copiedArticleId === article.id ? (
+                    <Check size={14} />
+                  ) : (
+                    <Copy size={14} />
+                  )}
+                  {copiedArticleId === article.id ? "Copied!" : "Copy"}
+                </button>
+              </div>
             </article>
           ))}
         </div>
