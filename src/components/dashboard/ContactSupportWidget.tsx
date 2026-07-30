@@ -259,14 +259,14 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   }
 
   const formFields = (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="min-w-0">
         <label
           htmlFor={embedded ? "support-email" : "dashboard-support-email"}
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-2 block text-xs font-bold uppercase tracking-wide text-text-muted"
+              : "mb-1.5 block text-xs font-bold uppercase tracking-wide text-text-muted"
           }
         >
           Your email
@@ -290,7 +290,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-2 block text-xs font-bold uppercase tracking-wide text-text-muted"
+              : "mb-1.5 block text-xs font-bold uppercase tracking-wide text-text-muted"
           }
         >
           Your message
@@ -303,8 +303,8 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
           placeholder="Tell us what you need help with..."
           required
           disabled={formState === "submitting"}
-          rows={4}
-          className={`${embedded ? embeddedFieldClass : fieldClass} min-h-[112px] resize-y`}
+          rows={3}
+          className={`${embedded ? embeddedFieldClass : fieldClass} min-h-[96px] resize-y`}
         />
       </div>
 
@@ -314,32 +314,33 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         </p>
       ) : null}
 
-      <p
-        className={
-          embedded
-            ? "rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3 text-xs leading-relaxed text-text-secondary"
-            : "rounded-lg border border-border-dim/70 bg-page/60 px-3.5 py-3 text-xs leading-relaxed text-text-muted"
-        }
-      >
-        <span className="font-semibold text-text-secondary">Please note:</span> We will reply to the
-        email address you enter above. If you don&apos;t see our reply within 48 hours, check your spam
-        or junk folder before reaching out again.
-      </p>
+      <div className="flex flex-col gap-3 pt-1">
+        <p
+          className={
+            embedded
+              ? "rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-relaxed text-text-secondary"
+              : "rounded-lg border border-border-dim/70 bg-page/60 px-3 py-2.5 text-xs leading-relaxed text-text-muted"
+          }
+        >
+          <span className="font-semibold text-text-secondary">Please note:</span> We reply to the email
+          above. Check spam or junk if you don&apos;t hear back within 48 hours.
+        </p>
 
-      <button
-        type="submit"
-        disabled={formState === "submitting"}
-        className={`btn-primary w-full ${embedded ? "py-2.5" : "min-h-[48px]"}`}
-      >
-        {formState === "submitting" ? (
-          <span className="inline-flex items-center justify-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Sending...
-          </span>
-        ) : (
-          "Send message"
-        )}
-      </button>
+        <button
+          type="submit"
+          disabled={formState === "submitting"}
+          className={`btn-primary w-full ${embedded ? "py-2.5" : "min-h-[44px]"}`}
+        >
+          {formState === "submitting" ? (
+            <span className="inline-flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Sending...
+            </span>
+          ) : (
+            "Send message"
+          )}
+        </button>
+      </div>
     </form>
   );
 
@@ -347,19 +348,19 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     <div
       className={
         embedded
-          ? "rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5"
-          : "dashboard-nested-card flex gap-3 px-4 py-3.5"
+          ? "flex gap-2.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5"
+          : "dashboard-nested-card flex gap-2.5 px-3 py-2.5"
       }
     >
       <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
       <div className="min-w-0">
-        <p className="text-xs text-text-secondary">
-          {embedded ? "If the form doesn't work, copy our support email:" : "If the form doesn't work, copy our support email:"}
+        <p className="text-xs leading-snug text-text-secondary">
+          Form not working? Copy our support email:
         </p>
         <button
           type="button"
           onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-          className="block break-all text-left text-sm font-semibold text-accent-readable hover:underline"
+          className="mt-1 block break-all text-left text-sm font-semibold text-accent-readable hover:underline"
         >
           {SUPPORT_EMAIL}
         </button>
@@ -367,22 +368,25 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     </div>
   );
 
+  const introCopy = (
+    <p className="text-sm leading-relaxed text-text-secondary">
+      We usually reply within about 2 hours — allow{" "}
+      <span className="font-medium text-text-primary">24–48 hours</span> during busy periods.
+    </p>
+  );
+
   if (embedded) {
     return (
       <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
-        <div className="mb-4 flex min-w-0 items-center gap-3">
+        <div className="mb-3 flex min-w-0 items-center gap-3">
           <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 p-2.5">
             <Headphones className="h-5 w-5 text-amber-700" />
           </div>
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-heading">Contact Support</h3>
         </div>
 
-        <div className="space-y-5">
-          <p className="text-sm leading-relaxed text-text-secondary">
-            We usually reply within about 2 hours. Because of high email volume, please allow{" "}
-            <span className="font-medium text-text-primary">24–48 hours</span> during busy periods. Your
-            answer will go to the email you enter below.
-          </p>
+        <div className="flex flex-col gap-4">
+          {introCopy}
           {formFields}
           {mailtoFallback}
         </div>
@@ -391,24 +395,19 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   }
 
   return (
-    <DashboardSection className="min-w-0 space-y-5">
-      <div className="dashboard-section-header mb-0 pb-0">
+    <DashboardSection className="min-w-0">
+      <div className="flex items-center gap-3">
         <div className="dashboard-section-icon">
-          <Headphones size={22} />
+          <Headphones size={20} />
         </div>
-        <div className="min-w-0">
-          <h3 className="ds-h3">Contact Support</h3>
-        </div>
+        <h3 className="ds-h3">Contact Support</h3>
       </div>
 
-      <p className="text-sm leading-relaxed text-text-secondary">
-        We usually reply within about 2 hours. Because of high email volume, please allow{" "}
-        <span className="font-medium text-text-primary">24–48 hours</span> during busy periods. Your
-        answer will go to the email you enter below.
-      </p>
-
-      {formFields}
-      {mailtoFallback}
+      <div className="mt-4 flex flex-col gap-4">
+        {introCopy}
+        {formFields}
+        <div className="border-t border-border-dim/50 pt-4">{mailtoFallback}</div>
+      </div>
     </DashboardSection>
   );
 }

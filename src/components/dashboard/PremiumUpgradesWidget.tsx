@@ -11,12 +11,92 @@ import { isNavPathActive } from "@/lib/nav-active";
 type PremiumUpgradesWidgetProps = {
   onNavigate?: () => void;
   className?: string;
+  variant?: "featured" | "sidebar";
 };
 
-export function PremiumUpgradesWidget({ onNavigate, className }: PremiumUpgradesWidgetProps) {
+export function PremiumUpgradesWidget({
+  onNavigate,
+  className,
+  variant = "featured",
+}: PremiumUpgradesWidgetProps) {
   const pathname = usePathname();
 
   if (PREMIUM_FEATURES.length === 0) return null;
+
+  if (variant === "sidebar") {
+    return (
+      <div className={clsx("premium-upgrades-panel premium-upgrades-panel--sidebar", className)}>
+        <div className="premium-upgrades-sidebar-header">
+          <p className="premium-upgrades-sidebar-label text-[10px]">
+            <Sparkles className="h-3 w-3 shrink-0 animate-premium-pulse" fill="currentColor" />
+            Premium Features
+          </p>
+          <p className="text-xs leading-relaxed text-text-secondary">
+            Unlock the tools that drive the biggest results.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          {PREMIUM_FEATURES.map((feature, index) => {
+            const isActive = isNavPathActive(pathname, feature.href);
+            const Icon = feature.icon;
+
+            return (
+              <motion.div
+                key={feature.href}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + index * 0.05, duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+              >
+                <Link
+                  href={feature.href}
+                  onClick={onNavigate}
+                  className={clsx(
+                    "premium-upgrade-card premium-upgrade-card--sidebar group !min-h-0 flex-row items-center gap-2.5 !p-2.5",
+                    isActive && "is-active"
+                  )}
+                >
+                  <div
+                    className={clsx(
+                      "premium-upgrade-icon premium-upgrade-icon--sidebar flex shrink-0 items-center justify-center",
+                      isActive && "bg-amber-100 text-amber-700"
+                    )}
+                  >
+                    <Icon size={14} strokeWidth={1.5} />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <span
+                      className={clsx(
+                        "block text-xs tracking-wide text-text-heading",
+                        isActive ? "font-bold" : "font-semibold"
+                      )}
+                    >
+                      {feature.label}
+                    </span>
+                    <p className="mt-0.5 line-clamp-1 text-[10px] leading-snug text-text-secondary">
+                      {feature.description}
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 text-accent-readable">
+                    {isActive ? (
+                      <span className="text-[10px] font-semibold">Active</span>
+                    ) : (
+                      <ArrowRight
+                        size={12}
+                        className="transition-transform group-hover:translate-x-0.5"
+                      />
+                    )}
+                  </span>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={clsx("premium-upgrades-panel premium-upgrades-panel--featured", className)}>

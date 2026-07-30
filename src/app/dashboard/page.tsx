@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, CheckCircle2 } from "lucide-react";
-import { brand } from "@/config/brand.config";
 import { dashboardContent } from "@/config/dashboard.config";
-import { isFeatureEnabled } from "@/config/features.config";
-import { getDashboardHowItWorksSteps, getDashboardQuickActions } from "@/lib/dashboard-steps";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
-import { HowItWorks } from "@/components/ui/how-it-works";
-import { QuickActionCard } from "@/components/ui/quick-action-card";
 import { FeaturedVideoSection } from "@/components/dashboard/FeaturedVideoSection";
 import { ContactSupportWidget } from "@/components/dashboard/ContactSupportWidget";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
@@ -49,17 +44,6 @@ const SETUP_STEPS = [
 export default function DashboardPage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
-  const howItWorksSteps = useMemo(() => getDashboardHowItWorksSteps(), []);
-  const quickActions = useMemo(() => getDashboardQuickActions(), []);
-
-  const hasPremium =
-    isFeatureEnabled("premium-dfy") ||
-    isFeatureEnabled("premium-instant") ||
-    isFeatureEnabled("premium-autopilot") ||
-    isFeatureEnabled("premium-accelerator") ||
-    isFeatureEnabled("premium-recurring") ||
-    isFeatureEnabled("premium-social") ||
-    isFeatureEnabled("protector");
 
   const showDevChecklist = process.env.NODE_ENV === "development";
 
@@ -96,50 +80,21 @@ export default function DashboardPage() {
 
   return (
     <div className="page-container">
-      <DashboardSection as="header">
-        <div className="flex flex-col gap-2 min-w-0">
-          {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
-          <h1 className="ds-h1">{welcomeTitle}</h1>
-          {dashboardContent.subtitle ? (
-            <p className="ds-subtitle">{dashboardContent.subtitle}</p>
-          ) : null}
-        </div>
-      </DashboardSection>
+      <header className="flex min-w-0 flex-col gap-2">
+        {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
+        <h1 className="ds-h1">{welcomeTitle}</h1>
+        {dashboardContent.subtitle ? (
+          <p className="ds-subtitle">{dashboardContent.subtitle}</p>
+        ) : null}
+      </header>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
         <div className="flex flex-col gap-6 xl:col-span-3">
           <FeaturedVideoSection onPlayWithoutVideo={() => router.push("/training")} />
-
-          <HowItWorks steps={howItWorksSteps} />
-
-          <DashboardSection>
-            <div className="dashboard-section-header mb-0 border-b-0 pb-0">
-              <div className="min-w-0">
-                <h2 className="ds-h2">Quick Actions</h2>
-                <p className="mt-2 text-sm text-text-secondary">
-                  Jump straight into the tools you use most.
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-              {quickActions.map((action) => (
-                <QuickActionCard
-                  key={action.href}
-                  title={action.title}
-                  description={action.description}
-                  icon={action.icon}
-                  href={action.href}
-                  buttonText={action.buttonText}
-                  accent={action.accent}
-                />
-              ))}
-            </div>
-          </DashboardSection>
-
-          {hasPremium ? <PremiumUpgradesWidget /> : null}
         </div>
 
         <aside className="flex flex-col gap-6 xl:col-span-1">
+          <PremiumUpgradesWidget variant="sidebar" />
           <ContactSupportWidget />
           <DashboardTipsWidget />
         </aside>
