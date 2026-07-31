@@ -14,28 +14,41 @@ import {
   getAcademyPremiumThumbnail,
 } from "@/lib/video-thumbnails";
 import { vimeoPlayerUrl } from "@/lib/dashboard-content";
+import { getTrainingVideoMeta, type TrainingVideoSlug } from "@/config/training-videos.config";
 
 export type AcademyVideo = {
+  slug: TrainingVideoSlug;
   id: string;
   title: string;
   description: string;
   duration?: string;
   badge?: string;
   thumbnailSrc: string | null;
+  transcript: string;
 };
 
 export function getPlatformTutorialVideos(): AcademyVideo[] {
-  return trainingContent.videos.map((video, index) => ({
-    ...video,
-    thumbnailSrc: getAcademyPlatformThumbnail(index),
-  }));
+  return trainingContent.videos.map((video, index) => {
+    const meta = getTrainingVideoMeta(video.slug);
+    return {
+      ...video,
+      title: meta.title,
+      transcript: meta.transcript,
+      thumbnailSrc: getAcademyPlatformThumbnail(index),
+    };
+  });
 }
 
 export function getPremiumTutorialVideos(): AcademyVideo[] {
-  return trainingPremiumVideos.map((video, index) => ({
-    ...video,
-    thumbnailSrc: getAcademyPremiumThumbnail(index),
-  }));
+  return trainingPremiumVideos.map((video, index) => {
+    const meta = getTrainingVideoMeta(video.slug);
+    return {
+      ...video,
+      title: meta.title,
+      transcript: meta.transcript,
+      thumbnailSrc: getAcademyPremiumThumbnail(index),
+    };
+  });
 }
 
 export function getTrainingStartCta(): {

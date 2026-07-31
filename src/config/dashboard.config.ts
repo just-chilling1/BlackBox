@@ -16,6 +16,7 @@ export const dashboardContent = {
   /** Dashboard video track — set Vimeo ids here or in training.config.ts videos[] */
   videos: [
     {
+      slug: "watch-this-first",
       id: "",
       title: "Watch This First",
       description:
@@ -23,6 +24,7 @@ export const dashboardContent = {
       duration: "",
     },
     {
+      slug: "how-the-money-flows",
       id: "",
       title: "How The Money Flows",
       description:
@@ -30,6 +32,7 @@ export const dashboardContent = {
       duration: "",
     },
     {
+      slug: "five-minute-tour",
       id: "",
       title: "Your 5-Minute Tour",
       description:
