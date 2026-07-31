@@ -47,3 +47,13 @@ next-env.d.ts
 
 # accelerator seed temp artifacts
 scripts/.accelerator-*
+
+# training video pipeline temp artifacts
+scripts/.recurring-*
+
+# training video system — skip deps and rendered media
+training-video-system/**/node_modules
+training-video-system/**/videos
+training-video-system/**/voiceovers
+training-video-system/**/screenshots
+training-video-system/blackbox-cash-videos/remotion/out
