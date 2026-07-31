@@ -15,7 +15,8 @@ export function TrainingTabNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mb-6 flex flex-wrap gap-2" aria-label="Training sections">
+    <nav className="mb-6 -mx-1 overflow-x-auto px-1 pb-1" aria-label="Training sections">
+      <div className="flex min-w-max flex-wrap gap-2 sm:min-w-0 sm:flex-wrap">
       {tabs.map(({ href, label, icon: Icon }) => {
         const isActive = pathname === href;
         return (
@@ -34,6 +35,7 @@ export function TrainingTabNav() {
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }
