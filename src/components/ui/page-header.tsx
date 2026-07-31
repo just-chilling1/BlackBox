@@ -18,7 +18,11 @@ export function PageHeader({ eyebrow, title, subtitle, actions, className }: Pag
           <h1 className="ds-h1">{title}</h1>
           {subtitle ? <p className="ds-subtitle">{subtitle}</p> : null}
         </div>
-        {actions ? <div className="flex items-center gap-3 shrink-0">{actions}</div> : null}
+        {actions ? (
+          <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 md:w-auto md:shrink-0">
+            {actions}
+          </div>
+        ) : null}
       </div>
     </header>
   );

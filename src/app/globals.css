@@ -132,9 +132,34 @@ html[data-sidebar="collapsed"] {
 
 @layer components {
 
+  /*
+   * Responsive contract (mobile-first):
+   * default — stack / full width
+   * sm (640px) — padding, 2-col grids, inline actions
+   * md (768px) — wider grids, side-by-side headers
+   * lg (1024px) — desktop shell (sidebar vs bottom nav)
+   */
+
+  .stat-grid {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4;
+  }
+
+  .table-scroll {
+    @apply -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-scroll-inner {
+    @apply w-full md:min-w-[640px];
+  }
+
+  .action-row {
+    @apply flex flex-col gap-2 sm:flex-row sm:flex-wrap;
+  }
+
   /* Professional Cards */
   .card-base {
-    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200;
+    @apply bg-surface border border-border-dim rounded-xl p-4 transition-all duration-200 sm:p-6;
   }
 
   .glass-card {
@@ -156,7 +181,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .card-interactive {
-    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200 hover:border-accent/40 hover:shadow-gold cursor-pointer;
+    @apply bg-surface border border-border-dim rounded-xl p-4 transition-all duration-200 hover:border-accent/40 hover:shadow-gold cursor-pointer sm:p-6;
   }
 
   /* Refined Buttons */
@@ -165,7 +190,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .btn-primary-prominent {
-    @apply inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl font-bold uppercase tracking-widest text-sm bg-accent text-text-on-accent shadow-gold cursor-pointer transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_24px_rgba(238,179,16,0.28)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:shadow-gold;
+    @apply inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-xs font-bold uppercase tracking-wide text-text-on-accent shadow-gold cursor-pointer transition-all duration-300 hover:brightness-110 hover:shadow-[0_0_24px_rgba(238,179,16,0.28)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:shadow-gold sm:min-h-[3rem] sm:px-8 sm:text-sm sm:tracking-widest;
   }
 
   .btn-secondary {
@@ -694,7 +719,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .page-section-card {
-    @apply bg-surface border border-border-dim rounded-xl p-6 transition-all duration-200 space-y-5;
+    @apply bg-surface border border-border-dim rounded-xl p-4 transition-all duration-200 space-y-5 sm:p-6;
   }
 
   .dashboard-container {
@@ -1100,8 +1125,14 @@ html[data-sidebar="collapsed"] {
   }
 
   .theme-preview-compact-wrap {
-    max-height: min(42vh, 360px);
+    max-height: min(36vh, 280px);
     overflow-y: auto;
+  }
+
+  @media (min-width: 640px) {
+    .theme-preview-compact-wrap {
+      max-height: min(42vh, 360px);
+    }
   }
 
   .theme-editor-split .theme-preview-compact-wrap {
@@ -1306,7 +1337,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .wizard-step-badge {
-    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all duration-200;
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-200 sm:h-10 sm:w-10 sm:text-sm;
   }
 
   .wizard-step-badge.is-active {
@@ -1323,7 +1354,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .wizard-step-connector {
-    @apply mt-5 h-0.5 w-3 shrink-0 rounded-full sm:w-6 md:w-10;
+    @apply mt-4 h-0.5 w-2 shrink-0 rounded-full sm:mt-5 sm:w-6 md:w-10;
   }
 
   .wizard-step-connector.is-complete {
@@ -1336,7 +1367,7 @@ html[data-sidebar="collapsed"] {
 
   /* Recurring Stream — long-form article preview & export */
   .recurring-article-body {
-    @apply text-[15px] leading-[1.75] text-text-primary;
+    @apply overflow-x-auto text-[15px] leading-[1.75] text-text-primary;
     font-family: var(--font-ui);
   }
 
@@ -1410,7 +1441,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .recurring-article-body table {
-    @apply my-6 w-full border-collapse overflow-hidden rounded-xl border border-border-dim text-sm;
+    @apply my-6 w-full min-w-[480px] border-collapse overflow-hidden rounded-xl border border-border-dim text-sm;
   }
 
   .recurring-article-body thead {
