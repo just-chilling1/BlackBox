@@ -61,7 +61,7 @@ export function VideoThumbnail({
             src={brand.logo.iconSrc}
             alt=""
             aria-hidden
-            className="absolute left-3 top-3 z-10 h-8 w-8 rounded-lg object-contain shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:h-9 sm:w-9"
+            className="absolute right-3 top-3 z-10 h-8 w-8 rounded-lg object-contain shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:h-9 sm:w-9"
           />
         ) : null}
 
