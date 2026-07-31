@@ -5,17 +5,15 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { brand } from "@/config/brand.config";
 import { toEmbedUrl } from "@/lib/video-thumbnails";
-import { VideoTranscript } from "@/components/ui/video-transcript";
 
 interface VideoOverlayProps {
   open: boolean;
   onClose: () => void;
   videoUrl: string;
   title: string;
-  transcript?: string;
 }
 
-export function VideoOverlay({ open, onClose, videoUrl, title, transcript }: VideoOverlayProps) {
+export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -86,8 +84,6 @@ export function VideoOverlay({ open, onClose, videoUrl, title, transcript }: Vid
             title={title}
           />
         </div>
-
-        {transcript?.trim() ? <VideoTranscript title={title} transcript={transcript} /> : null}
       </div>
     </div>,
     document.body

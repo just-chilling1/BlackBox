@@ -12,7 +12,6 @@ export const trainingContent = {
   /** Academy platform tutorials — videos 4–6 in the product roster */
   videos: [
     {
-      slug: "sales-offer-generator",
       id: "",
       title: "Sales Offer Generator",
       description:
@@ -20,7 +19,6 @@ export const trainingContent = {
       duration: "5+ min",
     },
     {
-      slug: "x-power-promotions",
       id: "",
       title: "X-Power Promotions",
       description:
@@ -28,7 +26,6 @@ export const trainingContent = {
       duration: "5+ min",
     },
     {
-      slug: "links-offers-library",
       id: "",
       title: "Links & Offers Library",
       description:

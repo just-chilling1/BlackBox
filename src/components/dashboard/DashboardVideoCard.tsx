@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Clock } from "lucide-react";
 import { VideoThumbnail } from "@/components/ui/video-thumbnail";
 import { VideoOverlay } from "@/components/ui/video-overlay";
-import { VideoTranscript } from "@/components/ui/video-transcript";
 import { DashboardSection } from "./DashboardSection";
 import { vimeoPlayerUrl, type DashboardVideo } from "@/lib/dashboard-content";
 
@@ -48,8 +47,6 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
             </p>
           ) : null}
         </div>
-
-        <VideoTranscript title={video.title} transcript={video.transcript} />
       </DashboardSection>
 
       {hasVideo && open ? (
@@ -58,7 +55,6 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
           onClose={() => setOpen(false)}
           videoUrl={vimeoPlayerUrl(video.id)}
           title={video.title}
-          transcript={video.transcript}
         />
       ) : null}
     </>

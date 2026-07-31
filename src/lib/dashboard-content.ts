@@ -5,29 +5,21 @@ import { trainingContent } from "@/config/training.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps } from "@/lib/dashboard-steps";
 import { getDashboardVideoThumbnail } from "@/lib/video-thumbnails";
-import { getTrainingVideoMeta, type TrainingVideoSlug } from "@/config/training-videos.config";
 
 export type DashboardVideo = {
-  slug: TrainingVideoSlug;
   id: string;
   title: string;
   description: string;
   duration?: string;
   thumbnailSrc: string | null;
-  transcript: string;
 };
 
 export function getDashboardVideos(): DashboardVideo[] {
-  return dashboardContent.videos.map((video, index) => {
-    const meta = getTrainingVideoMeta(video.slug);
-    return {
-      ...video,
-      title: meta.title,
-      transcript: meta.transcript,
-      id: video.id || trainingContent.videos[index]?.id || "",
-      thumbnailSrc: getDashboardVideoThumbnail(index),
-    };
-  });
+  return dashboardContent.videos.map((video, index) => ({
+    ...video,
+    id: video.id || trainingContent.videos[index]?.id || "",
+    thumbnailSrc: getDashboardVideoThumbnail(index),
+  }));
 }
 
 export function getDashboardSubtitle(): string {
