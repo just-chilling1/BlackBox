@@ -1,0 +1,5 @@
+training-video-system/
+scripts/.recurring-sql-batches/
+scripts/.recurring-all-sql.txt
+scripts/.recurring-catalog.json
+scripts/.accelerator-*
