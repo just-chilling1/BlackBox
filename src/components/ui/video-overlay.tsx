@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { brand } from "@/config/brand.config";
 import { toEmbedUrl } from "@/lib/video-thumbnails";
 
 interface VideoOverlayProps {
@@ -52,7 +53,18 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border-dim bg-surface px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5">
-          <h2 className="truncate pr-2 text-sm font-bold text-text-heading sm:text-base">{title}</h2>
+          <div className="flex min-w-0 flex-1 items-center gap-2.5 pr-2">
+            {brand.logo.type === "image" && brand.logo.iconSrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={brand.logo.iconSrc}
+                alt=""
+                aria-hidden
+                className="h-8 w-8 shrink-0 rounded-lg object-contain sm:h-9 sm:w-9"
+              />
+            ) : null}
+            <h2 className="truncate text-sm font-bold text-text-heading sm:text-base">{title}</h2>
+          </div>
           <button
             type="button"
             onClick={onClose}

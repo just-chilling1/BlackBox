@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
 import { clsx } from "clsx";
+import { brand } from "@/config/brand.config";
 import { resolveVideoThumbnail } from "@/lib/video-thumbnails";
 
 interface VideoThumbnailProps {
@@ -53,6 +54,16 @@ export function VideoThumbnail({
         )}
 
         <div className="video-thumb-scrim absolute inset-0" />
+
+        {brand.logo.type === "image" && brand.logo.iconSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={brand.logo.iconSrc}
+            alt=""
+            aria-hidden
+            className="absolute left-3 top-3 z-10 h-8 w-8 rounded-lg object-contain shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:h-9 sm:w-9"
+          />
+        ) : null}
 
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#F5C518] to-[#C9970D] text-white shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
