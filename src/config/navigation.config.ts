@@ -127,15 +127,8 @@ export const premiumSectionLabel = "Premium Features";
 /** Primary mobile bottom tabs — first 4 visible tabs + "More" */
 export const bottomNavTabs: NavItem[] = [
   homeNav,
-  { path: "/search", label: "Search", icon: "Search", feature: "core-workflow" },
-  { path: "/radar", label: "Find Ads", icon: "Radar", feature: "core-workflow" },
-  { path: "/replies", label: "Replies", icon: "MessageSquare", feature: "core-workflow" },
+  { path: "/sales-offer-generator", label: "Offer Generator", icon: "Rocket", feature: "blog-builder" },
 ];
 
-/** Links shown in mobile "More" sheet (non-tab navigation) */
-export const bottomNavMoreLinks: NavItem[] = [
-  { path: "/analysis", label: "Step 2: Check Demand", icon: "Brain", feature: "core-workflow" },
-  { path: "/training", label: "Academy", icon: "GraduationCap", feature: "training" },
-  { path: "/scale-training", label: "Scale Training", icon: "TrendingUp", feature: "scale-upsell" },
-  { path: "/support", label: "Support", icon: "Headphones" },
-];
+/** Extra links for mobile "More" sheet — workflow, generate, libraries, and resources are merged in getBottomNavMoreLinks() */
+export const bottomNavMoreLinks: NavItem[] = [];

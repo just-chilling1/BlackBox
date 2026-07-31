@@ -74,7 +74,25 @@ export function getBottomNavTabs(): NavItem[] {
 }
 
 export function getBottomNavMoreLinks(): NavItem[] {
-  return filterNav(bottomNavMoreLinks);
+  const tabPaths = new Set(getBottomNavTabs().map((t) => t.path));
+  const premiumPaths = new Set(getVisiblePremiumNav().map((t) => t.path));
+
+  const candidates: NavItem[] = [
+    ...workflowSteps,
+    ...blogBuilderGenerateNav,
+    ...blogBuilderLibrariesNav,
+    ...coreResourceNav,
+    ...resourceNav,
+    ...bottomNavMoreLinks,
+  ];
+
+  const seen = new Set<string>();
+  return filterNav(candidates).filter((item) => {
+    if (tabPaths.has(item.path) || premiumPaths.has(item.path)) return false;
+    if (seen.has(item.path)) return false;
+    seen.add(item.path);
+    return true;
+  });
 }
 
 export function isNavItemLocked(
