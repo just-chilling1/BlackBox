@@ -55,7 +55,8 @@ export function VideoOverlay({ open, onClose, videoUrl, title, transcript }: Vid
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border-dim bg-surface px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5">
-          <div className="flex min-w-0 flex-1 items-center gap-2.5 pr-2">
+          <h2 className="min-w-0 flex-1 truncate pr-2 text-sm font-bold text-text-heading sm:text-base">{title}</h2>
+          <div className="flex shrink-0 items-center gap-2">
             {brand.logo.type === "image" && brand.logo.iconSrc ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -65,16 +66,15 @@ export function VideoOverlay({ open, onClose, videoUrl, title, transcript }: Vid
                 className="h-8 w-8 shrink-0 rounded-lg object-contain sm:h-9 sm:w-9"
               />
             ) : null}
-            <h2 className="truncate text-sm font-bold text-text-heading sm:text-base">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading active:scale-95"
+            >
+              <X size={20} />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading active:scale-95"
-          >
-            <X size={20} />
-          </button>
         </div>
 
         <div className="min-h-0 flex-1 bg-black">
