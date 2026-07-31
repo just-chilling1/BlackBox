@@ -35,7 +35,7 @@ export default function TrainingVideosPage() {
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {platformVideos.map((video, index) => (
-              <TrainingVideoCard key={video.title} video={video} index={index} priority={index === 0} />
+              <TrainingVideoCard key={video.slug} video={video} index={index} priority={index === 0} />
             ))}
           </div>
         </section>
@@ -74,7 +74,7 @@ export default function TrainingVideosPage() {
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-2">
             {premiumVideos.map((video) => (
-              <TrainingVideoCard key={video.badge} video={video} />
+              <TrainingVideoCard key={video.slug} video={video} />
             ))}
           </div>
         </section>

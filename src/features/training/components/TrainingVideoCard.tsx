@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Clock } from "lucide-react";
 import { VideoThumbnail } from "@/components/ui/video-thumbnail";
 import { VideoOverlay } from "@/components/ui/video-overlay";
+import { VideoTranscript } from "@/components/ui/video-transcript";
 import { vimeoPlayerUrl, type AcademyVideo } from "@/lib/training-content";
 
 interface TrainingVideoCardProps {
@@ -61,6 +62,8 @@ export function TrainingVideoCard({ video, index, priority = false }: TrainingVi
             </p>
           ) : null}
         </div>
+
+        <VideoTranscript title={video.title} transcript={video.transcript} />
       </article>
 
       {hasVideo && open ? (
@@ -69,6 +72,7 @@ export function TrainingVideoCard({ video, index, priority = false }: TrainingVi
           onClose={() => setOpen(false)}
           videoUrl={vimeoPlayerUrl(video.id)}
           title={video.title}
+          transcript={video.transcript}
         />
       ) : null}
     </>
