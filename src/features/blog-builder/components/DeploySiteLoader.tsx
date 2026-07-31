@@ -155,7 +155,7 @@ function SkeletonPreview({ phase }: { phase: DeployLoaderPhase }) {
     <div className="relative space-y-2.5">
       <SkeletonBlock index={0} className={SKELETON_BLOCKS[0].className} visible={0 < visibleBlocks} />
       <SkeletonBlock index={1} className={SKELETON_BLOCKS[1].className} visible={1 < visibleBlocks} />
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2">
         <SkeletonBlock index={2} className={SKELETON_BLOCKS[2].className} visible={2 < visibleBlocks} />
         <SkeletonBlock index={3} className={SKELETON_BLOCKS[3].className} visible={3 < visibleBlocks} />
         <SkeletonBlock index={4} className={SKELETON_BLOCKS[4].className} visible={4 < visibleBlocks} />

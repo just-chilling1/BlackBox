@@ -242,7 +242,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
           type="button"
           onClick={handleFinish}
           disabled={loading}
-          className="btn-primary flex-1 inline-flex items-center justify-center gap-2 py-3"
+          className="btn-primary flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 text-sm sm:text-base"
         >
           {loading ? <Loader2 size={18} className="animate-spin" /> : null}
           Continue with {selectedTemplate.name}

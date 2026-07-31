@@ -187,6 +187,13 @@ export default function DeployAssetPage({
     });
     if (!pubOk) throw new Error((pubData?.error as string) || busyError(pubStatus));
 
+    const publishedSite = pubData?.site as BlogSite | undefined;
+    if (publishedSite) {
+      setSite(publishedSite);
+    } else {
+      setSite((prev) => (prev ? { ...prev, status: "live" } : prev));
+    }
+
     appendLog("Your niche questionnaire is live.");
     markDeployed(siteId, siteSlug);
     setPhase("complete");

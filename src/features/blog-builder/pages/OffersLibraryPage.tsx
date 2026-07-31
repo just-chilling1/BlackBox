@@ -105,7 +105,7 @@ function OfferCard({
 
       {expanded && (
         <div className="space-y-4 border-t border-border-dim px-5 py-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {siteUrl && (
               <a
                 href={siteUrl}

@@ -310,7 +310,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         </div>
       )}
 
-      <div className="glass-card p-6 flex flex-col gap-4">
+      <div className="glass-card flex flex-col gap-4 p-4 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-amber-800">X-Power Promotions</p>

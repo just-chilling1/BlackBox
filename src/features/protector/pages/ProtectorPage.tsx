@@ -128,7 +128,7 @@ export default function ProtectorPage() {
         title="Wealth Protector"
         description="Your account security overview. Everything is monitored in real time."
         badge={
-          <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 sm:px-5">
             <div className="h-3 w-3 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
             <span className="text-sm font-bold uppercase tracking-wider text-emerald-700">
               All Systems Secure
@@ -136,7 +136,7 @@ export default function ProtectorPage() {
           </div>
         }
       >
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="stat-grid">
           {[
             { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-emerald-600" },
             { label: "Account Status", value: "Verified", icon: CheckCircle, color: "text-emerald-600" },
@@ -163,7 +163,7 @@ export default function ProtectorPage() {
         </div>
       </PremiumControlCard>
 
-      <div className="glass-card space-y-8 p-6 md:p-8">
+      <div className="glass-card space-y-8 p-4 sm:p-6 md:p-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
             <h2 className="text-lg font-bold text-text-heading mb-1">Security Checks</h2>

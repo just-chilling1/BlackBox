@@ -120,7 +120,7 @@ export function DeployLaunchPanel({
           onClick={primaryAction}
           disabled={phase === "idle" && !canResume && quotaBlocked}
           className={clsx(
-            "btn-primary-prominent h-14 w-full sm:h-16 sm:text-lg",
+            "btn-primary-prominent min-h-[3.25rem] w-full whitespace-normal text-center leading-snug sm:min-h-[4rem] sm:text-base",
             (canResume || phase === "error") && "border border-accent/40"
           )}
         >

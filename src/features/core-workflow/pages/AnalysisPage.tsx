@@ -202,17 +202,17 @@ export default function AnalysisPage() {
                             <Brain size={20} className="text-accent" />
                         </div>
                         <div>
-                            <h1 className="text-2xl text-text-primary font-black tracking-tight">Step 2: Check Demand</h1>
+                            <h1 className="text-xl font-black tracking-tight text-text-primary sm:text-2xl">Step 2: Check Demand</h1>
                             <p className="text-sm text-text-muted">
                                 Topic: <span className="text-text-primary font-semibold">&ldquo;{keyword}&rdquo;</span> &middot; {variations.length} variations found
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="action-row w-full md:w-auto md:justify-end">
                     <button
                         onClick={() => setShowGuide(!showGuide)}
-                        className="flex items-center gap-2 px-3 py-2 border border-border-dim rounded-lg text-[11px] font-bold text-text-muted hover:text-text-primary hover:border-accent/30 transition-all"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim px-3 py-2.5 text-[11px] font-bold text-text-muted transition-all hover:border-accent/30 hover:text-text-primary sm:w-auto"
                     >
                         <Info size={13} />
                         <span>{showGuide ? "Hide Guide" : "How to Read This"}</span>
@@ -220,7 +220,7 @@ export default function AnalysisPage() {
                     <button
                         onClick={() => router.push("/radar")}
                         disabled={analyzedCount === 0}
-                        className="btn-primary h-10 px-5 text-sm rounded-lg"
+                        className="btn-primary h-10 w-full rounded-lg px-5 text-sm sm:w-auto"
                     >
                         <span>Step 3: Find Ads</span>
                         <ArrowRight size={16} />
@@ -308,9 +308,10 @@ export default function AnalysisPage() {
             </AnimatePresence>
 
             {/* Data Table */}
-            <div id={GENERATION_RESULTS_ID} className="border border-border-dim rounded-xl overflow-hidden bg-page scroll-mt-24">
+            <div id={GENERATION_RESULTS_ID} className="table-scroll scroll-mt-24">
+            <div className="table-scroll-inner border border-border-dim rounded-xl overflow-hidden bg-page">
                 {/* Table Header */}
-                <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-white border-b border-border-dim/20">
+                <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 bg-white border-b border-border-dim/20">
                     <div className="col-span-4">
                         <SortHeader label="Keyword" sKey="keyword" tooltip="The ad topic variation we are analyzing. Click to sort alphabetically." />
                     </div>
@@ -343,7 +344,7 @@ export default function AnalysisPage() {
                                 transition={{ delay: i * 0.03 }}
                                 onClick={() => setActiveChip(v)}
                                 className={clsx(
-                                    "select-row grid grid-cols-12 gap-4 px-5 py-3.5",
+                                    "select-row hidden w-full grid-cols-12 gap-4 px-5 py-3.5 text-left md:grid",
                                     isSelected && "is-selected"
                                 )}
                             >
@@ -403,7 +404,71 @@ export default function AnalysisPage() {
                             </motion.button>
                         );
                     })}
+
+                    {sortedVariations.map((v, i) => {
+                        const data = analysisByVariation[v];
+                        const isLoading = loadingChips.has(v);
+                        const isSelected = activeChip === v;
+
+                        return (
+                            <motion.button
+                                key={`${v}-mobile`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: i * 0.03 }}
+                                onClick={() => setActiveChip(v)}
+                                className={clsx(
+                                    "select-row flex w-full flex-col gap-3 px-4 py-4 text-left md:hidden",
+                                    isSelected && "is-selected"
+                                )}
+                            >
+                                <div className="flex items-start gap-2 min-w-0">
+                                    {isSelected ? (
+                                        <span className="select-check-badge !h-6 !w-6 shrink-0" aria-hidden>
+                                            <Check size={14} strokeWidth={3} />
+                                        </span>
+                                    ) : null}
+                                    <span className={clsx("select-row-label text-sm", isSelected && "font-bold text-amber-900")}>
+                                        {v}
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 text-xs">
+                                    <div>
+                                        <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-text-muted">Demand</p>
+                                        {isLoading ? (
+                                            <Loader2 size={14} className="animate-spin text-text-muted" />
+                                        ) : data ? (
+                                            <LevelBadge level={data.level} />
+                                        ) : (
+                                            <span className="text-text-muted">—</span>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-text-muted">Ads</p>
+                                        {isLoading ? (
+                                            <div className="h-3 w-8 animate-pulse rounded bg-surface" />
+                                        ) : data ? (
+                                            <span className="font-bold text-text-primary tabular-nums">{data.count}</span>
+                                        ) : (
+                                            <span className="text-text-muted">—</span>
+                                        )}
+                                    </div>
+                                    <div className="col-span-2">
+                                        <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-text-muted">What people say</p>
+                                        {isLoading ? (
+                                            <div className="h-3 w-24 animate-pulse rounded bg-surface" />
+                                        ) : data ? (
+                                            <span className="text-text-secondary">{data.type || "Questions"}</span>
+                                        ) : (
+                                            <span className="text-text-muted">—</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </motion.button>
+                        );
+                    })}
                 </div>
+            </div>
             </div>
 
             {/* Selected detail panel */}

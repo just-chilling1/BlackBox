@@ -180,11 +180,11 @@ export default function AssetCommandPage() {
                     })}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-2">
+                <div className="action-row sm:justify-end">
                   <button
                     type="button"
                     onClick={copyUrl}
-                    className="inline-flex items-center gap-2 rounded-lg border border-promo-accent/40 px-4 py-2 text-sm font-medium text-promo-accent"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-promo-accent/40 px-4 py-2.5 text-sm font-medium text-promo-accent sm:w-auto"
                   >
                     <Copy size={16} />
                     {copied ? "Copied!" : "Copy URL"}
@@ -192,7 +192,7 @@ export default function AssetCommandPage() {
                   <Link
                     href={`/sites/${selectedSite.slug}`}
                     target="_blank"
-                    className="inline-flex items-center gap-2 rounded-lg bg-promo-accent px-4 py-2 text-sm font-bold text-text-on-accent"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-promo-accent px-4 py-2.5 text-sm font-bold text-text-on-accent sm:w-auto"
                   >
                     View
                     <ExternalLink size={16} />
@@ -201,7 +201,7 @@ export default function AssetCommandPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="stat-grid">
               <div className="glass-tile flex items-center gap-3 px-4 py-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-muted/15 text-accent-muted">
                   <MousePointerClick size={18} />

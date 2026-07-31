@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Rocket } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Eye, Rocket } from "lucide-react";
 import { DeploySitePreview } from "./DeploySitePreview";
 import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import type { BlogSite } from "../types";
@@ -44,12 +45,24 @@ export function DeployCompletePanel({
 
       <DeploySitePreview site={site} showLiveLink />
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <motion.div whileHover={{ scale: 1.01 }}>
+          <Link
+            href={`/sites/${site.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-400 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
+          >
+            <Eye size={18} />
+            View Website
+          </Link>
+        </motion.div>
+
         <motion.button
           type="button"
           onClick={onGenerateAnother}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-amber-400 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
+          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-4 text-base font-bold text-text-primary shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-accent-readable"
         >
           <span className="flex items-center justify-center gap-2">
             <Rocket size={18} />
