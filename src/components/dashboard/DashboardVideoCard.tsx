@@ -28,15 +28,16 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
           <h3 className="ds-h3">{video.title}</h3>
         </div>
 
-        <VideoThumbnail
-          videoId={video.id}
-          thumbnailSrc={video.thumbnailSrc}
-          title={video.title}
-          caption="▶ Click to Play Video"
-          onPlay={handlePlay}
-          eager={priority}
-          className="rounded-none border-0 shadow-none hover:shadow-none"
-        />
+        <div className="px-5 py-4 sm:px-6">
+          <VideoThumbnail
+            videoId={video.id}
+            thumbnailSrc={video.thumbnailSrc}
+            title={video.title}
+            caption="▶ Click to Play Video"
+            onPlay={handlePlay}
+            eager={priority}
+          />
+        </div>
 
         <div className="space-y-2 px-5 py-4 sm:px-6 sm:py-5">
           <p className="text-sm leading-relaxed text-text-secondary">{video.description}</p>
