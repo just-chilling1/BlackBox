@@ -7,7 +7,7 @@ import { TrainingTabNav } from "./TrainingTabNav";
 
 export function TrainingPageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="page-container py-6 animate-fade-in-up">
+    <div className="page-container mx-auto w-full max-w-7xl py-6 animate-fade-in-up">
       <PageHeader
         eyebrow="Academy"
         title={trainingMeta.pageTitle}
@@ -15,7 +15,7 @@ export function TrainingPageLayout({ children }: { children: ReactNode }) {
       />
 
       <TrainingTabNav />
-      {children}
+      <div className="page-stack">{children}</div>
     </div>
   );
 }

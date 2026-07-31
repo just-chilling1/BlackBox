@@ -23,7 +23,7 @@ export function TrainingVideoCard({ video, index, priority = false }: TrainingVi
 
   return (
     <>
-      <article className="glass-card flex flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_320px]">
+      <article className="glass-card flex flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_360px]">
         <div className="border-b border-border-dim/60 px-4 py-3 sm:px-5">
           <div className="flex items-start gap-3">
             {stepLabel ? (
@@ -42,17 +42,18 @@ export function TrainingVideoCard({ video, index, priority = false }: TrainingVi
           </div>
         </div>
 
-        <VideoThumbnail
-          videoId={video.id}
-          thumbnailSrc={video.thumbnailSrc}
-          title={video.title}
-          caption={hasVideo ? "▶ Click to Play Video" : "Video coming soon"}
-          onPlay={handlePlay}
-          eager={priority}
-          className="rounded-none border-0 shadow-none hover:shadow-none"
-        />
+        <div className="px-4 py-3 sm:px-5 sm:py-4">
+          <VideoThumbnail
+            videoId={video.id}
+            thumbnailSrc={video.thumbnailSrc}
+            title={video.title}
+            caption={hasVideo ? "▶ Click to Play Video" : "Video coming soon"}
+            onPlay={handlePlay}
+            eager={priority}
+          />
+        </div>
 
-        <div className="space-y-2 px-4 py-3 sm:px-5 sm:py-4">
+        <div className="space-y-2 px-4 pb-4 pt-0 sm:px-5 sm:pb-5">
           <p className="text-[13px] leading-relaxed text-text-secondary">{video.description}</p>
           {video.duration ? (
             <p className="flex items-center gap-1.5 text-xs text-text-muted">

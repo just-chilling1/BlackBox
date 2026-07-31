@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Rocket } from "lucide-react";
+import { Rocket } from "lucide-react";
 import { trainingContent } from "@/config/training.config";
 import {
   trainingCta,
@@ -54,18 +54,6 @@ export function getTrainingStartCta(): {
     href: trainingCta.href,
     label: trainingCta.buttonLabel,
     icon: Rocket,
-  };
-}
-
-export function getTrainingDashboardCta(): {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-} {
-  return {
-    href: "/dashboard",
-    label: "Watch Start Here Videos on Dashboard",
-    icon: BookOpen,
   };
 }
 
