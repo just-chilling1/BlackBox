@@ -1,40 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Star, Video } from "lucide-react";
+import { Play, Star } from "lucide-react";
 import { trainingContent } from "@/config/training.config";
 import { trainingPremiumVideos } from "@/config/training-content.config";
+import { VideoThumbnail } from "@/components/ui/video-thumbnail";
+import {
+  getAcademyPlatformThumbnail,
+  getAcademyPremiumThumbnail,
+} from "@/lib/video-thumbnails";
 import { TrainingPageLayout } from "../components/TrainingPageLayout";
-
-function VideoPlaceholder({ title }: { title: string }) {
-  return (
-    <div
-      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-page border border-dashed border-border-dim/40"
-      aria-hidden
-    >
-      <Video size={28} className="text-text-muted/50" />
-      <span className="px-4 text-center text-[10px] font-bold uppercase tracking-widest text-text-muted">
-        {title}
-      </span>
-      <span className="px-4 text-center text-[10px] text-text-muted/70">
-        Add Vimeo ID in training.config.ts
-      </span>
-    </div>
-  );
-}
 
 function VideoCard({
   id,
   title,
   description,
   badge,
+  thumbnailSrc,
 }: {
   id: string;
   title: string;
   description: string;
   badge?: string;
+  thumbnailSrc: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
+
+  const handlePlay = () => {
+    if (id) setPlaying(true);
+  };
 
   return (
     <div className="overflow-hidden surface-inset border-border-dim/30">
@@ -48,20 +42,17 @@ function VideoCard({
             allowFullScreen
             title={title}
           />
-        ) : id ? (
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/50 transition-colors hover:bg-black/40"
-            aria-label={`Play ${title}`}
-          >
-            <span className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-white/20 bg-gradient-to-br from-accent to-accent-muted text-white shadow-2xl">
-              <Play className="ml-1 h-8 w-8 fill-white" />
-            </span>
-            <span className="text-sm font-semibold text-white drop-shadow-lg">Click to Play Video</span>
-          </button>
         ) : (
-          <VideoPlaceholder title={title} />
+          <div className="absolute inset-0">
+            <VideoThumbnail
+              videoId={id}
+              thumbnailSrc={thumbnailSrc}
+              title={title}
+              caption={id ? "Click to Play Video" : undefined}
+              onPlay={handlePlay}
+              className="h-full rounded-none border-0 shadow-none hover:shadow-none"
+            />
+          </div>
         )}
       </div>
       <div className="flex flex-col gap-1.5 p-4">
@@ -84,8 +75,14 @@ export default function TrainingVideosPage() {
           <h2 className="text-lg font-bold text-text-heading">Platform Tutorials</h2>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {trainingContent.videos.map((video) => (
-            <VideoCard key={video.title} id={video.id} title={video.title} description={video.description} />
+          {trainingContent.videos.map((video, index) => (
+            <VideoCard
+              key={video.title}
+              id={video.id}
+              title={video.title}
+              description={video.description}
+              thumbnailSrc={getAcademyPlatformThumbnail(index)}
+            />
           ))}
         </div>
       </section>
@@ -96,13 +93,14 @@ export default function TrainingVideosPage() {
           <h2 className="text-lg font-bold text-text-heading">Premium Feature Tutorials</h2>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {trainingPremiumVideos.map((video) => (
+          {trainingPremiumVideos.map((video, index) => (
             <VideoCard
               key={video.badge}
               id={video.id}
               title={video.title}
               description={video.description}
               badge={video.badge}
+              thumbnailSrc={getAcademyPremiumThumbnail(index)}
             />
           ))}
         </div>

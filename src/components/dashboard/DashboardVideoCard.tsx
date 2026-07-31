@@ -27,23 +27,15 @@ export function DashboardVideoCard({ video, priority = false }: DashboardVideoCa
           <h3 className="ds-h3">{video.title}</h3>
         </div>
 
-        {hasVideo ? (
-          <VideoThumbnail
-            videoId={video.id}
-            title={video.title}
-            caption="▶ Click to Play Video"
-            onPlay={handlePlay}
-            eager={priority}
-            className="rounded-none border-0 shadow-none hover:shadow-none"
-          />
-        ) : (
-          <div className="flex aspect-video w-full items-center justify-center bg-page/80 px-6 text-center">
-            <p className="max-w-md text-sm text-text-muted">
-              Add a Vimeo video ID in <code className="text-accent">dashboard.config.ts</code> or{" "}
-              <code className="text-accent">training.config.ts</code>.
-            </p>
-          </div>
-        )}
+        <VideoThumbnail
+          videoId={video.id}
+          thumbnailSrc={video.thumbnailSrc}
+          title={video.title}
+          caption="▶ Click to Play Video"
+          onPlay={handlePlay}
+          eager={priority}
+          className="rounded-none border-0 shadow-none hover:shadow-none"
+        />
 
         <div className="space-y-2 px-5 py-4 sm:px-6 sm:py-5">
           <p className="text-sm leading-relaxed text-text-secondary">{video.description}</p>

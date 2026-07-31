@@ -7,6 +7,7 @@ import { VideoThumbnail } from "@/components/ui/video-thumbnail";
 import { VideoOverlay } from "@/components/ui/video-overlay";
 import { dashboardContent } from "@/config/dashboard.config";
 import { trainingContent } from "@/config/training.config";
+import { getDashboardVideoThumbnail } from "@/lib/video-thumbnails";
 import { DashboardSection } from "./DashboardSection";
 
 function resolveIntroVideoId(): string {
@@ -45,6 +46,7 @@ export function FeaturedVideoSection({ onPlayWithoutVideo }: FeaturedVideoSectio
         <div className="px-5 py-4">
           <VideoThumbnail
             videoId={introVideoId}
+            thumbnailSrc={getDashboardVideoThumbnail(0)}
             title={dashboardContent.introVideoTitle}
             caption={`▶ ${dashboardContent.introVideoSubtitle}`}
             onPlay={handlePlay}

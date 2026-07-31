@@ -3,27 +3,29 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
 import { clsx } from "clsx";
-import { getVideoThumbnailById } from "@/lib/video-thumbnails";
+import { resolveVideoThumbnail } from "@/lib/video-thumbnails";
 
 interface VideoThumbnailProps {
-  videoId: string;
+  videoId?: string;
   title: string;
   onPlay: () => void;
   caption?: string;
   className?: string;
   eager?: boolean;
+  thumbnailSrc?: string | null;
 }
 
 export function VideoThumbnail({
-  videoId,
+  videoId = "",
   title,
   onPlay,
   caption,
   className,
   eager = false,
+  thumbnailSrc,
 }: VideoThumbnailProps) {
   const [imgError, setImgError] = useState(false);
-  const thumbPath = videoId ? getVideoThumbnailById(videoId) : null;
+  const thumbPath = resolveVideoThumbnail(videoId, thumbnailSrc);
   const showImage = thumbPath && !imgError;
 
   return (
