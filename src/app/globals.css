@@ -39,7 +39,7 @@
   /* Brand Colors - Duke Mustard Yellow & Indigo */
   --brand-primary: #EEB310;
   --brand-primary-readable: #B45309;
-  --brand-secondary: #6366F1;
+  --brand-secondary: #C9970D;
   --brand-tint: rgba(238, 179, 16, 0.1);
 
   --promo-accent: #EEB310;
@@ -578,7 +578,7 @@ html[data-sidebar="collapsed"] {
     width: 3px;
     height: 0;
     border-radius: 9999px;
-    background: linear-gradient(180deg, var(--brand-primary), #6366f1);
+    background: linear-gradient(180deg, var(--brand-primary), #C9970D);
     transition: height 0.3s ease;
   }
 

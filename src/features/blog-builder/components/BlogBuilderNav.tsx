@@ -1,7 +1,8 @@
 "use client";
 
 import { clsx } from "clsx";
-import { Lock } from "lucide-react";import { WarmNavLink } from "@/components/layout/WarmNavLink";
+import { Lock } from "lucide-react";
+import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import {
   getBlogBuilderWorkflowSteps,
   getBlogBuilderGenerateNav,
@@ -21,7 +22,6 @@ import {
   sidebarNavItemClass,
   sidebarNavLabelClass,
   sidebarSectionLabelClass,
-  type SidebarNavColor,
 } from "@/components/layout/sidebar-nav-styles";
 
 interface BlogBuilderNavProps {
@@ -29,13 +29,6 @@ interface BlogBuilderNavProps {
   onNavClick?: () => void;
   collapsed?: boolean;
 }
-
-const NAV_COLORS: Partial<Record<string, SidebarNavColor>> = {
-  Rocket: "gold",
-  Megaphone: "purple",
-  Link2: "blue",
-  FolderOpen: "indigo",
-};
 
 export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: BlogBuilderNavProps) {
   if (!isFeatureEnabled("blog-builder")) return null;
@@ -50,7 +43,6 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
     const Icon = getNavIcon(item.icon);
     const isActive = isNavPathActive(pathname, item.path);
     const locked = isNavItemLocked(item, workflowProgress);
-    const color = NAV_COLORS[item.icon] ?? "gold";
 
     if (locked) {
       return (
@@ -80,8 +72,8 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         title={collapsed ? item.label : undefined}
         className="block group"
       >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+        <div className={sidebarNavItemClass(isActive, collapsed)}>
+          <Icon className={sidebarNavIconClass(isActive)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </WarmNavLink>
@@ -91,7 +83,6 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
   const renderCoreLink = (item: (typeof generateNav)[0]) => {
     const Icon = getNavIcon(item.icon);
     const isActive = isNavPathActive(pathname, item.path);
-    const color = NAV_COLORS[item.icon] ?? "gold";
 
     return (
       <WarmNavLink
@@ -101,8 +92,8 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
         title={collapsed ? item.label : undefined}
         className="block group"
       >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+        <div className={sidebarNavItemClass(isActive, collapsed)}>
+          <Icon className={sidebarNavIconClass(isActive)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </WarmNavLink>

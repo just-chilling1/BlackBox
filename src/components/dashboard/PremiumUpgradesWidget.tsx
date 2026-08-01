@@ -136,8 +136,8 @@ export function PremiumUpgradesWidget({
                     className={clsx(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all duration-300",
                       isActive
-                        ? "border-amber-300 bg-linear-to-br from-accent to-indigo-600 text-white shadow-[0_0_16px_rgba(238,179,16,0.35)]"
-                        : "border-amber-200 bg-amber-50 text-amber-700 group-hover:border-amber-300 group-hover:bg-linear-to-br group-hover:from-accent group-hover:to-indigo-600 group-hover:text-white group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        ? "border-amber-300 bg-accent text-black shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        : "border-amber-200 bg-amber-50 text-amber-700 group-hover:border-amber-300 group-hover:bg-accent group-hover:text-black group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
                     )}
                   >
                     <Icon size={19} strokeWidth={1.5} />

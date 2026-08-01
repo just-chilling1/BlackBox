@@ -83,7 +83,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-1",
-    enabled: false,
+    enabled: true,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -94,7 +94,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-2",
-    enabled: false,
+    enabled: true,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -105,12 +105,12 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-3",
-    enabled: false,
+    enabled: true,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
       headline: "Fast Cash Training",
-      ctaUrl: trainingContent.externalTrainingUrl,
+      ctaUrl: trainingContent.externalTrainingUrl || "https://example.com/offer-3",
       sidebarSubtitle: "Claim Now",
     },
   },

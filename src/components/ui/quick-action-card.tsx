@@ -23,7 +23,7 @@ const accents = {
     text: "text-accent-muted",
     tile: "bg-accent-muted/10 border-accent-muted/25",
     hoverBorder: "hover:border-accent-muted/40",
-    bar: "from-accent-muted/80 to-indigo-400/80",
+    bar: "from-accent/80 to-[#C9970D]/80",
   },
   teal: {
     text: "text-promo-accent",

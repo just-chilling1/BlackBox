@@ -102,7 +102,7 @@ export function OnboardingFlow() {
   };
 
   return (
-    <div className="fixed inset-0 z-[300] flex min-h-[100dvh] bg-gradient-to-br from-slate-50 via-white to-fuchsia-50">
+    <div className="fixed inset-0 z-[300] flex min-h-[100dvh] bg-gradient-to-br from-slate-50 via-white to-amber-50/40">
       <main className="flex flex-1 flex-col overflow-y-auto">
         <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-6 py-12 sm:px-10">
           <div className="mb-8">
@@ -127,7 +127,7 @@ export function OnboardingFlow() {
                 void handleActivate();
               }
             }}
-            className="mt-8 h-16 w-full rounded-2xl border-2 border-slate-200 bg-white px-5 text-xl text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-[#d946ef] focus:ring-4 focus:ring-[#d946ef]/15"
+            className="mt-8 h-16 w-full rounded-2xl border-2 border-slate-200 bg-white px-5 text-xl text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-accent focus:ring-4 focus:ring-accent/15"
           />
 
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

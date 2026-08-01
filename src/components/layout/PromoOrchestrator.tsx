@@ -124,11 +124,17 @@ export function GlobalFooterPromo() {
 
 export function SidebarPromos() {
   const slots = getPromosByPlacement("sidebar");
+  if (slots.length === 0) return null;
   return (
-    <div className="flex flex-col mx-2 mt-2 gap-2.5">
-      {slots.map((slot) => (
-        <PromoSlotRenderer key={slot.id} slot={slot} />
-      ))}
+    <div className="mx-1 mt-4 space-y-2 rounded-xl border border-accent/25 bg-accent/[0.06] p-3">
+      <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-accent">
+        Exclusive Offers
+      </p>
+      <div className="flex flex-col gap-2">
+        {slots.map((slot) => (
+          <PromoSlotRenderer key={slot.id} slot={slot} />
+        ))}
+      </div>
     </div>
   );
 }

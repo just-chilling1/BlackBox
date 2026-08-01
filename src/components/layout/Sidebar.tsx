@@ -7,8 +7,6 @@ import {
   Lock,
   PanelLeftClose,
   PanelLeftOpen,
-  ExternalLink,
-  PlayCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
@@ -28,16 +26,14 @@ import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { BlogBuilderNav } from "@/features/blog-builder/components/BlogBuilderNav";
 import { storageKeys } from "@/lib/storage-keys";
 import { homeNav, supportNav, type NavItem } from "@/config/navigation.config";
-import { getExclusiveOffers } from "@/config/offers.config";
-import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { WarmNavLink } from "@/components/layout/WarmNavLink";
+import { SidebarPromos } from "@/components/layout/PromoOrchestrator";
 import {
   sidebarNavIconClass,
   sidebarNavItemClass,
   sidebarNavLabelClass,
-  type SidebarNavColor,
 } from "./sidebar-nav-styles";
 
 interface SidebarContentProps {
@@ -45,21 +41,6 @@ interface SidebarContentProps {
   onToggle: () => void;
   onMobileClose?: () => void;
 }
-
-const NAV_COLORS: Partial<Record<string, SidebarNavColor>> = {
-  LayoutGrid: "gold",
-  Search: "blue",
-  Brain: "indigo",
-  Radar: "purple",
-  MessageSquare: "emerald",
-  GraduationCap: "orange",
-  Headphones: "blue",
-  TrendingUp: "emerald",
-  Rocket: "gold",
-  Megaphone: "purple",
-  Link2: "blue",
-  FolderOpen: "indigo",
-};
 
 function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentProps) {
   const pathname = usePathname();
@@ -70,7 +51,6 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const workflowProgress = workflow?.progress ?? 0;
   const blogEnabled = isFeatureEnabled("blog-builder");
   const showHomeNav = !workflowSteps.some((step) => step.path === homeNav.path);
-  const exclusiveOffers = getExclusiveOffers(trainingContent.externalTrainingUrl);
 
   const [displayName, setDisplayName] = useState("Member");
   const [userInitials, setUserInitials] = useState("BC");
@@ -104,7 +84,6 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
     const isActive = isNavPathActive(pathname, item.path);
     const Icon = getNavIcon(item.icon);
     const locked = isNavItemLocked(item, workflowProgress);
-    const color = NAV_COLORS[item.icon] ?? "gold";
 
     if (locked) {
       return (
@@ -134,8 +113,8 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         title={collapsed ? item.label : undefined}
         className="block group"
       >
-        <div className={sidebarNavItemClass(isActive, collapsed, color)}>
-          <Icon className={sidebarNavIconClass(isActive, color)} size={20} />
+        <div className={sidebarNavItemClass(isActive, collapsed)}>
+          <Icon className={sidebarNavIconClass(isActive)} size={20} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </WarmNavLink>
@@ -203,26 +182,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
           ) : null}
 
-          {!collapsed && exclusiveOffers.length > 0 && (
-            <div className="mt-4 space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-              <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600">
-                Exclusive Offers
-              </p>
-              {exclusiveOffers.map((offer) => (
-                <a
-                  key={offer.href + offer.title}
-                  href={offer.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-emerald-100 hover:text-text-primary"
-                >
-                  <PlayCircle className="h-4 w-4 shrink-0 text-emerald-500" />
-                  <span className="flex-1">{offer.title}</span>
-                  <ExternalLink className="h-3 w-3 text-emerald-500" />
-                </a>
-              ))}
-            </div>
-          )}
+          {!collapsed ? <SidebarPromos /> : null}
         </nav>
       </div>
 
@@ -231,7 +191,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
         <div className={clsx("p-3", collapsed && "px-2")}>
           <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-accent to-indigo-600 text-sm font-bold text-black shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-black shadow-sm">
               {userInitials}
             </div>
             {!collapsed && (

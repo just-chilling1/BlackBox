@@ -22,7 +22,8 @@ export const brand = {
   colors: {
     /** Duke University mustard yellow (Pantone 116) */
     primary: "#EEB310",
-    secondary: "#6366F1",
+    /** Muted gold companion — keep hover/accent family consistent (no indigo/magenta) */
+    secondary: "#C9970D",
     promoAccent: "#EEB310",
     promoCta: "#EEB310",
     page: "#F8FAFC",

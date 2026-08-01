@@ -50,7 +50,7 @@ export function VideoThumbnail({
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950" />
         )}
 
         <div className="video-thumb-scrim absolute inset-0" />
