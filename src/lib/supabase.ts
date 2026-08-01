@@ -9,5 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
     }
 }
 
-// createBrowserClient is used here, but it's safe to use on server as well for basic interactions
-export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+// Use placeholders when env vars are absent so `next build` prerender does not crash.
+// Real values must be supplied at build time (see Dockerfile ARG/ENV for DigitalOcean).
+export const supabase = createBrowserClient(
+    supabaseUrl || 'https://build-placeholder.supabase.co',
+    supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.build-placeholder'
+)
