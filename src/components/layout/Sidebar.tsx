@@ -152,7 +152,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
               <img
                 src={brand.logo.src}
                 alt={brand.logo.alt}
-                className="h-9 w-auto max-w-[210px] object-contain object-left"
+                className="h-11 w-auto max-w-[min(100%,17.5rem)] object-contain object-left sm:h-12"
               />
             )}
           </Link>

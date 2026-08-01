@@ -17,7 +17,7 @@ const SIZES = {
     box: "w-9 h-9 sm:w-10 sm:h-10",
     icon: 20,
     imgHeight: "h-9 sm:h-10",
-    wordmarkHeight: "h-8 sm:h-9",
+    wordmarkHeight: "h-10 sm:h-11",
     img: 40,
     title: "text-base sm:text-[18px] lg:text-[22px]",
     tagline: "text-[9px] sm:text-[10px]",
@@ -26,7 +26,7 @@ const SIZES = {
     box: "w-10 h-10 sm:w-12 sm:h-12",
     icon: 22,
     imgHeight: "h-10 sm:h-12",
-    wordmarkHeight: "h-10 sm:h-11",
+    wordmarkHeight: "h-11 sm:h-12",
     img: 48,
     title: "text-lg sm:text-[22px]",
     tagline: "text-[10px]",
@@ -35,7 +35,7 @@ const SIZES = {
     box: "w-14 h-14 sm:w-16 sm:h-16",
     icon: 28,
     imgHeight: "h-16 sm:h-20",
-    wordmarkHeight: "h-14 sm:h-16",
+    wordmarkHeight: "h-16 sm:h-[5.25rem] md:h-24",
     img: 80,
     title: "text-xl sm:text-[28px] lg:text-[32px]",
     tagline: "text-xs sm:text-sm",
@@ -71,8 +71,9 @@ export function BrandLogo({
           width={compact ? s.img : undefined}
           height={compact ? s.img : undefined}
           className={clsx(
-            "w-auto max-w-full object-contain shrink-0",
-            compact ? s.imgHeight : s.wordmarkHeight
+            "w-auto object-contain shrink-0",
+            compact ? s.imgHeight : s.wordmarkHeight,
+            isWordmarkImage && !compact ? "max-w-none" : "max-w-full"
           )}
           loading="eager"
           decoding="async"

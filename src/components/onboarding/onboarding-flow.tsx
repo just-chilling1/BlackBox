@@ -29,7 +29,7 @@ function OnboardingBrand() {
           height={isWordmarkImage ? undefined : 40}
           className={clsx(
             "w-auto shrink-0 object-contain",
-            isWordmarkImage ? "h-10 sm:h-11" : "h-10"
+            isWordmarkImage ? "h-12 sm:h-14 md:h-16" : "h-10"
           )}
         />
       ) : (
