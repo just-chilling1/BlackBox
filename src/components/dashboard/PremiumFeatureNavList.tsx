@@ -13,6 +13,7 @@ interface PremiumFeatureNavListProps {
   mobile?: boolean;
   onNavigate?: () => void;
   className?: string;
+  highlighted?: boolean;
 }
 
 export function PremiumFeatureNavList({
@@ -20,6 +21,7 @@ export function PremiumFeatureNavList({
   mobile = false,
   onNavigate,
   className,
+  highlighted = false,
 }: PremiumFeatureNavListProps) {
   const pathname = usePathname();
 
@@ -39,6 +41,7 @@ export function PremiumFeatureNavList({
     <div
       className={clsx(
         "premium-nav-section",
+        highlighted && "premium-nav-section--highlighted",
         mobile ? "p-2" : collapsed ? "mt-4 p-1" : "mt-6 p-2",
         className
       )}
@@ -47,10 +50,18 @@ export function PremiumFeatureNavList({
         <p
           className={clsx(
             "premium-nav-section-label flex items-center gap-1.5 px-2.5 pb-2 pt-1.5",
+            highlighted && "premium-nav-section-label--animated",
             mobile && "mb-0 px-2 pt-1"
           )}
         >
-          <Sparkles className={clsx("shrink-0 text-brass-700", mobile ? "h-3.5 w-3.5" : "h-3 w-3")} strokeWidth={1.75} />
+          <Sparkles
+            className={clsx(
+              "shrink-0 text-brass-700",
+              highlighted && "premium-nav-sparkle",
+              mobile ? "h-3.5 w-3.5" : "h-3.5 w-3.5"
+            )}
+            strokeWidth={1.75}
+          />
           {PREMIUM_SECTION_LABEL}
         </p>
       )}

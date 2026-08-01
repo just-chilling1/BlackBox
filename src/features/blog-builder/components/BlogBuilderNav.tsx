@@ -28,9 +28,16 @@ interface BlogBuilderNavProps {
   pathname: string;
   onNavClick?: () => void;
   collapsed?: boolean;
+  /** Which sidebar blocks to render — default all */
+  sections?: Array<"workflow" | "generate" | "libraries">;
 }
 
-export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: BlogBuilderNavProps) {
+export function BlogBuilderNav({
+  pathname,
+  onNavClick,
+  collapsed = false,
+  sections = ["workflow", "generate", "libraries"],
+}: BlogBuilderNavProps) {
   if (!isFeatureEnabled("blog-builder")) return null;
 
   const steps = getBlogBuilderWorkflowSteps();
@@ -101,17 +108,20 @@ export function BlogBuilderNav({ pathname, onNavClick, collapsed = false }: Blog
   };
 
   const sectionLabelClass = sidebarSectionLabelClass;
+  const showWorkflow = sections.includes("workflow");
+  const showGenerate = sections.includes("generate");
+  const showLibraries = sections.includes("libraries");
 
   return (
     <>
-      {(steps.length > 0 || generateNav.length > 0) && (
+      {((showWorkflow && steps.length > 0) || (showGenerate && generateNav.length > 0)) && (
         <>
           {!collapsed && <p className={sectionLabelClass}>{blogBuilderGenerateSectionLabel}</p>}
-          {steps.map(renderStep)}
-          {generateNav.map(renderCoreLink)}
+          {showWorkflow ? steps.map(renderStep) : null}
+          {showGenerate ? generateNav.map(renderCoreLink) : null}
         </>
       )}
-      {librariesNav.length > 0 && (
+      {showLibraries && librariesNav.length > 0 && (
         <>
           {!collapsed && <p className={sectionLabelClass}>{blogBuilderLibrariesSectionLabel}</p>}
           {librariesNav.map(renderCoreLink)}

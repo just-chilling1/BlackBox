@@ -7,8 +7,6 @@ import {
   Lock,
   PanelLeftClose,
   PanelLeftOpen,
-  ExternalLink,
-  PlayCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
@@ -22,6 +20,7 @@ import {
 } from "@/lib/features";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
+import { ExclusiveOffersNavSection } from "@/components/layout/ExclusiveOffersNavSection";
 import { getNavIcon } from "@/lib/nav-icons";
 import { isNavPathActive } from "@/lib/nav-active";
 import { isFeatureEnabled } from "@/config/features.config";
@@ -166,35 +165,30 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             {showHomeNav ? renderNavLink(homeNav) : null}
             {workflowSteps.map((step) => renderNavLink(step))}
             {blogEnabled ? (
-              <BlogBuilderNav pathname={pathname} onNavClick={handleNavClick} collapsed={collapsed} />
+              <BlogBuilderNav
+                pathname={pathname}
+                onNavClick={handleNavClick}
+                collapsed={collapsed}
+                sections={["workflow", "generate"]}
+              />
+            ) : null}
+
+            <ExclusiveOffersNavSection offers={exclusiveOffers} collapsed={collapsed} />
+
+            {blogEnabled ? (
+              <BlogBuilderNav
+                pathname={pathname}
+                onNavClick={handleNavClick}
+                collapsed={collapsed}
+                sections={["libraries"]}
+              />
             ) : null}
             {coreResourceNav.map((step) => renderNavLink(step))}
             {resourceNav.map((step) => renderNavLink(step))}
           </div>
 
           {PREMIUM_FEATURES.length > 0 ? (
-            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
-          ) : null}
-
-          {!collapsed && exclusiveOffers.length > 0 ? (
-            <div className="mt-4 space-y-2 premium-nav-section p-3">
-              <p className="premium-nav-section-label px-1">
-                Exclusive Offers
-              </p>
-              {exclusiveOffers.map((offer) => (
-                <a
-                  key={offer.href + offer.title}
-                  href={offer.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-md px-3 py-2 text-[13px] font-normal text-ink-2 transition-colors hover:bg-[rgba(28,27,24,0.04)] hover:text-brass-700"
-                >
-                  <PlayCircle className="h-4 w-4 shrink-0 text-brass-700" />
-                  <span className="flex-1">{offer.title}</span>
-                  <ExternalLink className="h-3 w-3 text-ink-6" />
-                </a>
-              ))}
-            </div>
+            <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} highlighted />
           ) : null}
         </nav>
       </div>

@@ -11,8 +11,6 @@ import { getDashboardSubtitle } from "@/lib/dashboard-content";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { DashboardSection } from "@/components/dashboard/DashboardSection";
 import { RouteLoading } from "@/components/ui/route-loading";
-import { isFeatureEnabled } from "@/config/features.config";
-import { DopamineDashboard } from "@/features/dopamine/DopamineDashboard";
 
 const DashboardVideoTrack = dynamic(
   () =>
@@ -116,7 +114,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 flex flex-col gap-6 lg:gap-8">
           <DashboardVideoTrack />
-          {isFeatureEnabled("dopamine") ? <DopamineDashboard /> : null}
         </div>
 
         <aside className="flex min-w-0 flex-col gap-6 xl:sticky xl:top-8 xl:self-start">

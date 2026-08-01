@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import { usePathname } from "next/navigation";
-import { Menu, Sparkles, LogOut, ExternalLink, Headphones, ChevronRight } from "lucide-react";
+import { Menu, LogOut, Headphones, ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
 import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { getBottomNavTabs, getBottomNavMoreLinks } from "@/lib/features";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
 import { PremiumFeatureNavList } from "@/components/dashboard/PremiumFeatureNavList";
+import { ExclusiveOffersNavSection } from "@/components/layout/ExclusiveOffersNavSection";
 import { getExclusiveOffers } from "@/config/offers.config";
 import { trainingContent } from "@/config/training.config";
 import { getNavIcon } from "@/lib/nav-icons";
@@ -120,8 +121,12 @@ export function BottomNav() {
           >
             <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-black/15" />
             <div className="space-y-6 p-4">
+              {exclusiveOffers.length > 0 ? (
+                <ExclusiveOffersNavSection offers={exclusiveOffers} mobile />
+              ) : null}
+
               {PREMIUM_FEATURES.length > 0 ? (
-                <PremiumFeatureNavList mobile onNavigate={() => setMoreOpen(false)} />
+                <PremiumFeatureNavList mobile highlighted onNavigate={() => setMoreOpen(false)} />
               ) : null}
 
               {moreLinks.length > 0 ? (
@@ -149,29 +154,6 @@ export function BottomNav() {
                         </WarmNavLink>
                       );
                     })}
-                  </div>
-                </div>
-              ) : null}
-
-              {exclusiveOffers.length > 0 ? (
-                <div>
-                  <p className="mb-2 px-1 text-[13px] font-medium uppercase tracking-widest text-brass-700">
-                    Exclusive Offers
-                  </p>
-                  <div className="space-y-1.5">
-                    {exclusiveOffers.map((offer) => (
-                      <a
-                        key={offer.href + offer.title}
-                        href={offer.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex min-h-[52px] items-center gap-3 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-4 py-3 text-base font-medium text-text-secondary active:bg-brass-100"
-                      >
-                        <Sparkles className="h-5 w-5 text-brass-700" />
-                        <span className="flex-1">{offer.title}</span>
-                        <ExternalLink className="h-4 w-4 text-brass-700" />
-                      </a>
-                    ))}
                   </div>
                 </div>
               ) : null}

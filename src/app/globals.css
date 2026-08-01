@@ -632,6 +632,106 @@ html[data-sidebar="collapsed"] {
     border: 1px solid var(--bb-line-brass);
   }
 
+  .premium-nav-section--highlighted {
+    border: 2px solid var(--bb-brass-500);
+    box-shadow:
+      var(--bb-shadow-card),
+      0 0 0 1px rgba(201, 151, 31, 0.12);
+    animation: premium-panel-glow 3.5s ease-in-out infinite;
+  }
+
+  .premium-nav-section--highlighted::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid transparent;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(240, 212, 138, 0.45) 45%,
+        rgba(201, 151, 31, 0.35) 50%,
+        rgba(240, 212, 138, 0.45) 55%,
+        transparent 100%
+      )
+      border-box;
+    background-size: 220% 100%;
+    animation: premium-border-sweep 5s linear infinite;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.85;
+  }
+
+  @keyframes premium-panel-glow {
+    0%,
+    100% {
+      box-shadow:
+        var(--bb-shadow-card),
+        0 0 0 1px rgba(201, 151, 31, 0.1);
+      border-color: var(--bb-brass-500);
+    }
+    50% {
+      box-shadow:
+        var(--bb-shadow-hover),
+        0 0 0 2px rgba(201, 151, 31, 0.22);
+      border-color: var(--bb-brass-300);
+    }
+  }
+
+  @keyframes premium-border-sweep {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes premium-sparkle-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.65;
+      transform: scale(1.12);
+    }
+  }
+
+  .premium-nav-sparkle {
+    animation: premium-sparkle-pulse 2.2s ease-in-out infinite;
+  }
+
+  .premium-nav-section-label--animated {
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+
+  .exclusive-offers-nav-section {
+    position: relative;
+    border-radius: var(--bb-r-lg);
+    background: linear-gradient(165deg, #f0f4ee 0%, #e8ece4 100%);
+    border: 1px solid rgba(28, 27, 24, 0.12);
+    box-shadow: var(--bb-shadow-card);
+  }
+
+  .exclusive-offers-nav-section-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--bb-ink-3);
+    margin-bottom: 4px;
+  }
+
+  .exclusive-offers-nav-item:hover {
+    background: rgba(28, 27, 24, 0.05);
+  }
+
   .premium-nav-section-label {
     color: var(--bb-brass-700);
     font-size: 13px;
