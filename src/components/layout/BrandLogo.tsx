@@ -39,7 +39,7 @@ const SIZES = {
     icon: 18,
     imgHeight: "h-[38px] w-[38px]",
     wordmarkHeight: "",
-    wordmarkWidth: "w-full h-auto min-h-[38px] max-h-[3.25rem] object-contain object-left",
+    wordmarkWidth: "sidebar-brand-wordmark",
     img: 38,
     title: "text-[19px] leading-tight",
     tagline: "text-[13px]",

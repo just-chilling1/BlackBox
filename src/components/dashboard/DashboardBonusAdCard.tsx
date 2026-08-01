@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Flame } from "lucide-react";
+import { ArrowRight, Flame, Sparkles } from "lucide-react";
 import { dashboardContent } from "@/config/dashboard.config";
 
 const MONEY_PATTERN = /(\$[\d,]+(?:-\$[\d,]+)?|\$[\d,]+,\s*\$[\d,]+,\s*or even \$[\d,]+)/g;
@@ -9,7 +9,7 @@ const MONEY_PATTERN = /(\$[\d,]+(?:-\$[\d,]+)?|\$[\d,]+,\s*\$[\d,]+,\s*or even \
 function emphasizeAmounts(text: string) {
   return text.split(MONEY_PATTERN).map((part, index) =>
     part.startsWith("$") ? (
-      <span key={`${part}-${index}`} className="font-medium text-text-heading">
+      <span key={`${part}-${index}`} className="font-medium text-brass-700">
         {part}
       </span>
     ) : (
@@ -24,7 +24,7 @@ function formatParagraph(text: string) {
     return (
       <>
         The best part?{" "}
-        <span className="font-medium text-text-heading">
+        <span className="font-medium text-ink">
           {text.slice(bestPartPrefix.length)}
         </span>
       </>
@@ -38,34 +38,45 @@ export function DashboardBonusAdCard() {
   const ad = dashboardContent.bonusAd;
 
   return (
-    <div className="glass-card overflow-hidden">
-      <div className="space-y-5 p-5">
-        <div className="space-y-4 text-sm leading-relaxed text-text-secondary md:text-[15px]">
+    <section className="dashboard-bonus-ad" aria-label="Member training offer">
+      <div className="dashboard-bonus-ad-shimmer" aria-hidden />
+
+      <div className="dashboard-bonus-ad-inner">
+        <p className="dashboard-bonus-ad-badge">
+          <Sparkles className="h-3.5 w-3.5 text-brass-300" strokeWidth={1.75} aria-hidden />
+          Free member training
+        </p>
+
+        <div className="dashboard-bonus-ad-copy">
           {ad.paragraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{formatParagraph(paragraph)}</p>
           ))}
 
-          <p className="flex items-start gap-2 font-medium text-text-heading">
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-brass-700" />
+          <p className="dashboard-bonus-ad-highlight">
+            <Flame className="h-5 w-5 shrink-0 text-brass-700" strokeWidth={1.75} aria-hidden />
             <span>{ad.highlight}</span>
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-brass-700" />
+            <Flame className="h-5 w-5 shrink-0 text-brass-700" strokeWidth={1.75} aria-hidden />
           </p>
 
-          <p>{emphasizeAmounts(ad.closing)}</p>
+          <p className="dashboard-bonus-ad-closing">{emphasizeAmounts(ad.closing)}</p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="dashboard-bonus-ad-cta-wrap">
           <Link
             href={ad.ctaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full max-w-xl items-center justify-center gap-2 rounded-lg bg-grad-brass px-6 py-3 text-center text-sm font-medium text-black shadow-lg transition-all hover:brightness-110 sm:w-auto"
+            className="dashboard-bonus-ad-cta"
           >
-            {ad.ctaLabel}
-            <ArrowRight className="h-4 w-4 shrink-0" />
+            <span className="dashboard-bonus-ad-cta-shine" aria-hidden />
+            <span className="relative z-[1] inline-flex items-center justify-center gap-2.5">
+              {ad.ctaLabel}
+              <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2} />
+            </span>
           </Link>
+          <p className="dashboard-bonus-ad-urgency">Limited access — register while it&apos;s still available</p>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

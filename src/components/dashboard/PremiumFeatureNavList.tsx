@@ -21,7 +21,7 @@ export function PremiumFeatureNavList({
   mobile = false,
   onNavigate,
   className,
-  highlighted = false,
+  highlighted = true,
 }: PremiumFeatureNavListProps) {
   const pathname = usePathname();
 
@@ -29,44 +29,44 @@ export function PremiumFeatureNavList({
 
   const itemClass = (isActive: boolean) =>
     clsx(
-      "premium-sidebar-item flex items-center gap-3 rounded-md font-normal transition-[background-color,border-color,box-shadow,color] duration-[160ms]",
+      "premium-sidebar-item group flex items-center gap-3 rounded-md font-normal transition-[background-color,border-color,box-shadow,color] duration-[160ms]",
       mobile
         ? "min-h-[52px] px-4 py-3 text-[15px]"
-        : "min-h-[44px] py-3 text-[15px]",
-      collapsed && !mobile ? "justify-center px-0" : mobile ? "" : "px-3",
+        : "min-h-[44px] py-2.5 text-[15px]",
+      collapsed && !mobile ? "justify-center px-0" : mobile ? "" : "px-2.5",
       isActive && "is-active"
     );
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: [0.2, 0, 0, 1] }}
       className={clsx(
         "premium-nav-section",
         highlighted && "premium-nav-section--highlighted",
-        mobile ? "p-2" : collapsed ? "mt-4 p-1" : "mt-6 p-2",
+        mobile ? "p-2.5" : collapsed ? "mt-4 p-1.5" : "mt-6 p-2.5",
         className
       )}
     >
+      <div className="premium-nav-section-shimmer" aria-hidden />
+
       {!collapsed && (
         <p
           className={clsx(
-            "premium-nav-section-label flex items-center gap-1.5 px-2.5 pb-2 pt-1.5",
+            "premium-nav-section-label relative z-[1] flex items-center gap-2 px-2 pb-2.5 pt-1",
             highlighted && "premium-nav-section-label--animated",
-            mobile && "mb-0 px-2 pt-1"
+            mobile && "mb-0 px-1.5 pt-0.5"
           )}
         >
-          <Sparkles
-            className={clsx(
-              "shrink-0 text-brass-300",
-              highlighted && "premium-nav-sparkle",
-              mobile ? "h-3.5 w-3.5" : "h-3.5 w-3.5"
-            )}
-            strokeWidth={1.75}
-          />
+          <span className="premium-nav-sparkle-badge">
+            <Sparkles className="h-4 w-4 text-brass-300" strokeWidth={1.75} />
+          </span>
           {PREMIUM_SECTION_LABEL}
         </p>
       )}
 
-      <ul className={mobile ? "space-y-1.5" : "space-y-1"}>
+      <ul className={clsx("relative z-[1]", mobile ? "space-y-1.5" : "space-y-1")}>
         {PREMIUM_FEATURES.map((item, index) => {
           const isActive = isNavPathActive(pathname, item.href);
           const Icon = item.icon;
@@ -74,9 +74,9 @@ export function PremiumFeatureNavList({
           return (
             <motion.li
               key={item.href}
-              initial={{ opacity: 0, x: mobile ? 0 : -12 }}
+              initial={{ opacity: 0, x: mobile ? 0 : -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15 + index * 0.05 }}
+              transition={{ delay: 0.12 + index * 0.07, duration: 0.24 }}
             >
               <WarmNavLink
                 href={item.href}
@@ -84,19 +84,21 @@ export function PremiumFeatureNavList({
                 title={collapsed && !mobile ? item.label : undefined}
                 className={itemClass(isActive)}
               >
-                <Icon
-                  className={clsx(
-                    "shrink-0 text-brass-300",
-                    mobile ? "h-5 w-5" : "h-[18px] w-[18px]"
-                  )}
-                  strokeWidth={1.75}
-                />
+                <span className="premium-sidebar-icon-chip">
+                  <Icon
+                    className={clsx(
+                      "text-brass-300",
+                      mobile ? "h-4 w-4" : "h-[18px] w-[18px]"
+                    )}
+                    strokeWidth={1.75}
+                  />
+                </span>
                 {!collapsed && <span className="tracking-normal">{item.label}</span>}
               </WarmNavLink>
             </motion.li>
           );
         })}
       </ul>
-    </div>
+    </motion.div>
   );
 }
