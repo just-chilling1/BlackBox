@@ -20,7 +20,7 @@ export function DashboardVideoTrack() {
   const AcademyIcon = academyCta.icon;
 
   return (
-    <div className="flex min-w-0 flex-col gap-6 lg:gap-8">
+    <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
@@ -57,7 +57,7 @@ export function DashboardVideoTrack() {
       </section>
 
       <DashboardSection>
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--bb-line-brass)] bg-brass-100 sm:h-14 sm:w-14">
               <Headphones className="h-6 w-6 text-brass-700 sm:h-7 sm:w-7" />

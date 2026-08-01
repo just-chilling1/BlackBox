@@ -24,8 +24,13 @@ export const metadata: Metadata = {
   title: brand.metadata.title,
   description: brand.metadata.description,
   icons: {
-    icon: brand.logo.type === "image" ? "/favicon.png" : "/favicon.ico",
-    apple: brand.logo.type === "image" ? "/apple-touch-icon.png" : "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: "/logo-icon.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
   },
   appleWebApp: {
     capable: true,

@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ eyebrow, title, subtitle, actions, className }: PageHeaderProps) {
   return (
-    <header className={clsx("flex flex-col gap-4 mb-6 sm:mb-8", className)}>
+    <header className={clsx("flex flex-col gap-3 mb-4 sm:mb-5", className)}>
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="flex flex-col gap-2 min-w-0">
           {eyebrow ? <span className="page-eyebrow">{eyebrow}</span> : null}

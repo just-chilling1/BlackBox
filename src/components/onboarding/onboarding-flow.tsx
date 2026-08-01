@@ -127,12 +127,12 @@ export function OnboardingFlow() {
                 void handleActivate();
               }
             }}
-            className="input-base mt-8 h-16 w-full text-xl"
+            className="input-base mt-6 h-14 w-full text-lg sm:text-xl"
           />
 
-          <div className="page-section-card mt-8 p-6">
-            <p className="mb-4 text-sm font-medium text-ink">{cfg.infoTitle}</p>
-            <ol className="space-y-3">
+          <div className="page-section-card mt-6 p-5">
+            <p className="mb-3 text-sm font-medium text-ink">{cfg.infoTitle}</p>
+            <ol className="space-y-2.5">
               {cfg.infoSteps.map((step, i) => (
                 <li
                   key={step}
@@ -149,7 +149,7 @@ export function OnboardingFlow() {
             </ol>
           </div>
 
-          <p className="mt-5 text-sm font-medium text-brass-700">{cfg.note}</p>
+          <p className="mt-4 text-sm font-medium text-brass-700">{cfg.note}</p>
 
           {error && (
             <p className="mt-5 rounded-xl border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-[15px] text-[var(--bb-danger)]">
@@ -161,7 +161,7 @@ export function OnboardingFlow() {
             type="button"
             onClick={() => void handleActivate()}
             disabled={!firstName.trim() || submitting}
-            className="btn-primary mt-8 h-16 w-full text-xl"
+            className="btn-primary mt-6 h-14 w-full text-lg sm:text-xl"
           >
             {submitting ? "Activating…" : cfg.ctaLabel}
           </button>

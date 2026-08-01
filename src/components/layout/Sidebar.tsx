@@ -147,7 +147,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={clsx(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-brass-100 hover:text-text-primary",
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-ink-3 transition-colors hover:bg-brass-100 hover:text-ink",
               !collapsed && "ml-auto"
             )}
           >
@@ -159,7 +159,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       <div className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain">
         <nav
           aria-label="Main navigation"
-          className="py-2 pl-3 pr-1 md:pl-5 md:pr-2"
+          className="py-2 px-[14px]"
         >
           <div className="space-y-0.5">
             {showHomeNav ? renderNavLink(homeNav) : null}

@@ -179,7 +179,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Link" step={1} />
@@ -197,7 +197,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
           type="button"
           onClick={() => setInstructionsOpen(!instructionsOpen)}
           aria-expanded={instructionsOpen}
-          className="flex w-full items-center justify-between p-5 transition-colors hover:bg-page/80"
+          className="flex w-full items-center justify-between px-4 py-3.5 transition-colors hover:bg-page/80 sm:px-5"
         >
           <div className="flex items-center gap-3">
             <div className="wizard-panel-icon">
@@ -217,7 +217,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
           style={{ gridTemplateRows: instructionsOpen ? "1fr" : "0fr" }}
         >
           <div className="overflow-hidden">
-            <div className="space-y-3 px-5 pb-5">
+            <div className="space-y-2 px-4 pb-4 sm:px-5 sm:pb-5">
               {INSTRUCTION_STEPS.map((step) => (
                 <div key={step.number} className="wizard-inset-row">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
@@ -248,52 +248,56 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
       </section>
 
       <section className="wizard-panel animate-fade-in-up">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
           <ContentReservePicker
             links={armedLinks}
             selectedUrl={selectedVaultUrl}
             onSelect={handleSelectFromVault}
           />
 
-          <label className="wizard-form-label">Link Name</label>
-          <div className="relative">
-            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
-              <Tag className="h-5 w-5" />
+          <div className="space-y-2">
+            <label className="wizard-form-label">Link Name</label>
+            <div className="relative">
+              <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                <Tag className="h-5 w-5" />
+              </div>
+              <GlassInput
+                type="text"
+                value={linkLabel}
+                onChange={(e) => {
+                  const nextLabel = e.target.value;
+                  setLinkLabel(nextLabel);
+                  setLinkSaved(false);
+                  clearVaultSelectionIfEdited(linkUrl, nextLabel);
+                }}
+                placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
+                className="h-12 pl-12 text-base"
+              />
             </div>
-            <GlassInput
-              type="text"
-              value={linkLabel}
-              onChange={(e) => {
-                const nextLabel = e.target.value;
-                setLinkLabel(nextLabel);
-                setLinkSaved(false);
-                clearVaultSelectionIfEdited(linkUrl, nextLabel);
-              }}
-              placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
-              className="h-14 pl-12 text-base md:text-lg"
-            />
           </div>
 
-          <label className="wizard-form-label">Paste Your Affiliate Link</label>
-          <div className="relative">
-            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
-              <Zap className="h-5 w-5" />
+          <div className="space-y-2">
+            <label className="wizard-form-label">Paste Your Affiliate Link</label>
+            <div className="relative">
+              <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                <Zap className="h-5 w-5" />
+              </div>
+              <GlassInput
+                type="url"
+                value={linkUrl}
+                onChange={(e) => {
+                  const nextUrl = e.target.value;
+                  setLinkUrl(nextUrl);
+                  setLinkSaved(false);
+                  clearVaultSelectionIfEdited(nextUrl, linkLabel);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
+                }}
+                placeholder="Paste Digistore24 affiliate URL here..."
+                className="h-12 pl-12 text-base"
+              />
             </div>
-            <GlassInput
-              type="url"
-              value={linkUrl}
-              onChange={(e) => {
-                const nextUrl = e.target.value;
-                setLinkUrl(nextUrl);
-                setLinkSaved(false);
-                clearVaultSelectionIfEdited(nextUrl, linkLabel);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
-              }}
-              placeholder="Paste Digistore24 affiliate URL here..."
-              className="h-14 pl-12 text-base md:text-lg"
-            />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -301,7 +305,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               type="button"
               onClick={() => void handleSaveToVault()}
               disabled={!linkUrl.trim() || loading}
-              className="btn-primary-prominent"
+              className="btn-primary"
             >
               {loading ? (
                 <Loader2 size={18} className="animate-spin" />
@@ -326,7 +330,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
             type="button"
             onClick={() => void handleContinue()}
             disabled={loading}
-            className="btn-primary-prominent h-14 w-full"
+            className="btn-primary w-full"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
             Continue to Niche

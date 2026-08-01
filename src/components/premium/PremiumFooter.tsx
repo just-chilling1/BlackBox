@@ -6,7 +6,7 @@ interface PremiumFooterProps {
 
 export function PremiumFooter({ children }: PremiumFooterProps) {
   return (
-    <p className="text-xs text-text-muted">
+    <p className="mt-1 text-xs text-text-muted">
       {children ?? `Powered by ${brand.productName}.`}
     </p>
   );

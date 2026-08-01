@@ -163,8 +163,8 @@ export default function ProtectorPage() {
         </div>
       </PremiumControlCard>
 
-      <div className="glass-card space-y-8 p-4 sm:p-6 md:p-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="glass-card space-y-5 p-4 sm:p-5 md:p-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
             <h2 className="text-lg font-medium text-text-heading mb-1">Security Checks</h2>
             <div className="space-y-3">
@@ -200,7 +200,7 @@ export default function ProtectorPage() {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <GlassPanel intensity="low" className="p-5 border-success/20">
               <h3 className="text-sm font-medium text-text-heading mb-4">Account Info</h3>
               <div className="space-y-3">

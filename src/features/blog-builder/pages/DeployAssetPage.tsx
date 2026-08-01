@@ -380,11 +380,11 @@ export default function DeployAssetPage({
       )}
 
       {embedded && !isComplete && onBack && (
-        <div className="-mb-2">
+        <div className="mb-4">
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-xl border border-border-dim bg-white px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-100 hover:text-text-primary"
+            className="inline-flex items-center gap-2 rounded-md border border-[var(--bb-line)] bg-white px-3 py-2 text-[13px] font-medium text-ink-3 transition-colors hover:border-[var(--bb-line-strong)] hover:bg-[var(--bb-surface-field)] hover:text-ink"
           >
             <ArrowLeft size={16} aria-hidden />
             Back to Template

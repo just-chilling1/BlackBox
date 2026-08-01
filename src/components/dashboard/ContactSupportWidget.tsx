@@ -259,14 +259,14 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   }
 
   const formFields = (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
       <div className="min-w-0">
         <label
           htmlFor={embedded ? "support-email" : "dashboard-support-email"}
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-1.5 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
+              : "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
           }
         >
           Your email
@@ -290,7 +290,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-1.5 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
+              : "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
           }
         >
           Your message
@@ -403,7 +403,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         <h3 className="ds-h3 min-w-0">Contact Support</h3>
       </div>
 
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="mt-3 flex flex-col gap-4">
         {introCopy}
         {formFields}
         <div className="border-t border-border-dim/50 pt-4">{mailtoFallback}</div>

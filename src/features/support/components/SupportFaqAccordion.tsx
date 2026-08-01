@@ -21,7 +21,7 @@ export function SupportFaqAccordion({ items }: SupportFaqAccordionProps) {
           <div key={faq.q}>
             <button
               type="button"
-              className="flex w-full items-center justify-between px-1 py-4 text-left transition-colors hover:bg-brass-100 sm:px-2"
+              className="flex w-full items-center justify-between px-1 py-3 text-left transition-colors hover:bg-brass-100 sm:px-2"
               onClick={() => setExpandedIndex(isOpen ? null : index)}
             >
               <span className="pr-4 text-sm font-medium text-text-primary">{faq.q}</span>
@@ -54,9 +54,9 @@ export function SupportFaqAccordion({ items }: SupportFaqAccordionProps) {
 
 export function SupportFaqCardHeader() {
   return (
-    <div className="flex items-center gap-3 border-b border-border-dim/80 px-6 py-5">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
-        <HelpCircle className="h-6 w-6 text-brass-700" />
+    <div className="flex items-center gap-3 border-b border-border-dim/80 px-5 py-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
+        <HelpCircle className="h-5 w-5 text-brass-700" />
       </div>
       <div>
         <h2 className="ds-h3">Frequently Asked Questions</h2>

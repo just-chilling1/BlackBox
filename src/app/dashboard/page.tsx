@@ -111,12 +111,12 @@ export default function DashboardPage() {
         <p className="ds-subtitle max-w-3xl">{welcomeSubtitle}</p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="min-w-0 flex flex-col gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 gap-5 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="min-w-0 flex flex-col gap-5 lg:gap-6">
           <DashboardVideoTrack />
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-6 xl:sticky xl:top-8 xl:self-start">
+        <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-8 xl:self-start">
           <ContactSupportWidget />
           <DashboardTipsWidget />
           <PremiumUpgradesWidget variant="sidebar" />

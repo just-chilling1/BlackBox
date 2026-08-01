@@ -25,7 +25,7 @@ export default function SupportPage() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-5"
       >
         <motion.div variants={itemVariants}>
           <SupportStatCards />
@@ -38,7 +38,7 @@ export default function SupportPage() {
         <motion.div variants={itemVariants} className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div id="faq" className="card-base overflow-hidden p-0 lg:col-span-3">
             <SupportFaqCardHeader />
-            <div className="px-4 pb-2 sm:px-6">
+            <div className="px-4 pb-3 sm:px-5">
               <SupportFaqAccordion items={allFaqs} />
             </div>
           </div>

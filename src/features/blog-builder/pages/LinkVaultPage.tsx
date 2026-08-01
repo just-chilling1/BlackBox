@@ -94,7 +94,7 @@ export default function LinkVaultPage() {
             type="button"
             onClick={() => void handleSave()}
             disabled={!canSave}
-            className="btn-primary-prominent"
+            className="btn-primary"
           >
             {saving ? (
               <Loader2 size={18} className="animate-spin" />

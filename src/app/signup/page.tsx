@@ -143,7 +143,7 @@ export default function SignupPage() {
         </button>
       </form>
 
-      <div className="flex flex-col items-center gap-4 auth-divider pt-8">
+      <div className="flex flex-col items-center gap-2 auth-divider pt-5">
         <p className="text-ink-3 text-[13px]">Already have an account?</p>
         <Link href="/login" className="auth-link brand-font text-[15px]">
           Log In

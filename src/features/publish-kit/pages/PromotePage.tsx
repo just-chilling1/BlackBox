@@ -106,7 +106,7 @@ export default function PromotePage() {
           title="Generate X story thread"
           subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
         />
-        <section className="glass-card space-y-5 p-4 sm:p-6 md:p-8">
+        <section className="glass-card space-y-4 p-4 sm:p-5 md:p-6">
           <PageSkeleton cards={1} className="mt-0" />
         </section>
       </div>
@@ -139,7 +139,7 @@ export default function PromotePage() {
         subtitle={`Analyze your product and website, then generate a ${THREADS_PER_GENERATION}-post X story thread.`}
       />
 
-      <section className="glass-card space-y-5 p-4 sm:p-6 md:p-8">
+      <section className="glass-card space-y-4 p-4 sm:p-5 md:p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brass-100 text-brass-700">
             <Megaphone size={22} />

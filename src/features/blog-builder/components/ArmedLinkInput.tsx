@@ -27,9 +27,9 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {links.map((link, index) => (
-        <div key={index} className="card-base space-y-3">
+        <div key={index} className="card-base space-y-2.5">
           <div className="flex items-center justify-between gap-2">
             <span className="text-[13px] font-medium uppercase tracking-wider text-text-secondary">
               Link {index + 1}
@@ -44,7 +44,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             </button>
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Link Name</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">Link Name</label>
             <input
               type="text"
               value={link.label}
@@ -54,7 +54,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Tag</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">Tag</label>
             <input
               type="text"
               value={link.tag ?? ""}
@@ -64,7 +64,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Description</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">Description</label>
             <textarea
               value={link.description ?? ""}
               onChange={(e) => updateLink(index, { description: e.target.value })}
@@ -74,7 +74,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">URL</label>
+            <label className="block text-sm font-medium text-text-primary mb-2">URL</label>
             <input
               type="url"
               value={link.url}

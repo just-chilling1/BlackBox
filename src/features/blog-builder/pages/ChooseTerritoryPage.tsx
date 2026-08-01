@@ -52,7 +52,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
   }
 
   return (
-    <div className={embedded ? "space-y-6" : "wizard-shell w-full"}>
+    <div className={embedded ? "space-y-4" : "wizard-shell w-full"}>
       {!embedded && (
         <>
           <WizardStepBar breadcrumb="Site Builder / Niche" step={2} />
@@ -102,7 +102,7 @@ export default function ChooseTerritoryPage({ embedded, onContinue, onBack }: Wi
 
         {error && <p className="mt-4 text-sm font-medium text-error">{error}</p>}
 
-        <div className="wizard-action-bar mt-6">
+        <div className="wizard-action-bar mt-4">
           <button
             type="button"
             onClick={() => (onBack ? onBack() : router.push("/sales-offer-generator"))}

@@ -56,7 +56,7 @@ export function PremiumFeatureNavList({
         >
           <Sparkles
             className={clsx(
-              "shrink-0 text-brass-700",
+              "shrink-0 text-brass-300",
               highlighted && "premium-nav-sparkle",
               mobile ? "h-3.5 w-3.5" : "h-3.5 w-3.5"
             )}
@@ -86,9 +86,8 @@ export function PremiumFeatureNavList({
               >
                 <Icon
                   className={clsx(
-                    "shrink-0",
-                    mobile ? "h-5 w-5" : "h-[18px] w-[18px]",
-                    isActive ? "text-brass-300" : "text-ink-6"
+                    "shrink-0 text-brass-300",
+                    mobile ? "h-5 w-5" : "h-[18px] w-[18px]"
                   )}
                   strokeWidth={1.75}
                 />

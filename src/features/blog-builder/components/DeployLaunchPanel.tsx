@@ -37,13 +37,13 @@ function SummaryRow({
   value: string;
 }) {
   return (
-    <div className="dashboard-nested-card flex items-start gap-3">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brass-100">
-        <Icon size={16} className="text-brass-700" />
+    <div className="flex items-center gap-2.5 rounded-md border border-[var(--bb-line)] bg-[var(--bb-surface-field)] px-3 py-2.5">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brass-100">
+        <Icon size={16} className="text-brass-700" strokeWidth={1.75} />
       </div>
       <div className="min-w-0">
-        <p className="text-[13px] font-medium uppercase tracking-[0.14em] text-text-muted">{label}</p>
-        <p className="truncate text-sm font-medium text-text-primary">{value}</p>
+        <p className="text-[13px] font-medium tracking-[0.06em] text-ink-5">{label}</p>
+        <p className="truncate text-[15px] font-medium text-ink">{value}</p>
       </div>
     </div>
   );
@@ -78,16 +78,16 @@ export function DeployLaunchPanel({
 
   return (
     <section className="wizard-panel overflow-hidden p-0 animate-fade-in-up">
-      <div className="space-y-6 p-6 sm:p-8">
-        <div className="wizard-panel-header mb-0 border-b-0 pb-0">
-          <div className="wizard-panel-icon h-12 w-12">
-            <Sparkles size={22} />
+      <div className="space-y-4 p-5 sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="wizard-panel-icon h-10 w-10">
+            <Sparkles size={20} strokeWidth={1.75} />
           </div>
           <div className="min-w-0 space-y-1">
             <h2 className="ds-h3">
               {phase === "error" ? "Deployment interrupted" : "Ready to launch"}
             </h2>
-            <p className="text-sm leading-relaxed text-text-secondary">
+            <p className="text-[15px] leading-relaxed text-ink-3">
               {phase === "error"
                 ? "Something went wrong while building your site. Review the message below and try again."
                 : "Your niche, template, and affiliate link are locked in. One click builds a questionnaire site with your offer on the final page."}
@@ -95,7 +95,7 @@ export function DeployLaunchPanel({
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-3">
           <SummaryRow icon={Globe} label="Niche" value={nicheLabel} />
           <SummaryRow icon={LayoutTemplate} label="Template" value={templateName} />
           <SummaryRow
@@ -106,7 +106,7 @@ export function DeployLaunchPanel({
         </div>
 
         {phase === "idle" && !quotaUnlimited && quotaLimit != null && quotaRemaining != null && (
-          <p className="text-[13px] font-medium text-text-secondary">
+          <p className="text-[13px] text-ink-5">
             {quotaRemaining} of {quotaLimit} new websites remaining today
           </p>
         )}
@@ -114,19 +114,19 @@ export function DeployLaunchPanel({
         {error && <p className="alert-error">{error}</p>}
       </div>
 
-      <div className="border-t border-border-dim bg-page/60 p-6 sm:p-8">
+      <div className="border-t border-[var(--bb-line)] bg-canvas px-5 py-4 sm:px-6 sm:py-5">
         <button
           type="button"
           onClick={primaryAction}
           disabled={phase === "idle" && !canResume && quotaBlocked}
           className={clsx(
-            "btn-primary-prominent min-h-[3.25rem] w-full whitespace-normal text-center leading-snug sm:min-h-[4rem] sm:text-base",
+            "btn-primary w-full",
             (canResume || phase === "error") && "border border-[var(--bb-line-brass)]"
           )}
         >
-          <PrimaryIcon size={22} />
+          <PrimaryIcon size={20} strokeWidth={1.75} />
           {primaryLabel}
-          {phase === "idle" && !canResume && <ArrowRight size={22} />}
+          {phase === "idle" && !canResume && <ArrowRight size={20} strokeWidth={1.75} />}
         </button>
       </div>
     </section>

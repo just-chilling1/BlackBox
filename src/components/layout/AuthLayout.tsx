@@ -21,8 +21,8 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8">
-          <div className="flex flex-col items-center gap-5 text-center">
+        <div className="glass-card p-5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6">
+          <div className="flex flex-col items-center gap-3 text-center">
             <BrandLogo size="lg" showTagline={false} stacked />
             {subtitle && <p className="text-[15px] text-ink-3">{subtitle}</p>}
           </div>

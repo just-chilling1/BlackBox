@@ -15,13 +15,13 @@ export function sidebarNavIconClass(isActive: boolean) {
     "w-5 h-5 shrink-0 transition-colors duration-[160ms]",
     isActive
       ? "text-brass-300"
-      : "text-ink-6 group-hover:text-ink-4"
+      : "text-ink-3 group-hover:text-ink-4"
   );
 }
 
 export function sidebarNavLabelClass(isActive: boolean) {
   return clsx(
     "sidebar-nav-label text-[15px] min-w-0 truncate font-normal leading-[1.4]",
-    isActive ? "text-[#FFFDF8]" : "text-ink-2"
+    isActive ? "text-[#FFFDF8]" : "text-ink"
   );
 }
