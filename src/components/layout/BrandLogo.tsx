@@ -10,6 +10,7 @@ interface BrandLogoProps {
   compact?: boolean;
   splitTitle?: boolean;
   stacked?: boolean;
+  className?: string;
 }
 
 const SIZES = {
@@ -18,6 +19,7 @@ const SIZES = {
     icon: 20,
     imgHeight: "h-10 w-10 sm:h-11 sm:w-11",
     wordmarkHeight: "h-12 sm:h-14",
+    wordmarkWidth: "",
     img: 44,
     title: "text-base sm:text-[18px]",
     tagline: "text-[13px]",
@@ -27,6 +29,7 @@ const SIZES = {
     icon: 22,
     imgHeight: "h-11 w-11 sm:h-12 sm:w-12",
     wordmarkHeight: "h-14 sm:h-16",
+    wordmarkWidth: "",
     img: 48,
     title: "text-lg sm:text-[22px]",
     tagline: "text-[13px]",
@@ -35,7 +38,8 @@ const SIZES = {
     box: "w-12 h-12 sm:w-14 sm:h-14",
     icon: 24,
     imgHeight: "h-12 w-12 sm:h-14 sm:w-14",
-    wordmarkHeight: "h-16 w-auto sm:h-[4.5rem]",
+    wordmarkHeight: "",
+    wordmarkWidth: "w-full h-auto max-h-[5.5rem] object-contain object-left",
     img: 56,
     title: "text-lg sm:text-xl",
     tagline: "text-[13px]",
@@ -45,6 +49,7 @@ const SIZES = {
     icon: 28,
     imgHeight: "h-16 sm:h-20",
     wordmarkHeight: "h-16 sm:h-[5.25rem] md:h-24",
+    wordmarkWidth: "",
     img: 80,
     title: "text-xl sm:text-[28px] lg:text-[32px]",
     tagline: "text-[13px] sm:text-[15px]",
@@ -57,6 +62,7 @@ export function BrandLogo({
   compact = false,
   splitTitle = false,
   stacked = false,
+  className,
 }: BrandLogoProps) {
   const s = SIZES[size];
   const Icon = getNavIcon(brand.logo.icon);
@@ -69,7 +75,8 @@ export function BrandLogo({
       className={clsx(
         "flex min-w-0",
         stacked ? "flex-col items-center gap-3 text-center" : "items-center",
-        !stacked && (compact ? "justify-center" : "gap-2.5 sm:gap-4")
+        !stacked && (compact ? "justify-center" : "gap-2.5 sm:gap-4"),
+        className
       )}
     >
       {useImage ? (
@@ -80,9 +87,12 @@ export function BrandLogo({
           width={compact ? s.img : undefined}
           height={compact ? s.img : undefined}
           className={clsx(
-            "w-auto object-contain shrink-0",
-            compact ? s.imgHeight : s.wordmarkHeight,
-            isWordmarkImage && !compact ? "max-w-[min(100%,20rem)]" : "max-w-full"
+            "object-contain shrink-0",
+            compact
+              ? clsx("w-auto", s.imgHeight)
+              : isWordmarkImage && s.wordmarkWidth
+                ? s.wordmarkWidth
+                : clsx("w-auto", s.wordmarkHeight, isWordmarkImage ? "max-w-[min(100%,20rem)]" : "max-w-full")
           )}
           loading="eager"
           decoding="async"

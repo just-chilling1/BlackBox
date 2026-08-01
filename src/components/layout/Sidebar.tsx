@@ -128,24 +128,29 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--sidebar-border)] bg-[var(--sidebar-bg)]">
-      <div className={clsx("shrink-0 border-b border-[var(--sidebar-border)]", collapsed ? "p-3" : "p-6 pb-2")}>
-        <div className={clsx("flex items-center", collapsed ? "w-full flex-col gap-3" : "justify-between gap-2")}>
+      <div className={clsx("shrink-0 border-b border-[var(--sidebar-border)]", collapsed ? "p-3" : "px-5 py-4")}>
+        <div className={clsx("flex w-full items-center", collapsed ? "flex-col gap-3" : "gap-3")}>
           <Link
             href="/dashboard"
             onClick={handleNavClick}
             className={clsx(
               "transition-opacity hover:opacity-90",
-              collapsed ? "flex w-full justify-center" : "block min-w-0 flex-1"
+              collapsed
+                ? "flex w-full justify-center"
+                : "min-w-0 shrink-0 basis-[80%] max-w-[calc(100%-2.75rem)]"
             )}
             title={brand.productName}
           >
-            <BrandLogo size="sidebar" showTagline={false} compact={collapsed} />
+            <BrandLogo size="sidebar" showTagline={false} compact={collapsed} className="w-full" />
           </Link>
           <button
             type="button"
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-brass-100 hover:text-text-primary"
+            className={clsx(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-brass-100 hover:text-text-primary",
+              !collapsed && "ml-auto"
+            )}
           >
             {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
           </button>
