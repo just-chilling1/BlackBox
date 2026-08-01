@@ -1,19 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { Globe, Link2, Eye } from "lucide-react";
+import { Globe, Link2 } from "lucide-react";
 import type { BlogSite } from "../types";
 
 interface DeploySitePreviewProps {
   site: BlogSite;
-  showLiveLink?: boolean;
 }
 
-export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePreviewProps) {
+export function DeploySitePreview({ site }: DeploySitePreviewProps) {
   const armedCount = site.armed_links?.length ?? 0;
   const publicPath = `/sites/${site.slug}`;
-  const isLive = site.status === "live";
 
   return (
     <motion.div
@@ -21,23 +18,9 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
       animate={{ opacity: 1, y: 0 }}
       className="min-w-0 max-w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm ring-1 ring-amber-100 sm:p-6"
     >
-      <div className="flex items-start justify-between gap-3">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-readable">
-          Cash asset initialized
-        </p>
-        {isLive && (
-          <Link
-            href={publicPath}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="View website"
-            aria-label={`View ${site.title}`}
-            className="-mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-accent-readable transition-colors hover:border-amber-300 hover:bg-amber-100"
-          >
-            <Eye size={18} strokeWidth={2} />
-          </Link>
-        )}
-      </div>
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-readable">
+        Cash asset initialized
+      </p>
       <h2 className="brand-font text-xl tracking-tight text-text-heading sm:text-2xl">{site.title}</h2>
       {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
 
@@ -54,20 +37,6 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
           {publicPath}
         </span>
       </div>
-
-      {showLiveLink && isLive && (
-        <Link
-          href={publicPath}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="View website"
-          aria-label={`View ${site.title}`}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-accent to-[#C9970D] px-5 py-3 text-sm font-bold text-text-on-accent shadow-gold transition-all hover:brightness-105 sm:w-auto"
-        >
-          <Eye size={16} aria-hidden />
-          View live questionnaire
-        </Link>
-      )}
     </motion.div>
   );
 }

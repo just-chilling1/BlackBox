@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, CheckCircle2, Eye, Rocket } from "lucide-react";
+import { ArrowRight, CheckCircle2, Rocket } from "lucide-react";
 import { DeploySitePreview } from "./DeploySitePreview";
 import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import type { BlogSite } from "../types";
@@ -43,21 +42,9 @@ export function DeployCompletePanel({
         </div>
       </div>
 
-      <DeploySitePreview site={site} showLiveLink />
+      <DeploySitePreview site={site} />
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <motion.div whileHover={{ scale: 1.01 }}>
-          <Link
-            href={`/sites/${site.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-400 bg-gradient-to-br from-accent to-[#C9970D] px-4 py-4 text-base font-bold text-text-on-accent shadow-gold"
-          >
-            <Eye size={18} />
-            View Website
-          </Link>
-        </motion.div>
-
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <motion.button
           type="button"
           onClick={onGenerateAnother}
