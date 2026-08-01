@@ -38,12 +38,12 @@ function SummaryRow({
 }) {
   return (
     <div className="dashboard-nested-card flex items-start gap-3">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
-        <Icon size={16} className="text-accent" />
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brass-100">
+        <Icon size={16} className="text-brass-700" />
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{label}</p>
-        <p className="truncate text-sm font-semibold text-text-primary">{value}</p>
+        <p className="text-[13px] font-medium uppercase tracking-[0.14em] text-text-muted">{label}</p>
+        <p className="truncate text-sm font-medium text-text-primary">{value}</p>
       </div>
     </div>
   );
@@ -106,7 +106,7 @@ export function DeployLaunchPanel({
         </div>
 
         {phase === "idle" && !quotaUnlimited && quotaLimit != null && quotaRemaining != null && (
-          <p className="text-xs font-medium text-text-secondary">
+          <p className="text-[13px] font-medium text-text-secondary">
             {quotaRemaining} of {quotaLimit} new websites remaining today
           </p>
         )}
@@ -121,7 +121,7 @@ export function DeployLaunchPanel({
           disabled={phase === "idle" && !canResume && quotaBlocked}
           className={clsx(
             "btn-primary-prominent min-h-[3.25rem] w-full whitespace-normal text-center leading-snug sm:min-h-[4rem] sm:text-base",
-            (canResume || phase === "error") && "border border-accent/40"
+            (canResume || phase === "error") && "border border-[var(--bb-line-brass)]"
           )}
         >
           <PrimaryIcon size={22} />

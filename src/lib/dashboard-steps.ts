@@ -9,7 +9,7 @@ export interface QuickAction {
   description: string;
   icon: LucideIcon;
   buttonText: string;
-  accent: "gold" | "indigo" | "teal";
+  accent: "gold" | "ink" | "brass";
 }
 
 function blogBuilderSteps(): HowItWorksStep[] {
@@ -157,7 +157,7 @@ export function getDashboardQuickActions(): QuickAction[] {
         description: "Generate social promotion threads for your offer",
         icon: Megaphone,
         buttonText: "Create Posts",
-        accent: "indigo",
+        accent: "ink",
       },
       {
         href: "/training",
@@ -165,7 +165,7 @@ export function getDashboardQuickActions(): QuickAction[] {
         description: "Video tutorials and step-by-step guides",
         icon: Brain,
         buttonText: "Watch Training",
-        accent: "teal",
+        accent: "brass",
       },
     ];
   }
@@ -186,7 +186,7 @@ export function getDashboardQuickActions(): QuickAction[] {
         description: "See which keywords win in your niche",
         icon: Brain,
         buttonText: "Analyze",
-        accent: "indigo",
+        accent: "ink",
       },
       {
         href: "/radar",
@@ -194,7 +194,7 @@ export function getDashboardQuickActions(): QuickAction[] {
         description: "Pick posts to reply to with your link",
         icon: Radar,
         buttonText: "Find Ads",
-        accent: "teal",
+        accent: "brass",
       },
     ];
   }
@@ -214,7 +214,7 @@ export function getDashboardQuickActions(): QuickAction[] {
       description: "Get help from the support team",
       icon: MessageSquare,
       buttonText: "Get Help",
-      accent: "indigo",
+      accent: "ink",
     },
     {
       href: "/accelerator",
@@ -222,7 +222,7 @@ export function getDashboardQuickActions(): QuickAction[] {
       description: "Unlock advanced tools and pre-made assets",
       icon: Megaphone,
       buttonText: "Explore",
-      accent: "teal",
+      accent: "brass",
     },
   ];
 }

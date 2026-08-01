@@ -23,8 +23,8 @@ export function DashboardVideoTrack() {
     <div className="flex min-w-0 flex-col gap-6 lg:gap-8">
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
-            <Play className="h-5 w-5 text-accent" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
+            <Play className="h-5 w-5 text-brass-700" />
           </div>
           <h2 className="ds-h2">{dashboardContent.startHereTitle}</h2>
         </div>
@@ -59,11 +59,11 @@ export function DashboardVideoTrack() {
       <DashboardSection>
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 sm:h-14 sm:w-14">
-              <Headphones className="h-6 w-6 text-accent sm:h-7 sm:w-7" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--bb-line-brass)] bg-brass-100 sm:h-14 sm:w-14">
+              <Headphones className="h-6 w-6 text-brass-700 sm:h-7 sm:w-7" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-bold text-text-heading sm:text-xl">
+              <h3 className="text-lg font-medium text-text-heading sm:text-xl">
                 {dashboardContent.needHelp.title}
               </h3>
               <p className="text-sm text-text-secondary">{dashboardContent.needHelp.subtitle}</p>

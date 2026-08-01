@@ -33,10 +33,9 @@ export function EarningsBanner({
     return (
       <div
         className={clsx(
-          "relative w-full rounded-2xl border-[3px] border-accent bg-gradient-to-b from-accent/12 via-white to-accent/5",
+          "relative w-full rounded-lg border border-[var(--bb-line-brass)] bg-grad-tint",
           "px-6 py-8 sm:px-10 sm:py-10 text-center",
-          "shadow-[0_0_48px_rgba(238,179,16,0.35),0_8px_32px_rgba(238,179,16,0.15)] ring-2 ring-accent/25",
-          "animate-[earnings-glow_2.5s_ease-in-out_infinite]"
+          "shadow-card"
         )}
       >
         <button
@@ -48,13 +47,13 @@ export function EarningsBanner({
           <X size={16} />
         </button>
 
-        <span className="mb-4 inline-block rounded-full bg-red-600 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-sm">
+        <span className="mb-4 inline-block rounded-full bg-grad-ink px-4 py-1.5 text-[13px] font-medium tracking-[0.08em] text-[#FFFDF8]">
           Free Training
         </span>
 
-        <h3 className="mx-auto mb-4 max-w-3xl text-xl font-black uppercase leading-tight tracking-tight text-text-heading sm:text-2xl md:text-[1.75rem]">
+        <h3 className="mx-auto mb-4 max-w-3xl text-xl font-medium uppercase leading-tight tracking-tight text-text-heading sm:text-2xl md:text-[1.75rem]">
           Wake Up With An Extra{" "}
-          <span className="text-accent">$1,000–$5,000</span> In Your Bank Account Tomorrow
+          <span className="text-brass-700">$1,000–$5,000</span> In Your Bank Account Tomorrow
         </h3>
 
         <p className="mx-auto mb-6 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
@@ -65,12 +64,12 @@ export function EarningsBanner({
           href={ctaUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-[54px] w-full max-w-xl items-center justify-center rounded-xl bg-gradient-to-r from-accent to-[#e6a800] px-8 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_4px_24px_rgba(238,179,16,0.45)] transition-all duration-200 hover:brightness-110 active:scale-[0.98] sm:text-base"
+          className="inline-flex min-h-[54px] w-full max-w-xl items-center justify-center rounded-xl bg-grad-brass px-8 py-4 text-sm font-medium uppercase tracking-wide text-brass-900 shadow-brass transition-all duration-200 hover:brightness-110 active:scale-[0.98] sm:text-base"
         >
           Watch The Free Training {">>"}
         </a>
 
-        <p className="mt-5 text-xs font-bold uppercase tracking-wider text-red-600 sm:text-sm">
+        <p className="mt-5 text-[13px] font-medium uppercase tracking-wider text-[var(--bb-danger)] sm:text-sm">
           Warning: This Will Be Taken Down Soon
         </p>
       </div>
@@ -80,7 +79,7 @@ export function EarningsBanner({
   return (
     <div
       className={clsx(
-        "relative w-full rounded-2xl border-2 border-accent/40 bg-gradient-to-b from-accent/[0.06] via-white to-page text-center shadow-[0_0_40px_rgba(238,179,16,0.08)] transition-all duration-300",
+        "relative w-full rounded-lg border border-[var(--bb-line-brass)] bg-grad-tint text-center shadow-card transition-[border-color,box-shadow] duration-[160ms]",
         isLarge ? "p-5 sm:p-6" : "p-3 sm:p-3.5"
       )}
     >
@@ -98,8 +97,8 @@ export function EarningsBanner({
 
       <span
         className={clsx(
-          "inline-block rounded-full bg-red-600 font-black uppercase tracking-widest text-white shadow-sm",
-          isLarge ? "mb-3 px-3 py-1 text-[10px]" : "mb-2 px-2 py-0.5 text-[9px]"
+          "inline-block rounded-full bg-grad-ink font-medium tracking-[0.08em] text-[#FFFDF8]",
+          isLarge ? "mb-3 px-3 py-1 text-[13px]" : "mb-2 px-2 py-0.5 text-[13px]"
         )}
       >
         Free Training
@@ -107,12 +106,12 @@ export function EarningsBanner({
 
       <h3
         className={clsx(
-          "font-black uppercase leading-tight text-text-heading",
+          "font-medium uppercase leading-tight text-text-heading",
           isLarge ? "mb-2 text-xl sm:text-2xl" : "mb-1.5 text-sm sm:text-base"
         )}
       >
         Multiply Your Earnings To{" "}
-        <span className="text-accent">$1,000 – $5,000</span> A Day
+        <span className="text-brass-700">$1,000 – $5,000</span> A Day
       </h3>
 
       <a
@@ -120,8 +119,8 @@ export function EarningsBanner({
         target="_blank"
         rel="noopener noreferrer"
         className={clsx(
-          "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent font-black uppercase tracking-wide text-black transition-all duration-200 hover:brightness-110 active:scale-[0.98] sm:w-auto",
-          isLarge ? "min-h-[48px] px-8 py-3 text-sm" : "min-h-[40px] px-5 py-2 text-[11px]"
+          "inline-flex w-full items-center justify-center gap-2 rounded-full bg-grad-brass font-medium tracking-normal text-brass-900 shadow-brass transition-[background,box-shadow] duration-[160ms] hover:brightness-[1.03] sm:w-auto",
+          isLarge ? "min-h-[48px] px-8 py-3 text-sm" : "min-h-[40px] px-5 py-2 text-[13px]"
         )}
       >
         Click Here To Learn How

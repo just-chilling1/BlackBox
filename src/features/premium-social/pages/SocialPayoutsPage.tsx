@@ -42,19 +42,19 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
   const isCopied = copiedId === post.id;
 
   return (
-    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-accent/20 [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
+    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--bb-line-brass)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
+        <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">
           Variant {index + 1}
         </p>
         <button
           type="button"
           onClick={() => onCopy(post)}
           className={clsx(
-            "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
+            "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors",
             isCopied
-              ? "bg-accent/20 text-accent"
-              : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
+              ? "bg-brass-200 text-brass-700"
+              : "bg-brass-100 text-text-secondary hover:bg-brass-100/70"
           )}
         >
           {isCopied ? <Check size={12} /> : <Copy size={12} />}
@@ -258,7 +258,7 @@ export default function SocialPayoutsPage() {
           description="One offer → many scroll-stopping posts with your link baked in."
         >
           <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+            <span className="mb-2 block text-sm font-medium text-text-primary">Select offer</span>
             <select
               value={selectedSiteId}
               onChange={(e) => setSelectedSiteId(e.target.value)}
@@ -310,7 +310,7 @@ export default function SocialPayoutsPage() {
       {(loadingPosts || posts.length > 0) && (
         <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-text-primary">
+            <h2 className="text-lg font-medium text-text-primary">
               {loadingPosts && posts.length === 0
                 ? "Loading posts…"
                 : `${posts.length} post${posts.length !== 1 ? "s" : ""} ready`}
@@ -319,7 +319,7 @@ export default function SocialPayoutsPage() {
               <button
                 type="button"
                 onClick={() => void handleCopyAll()}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-accent"
+                className="inline-flex items-center gap-2 text-sm font-medium text-brass-700"
               >
                 {copiedAll ? <Check size={14} /> : <ClipboardCopy size={14} />}
                 {copiedAll ? "All copied!" : "Copy all"}
@@ -328,7 +328,7 @@ export default function SocialPayoutsPage() {
           </div>
 
           {loadingPosts && posts.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-xl border border-divider bg-slate-50 px-4 py-6 text-sm text-text-muted">
+            <div className="flex items-center gap-2 rounded-xl border border-divider bg-canvas px-4 py-6 text-sm text-text-muted">
               <Loader2 size={16} className="animate-spin" />
               Loading saved posts…
             </div>

@@ -32,14 +32,14 @@ function PreviewCard({
   const base = `/logo-concepts/${concept.id}`;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-100 bg-slate-50 px-6 py-5">
+    <article className="overflow-hidden rounded-2xl border border-border-dim bg-white shadow-sm">
+      <div className="border-b border-border-dim bg-canvas px-6 py-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">{concept.name}</h2>
-            <p className="mt-1 max-w-xl text-sm leading-relaxed text-slate-600">{concept.description}</p>
+            <h2 className="text-lg font-medium text-ink">{concept.name}</h2>
+            <p className="mt-1 max-w-xl text-sm leading-relaxed text-ink-3">{concept.description}</p>
           </div>
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900">
+          <span className="rounded-full bg-brass-100 px-3 py-1 text-[13px] font-medium text-brass-700">
             {concept.tag}
           </span>
         </div>
@@ -47,55 +47,55 @@ function PreviewCard({
 
       <div className="grid gap-0 lg:grid-cols-2">
         {/* Sidebar mock */}
-        <div className="border-b border-slate-100 p-6 lg:border-b-0 lg:border-r">
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Sidebar header</p>
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="border-b border-border-dim p-6 lg:border-b-0 lg:border-r">
+          <p className="mb-3 text-[13px] font-medium uppercase tracking-widest text-ink-5">Sidebar header</p>
+          <div className="rounded-xl border border-border-dim bg-white p-5 shadow-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${base}/logo.png`} alt={concept.name} className="h-9 w-auto max-w-[220px] object-contain object-left" />
             <div className="mt-5 space-y-2">
-              <div className="h-9 rounded-lg bg-amber-50" />
-              <div className="h-9 rounded-lg bg-slate-50" />
-              <div className="h-9 rounded-lg bg-slate-50" />
+              <div className="h-9 rounded-lg bg-brass-100" />
+              <div className="h-9 rounded-lg bg-canvas" />
+              <div className="h-9 rounded-lg bg-canvas" />
             </div>
           </div>
         </div>
 
         {/* Auth mock */}
         <div className="p-6">
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Login card</p>
-          <div className="mx-auto max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+          <p className="mb-3 text-[13px] font-medium uppercase tracking-widest text-ink-5">Login card</p>
+          <div className="mx-auto max-w-sm rounded-2xl border border-border-dim bg-white p-8 shadow-sm">
             <div className="mb-6 flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`${base}/logo.png`} alt={concept.name} className="h-10 w-auto max-w-[240px] object-contain" />
             </div>
             <div className="space-y-3">
-              <div className="h-11 rounded-xl bg-slate-100" />
-              <div className="h-11 rounded-xl bg-slate-100" />
-              <div className="h-12 rounded-xl bg-[#EEB310]" />
+              <div className="h-11 rounded-xl bg-brass-100" />
+              <div className="h-11 rounded-xl bg-brass-100" />
+              <div className="h-12 rounded-xl bg-brass-500" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 border-t border-slate-100 bg-slate-50/60 p-6 sm:grid-cols-3">
+      <div className="grid gap-6 border-t border-border-dim bg-canvas/60 p-6 sm:grid-cols-3">
         <div>
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Wordmark</p>
+          <p className="mb-2 text-[13px] font-medium uppercase tracking-widest text-ink-5">Wordmark</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${base}/logo.png`} alt="" className="h-12 w-auto object-contain" />
         </div>
         <div>
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">App icon</p>
+          <p className="mb-2 text-[13px] font-medium uppercase tracking-widest text-ink-5">App icon</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${base}/logo-icon.png`} alt="" className="h-16 w-16 rounded-xl object-contain shadow-sm" />
         </div>
         <div>
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Favicon</p>
+          <p className="mb-2 text-[13px] font-medium uppercase tracking-widest text-ink-5">Favicon</p>
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${base}/favicon.png`} alt="" className="h-8 w-8 object-contain" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${base}/favicon.png`} alt="" className="h-4 w-4 object-contain opacity-80" />
-            <span className="text-xs text-slate-500">48px / 16px</span>
+            <span className="text-xs text-ink-4">48px / 16px</span>
           </div>
         </div>
       </div>
@@ -106,14 +106,14 @@ function PreviewCard({
 export default function BrandPreviewPage() {
   return (
     <div className="min-h-dvh bg-[#F8FAFC]">
-      <header className="border-b border-slate-200 bg-white px-6 py-8">
+      <header className="border-b border-border-dim bg-white px-6 py-8">
         <div className="mx-auto max-w-5xl">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#EEB310]">Brand preview</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-900">Pick a logo direction</h1>
-          <p className="mt-2 max-w-2xl text-slate-600">
-            All three concepts below use the same gold (<code className="text-slate-800">#EEB310</code>) and charcoal palette on a light-mode UI. Reply with <strong>A</strong>, <strong>B</strong>, or <strong>C</strong> to finalize.
+          <p className="text-[13px] font-medium uppercase tracking-widest text-brass-500">Brand preview</p>
+          <h1 className="mt-2 text-3xl font-medium text-ink">Pick a logo direction</h1>
+          <p className="mt-2 max-w-2xl text-ink-3">
+            All three concepts below use the same brass (<code className="text-ink-2">#C9971F</code>) and charcoal palette on a light-mode UI. Reply with <strong>A</strong>, <strong>B</strong>, or <strong>C</strong> to finalize.
           </p>
-          <Link href="/dashboard" className="mt-4 inline-block text-sm font-semibold text-amber-800 hover:underline">
+          <Link href="/dashboard" className="mt-4 inline-block text-sm font-medium text-brass-700 hover:underline">
             ← Back to dashboard
           </Link>
         </div>

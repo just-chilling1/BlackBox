@@ -23,29 +23,29 @@ export function SupportStatCards() {
             className={clsx(
               "flex items-start gap-3 rounded-xl border p-4 text-sm transition-colors",
               isPrimary
-                ? "border-accent/35 bg-accent/8 ring-1 ring-accent/15 text-text-primary"
+                ? "border-[var(--bb-line-brass)] bg-brass-100 ring-1 ring-brass-100 text-text-primary"
                 : "border-border-dim bg-page/60 text-text-secondary"
             )}
           >
             <div
               className={clsx(
                 "flex shrink-0 items-center justify-center rounded-lg",
-                isPrimary ? "h-10 w-10 bg-accent/15" : "h-9 w-9 bg-slate-100"
+                isPrimary ? "h-10 w-10 bg-brass-100" : "h-9 w-9 bg-brass-100"
               )}
             >
               <Icon
                 size={isPrimary ? 20 : 17}
-                className={clsx(isPrimary ? "text-accent-readable" : "text-text-muted")}
+                className={clsx(isPrimary ? "text-brass-700" : "text-text-muted")}
               />
             </div>
             <span className={clsx("min-w-0 leading-snug", isPrimary && "font-medium")}>
               {isPrimary ? (
                 <>
-                  <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-wide text-text-muted">
+                  <span className="mb-0.5 block text-[13px] font-medium uppercase tracking-wide text-text-muted">
                     {stat.label}
                   </span>
                   {"highlight" in stat && stat.highlight ? (
-                    <span className={clsx("text-base font-bold", stat.highlightClass ?? "text-success")}>
+                    <span className={clsx("text-base font-medium", stat.highlightClass ?? "text-success")}>
                       {stat.highlight}
                     </span>
                   ) : null}

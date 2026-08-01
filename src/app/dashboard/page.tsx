@@ -127,22 +127,22 @@ export default function DashboardPage() {
       </div>
 
       {showDevChecklist ? (
-        <DashboardSection className="border-dashed border-accent/30">
+        <DashboardSection className="border-dashed border-[var(--bb-line-brass)]">
           <div className="flex items-center gap-3">
-            <Sparkles className="shrink-0 text-accent" size={20} />
-            <span className="font-bold text-text-primary">Developer setup checklist</span>
+            <Sparkles className="shrink-0 text-brass-700" size={20} />
+            <span className="font-medium text-text-primary">Developer setup checklist</span>
           </div>
           <ul className="mt-4 flex flex-col gap-3">
             {SETUP_STEPS.map((step) => (
               <li key={step.title} className="flex gap-3 text-sm">
-                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-accent" />
+                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-brass-700" />
                 <div>
                   <p className="font-medium text-text-primary">{step.title}</p>
                   <p className="leading-relaxed text-text-secondary">{step.body}</p>
                   {"href" in step && step.href ? (
                     <Link
                       href={step.href}
-                      className="mt-1 inline-block text-xs font-medium text-accent hover:underline"
+                      className="mt-1 inline-block text-[13px] font-medium text-brass-700 hover:underline"
                     >
                       Open page →
                     </Link>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
             ))}
           </ul>
           <p className="mt-4 text-xs text-text-muted">
-            Full handoff guide: <code className="text-accent">DEVELOPER-SETUP.md</code> in the project root.
+            Full handoff guide: <code className="text-brass-700">DEVELOPER-SETUP.md</code> in the project root.
           </p>
         </DashboardSection>
       ) : null}

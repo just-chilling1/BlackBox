@@ -92,10 +92,10 @@ export function ThemeCustomizationCarousel({
                 type="button"
                 onClick={() => scrollToSlide(index)}
                 className={clsx(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
                   isActive
-                    ? "bg-accent text-text-on-accent"
-                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
+                    ? "bg-grad-brass text-text-on-accent"
+                    : "bg-brass-100 text-text-secondary hover:bg-brass-100/70"
                 )}
                 aria-current={isActive ? "step" : undefined}
               >
@@ -110,7 +110,7 @@ export function ThemeCustomizationCarousel({
             type="button"
             onClick={() => scrollToSlide(activeSlide - 1)}
             disabled={activeSlide === 0}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-dim text-text-secondary transition-colors hover:bg-slate-100 disabled:opacity-40"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-dim text-text-secondary transition-colors hover:bg-brass-100 disabled:opacity-40"
             aria-label="Previous customization step"
           >
             <ChevronLeft size={16} />
@@ -119,7 +119,7 @@ export function ThemeCustomizationCarousel({
             type="button"
             onClick={() => scrollToSlide(activeSlide + 1)}
             disabled={activeSlide === SLIDES.length - 1}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-dim text-text-secondary transition-colors hover:bg-slate-100 disabled:opacity-40"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border-dim text-text-secondary transition-colors hover:bg-brass-100 disabled:opacity-40"
             aria-label="Next customization step"
           >
             <ChevronRight size={16} />
@@ -149,11 +149,11 @@ export function ThemeCustomizationCarousel({
                   <h2 className="ds-h4">Templates</h2>
                   <p className="mt-0.5 text-xs text-text-muted">
                     Selected:{" "}
-                    <span className="font-semibold text-amber-800">{selectedTemplate.name}</span>
+                    <span className="font-medium text-brass-700">{selectedTemplate.name}</span>
                   </p>
                 </div>
               </div>
-              <span className="text-xs font-medium text-text-muted">{READY_TEMPLATES.length} options</span>
+              <span className="text-[13px] font-medium text-text-muted">{READY_TEMPLATES.length} options</span>
             </div>
 
             <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -186,7 +186,7 @@ export function ThemeCustomizationCarousel({
                         <p
                           className={clsx(
                             "wizard-template-card-title select-card-label",
-                            isSelected && "font-bold text-amber-900"
+                            isSelected && "font-medium text-brass-700"
                           )}
                         >
                           {template.name}
@@ -200,7 +200,7 @@ export function ThemeCustomizationCarousel({
                       <p
                         className={clsx(
                           "wizard-template-card-tone",
-                          template.structureId === "conversion" && isSelected && "text-emerald-900"
+                          template.structureId === "conversion" && isSelected && "text-success"
                         )}
                       >
                         {template.toneLabel}
@@ -338,7 +338,7 @@ export function ThemeCustomizationCarousel({
             onClick={() => scrollToSlide(index)}
             className={clsx(
               "h-2 rounded-full transition-all duration-200",
-              activeSlide === index ? "w-6 bg-accent" : "w-2 bg-slate-200 hover:bg-slate-300"
+              activeSlide === index ? "w-6 bg-grad-brass" : "w-2 bg-brass-100 hover:bg-ink-6"
             )}
             aria-label={`Go to ${slide.label}`}
             aria-current={activeSlide === index ? "step" : undefined}

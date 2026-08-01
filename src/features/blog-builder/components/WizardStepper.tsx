@@ -34,7 +34,7 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                 </div>
                 <p
                   className={clsx(
-                    "mt-2 line-clamp-2 text-[10px] font-semibold leading-tight sm:text-xs sm:leading-snug md:text-sm",
+                    "mt-2 line-clamp-2 text-[13px] font-medium leading-tight sm:text-xs sm:leading-snug md:text-sm",
                     isActive
                       ? "text-text-heading"
                       : isComplete
@@ -46,7 +46,7 @@ export function WizardStepper({ currentStep, className }: WizardStepperProps) {
                 </p>
                 <p
                   className={clsx(
-                    "mt-0.5 hidden text-[10px] leading-snug sm:block sm:text-xs",
+                    "mt-0.5 hidden text-[13px] leading-snug sm:block sm:text-xs",
                     isActive ? "text-text-secondary" : isComplete ? "text-text-muted" : "text-text-muted/80"
                   )}
                 >

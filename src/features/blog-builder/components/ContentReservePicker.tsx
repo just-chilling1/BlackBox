@@ -31,10 +31,10 @@ export function ContentReservePicker({ links, selectedUrl, onSelect }: ContentRe
             >
               <Link2
                 size={16}
-                className={clsx("shrink-0", isSelected ? "text-amber-800" : "text-text-muted")}
+                className={clsx("shrink-0", isSelected ? "text-brass-700" : "text-text-muted")}
               />
               <div className="min-w-0 flex-1">
-                <p className={clsx("select-card-label truncate", isSelected && "font-bold text-amber-900")}>
+                <p className={clsx("select-card-label truncate", isSelected && "font-medium text-brass-700")}>
                   {link.label || "Untitled Link"}
                 </p>
                 <p className="truncate text-xs text-text-muted">{link.url}</p>

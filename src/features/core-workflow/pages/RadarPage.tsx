@@ -15,10 +15,10 @@ function PlatformBadge({ platform }: { platform: string }) {
     const isReddit = platform === "Reddit";
     return (
         <span className={clsx(
-            "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
+            "text-[13px] font-medium uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
             isReddit
-                ? "text-orange-400 border-orange-400/20 bg-orange-400/5"
-                : "text-red-500 border-red-500/20 bg-red-500/5"
+                ? "text-[var(--bb-warning)] border-[var(--bb-warning)]/20 bg-[var(--bb-warning)]/10"
+                : "text-[var(--bb-danger)] border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10"
         )}>
             {platform}
         </span>
@@ -49,7 +49,7 @@ function AdCard({
             <div className="flex flex-col gap-2.5 pr-10">
                 <div className="flex items-center gap-2">
                     <PlatformBadge platform={post.platform} />
-                    <span className="text-[9px] text-text-muted font-medium">
+                    <span className="text-[13px] text-text-muted font-medium">
                         {typeof post.engagement === 'number'
                             ? `${post.engagement.toLocaleString()} engagements`
                             : post.engagement}
@@ -64,14 +64,14 @@ function AdCard({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1 text-[10px] text-text-muted hover:text-amber-800 transition-colors"
+                        className="flex items-center gap-1 text-[13px] text-text-muted hover:text-brass-700 transition-colors"
                     >
                         <ExternalLink size={10} />
                         <span>View original</span>
                     </a>
                     <span className={clsx(
-                        "text-[9px] font-bold uppercase tracking-widest",
-                        isSelected ? "text-amber-800" : "text-text-muted"
+                        "text-[13px] font-medium uppercase tracking-widest",
+                        isSelected ? "text-brass-700" : "text-text-muted"
                     )}>
                         {isSelected ? "✓ Selected" : "Click to select"}
                     </span>
@@ -134,7 +134,7 @@ export default function RadarPage() {
                     <Search size={24} className="text-text-muted" />
                 </div>
                 <div className="text-center flex flex-col gap-2">
-                    <h2 className="text-xl font-bold text-text-primary">Start with Step 1</h2>
+                    <h2 className="text-xl font-medium text-text-primary">Start with Step 1</h2>
                     <p className="text-sm text-text-muted">Enter a topic first so we can find ads for you.</p>
                 </div>
                 <button onClick={() => router.push("/search")} className="btn-primary">
@@ -154,11 +154,11 @@ export default function RadarPage() {
             {/* Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-accent/10 border border-accent/20 flex items-center justify-center rounded-lg">
-                        <Radar size={20} className="text-accent" />
+                    <div className="w-10 h-10 bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center rounded-lg">
+                        <Radar size={20} className="text-brass-700" />
                     </div>
                     <div>
-                        <h1 className="text-2xl text-text-primary font-black tracking-tight">Step 3: Find Ads</h1>
+                        <h1 className="text-2xl text-text-primary font-medium tracking-tight">Step 3: Find Ads</h1>
                         <p className="text-sm text-text-muted">
                             Click ads to select them, then create replies in the next step.
                         </p>
@@ -167,8 +167,8 @@ export default function RadarPage() {
 
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col items-end px-3 border-r border-border-dim/30">
-                        <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest">Selected</span>
-                        <span className="text-lg font-black text-accent tabular-nums">{selectedAds.length}</span>
+                        <span className="text-[13px] font-medium text-text-muted uppercase tracking-widest">Selected</span>
+                        <span className="text-lg font-medium text-brass-700 tabular-nums">{selectedAds.length}</span>
                     </div>
                     <button
                         onClick={() => router.push("/replies")}
@@ -222,7 +222,7 @@ export default function RadarPage() {
                         <div className="col-span-full py-16 flex flex-col items-center justify-center gap-3 border border-dashed border-border-dim/30 rounded-xl">
                             <Search size={32} className="text-text-muted/20" />
                             <p className="text-sm text-text-muted font-medium">No ads found for &ldquo;{activeChip}&rdquo;</p>
-                            <p className="text-[11px] text-text-muted">Try clicking a different keyword above.</p>
+                            <p className="text-[13px] text-text-muted">Try clicking a different keyword above.</p>
                         </div>
                     )}
                 </AnimatePresence>
@@ -232,14 +232,14 @@ export default function RadarPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/analysis")}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-amber-800 transition-colors"
+                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 2</span>
                 </button>
                 {selectedAds.length > 0 && (
-                    <p className="text-[11px] text-text-muted">
-                        <strong className="text-accent">{selectedAds.length}</strong> ad{selectedAds.length !== 1 ? "s" : ""} ready for replies
+                    <p className="text-[13px] text-text-muted">
+                        <strong className="text-brass-700">{selectedAds.length}</strong> ad{selectedAds.length !== 1 ? "s" : ""} ready for replies
                     </p>
                 )}
             </div>

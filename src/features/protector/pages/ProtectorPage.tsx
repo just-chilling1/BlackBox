@@ -128,9 +128,9 @@ export default function ProtectorPage() {
         title="Wealth Protector"
         description="Your account security overview. Everything is monitored in real time."
         badge={
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 sm:px-5">
-            <div className="h-3 w-3 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
-            <span className="text-sm font-bold uppercase tracking-wider text-emerald-700">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-4 py-3 sm:px-5">
+            <div className="h-3 w-3 animate-pulse rounded-full bg-success/100 shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
+            <span className="text-sm font-medium uppercase tracking-wider text-success">
               All Systems Secure
             </span>
           </div>
@@ -138,9 +138,9 @@ export default function ProtectorPage() {
       >
         <div className="stat-grid">
           {[
-            { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-emerald-600" },
-            { label: "Account Status", value: "Verified", icon: CheckCircle, color: "text-emerald-600" },
-            { label: "Encryption", value: "AES-256", icon: Lock, color: "text-cyan-600" },
+            { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-success" },
+            { label: "Account Status", value: "Verified", icon: CheckCircle, color: "text-success" },
+            { label: "Encryption", value: "AES-256", icon: Lock, color: "text-ink-3" },
             { label: "Uptime", value: "99.9%", icon: Globe, color: "text-blue-600" },
           ].map((stat, i) => (
             <motion.div
@@ -149,14 +149,14 @@ export default function ProtectorPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <GlassPanel intensity="low" className="p-5 hover:border-emerald-200 transition-colors">
+              <GlassPanel intensity="low" className="p-5 hover:border-success/20 transition-colors">
                 <div className="mb-3 flex items-center gap-3">
                   <stat.icon className={cn("h-5 w-5", stat.color)} />
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
+                  <span className="text-[13px] font-medium uppercase tracking-wider text-text-muted">
                     {stat.label}
                   </span>
                 </div>
-                <div className="text-2xl font-extrabold text-text-heading">{stat.value}</div>
+                <div className="text-2xl font-medium text-text-heading">{stat.value}</div>
               </GlassPanel>
             </motion.div>
           ))}
@@ -166,7 +166,7 @@ export default function ProtectorPage() {
       <div className="glass-card space-y-8 p-4 sm:p-6 md:p-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            <h2 className="text-lg font-bold text-text-heading mb-1">Security Checks</h2>
+            <h2 className="text-lg font-medium text-text-heading mb-1">Security Checks</h2>
             <div className="space-y-3">
               {securityChecks.map((check, i) => (
                 <motion.div
@@ -177,19 +177,19 @@ export default function ProtectorPage() {
                 >
                   <GlassPanel
                     intensity="low"
-                    className="p-4 hover:border-emerald-200 transition-all duration-300"
+                    className="p-4 hover:border-success/20 transition-all duration-300"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
-                        <check.icon className="w-5 h-5 text-emerald-600" />
+                      <div className="w-10 h-10 rounded-xl bg-success/10 border border-success/20 flex items-center justify-center shrink-0">
+                        <check.icon className="w-5 h-5 text-success" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold text-text-primary">{check.label}</h3>
+                        <h3 className="text-sm font-medium text-text-primary">{check.label}</h3>
                         <p className="text-xs text-text-muted">{check.description}</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <CheckCircle className="w-4 h-4 text-emerald-600" />
-                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                        <CheckCircle className="w-4 h-4 text-success" />
+                        <span className="text-[13px] font-medium text-success uppercase tracking-wider">
                           Verified
                         </span>
                       </div>
@@ -201,8 +201,8 @@ export default function ProtectorPage() {
           </div>
 
           <div className="space-y-6">
-            <GlassPanel intensity="low" className="p-5 border-emerald-100">
-              <h3 className="text-sm font-bold text-text-heading mb-4">Account Info</h3>
+            <GlassPanel intensity="low" className="p-5 border-success/20">
+              <h3 className="text-sm font-medium text-text-heading mb-4">Account Info</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between py-2 border-b border-divider">
                   <span className="text-xs text-text-muted">Email</span>
@@ -210,11 +210,11 @@ export default function ProtectorPage() {
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-divider">
                   <span className="text-xs text-text-muted">Membership</span>
-                  <span className="text-xs text-emerald-700 font-bold">Active</span>
+                  <span className="text-xs text-success font-medium">Active</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-divider">
                   <span className="text-xs text-text-muted">2FA</span>
-                  <span className="text-xs text-emerald-700 font-bold">Enabled</span>
+                  <span className="text-xs text-success font-medium">Enabled</span>
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <span className="text-xs text-text-muted">Last Login</span>
@@ -224,18 +224,18 @@ export default function ProtectorPage() {
             </GlassPanel>
 
             <GlassPanel intensity="low" className="p-5">
-              <h3 className="text-sm font-bold text-text-heading mb-4">Recent Activity</h3>
+              <h3 className="text-sm font-medium text-text-heading mb-4">Recent Activity</h3>
               <div className="space-y-3">
                 {activity.map((item) => (
                   <div key={item.event} className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-slate-50 border border-border-dim flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-lg bg-canvas border border-border-dim flex items-center justify-center shrink-0 mt-0.5">
                       <item.icon className="w-3.5 h-3.5 text-text-muted" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-text-primary font-medium">{item.event}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         <Clock className="w-3 h-3 text-text-muted" />
-                        <span className="text-[10px] text-text-muted">{item.time}</span>
+                        <span className="text-[13px] text-text-muted">{item.time}</span>
                       </div>
                     </div>
                   </div>

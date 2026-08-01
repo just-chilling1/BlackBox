@@ -31,7 +31,7 @@ export function ArmedLinkInput({ links, onChange }: ArmedLinkInputProps) {
       {links.map((link, index) => (
         <div key={index} className="card-base space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
+            <span className="text-[13px] font-medium uppercase tracking-wider text-text-secondary">
               Link {index + 1}
             </span>
             <button

@@ -343,14 +343,14 @@ export default function RecurringStreamPage() {
       />
 
       <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-divider bg-accent/5 p-6 md:p-8">
+        <div className="border-b border-divider bg-brass-100 p-6 md:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brass-100 text-brass-700">
                 <Repeat size={24} />
               </div>
               <div>
-                <p className="font-bold text-text-primary">100 Authority Articles</p>
+                <p className="font-medium text-text-primary">100 Authority Articles</p>
                 <p className="text-sm text-text-secondary">
                   SEO-ready articles with intro, sections, FAQs, and CTAs — preview first, then use a template to save it to your offer.
                 </p>
@@ -361,7 +361,7 @@ export default function RecurringStreamPage() {
 
         <div className="space-y-4 p-6 md:p-8">
           {offers.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-accent/30 p-6 text-center">
+            <div className="rounded-xl border border-dashed border-[var(--bb-line-brass)] p-6 text-center">
               <FolderOpen className="mx-auto mb-2 text-text-muted" size={28} />
               <p className="text-sm text-text-secondary">
                 Create an offer first, then personalize and save authority articles to it.
@@ -373,7 +373,7 @@ export default function RecurringStreamPage() {
           ) : (
             <>
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+                <span className="mb-2 block text-sm font-medium text-text-primary">Select offer</span>
                 <select
                   value={selectedSiteId}
                   onChange={(e) => setSelectedSiteId(e.target.value)}
@@ -400,8 +400,8 @@ export default function RecurringStreamPage() {
               )}
 
               {selectedSiteId && selectedOffer?.site.armed_links?.[0]?.url && (
-                <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
-                  <Sparkles size={14} className="shrink-0 text-emerald-600" />
+                <p className="flex items-center gap-2 rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm font-medium text-success">
+                  <Sparkles size={14} className="shrink-0 text-success" />
                   Offer selected — previews include your affiliate link. Use a template to save the article to this offer.
                 </p>
               )}
@@ -416,10 +416,10 @@ export default function RecurringStreamPage() {
                 type="button"
                 onClick={() => setNiche(n)}
                 className={clsx(
-                  "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                  "rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
                   niche === n
-                    ? "bg-accent text-black"
-                    : "bg-slate-100 text-text-secondary hover:bg-slate-200/70"
+                    ? "bg-grad-brass text-black"
+                    : "bg-brass-100 text-text-secondary hover:bg-brass-100/70"
                 )}
               >
                 {n}
@@ -430,9 +430,9 @@ export default function RecurringStreamPage() {
           {error && (
             <p
               role="alert"
-              className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800"
+              className="flex items-start gap-2 rounded-lg border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-3 py-2.5 text-sm font-medium text-[var(--bb-danger)]"
             >
-              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" aria-hidden />
+              <AlertCircle size={16} className="mt-0.5 shrink-0 text-[var(--bb-danger)]" aria-hidden />
               {error}
             </p>
           )}
@@ -457,19 +457,19 @@ export default function RecurringStreamPage() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="glass-card overflow-hidden border-accent/20 scroll-mt-24"
+            className="glass-card overflow-hidden border-[var(--bb-line-brass)] scroll-mt-24"
           >
             <div className="flex items-start justify-between gap-3 border-b border-divider p-4 md:p-5">
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
+                <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">
                   {previewArticle.niche}
                 </p>
-                <h2 className="mt-1 font-bold text-text-primary">{previewArticle.title}</h2>
-                <span className="mt-2 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-text-muted">
+                <h2 className="mt-1 font-medium text-text-primary">{previewArticle.title}</h2>
+                <span className="mt-2 inline-block rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-text-muted">
                   {formatAngle(previewArticle.angle)}
                 </span>
                 {savedTemplateIds.has(previewArticle.id) && (
-                  <span className="ml-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                  <span className="ml-2 inline-block rounded-full bg-success/15 px-2 py-0.5 text-[13px] font-medium text-success">
                     Saved to offer
                   </span>
                 )}
@@ -477,7 +477,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => setPreviewId(null)}
-                className="rounded-lg p-2 text-text-muted hover:bg-slate-100 hover:text-text-primary"
+                className="rounded-lg p-2 text-text-muted hover:bg-brass-100 hover:text-text-primary"
                 aria-label="Close preview"
               >
                 <X size={16} />
@@ -516,7 +516,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => void copyArticle("text")}
-                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-brass-100 px-4 py-2 text-sm font-medium text-text-primary hover:bg-brass-100/70"
               >
                 {copiedMode === "text" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "text" ? "Copied!" : "Copy article (plain text)"}
@@ -524,7 +524,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => void copyArticle("html")}
-                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-brass-100 px-4 py-2 text-sm font-medium text-text-primary hover:bg-brass-100/70"
               >
                 {copiedMode === "html" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "html" ? "Copied!" : "Copy article (HTML)"}
@@ -553,27 +553,27 @@ export default function RecurringStreamPage() {
             <article
               key={article.id}
               className={clsx(
-                "glass-card flex flex-col gap-3 p-4 transition-colors hover:border-accent/20",
-                previewId === article.id && "border-accent/30"
+                "glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--bb-line-brass)]",
+                previewId === article.id && "border-[var(--bb-line-brass)]"
               )}
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
+                  <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">
                     {article.niche}
                   </p>
                   <div className="flex shrink-0 flex-col items-end gap-1">
-                    <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] text-text-muted">
+                    <span className="rounded bg-brass-100 px-2 py-0.5 text-[13px] text-text-muted">
                       {formatAngle(article.angle)}
                     </span>
                     {savedTemplateIds.has(article.id) && (
-                      <span className="rounded bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                      <span className="rounded bg-success/15 px-2 py-0.5 text-[13px] font-medium text-success">
                         Saved
                       </span>
                     )}
                   </div>
                 </div>
-                <h3 className="mt-1 line-clamp-2 font-bold text-text-primary">{article.title}</h3>
+                <h3 className="mt-1 line-clamp-2 font-medium text-text-primary">{article.title}</h3>
                 {article.excerpt && (
                   <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-text-secondary">
                     {article.excerpt}
@@ -617,7 +617,7 @@ export default function RecurringStreamPage() {
                   type="button"
                   disabled={loadingAction?.articleId === article.id || !selectedSiteId}
                   onClick={() => void copyArticleFromCard(article.id)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim bg-slate-100 px-3 py-2 text-sm font-semibold text-text-primary hover:bg-slate-200/70 disabled:opacity-40"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim bg-brass-100 px-3 py-2 text-sm font-medium text-text-primary hover:bg-brass-100/70 disabled:opacity-40"
                 >
                   {loadingAction?.articleId === article.id && loadingAction.action === "copy" ? (
                     <Loader2 size={14} className="animate-spin" />

@@ -45,11 +45,11 @@ export default function ForgotPasswordPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center gap-5 py-4"
         >
-          <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center">
-            <CheckCircle2 size={32} className="text-green-400" />
+          <div className="w-16 h-16 bg-success/10 border border-success/20 rounded-full flex items-center justify-center">
+            <CheckCircle2 size={32} className="text-[var(--bb-success)]" />
           </div>
-          <p className="text-xs text-text-secondary text-center max-w-xs">
-            We sent a password reset link to <strong className="text-text-primary">{email}</strong>.
+          <p className="text-[15px] text-ink-3 text-center max-w-xs">
+            We sent a password reset link to <strong className="text-ink">{email}</strong>.
           </p>
           <Link href="/login" className="btn-primary w-full flex items-center justify-center gap-2">
             <ArrowLeft size={16} />
@@ -62,19 +62,20 @@ export default function ForgotPasswordPage() {
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-red-500/10 border border-red-500/20 p-4 rounded-sm text-red-400 text-sm"
+              className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm text-[#A32D2D] text-[15px]"
             >
               {error}
             </motion.div>
           )}
 
           <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">
+            <label htmlFor="forgot-email" className="auth-field-label">
               Email Address
             </label>
             <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" size={18} />
+              <Mail className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
               <input
+                id="forgot-email"
                 type="email"
                 required
                 value={email}
@@ -98,15 +99,15 @@ export default function ForgotPasswordPage() {
         </form>
       )}
 
-      <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-6">
-        <Link href="/login" className="flex items-center gap-2 text-xs text-text-muted hover:text-amber-800 transition-colors">
+      <div className="flex flex-col items-center gap-4 auth-divider pt-6">
+        <Link href="/login" className="auth-link flex items-center gap-2">
           <ArrowLeft size={14} />
           Back to Login
         </Link>
       </div>
 
-      <div className="flex items-center justify-center gap-1 text-[10px] text-text-muted">
-        <ShieldCheck size={10} className="text-green-400" />
+      <div className="flex items-center justify-center gap-1 text-[13px] text-ink-5">
+        <ShieldCheck size={14} className="text-[var(--bb-success)]" />
         <span>256-bit Encrypted</span>
       </div>
     </AuthLayout>

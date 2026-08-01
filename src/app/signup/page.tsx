@@ -68,7 +68,7 @@ export default function SignupPage() {
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-red-500/10 border border-red-500/20 p-4 rounded-sm flex items-center gap-3 text-red-400 text-sm"
+            className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[#A32D2D] text-[15px]"
           >
             <ShieldAlert size={18} />
             <span>{error}</span>
@@ -76,10 +76,11 @@ export default function SignupPage() {
         )}
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">Full Name</label>
+          <label htmlFor="signup-name" className="auth-field-label">Full Name</label>
           <div className="relative group">
-            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" />
+            <User size={18} className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" />
             <input
+              id="signup-name"
               type="text"
               required
               value={name}
@@ -91,10 +92,11 @@ export default function SignupPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">Email</label>
+          <label htmlFor="signup-email" className="auth-field-label">Email</label>
           <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" size={18} />
+            <Mail className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
             <input
+              id="signup-email"
               type="email"
               required
               value={email}
@@ -106,10 +108,11 @@ export default function SignupPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">Password</label>
+          <label htmlFor="signup-password" className="auth-field-label">Password</label>
           <div className="relative group">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" size={18} />
+            <Lock className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
             <input
+              id="signup-password"
               type={showPassword ? "text" : "password"}
               required
               value={password}
@@ -119,8 +122,9 @@ export default function SignupPage() {
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] cursor-pointer transition-colors hover:text-amber-800"
+              className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-brass-700"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -139,9 +143,9 @@ export default function SignupPage() {
         </button>
       </form>
 
-      <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-8">
-        <p className="text-[#475569] text-xs">Already have an account?</p>
-        <Link href="/login" className="brand-font text-amber-800 text-xs font-bold tracking-wide hover:text-amber-950 transition-colors">
+      <div className="flex flex-col items-center gap-4 auth-divider pt-8">
+        <p className="text-ink-3 text-[13px]">Already have an account?</p>
+        <Link href="/login" className="auth-link brand-font text-[15px]">
           Log In
         </Link>
       </div>

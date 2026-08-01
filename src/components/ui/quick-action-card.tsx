@@ -9,27 +9,27 @@ interface QuickActionCardProps {
   icon: LucideIcon;
   href: string;
   buttonText: string;
-  accent?: "gold" | "indigo" | "teal";
+  accent?: "gold" | "ink" | "brass";
 }
 
 const accents = {
   gold: {
-    text: "text-accent",
-    tile: "bg-accent/10 border-accent/25",
-    hoverBorder: "hover:border-accent/40",
-    bar: "from-accent/80 to-promo-cta/80",
+    text: "text-brass-700",
+    tile: "bg-brass-100 border-[var(--bb-line-brass)]",
+    hoverBorder: "hover:border-[var(--bb-line-brass)]",
+    bar: "from-brass-300 to-brass-500",
   },
-  indigo: {
-    text: "text-accent-muted",
-    tile: "bg-accent-muted/10 border-accent-muted/25",
-    hoverBorder: "hover:border-accent-muted/40",
-    bar: "from-accent/80 to-[#C9970D]/80",
+  ink: {
+    text: "text-ink-3",
+    tile: "bg-canvas border-border-dim",
+    hoverBorder: "hover:border-border-dim",
+    bar: "from-ink-4 to-ink-2",
   },
-  teal: {
-    text: "text-promo-accent",
-    tile: "bg-promo-accent/10 border-promo-accent/25",
-    hoverBorder: "hover:border-promo-accent/40",
-    bar: "from-promo-accent/80 to-[#C9970D]/80",
+  brass: {
+    text: "text-brass-700",
+    tile: "bg-brass-200 border-[var(--bb-line-brass)]",
+    hoverBorder: "hover:border-[var(--bb-line-brass)]",
+    bar: "from-brass-300 to-brass-500",
   },
 } as const;
 
@@ -55,12 +55,12 @@ export function QuickActionCard({
         <div className={clsx("flex h-12 w-12 items-center justify-center rounded-xl border", tone.tile)}>
           <Icon className={clsx("h-6 w-6", tone.text)} />
         </div>
-        <h3 className="text-lg font-bold tracking-tight text-text-heading">{title}</h3>
+        <h3 className="text-lg font-medium tracking-tight text-text-heading">{title}</h3>
       </div>
 
       <p className="mb-5 flex-1 text-sm leading-relaxed text-text-secondary">{description}</p>
 
-      <span className={clsx("inline-flex items-center gap-2 text-sm font-bold", tone.text)}>
+      <span className={clsx("inline-flex items-center gap-2 text-sm font-medium", tone.text)}>
         {buttonText}
         <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
       </span>

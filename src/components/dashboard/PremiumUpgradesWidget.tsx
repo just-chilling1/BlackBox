@@ -27,8 +27,8 @@ export function PremiumUpgradesWidget({
     return (
       <div className={clsx("premium-upgrades-panel premium-upgrades-panel--sidebar min-w-0 w-full", className)}>
         <div className="premium-upgrades-sidebar-header">
-          <p className="premium-upgrades-sidebar-label text-[10px]">
-            <Sparkles className="h-3 w-3 shrink-0 animate-premium-pulse" fill="currentColor" />
+          <p className="premium-upgrades-sidebar-label text-[13px]">
+            <Sparkles className="h-3 w-3 shrink-0" fill="currentColor" />
             Premium Features
           </p>
           <p className="text-xs leading-relaxed text-text-secondary">
@@ -59,7 +59,7 @@ export function PremiumUpgradesWidget({
                   <div
                     className={clsx(
                       "premium-upgrade-icon premium-upgrade-icon--sidebar flex shrink-0 items-center justify-center",
-                      isActive && "bg-amber-100 text-amber-700"
+                      isActive && "bg-brass-100 text-brass-700"
                     )}
                   >
                     <Icon size={14} strokeWidth={1.5} />
@@ -69,19 +69,19 @@ export function PremiumUpgradesWidget({
                     <span
                       className={clsx(
                         "block text-xs tracking-wide text-text-heading",
-                        isActive ? "font-bold" : "font-semibold"
+                        isActive ? "font-medium" : "font-medium"
                       )}
                     >
                       {feature.label}
                     </span>
-                    <p className="mt-0.5 line-clamp-1 text-[10px] leading-snug text-text-secondary">
+                    <p className="mt-0.5 line-clamp-1 text-[13px] leading-snug text-text-secondary">
                       {feature.description}
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-accent-readable">
+                  <span className="shrink-0 text-brass-700">
                     {isActive ? (
-                      <span className="text-[10px] font-semibold">Active</span>
+                      <span className="text-[13px] font-medium">Active</span>
                     ) : (
                       <ArrowRight
                         size={12}
@@ -101,8 +101,8 @@ export function PremiumUpgradesWidget({
   return (
     <div className={clsx("premium-upgrades-panel premium-upgrades-panel--featured", className)}>
       <div className="mb-4 text-center md:text-left">
-        <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-accent-readable md:justify-start">
-          <Sparkles className="h-4 w-4 shrink-0 text-amber-600" fill="currentColor" />
+        <p className="flex items-center justify-center gap-2 text-[13px] font-medium uppercase tracking-widest text-brass-700 md:justify-start">
+          <Sparkles className="h-4 w-4 shrink-0 text-brass-700" fill="currentColor" />
           Premium Features
         </p>
         <p className="mx-auto mt-1.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:mx-0">
@@ -136,8 +136,8 @@ export function PremiumUpgradesWidget({
                     className={clsx(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all duration-300",
                       isActive
-                        ? "border-amber-300 bg-accent text-black shadow-[0_0_16px_rgba(238,179,16,0.35)]"
-                        : "border-amber-200 bg-amber-50 text-amber-700 group-hover:border-amber-300 group-hover:bg-accent group-hover:text-black group-hover:shadow-[0_0_16px_rgba(238,179,16,0.35)]"
+                        ? "border-[var(--bb-line-brass)] bg-grad-brass text-black shadow-brass"
+                        : "border-[var(--bb-line-brass)] bg-brass-100 text-brass-700 group-hover:border-[var(--bb-line-brass)] group-hover:bg-grad-brass group-hover:text-black group-hover:shadow-brass"
                     )}
                   >
                     <Icon size={19} strokeWidth={1.5} />
@@ -147,7 +147,7 @@ export function PremiumUpgradesWidget({
                     <span
                       className={clsx(
                         "block text-sm tracking-wide text-text-heading",
-                        isActive ? "font-bold" : "font-semibold"
+                        isActive ? "font-medium" : "font-medium"
                       )}
                     >
                       {feature.label}
@@ -158,7 +158,7 @@ export function PremiumUpgradesWidget({
                   </div>
                 </div>
 
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-readable transition-colors group-hover:text-amber-700">
+                <span className="inline-flex items-center gap-1 text-[13px] font-medium text-brass-700 transition-colors group-hover:text-brass-700">
                   {isActive ? (
                     "Active"
                   ) : (

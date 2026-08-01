@@ -31,7 +31,7 @@ function StepBadge({
 }) {
   if (status === "completed") {
     return (
-      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-700">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-success/30 bg-success/100/15 text-success">
         <Check size={18} strokeWidth={2.5} aria-hidden />
       </div>
     );
@@ -40,10 +40,10 @@ function StepBadge({
   return (
     <div
       className={clsx(
-        "flex h-10 w-10 items-center justify-center rounded-full text-sm font-black",
+        "flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium",
         status === "current"
-          ? "border-2 border-accent bg-accent text-text-on-accent shadow-gold"
-          : "border border-border-dim bg-slate-100 text-text-muted"
+          ? "border-2 border-[var(--bb-line-brass)] bg-grad-brass text-text-on-accent shadow-brass"
+          : "border border-border-dim bg-brass-100 text-text-muted"
       )}
     >
       {number}
@@ -82,19 +82,19 @@ export function HowItWorks({
               key={step.number}
               className={clsx(
                 "dashboard-nested-card flex h-full flex-col animate-stagger-item transition-all duration-200",
-                isCurrent && "border-accent/40 bg-white ring-2 ring-accent/15 shadow-gold",
+                isCurrent && "border-[var(--bb-line-brass)] bg-white ring-2 ring-brass-100 shadow-brass",
                 isUpcoming && "opacity-60 saturate-[0.85]",
-                isCompleted && "border-emerald-500/20 bg-emerald-50/30"
+                isCompleted && "border-success/20 bg-success/10"
               )}
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <div className="flex items-center gap-2.5">
                 <StepBadge number={step.number} status={status} />
-                <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-text-on-accent">
+                <span className="rounded-full bg-grad-brass px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-text-on-accent">
                   {step.minutes}
                 </span>
                 {showStartHere ? (
-                  <span className="ml-auto rounded-full bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-900">
+                  <span className="ml-auto rounded-full bg-brass-100 px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-brass-700">
                     Start Here
                   </span>
                 ) : null}
@@ -105,7 +105,7 @@ export function HowItWorks({
                   size={18}
                   className={clsx(
                     "shrink-0",
-                    isCurrent ? "text-promo-accent" : isCompleted ? "text-emerald-600" : "text-text-muted"
+                    isCurrent ? "text-brass-700" : isCompleted ? "text-success" : "text-text-muted"
                   )}
                 />
                 <h3 className={clsx("ds-h3", isUpcoming && "text-text-secondary")}>{step.title}</h3>
@@ -129,8 +129,8 @@ export function HowItWorks({
         })}
       </div>
 
-      <div className="mt-5 flex gap-3 rounded-xl border border-accent/15 bg-accent/5 p-5 sm:p-6">
-        <Info size={18} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+      <div className="mt-5 flex gap-3 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-5 sm:p-6">
+        <Info size={18} className="mt-0.5 shrink-0 text-brass-700" aria-hidden />
         <p className="text-sm leading-relaxed text-text-secondary">
           Follow the steps above to launch your first offer. If you get stuck, use the Support card in
           the sidebar.{" "}

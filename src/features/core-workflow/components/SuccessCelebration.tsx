@@ -10,7 +10,7 @@ interface SuccessCelebrationProps {
   onDone?: () => void;
 }
 
-const CONFETTI_COLORS = ["#EEB310", "#10B981", "#6366F1", "#F59E0B", "#22D3EE", "#A855F7"];
+const CONFETTI_COLORS = ["#C9971F", "#3B6D11", "#8A6414", "#F0D48A", "#6E6A61", "#1C1B18"];
 
 function ConfettiParticle({ delay, color }: { delay: number; color: string }) {
   const x = (Math.random() - 0.5) * 300;
@@ -44,7 +44,7 @@ export function SuccessCelebration({ show, title, subtitle, onDone }: SuccessCel
           <motion.div
             initial={{ y: 30 }}
             animate={{ y: 0 }}
-            className="relative flex flex-col items-center gap-5 surface-nested rounded-3xl border-accent/30 p-10 shadow-[0_0_60px_rgba(234,179,8,0.15)] max-w-sm"
+            className="relative flex flex-col items-center gap-5 surface-nested rounded-3xl border-[var(--bb-line-brass)] p-10 shadow-[0_0_60px_rgba(234,179,8,0.15)] max-w-sm"
           >
             <div className="relative">
               {Array.from({ length: 20 }).map((_, i) => (
@@ -58,20 +58,20 @@ export function SuccessCelebration({ show, title, subtitle, onDone }: SuccessCel
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center border-2 border-accent/30"
+                className="w-20 h-20 bg-brass-100 rounded-full flex items-center justify-center border-2 border-[var(--bb-line-brass)]"
               >
-                <CheckCircle2 size={40} className="text-accent" />
+                <CheckCircle2 size={40} className="text-brass-700" />
               </motion.div>
             </div>
             <div className="text-center flex flex-col gap-2">
-              <h3 className="text-2xl font-black text-text-heading">{title}</h3>
+              <h3 className="text-2xl font-medium text-text-heading">{title}</h3>
               <p className="text-sm text-text-secondary">{subtitle}</p>
             </div>
             <motion.div
               initial={{ width: "100%" }}
               animate={{ width: "0%" }}
               transition={{ duration: 2.5, ease: "linear" }}
-              className="h-1 bg-accent rounded-full self-start"
+              className="h-1 bg-grad-brass rounded-full self-start"
             />
           </motion.div>
         </motion.div>

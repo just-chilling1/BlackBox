@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/brand.config";
 import { storageKeys } from "@/lib/storage-keys";
@@ -8,14 +8,15 @@ import { AppProviders } from "@/components/layout/AppProviders";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-inter",
   display: "swap",
 });
 
-const outfit = Outfit({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-outfit",
+  weight: ["400", "500"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -49,7 +50,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${outfit.variable}`}
+      className={`${inter.variable} ${fraunces.variable}`}
       style={{ colorScheme: "light" }}
     >
       <head>
@@ -62,7 +63,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="text-text-primary selection:bg-accent/30 antialiased"
+        className="text-text-primary selection:bg-brass-200 antialiased"
         style={{ backgroundColor: brand.colors.page }}
       >
         <AppProviders>{children}</AppProviders>

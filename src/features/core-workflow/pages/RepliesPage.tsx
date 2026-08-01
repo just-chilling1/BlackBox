@@ -17,10 +17,10 @@ function PlatformBadge({ platform }: { platform: string }) {
     const isReddit = platform === "Reddit";
     return (
         <span className={clsx(
-            "text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
+            "text-[13px] font-medium uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
             isReddit
-                ? "text-orange-400 border-orange-400/20 bg-orange-400/5"
-                : "text-red-500 border-red-500/20 bg-red-500/5"
+                ? "text-[var(--bb-warning)] border-[var(--bb-warning)]/20 bg-[var(--bb-warning)]/10"
+                : "text-[var(--bb-danger)] border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10"
         )}>
             {platform}
         </span>
@@ -112,7 +112,7 @@ export default function RepliesPage() {
                     <Radar size={24} className="text-text-muted" />
                 </div>
                 <div className="text-center flex flex-col gap-2">
-                    <h2 className="text-xl font-bold text-text-primary">No Ads Selected</h2>
+                    <h2 className="text-xl font-medium text-text-primary">No Ads Selected</h2>
                     <p className="text-sm text-text-muted">Go to Step 3 and pick ads first.</p>
                 </div>
                 <button onClick={() => router.push("/radar")} className="btn-primary">
@@ -146,11 +146,11 @@ export default function RepliesPage() {
             <header className="flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-accent/10 border border-accent/20 flex items-center justify-center rounded-lg">
-                            <MessageSquare size={20} className="text-accent" />
+                        <div className="w-10 h-10 bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center rounded-lg">
+                            <MessageSquare size={20} className="text-brass-700" />
                         </div>
                         <div>
-                            <h1 className="text-2xl text-text-primary font-black tracking-tight">Step 4: Create Replies</h1>
+                            <h1 className="text-2xl text-text-primary font-medium tracking-tight">Step 4: Create Replies</h1>
                             <p className="text-sm text-text-muted">
                                 {currentAds.length} ad{currentAds.length !== 1 ? "s" : ""} selected for &ldquo;{keyword}&rdquo;
                             </p>
@@ -197,7 +197,7 @@ export default function RepliesPage() {
                                 <div className="flex flex-col gap-2 flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
                                         <PlatformBadge platform={post.platform} />
-                                        <span className="text-[9px] text-text-muted">
+                                        <span className="text-[13px] text-text-muted">
                                             {typeof post.engagement === 'number'
                                                 ? `${post.engagement.toLocaleString()} engagements`
                                                 : post.engagement || "Trending"}
@@ -210,14 +210,14 @@ export default function RepliesPage() {
                                 <div className="flex items-center gap-1 shrink-0">
                                     <button
                                         onClick={() => removePost(post.id)}
-                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-[var(--bb-danger)] hover:bg-[var(--bb-danger)]/10 transition-all"
                                         title="Remove ad"
                                     >
                                         <Trash2 size={13} />
                                     </button>
                                     <a
                                         href={post.url} target="_blank" rel="noopener noreferrer"
-                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-amber-800 hover:bg-accent/10 transition-all"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-brass-700 hover:bg-brass-100 transition-all"
                                     >
                                         <ExternalLink size={13} />
                                     </a>
@@ -233,11 +233,11 @@ export default function RepliesPage() {
                                     }}
                                     disabled={isLoading}
                                     className={clsx(
-                                        "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all",
+                                        "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all",
                                         isLoading ? "text-text-muted" :
-                                        isExpanded ? "bg-accent/10 text-accent border border-accent/20" :
-                                        replies.length > 0 ? "bg-accent/5 text-accent hover:bg-accent/10" :
-                                        "bg-surface border border-border-dim text-text-secondary hover:border-accent/30 hover:text-amber-800"
+                                        isExpanded ? "bg-brass-100 text-brass-700 border border-[var(--bb-line-brass)]" :
+                                        replies.length > 0 ? "bg-brass-100 text-brass-700 hover:bg-brass-100" :
+                                        "bg-surface border border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-brass-700"
                                     )}
                                 >
                                     {isLoading ? (
@@ -258,7 +258,7 @@ export default function RepliesPage() {
                                     <button
                                         onClick={() => handleGenerate(post)}
                                         disabled={isLoading}
-                                        className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted hover:text-amber-800 transition-colors"
+                                        className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
                                     >
                                         <RefreshCw size={11} />
                                         <span>Regenerate</span>
@@ -287,23 +287,23 @@ export default function RepliesPage() {
                                                         const isCopied = copiedId === uniqueId;
 
                                                         return (
-                                                            <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-accent/20 transition-all group">
+                                                            <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-[var(--bb-line-brass)] transition-all group">
                                                                 <div className="flex items-center justify-between mb-2.5">
-                                                                    <span className="text-[9px] font-black text-accent uppercase tracking-widest">{labels[rIdx]}</span>
+                                                                    <span className="text-[13px] font-medium text-brass-700 uppercase tracking-widest">{labels[rIdx]}</span>
                                                                     <button
                                                                         onClick={() => handleCopy(reply, uniqueId)}
                                                                         className={clsx(
-                                                                            "flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold transition-all",
+                                                                            "flex items-center gap-1 px-2 py-1 rounded text-[13px] font-medium transition-all",
                                                                             isCopied
-                                                                                ? "bg-green-500 text-black"
-                                                                                : "bg-page border border-border-dim text-text-muted hover:bg-accent hover:text-black hover:border-accent"
+                                                                                ? "bg-success text-white"
+                                                                                : "bg-page border border-border-dim text-text-muted hover:bg-grad-brass hover:text-black hover:border-[var(--bb-line-brass)]"
                                                                         )}
                                                                     >
                                                                         {isCopied ? <Check size={10} /> : <Copy size={10} />}
                                                                         <span>{isCopied ? "Copied!" : "Copy"}</span>
                                                                     </button>
                                                                 </div>
-                                                                <p className="text-[12px] text-text-secondary leading-relaxed group-hover:text-text-primary transition-colors">
+                                                                <p className="text-[13px] text-text-secondary leading-relaxed group-hover:text-text-primary transition-colors">
                                                                     {renderFormattedReply(reply)}
                                                                 </p>
                                                             </div>
@@ -324,12 +324,12 @@ export default function RepliesPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/radar")}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-amber-800 transition-colors"
+                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 3</span>
                 </button>
-                <p className="text-[10px] text-text-muted">
+                <p className="text-[13px] text-text-muted">
                     Copy a reply → paste it under the ad → include your link → earn commissions
                 </p>
             </div>

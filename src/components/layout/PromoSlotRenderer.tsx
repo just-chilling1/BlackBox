@@ -34,7 +34,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
               </div>
             )}
             <div className="flex flex-col gap-3 flex-1">
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-medium text-white tracking-tight">
                 {content.headline}
               </h2>
               {bodies.length > 0 && (
@@ -49,7 +49,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
                   <button
                     type="button"
                     onClick={() => window.open(content.ctaUrl, "_blank")}
-                    className="cursor-pointer font-bold px-4 sm:px-6 py-2.5 rounded-md shadow-sm text-sm sm:text-[15px] w-full sm:w-auto transition-all duration-200 hover:brightness-110 hover:shadow-md active:scale-[0.98] text-black"
+                    className="cursor-pointer font-medium px-4 sm:px-6 py-2.5 rounded-md shadow-sm text-sm sm:text-[15px] w-full sm:w-auto transition-all duration-200 hover:brightness-110 hover:shadow-md active:scale-[0.98] text-black"
                     style={{ backgroundColor: brand.colors.promoCta }}
                   >
                     {content.ctaLabel}
@@ -74,12 +74,12 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
           <div className="flex items-center gap-3 sm:gap-5 min-w-0">
             {Icon && (
-              <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 border border-accent/30 bg-accent/5">
-                <Icon size={24} strokeWidth={1.5} className="text-accent" />
+              <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 border border-[var(--bb-line-brass)] bg-brass-100">
+                <Icon size={24} strokeWidth={1.5} className="text-brass-700" />
               </div>
             )}
             <div className="flex flex-col gap-0.5">
-              <h3 className="text-[17px] font-bold text-text-heading tracking-tight">
+              <h3 className="text-[17px] font-medium text-text-heading tracking-tight">
                 {content.title ?? content.headline}
               </h3>
               {content.subtitle && (
@@ -90,7 +90,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           {content.ctaLabel && content.ctaUrl && (
             <a
               href={content.ctaUrl}
-              className="bg-accent hover:bg-[#e6a800] transition-colors rounded-full h-[42px] px-6 sm:px-7 w-full sm:w-auto text-black font-bold text-[14px] flex items-center justify-center shrink-0"
+              className="bg-grad-brass hover:brightness-105 transition-colors rounded-full h-[42px] px-6 sm:px-7 w-full sm:w-auto text-black font-medium text-[14px] flex items-center justify-center shrink-0"
             >
               {content.ctaLabel}
             </a>
@@ -99,13 +99,13 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         {content.stats && content.stats.length > 0 && (
           <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-black/5">
             {content.stats.map((stat, i) => (
-              <div key={i} className="flex items-center gap-1.5 text-[10px] text-text-muted">
+              <div key={i} className="flex items-center gap-1.5 text-[13px] text-text-muted">
                 <span>
                   {stat.text}
                   {stat.highlight && (
                     <>
                       {" "}
-                      <strong className="text-green-400">{stat.highlight}</strong>
+                      <strong className="text-success">{stat.highlight}</strong>
                     </>
                   )}
                 </span>
@@ -123,18 +123,18 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         href={content.ctaUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-page border border-accent/25 hover:border-accent/50 transition-all duration-300 group"
+        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-page border border-[var(--bb-line-brass)] hover:border-[var(--bb-line-brass)] transition-all duration-300 group"
       >
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="brand-font text-[13px] font-semibold text-accent leading-tight">
+          <span className="brand-font text-[13px] font-medium text-brass-700 leading-tight">
             {content.headline}
           </span>
-          <span className="text-[10px] text-text-muted font-medium">
+          <span className="text-[13px] text-text-muted font-medium">
             {content.sidebarSubtitle ?? "Claim Now"}
           </span>
         </div>
-        <div className="w-8 h-8 rounded-lg border border-accent/30 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-          <ExternalLink size={14} className="text-accent" />
+        <div className="w-8 h-8 rounded-lg border border-[var(--bb-line-brass)] flex items-center justify-center shrink-0 group-hover:bg-brass-100 transition-colors">
+          <ExternalLink size={14} className="text-brass-700" />
         </div>
       </a>
     );
@@ -159,24 +159,24 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading"
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-brass-100 hover:text-text-heading"
               aria-label="Close"
             >
               ×
             </button>
           )}
           {content.badge && (
-            <span className="text-xs font-black text-accent uppercase tracking-widest">
+            <span className="text-[13px] font-medium text-brass-700 uppercase tracking-widest">
               {content.badge}
             </span>
           )}
-          <h2 className="text-2xl font-bold text-text-heading mt-2">{content.headline}</h2>
+          <h2 className="text-2xl font-medium text-text-heading mt-2">{content.headline}</h2>
           {bodies[0] && <p className="text-text-secondary mt-2">{bodies[0]}</p>}
           {content.bullets && (
             <ul className="mt-4 space-y-2">
               {content.bullets.map((b, i) => (
                 <li key={i} className="text-sm text-text-secondary flex gap-2">
-                  <span className="text-accent">✓</span> {b}
+                  <span className="text-brass-700">✓</span> {b}
                 </li>
               ))}
             </ul>
@@ -211,18 +211,18 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         exit={{ opacity: 0, x: -20 }}
         className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-6 sm:bottom-6 z-50 sm:max-w-sm rounded-xl border border-black/10 bg-white p-4 shadow-xl safe-bottom"
       >
-        <p className="text-sm font-bold text-text-heading">{content.headline}</p>
+        <p className="text-sm font-medium text-text-heading">{content.headline}</p>
         <p className="text-xs text-text-muted mt-1">
           {content.toastMessage}{" "}
           {content.toastAmount && (
-            <span className="text-green-400 font-bold">{content.toastAmount}</span>
+            <span className="text-success font-medium">{content.toastAmount}</span>
           )}
         </p>
         {content.ctaLabel && content.ctaUrl && (
           <button
             type="button"
             onClick={() => window.open(content.ctaUrl, "_blank")}
-            className="text-xs text-amber-800 font-bold mt-2 cursor-pointer transition-colors hover:text-amber-950 hover:underline"
+            className="text-xs text-brass-700 font-medium mt-2 cursor-pointer transition-colors hover:text-brass-900 hover:underline"
           >
             {content.ctaLabel}
           </button>
@@ -231,7 +231,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-text-muted text-xs cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading"
+            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-text-muted text-xs cursor-pointer transition-all duration-200 hover:bg-brass-100 hover:text-text-heading"
           >
             ×
           </button>

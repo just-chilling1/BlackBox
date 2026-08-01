@@ -203,7 +203,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
             <div className="wizard-panel-icon">
               <ClipboardPaste className="h-4 w-4" />
             </div>
-            <span className="text-sm font-bold uppercase tracking-wider text-text-heading">
+            <span className="text-sm font-medium uppercase tracking-wider text-text-heading">
               How to Get Your Affiliate Link
             </span>
           </div>
@@ -220,12 +220,12 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
             <div className="space-y-3 px-5 pb-5">
               {INSTRUCTION_STEPS.map((step) => (
                 <div key={step.number} className="wizard-inset-row">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent/10">
-                    <span className="text-xs font-bold text-accent">{step.number}</span>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
+                    <span className="text-[13px] font-medium text-brass-700">{step.number}</span>
                   </div>
                   <div className="min-w-0 flex-1 pt-0.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <step.icon className="h-3.5 w-3.5 shrink-0 text-accent" />
+                      <step.icon className="h-3.5 w-3.5 shrink-0 text-brass-700" />
                       <span className="text-sm text-text-primary">{step.text}</span>
                     </div>
                     {step.link && (
@@ -233,7 +233,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                         href={step.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent/80 transition-colors"
+                        className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-brass-700 hover:text-brass-900 transition-colors"
                       >
                         {step.linkLabel}
                         <ExternalLink className="h-3 w-3" />
@@ -257,7 +257,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
 
           <label className="wizard-form-label">Link Name</label>
           <div className="relative">
-            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-accent">
+            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
               <Tag className="h-5 w-5" />
             </div>
             <GlassInput
@@ -276,7 +276,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
 
           <label className="wizard-form-label">Paste Your Affiliate Link</label>
           <div className="relative">
-            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-accent">
+            <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
               <Zap className="h-5 w-5" />
             </div>
             <GlassInput
@@ -313,7 +313,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               {linkSaved ? "Link Saved" : "Save to Links Library"}
             </button>
             {linkSaved && (
-              <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-700">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-success">
                 <CheckCircle2 size={15} />
                 Saved to your portfolio
               </span>

@@ -74,10 +74,10 @@ export function CrossPlatformGuide() {
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left transition-colors hover:bg-slate-50/80 md:p-6"
+        className="flex w-full items-start justify-between gap-4 p-5 text-left transition-colors hover:bg-canvas/80 md:p-6"
       >
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
+          <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-brass-700">
             How to use across platforms
           </p>
           <p className="mt-1 text-sm text-text-secondary">
@@ -106,8 +106,8 @@ export function CrossPlatformGuide() {
                   className="rounded-xl border border-border-dim/70 bg-page/60 p-4"
                 >
                   <div className="mb-2 flex items-center gap-2">
-                    <platform.icon size={16} className="shrink-0 text-accent" aria-hidden />
-                    <h3 className="text-sm font-bold text-text-primary">{platform.name}</h3>
+                    <platform.icon size={16} className="shrink-0 text-brass-700" aria-hidden />
+                    <h3 className="text-sm font-medium text-text-primary">{platform.name}</h3>
                   </div>
                   <ol className="list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-text-secondary">
                     {platform.steps.map((step) => (

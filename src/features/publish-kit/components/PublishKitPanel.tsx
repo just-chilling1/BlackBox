@@ -50,21 +50,21 @@ function CollapsibleResultSection({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+      className="group overflow-hidden rounded-xl border border-border-dim bg-white shadow-sm"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-2 bg-white px-4 py-3 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-2 bg-white px-4 py-3 transition-colors hover:bg-canvas [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={16}
-          className="shrink-0 text-slate-500 transition-transform group-open:rotate-180"
+          className="shrink-0 text-ink-4 transition-transform group-open:rotate-180"
         />
-        <span className="min-w-0 flex-1 text-sm font-semibold text-slate-900">{title}</span>
+        <span className="min-w-0 flex-1 text-sm font-medium text-ink">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
+          <span className="shrink-0 rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-ink-3">
             {count}
           </span>
         )}
       </summary>
-      <div className="space-y-2 border-t border-slate-200 bg-slate-50 p-2">{children}</div>
+      <div className="space-y-2 border-t border-border-dim bg-canvas p-2">{children}</div>
     </details>
   );
 }
@@ -83,21 +83,21 @@ function CollapsibleResultItem({
   return (
     <details
       open={defaultOpen}
-      className="group overflow-hidden rounded-lg border border-slate-200 bg-white"
+      className="group overflow-hidden rounded-lg border border-border-dim bg-white"
     >
-      <summary className="flex cursor-pointer list-none items-start gap-2 bg-white px-3 py-2.5 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-start gap-2 bg-white px-3 py-2.5 transition-colors hover:bg-canvas [&::-webkit-details-marker]:hidden">
         <ChevronDown
           size={14}
-          className="mt-0.5 shrink-0 text-slate-500 transition-transform group-open:rotate-180"
+          className="mt-0.5 shrink-0 text-ink-4 transition-transform group-open:rotate-180"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-wide text-accent">{label}</p>
+          <p className="text-[13px] font-medium uppercase tracking-wide text-brass-700">{label}</p>
           {preview && (
-            <p className="mt-0.5 line-clamp-2 text-sm text-slate-800 group-open:hidden">{preview}</p>
+            <p className="mt-0.5 line-clamp-2 text-sm text-ink-2 group-open:hidden">{preview}</p>
           )}
         </div>
       </summary>
-      <div className="border-t border-slate-200 bg-white px-3 py-3">{children}</div>
+      <div className="border-t border-border-dim bg-white px-3 py-3">{children}</div>
     </details>
   );
 }
@@ -121,9 +121,9 @@ function KitButton({
     "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60";
   const styles =
     variant === "primary"
-      ? "bg-gradient-to-br from-accent to-[#C9970D] text-text-on-accent shadow-gold hover:brightness-110 hover:shadow-[0_0_20px_rgba(238,179,16,0.22)] active:scale-[0.98]"
+      ? "bg-grad-brass text-text-on-accent shadow-brass hover:brightness-110 hover:shadow-brass active:scale-[0.98]"
       : variant === "ghost"
-        ? "text-slate-700 hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98]"
+        ? "text-ink-2 hover:bg-brass-100 hover:text-ink active:scale-[0.98]"
         : "btn-subtle";
 
   return (
@@ -298,13 +298,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     <div className="flex flex-col gap-6 min-w-0">
       {toast && (
         <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            toast.variant === "error"
-              ? "border-red-200 bg-red-50 text-red-800"
-              : toast.variant === "success"
-                ? "border-accent/30 bg-accent/10 text-text-heading"
-                : "border-slate-200 bg-slate-100 text-slate-800"
-          }`}
+          className={`rounded-lg border px-4 py-3 text-sm ${ toast.variant === "error" ? "border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 text-[var(--bb-danger)]" : toast.variant === "success" ? "border-[var(--bb-line-brass)] bg-brass-100 text-text-heading" : "border-border-dim bg-brass-100 text-ink-2" }`}
         >
           {toast.message}
         </div>
@@ -313,17 +307,15 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       <div className="glass-card flex flex-col gap-4 p-4 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-800">X-Power Promotions</p>
+            <p className="text-[13px] font-medium uppercase tracking-widest text-brass-700">X-Power Promotions</p>
             <h2 className="mt-1 brand-font text-xl text-text-heading">{site.siteName}</h2>
             {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full border border-accent/20 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
+              <span className="rounded-full border border-[var(--bb-line-brass)] bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
                 {site.territory}
               </span>
               <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${
-                  site.status === "live" ? "border border-accent/25 bg-accent/10 text-accent" : "bg-slate-100 text-slate-600"
-                }`}
+                className={`rounded-full px-2 py-0.5 text-[13px] font-medium capitalize ${ site.status === "live" ? "border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700" : "bg-brass-100 text-ink-3" }`}
               >
                 {site.status}
               </span>
@@ -344,8 +336,8 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
         <section className="space-y-3">
           <div className="flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
-              <Sparkles size={16} className="text-accent" />
+            <h3 className="text-sm font-medium text-text-heading flex items-center gap-2">
+              <Sparkles size={16} className="text-brass-700" />
               Generate story thread
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
@@ -359,7 +351,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
               </p>
             ) : null}
             {quota && (
-              <p className="text-xs font-medium text-text-secondary">
+              <p className="text-[13px] font-medium text-text-secondary">
                 {quota.remaining} of {quota.limit} generations remaining today
               </p>
             )}
@@ -395,7 +387,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
           {visiblePosts.length > 0 && (
             <div id="generation-results-thread" className="scroll-mt-24 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold text-text-secondary">
+                <p className="text-[13px] font-medium text-text-secondary">
                   {visiblePosts.length} post{visiblePosts.length !== 1 ? "s" : ""} ready to publish
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -433,8 +425,8 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
 
         <section className="space-y-3 border-t border-border-dim pt-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-text-heading flex items-center gap-2">
-              <Hash size={16} className="text-accent" />
+            <h3 className="text-sm font-medium text-text-heading flex items-center gap-2">
+              <Hash size={16} className="text-brass-700" />
               Bonus hashtags
             </h3>
             <KitButton onClick={runTags} loading={tagsLoading}>
@@ -446,7 +438,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             <CollapsibleResultSection title="Suggested tags" count={visibleTags.length}>
               {visibleTags.map((t) => (
                 <CollapsibleResultItem key={t.tag} label={t.tag} preview={t.reason}>
-                  <p className="text-sm leading-relaxed text-slate-800">{t.reason}</p>
+                  <p className="text-sm leading-relaxed text-ink-2">{t.reason}</p>
                   <KitButton variant="ghost" className="mt-2" onClick={() => copy(`tag-${t.tag}`, t.tag)}>
                     {copiedKey === `tag-${t.tag}` ? <Check size={14} /> : <Copy size={14} />}
                     Copy tag

@@ -141,11 +141,11 @@ export default function PromotePage() {
 
       <section className="glass-card space-y-5 p-4 sm:p-6 md:p-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/15 text-accent">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brass-100 text-brass-700">
             <Megaphone size={22} />
           </div>
           <div>
-            <p className="font-bold text-text-primary">X story thread generator</p>
+            <p className="font-medium text-text-primary">X story thread generator</p>
             <p className="text-sm text-text-secondary">
               Pick an offer, analyze your product, and generate a 10-post story thread.
             </p>
@@ -153,7 +153,7 @@ export default function PromotePage() {
         </div>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-text-primary">Select offer</span>
+          <span className="mb-2 block text-sm font-medium text-text-primary">Select offer</span>
           <select
             value={selectedSiteId}
             onChange={(e) => {

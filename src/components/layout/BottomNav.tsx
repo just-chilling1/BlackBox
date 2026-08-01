@@ -64,7 +64,7 @@ export function BottomNav() {
   return (
     <>
       <nav
-        className="app-bottom-nav fixed bottom-0 left-0 right-0 z-50 border-t border-black/10 bg-page/95 lg:hidden"
+        className="app-bottom-nav fixed bottom-0 left-0 right-0 z-50 lg:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex h-16">
@@ -77,14 +77,14 @@ export function BottomNav() {
                 href={tab.path}
                 className={clsx(
                   "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
-                  isActive ? "text-amber-800" : "text-text-muted hover:text-text-primary"
+                  isActive ? "text-brass-700" : "text-ink-5 hover:text-ink"
                 )}
               >
                 {isActive ? (
-                  <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-gradient-to-r from-accent to-accent-muted" />
+                  <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-brass-700" />
                 ) : null}
                 <Icon className="h-6 w-6" />
-                <span className="text-[11px] font-semibold leading-none">{tab.label}</span>
+                <span className="text-[13px] font-medium leading-none">{tab.label}</span>
               </WarmNavLink>
             );
           })}
@@ -94,14 +94,14 @@ export function BottomNav() {
             onClick={() => setMoreOpen(true)}
             className={clsx(
               "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
-              moreActive || moreOpen ? "text-amber-800" : "text-text-muted hover:text-text-primary"
+              moreActive || moreOpen ? "text-brass-700" : "text-ink-5 hover:text-ink"
             )}
           >
             {(moreActive || moreOpen) ? (
-              <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-gradient-to-r from-accent to-accent-muted" />
+              <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-brass" />
             ) : null}
             <Menu className="h-6 w-6" />
-            <span className="text-[11px] font-semibold leading-none">More</span>
+            <span className="text-[13px] font-medium leading-none">More</span>
           </button>
         </div>
       </nav>
@@ -126,7 +126,7 @@ export function BottomNav() {
 
               {moreLinks.length > 0 ? (
                 <div>
-                  <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-widest text-text-muted">
+                  <p className="mb-2 px-1 text-[13px] font-medium uppercase tracking-widest text-text-muted">
                     More Pages
                   </p>
                   <div className="space-y-1.5">
@@ -139,7 +139,7 @@ export function BottomNav() {
                           href={item.path}
                           onClick={() => setMoreOpen(false)}
                           className={clsx(
-                            "flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold transition-all duration-200",
+                            "flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-medium transition-all duration-200",
                             isActive ? "nav-item-selected" : "text-text-secondary active:bg-black/5"
                           )}
                         >
@@ -155,7 +155,7 @@ export function BottomNav() {
 
               {exclusiveOffers.length > 0 ? (
                 <div>
-                  <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-widest text-accent">
+                  <p className="mb-2 px-1 text-[13px] font-medium uppercase tracking-widest text-brass-700">
                     Exclusive Offers
                   </p>
                   <div className="space-y-1.5">
@@ -165,11 +165,11 @@ export function BottomNav() {
                         href={offer.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex min-h-[52px] items-center gap-3 rounded-xl border border-accent/25 bg-accent/5 px-4 py-3 text-base font-semibold text-text-secondary active:bg-accent/10"
+                        className="flex min-h-[52px] items-center gap-3 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-4 py-3 text-base font-medium text-text-secondary active:bg-brass-100"
                       >
-                        <Sparkles className="h-5 w-5 text-accent" />
+                        <Sparkles className="h-5 w-5 text-brass-700" />
                         <span className="flex-1">{offer.title}</span>
-                        <ExternalLink className="h-4 w-4 text-accent" />
+                        <ExternalLink className="h-4 w-4 text-brass-700" />
                       </a>
                     ))}
                   </div>
@@ -180,7 +180,7 @@ export function BottomNav() {
                 <Link
                   href="/support"
                   onClick={() => setMoreOpen(false)}
-                  className="flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-text-secondary active:bg-black/5"
+                  className="flex min-h-[52px] items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-text-secondary active:bg-black/5"
                 >
                   <Headphones className="h-5 w-5" />
                   Contact Support
@@ -191,7 +191,7 @@ export function BottomNav() {
                 <button
                   type="button"
                   onClick={() => void handleSignOut()}
-                  className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-red-400/80 active:bg-red-500/5"
+                  className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[var(--bb-danger)]/80 active:bg-[var(--bb-danger)]/10"
                 >
                   <LogOut className="h-5 w-5" />
                   Sign Out

@@ -143,7 +143,7 @@ export default function ChooseThemePage({ embedded, onContinue, onBack }: Wizard
         <WizardStepBar breadcrumb="Site Builder / Wrap-up" step={3} />
 
         <section className="wizard-panel animate-fade-in-up space-y-6 py-10 text-center">
-          <CheckCircle2 size={48} className="mx-auto text-accent" />
+          <CheckCircle2 size={48} className="mx-auto text-brass-700" />
           <div>
             <h1 className="ds-h1 mb-2">Setup Complete</h1>
             <p className="ds-subtitle">

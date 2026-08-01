@@ -11,13 +11,13 @@ import { DashboardSection } from "./DashboardSection";
 type FormState = "idle" | "submitting" | "success" | "error";
 
 const fieldClass =
-  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all";
+  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
 
 const embeddedFieldClass =
-  "w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all";
+  "w-full min-w-0 rounded-lg border border-border-dim bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-ink-5 focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
 
 const embeddedLabelClass =
-  "mb-2 block text-xs font-bold uppercase tracking-wide text-text-heading";
+  "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-heading";
 
 function trainingUpsellUrl(): string | null {
   const external = trainingContent.externalTrainingUrl?.trim();
@@ -87,7 +87,7 @@ function SupportSuccessPanel({
           {sentViaMailto ? (
             <>
               Your email app should open with your message ready to send. Tap{" "}
-              <span className="font-semibold text-text-heading">Send</span> to deliver it — then
+              <span className="font-medium text-text-heading">Send</span> to deliver it — then
               we&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
             </>
           ) : (
@@ -266,7 +266,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-1.5 block text-xs font-bold uppercase tracking-wide text-text-muted"
+              : "mb-1.5 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
           }
         >
           Your email
@@ -290,7 +290,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
           className={
             embedded
               ? embeddedLabelClass
-              : "mb-1.5 block text-xs font-bold uppercase tracking-wide text-text-muted"
+              : "mb-1.5 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
           }
         >
           Your message
@@ -309,7 +309,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       </div>
 
       {formState === "error" && errorMessage ? (
-        <p className="text-sm font-medium text-red-600" role="alert">
+        <p className="text-sm font-medium text-[var(--bb-danger)]" role="alert">
           {errorMessage}
         </p>
       ) : null}
@@ -318,11 +318,11 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         <p
           className={
             embedded
-              ? "rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-relaxed text-text-secondary"
+              ? "rounded-lg border border-border-dim bg-canvas px-3 py-2.5 text-xs leading-relaxed text-text-secondary"
               : "rounded-lg border border-border-dim/70 bg-page/60 px-3 py-2.5 text-xs leading-relaxed text-text-muted"
           }
         >
-          <span className="font-semibold text-text-secondary">Please note:</span> We reply to the email
+          <span className="font-medium text-text-secondary">Please note:</span> We reply to the email
           above. Check spam or junk if you don&apos;t hear back within 48 hours.
         </p>
 
@@ -348,7 +348,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     <div
       className={
         embedded
-          ? "flex gap-2.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5"
+          ? "flex gap-2.5 rounded-lg border border-border-dim bg-canvas px-3 py-2.5"
           : "dashboard-nested-card flex gap-2.5 px-3 py-2.5"
       }
     >
@@ -360,7 +360,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         <button
           type="button"
           onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-          className="mt-1 block break-all text-left text-sm font-semibold text-accent-readable hover:underline"
+          className="mt-1 block break-all text-left text-sm font-medium text-brass-700 hover:underline"
         >
           {SUPPORT_EMAIL}
         </button>
@@ -379,10 +379,10 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     return (
       <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
         <div className="mb-3 flex min-w-0 items-center gap-3">
-          <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 p-2.5">
-            <Headphones className="h-5 w-5 text-amber-700" />
+          <div className="shrink-0 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-2.5">
+            <Headphones className="h-5 w-5 text-brass-700" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-widest text-text-heading">Contact Support</h3>
+          <h3 className="text-sm font-medium uppercase tracking-widest text-text-heading">Contact Support</h3>
         </div>
 
         <div className="flex flex-col gap-4">

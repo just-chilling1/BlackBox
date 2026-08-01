@@ -26,10 +26,10 @@ export function DeployCompletePanel({
       animate={{ opacity: 1, y: 0 }}
       className="flex min-w-0 max-w-full flex-col gap-5 scroll-mt-24 overflow-x-clip"
     >
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/90 p-5 sm:p-6">
+      <div className="rounded-2xl border border-success/20 bg-brass-100 p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 ring-1 ring-emerald-300">
-            <CheckCircle2 className="shrink-0 text-emerald-700" size={24} />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-success/15 ring-1 ring-success/30">
+            <CheckCircle2 className="shrink-0 text-success" size={24} />
           </div>
           <div className="min-w-0">
             <p className="brand-font text-lg text-text-heading sm:text-xl">
@@ -49,7 +49,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onGenerateAnother}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-4 text-base font-bold text-text-primary shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-accent-readable"
+          className="w-full rounded-xl border border-border-dim bg-white px-4 py-4 text-base font-medium text-text-primary shadow-sm transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-100 hover:text-brass-700"
         >
           <span className="flex items-center justify-center gap-2">
             <Rocket size={18} />
@@ -61,7 +61,7 @@ export function DeployCompletePanel({
           type="button"
           onClick={onViewVault}
           whileHover={{ scale: 1.01 }}
-          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-4 text-base font-bold text-text-primary shadow-sm transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-accent-readable"
+          className="w-full rounded-xl border border-border-dim bg-white px-4 py-4 text-base font-medium text-text-primary shadow-sm transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-100 hover:text-brass-700"
         >
           <span className="flex items-center justify-center gap-2">
             View offers library

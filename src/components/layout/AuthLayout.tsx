@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { brand } from "@/config/brand.config";
 import { BrandLogo } from "./BrandLogo";
 import { FloatingSupportButton } from "@/components/support/FloatingSupportButton";
-import { ParticleBackground } from "@/components/ui/particle-background";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -17,27 +16,15 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
       className="min-h-[100dvh] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden"
       style={{ backgroundColor: brand.colors.authPage }}
     >
-      <ParticleBackground />
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div
-          className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]"
-          style={{ backgroundColor: `${brand.colors.primary}0d` }}
-        />
-        <div
-          className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px]"
-          style={{ backgroundColor: `${brand.colors.primary}0d` }}
-        />
-      </div>
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8 border-black/5 shadow-xl">
+        <div className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col gap-6 sm:gap-8">
           <div className="flex flex-col items-center gap-5 text-center">
             <BrandLogo size="lg" showTagline={false} stacked />
-            {subtitle && <p className="text-sm text-text-secondary">{subtitle}</p>}
+            {subtitle && <p className="text-[15px] text-ink-3">{subtitle}</p>}
           </div>
           {children}
         </div>

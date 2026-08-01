@@ -28,16 +28,16 @@ export function RollingEarningsCounter() {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-3 p-4 rounded-xl border border-green-500/20 bg-green-500/5"
+      className="flex items-center gap-3 p-4 rounded-xl border border-success/20 bg-success/10"
     >
-      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-        <TrendingUp size={18} className="text-green-400" />
+      <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+        <TrendingUp size={18} className="text-success" />
       </div>
       <div>
-        <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
+        <p className="text-[13px] font-medium text-text-muted uppercase tracking-widest">
           {earningsCounter.label}
         </p>
-        <p className="text-xl font-black text-green-400 tabular-nums">{value}</p>
+        <p className="text-xl font-medium text-success tabular-nums">{value}</p>
       </div>
     </motion.div>
   );

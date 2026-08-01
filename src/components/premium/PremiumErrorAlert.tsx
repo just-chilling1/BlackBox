@@ -11,11 +11,11 @@ export function PremiumErrorAlert({ message, className }: PremiumErrorAlertProps
     <p
       role="alert"
       className={clsx(
-        "flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800",
+        "flex items-start gap-2 rounded-lg border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-3 py-2.5 text-sm font-medium text-[var(--bb-danger)]",
         className
       )}
     >
-      <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" aria-hidden />
+      <AlertCircle size={16} className="mt-0.5 shrink-0 text-[var(--bb-danger)]" aria-hidden />
       {message}
     </p>
   );

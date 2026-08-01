@@ -27,14 +27,14 @@ export function MilestoneTracker({ activityCount = 0 }: MilestoneTrackerProps) {
   return (
     <div className="flex flex-col gap-4 p-5 surface-inset border-border-dim/30">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-text-heading">Your progress</h3>
+        <h3 className="text-sm font-medium text-text-heading">Your progress</h3>
         <span className="text-xs text-text-muted">
           {activityCount} / {next.threshold}
         </span>
       </div>
       <div className="h-2 rounded-full bg-black/5 overflow-hidden">
         <div
-          className="h-full bg-accent transition-all duration-500"
+          className="h-full bg-grad-brass transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -45,11 +45,11 @@ export function MilestoneTracker({ activityCount = 0 }: MilestoneTrackerProps) {
           return (
             <li
               key={m.threshold}
-              className={`flex items-start gap-3 text-xs ${done ? "text-green-400" : "text-text-muted"}`}
+              className={`flex items-start gap-3 text-xs ${done ? "text-success" : "text-text-muted"}`}
             >
               <Icon size={14} className="shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold">{m.label}</p>
+                <p className="font-medium">{m.label}</p>
                 {done && <p className="text-text-secondary mt-0.5">{m.reward}</p>}
               </div>
             </li>

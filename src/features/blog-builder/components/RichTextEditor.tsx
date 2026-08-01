@@ -163,7 +163,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           <button
             type="button"
             onClick={() => setMode((m) => (m === "visual" ? "html" : "visual"))}
-            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[11px] font-semibold text-text-muted hover:text-text-heading hover:bg-black/10 transition-colors"
+            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-black/10 transition-colors"
           >
             {mode === "visual" ? <Code2 size={14} /> : <Eye size={14} />}
             {mode === "visual" ? "HTML" : "Visual"}
@@ -190,9 +190,9 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             role="textbox"
             aria-multiline="true"
             aria-label="Article content"
-            className="sms-post-preview sms-editable glass-tile p-4 sm:p-5 min-h-[18rem] max-h-[55vh] overflow-y-auto outline-none focus:ring-2 focus:ring-accent/40 rounded-xl"
+            className="sms-post-preview sms-editable glass-tile p-4 sm:p-5 min-h-[18rem] max-h-[55vh] overflow-y-auto outline-none focus:ring-2 focus:ring-brass-100 rounded-xl"
           />
-          <p className="text-[11px] text-text-muted">
+          <p className="text-[13px] text-text-muted">
             Tip: click any image to replace it with your own upload.
           </p>
         </>
@@ -207,7 +207,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
       )}
 
       {error && (
-        <p className="text-xs text-red-400/90 rounded-lg border border-red-500/30 bg-red-500/10 p-2">
+        <p className="text-xs text-[var(--bb-danger)]/90 rounded-lg border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/10 p-2">
           {error}
         </p>
       )}

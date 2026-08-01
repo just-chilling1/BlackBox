@@ -32,12 +32,12 @@ export function PremiumVideoTutorial({
         </div>
         <div className="flex flex-col justify-center gap-4 p-8 md:w-1/2 md:p-10">
           <div className="flex items-center gap-2">
-            <Sparkles size={14} className="text-accent" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
+            <Sparkles size={14} className="text-brass-700" />
+            <span className="text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
               Watch First
             </span>
           </div>
-          <h2 className="text-2xl font-bold text-text-primary">{title}</h2>
+          <h2 className="text-2xl font-medium text-text-primary">{title}</h2>
           <p className="leading-relaxed text-text-secondary">{description}</p>
         </div>
       </div>

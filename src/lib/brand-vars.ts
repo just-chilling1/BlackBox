@@ -3,6 +3,9 @@ import { brand } from "@/config/brand.config";
 /** CSS custom properties derived from brand.config — inject via BrandStyleProvider */
 export function getBrandCssVars(): Record<string, string> {
   return {
+    "--bb-canvas": brand.colors.page,
+    "--bb-surface": brand.colors.panel,
+    "--bb-surface-sub": brand.colors.sidebar,
     "--bg-page": brand.colors.page,
     "--bg-sidebar": brand.colors.sidebar,
     "--bg-panel": brand.colors.panel,
@@ -12,8 +15,9 @@ export function getBrandCssVars(): Record<string, string> {
     "--bg-border-teal": brand.colors.borderTeal,
     "--bg-glass": brand.colors.panelGlass,
     "--brand-primary": brand.colors.primary,
+    "--brand-primary-readable": brand.colors.secondary,
     "--brand-secondary": brand.colors.secondary,
-    "--brand-tint": `${brand.colors.primary}1a`,
+    "--brand-tint": "#FBF5E6",
     "--promo-accent": brand.colors.promoAccent,
     "--promo-cta": brand.colors.promoCta,
     "--text-heading": brand.colors.textHeading,

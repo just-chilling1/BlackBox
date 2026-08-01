@@ -50,13 +50,13 @@ export function ThemePreview({
   const eyebrowClass = linkedSelection
     ? isDark
       ? compact
-        ? "text-[9px] font-bold uppercase tracking-widest text-emerald-300"
-        : "text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300"
+        ? "text-[13px] font-medium uppercase tracking-widest text-success"
+        : "text-[13px] font-medium uppercase tracking-[0.2em] text-success"
       : compact
-        ? "text-[9px] font-bold uppercase tracking-widest text-amber-800"
+        ? "text-[13px] font-medium uppercase tracking-widest text-brass-700"
         : "page-eyebrow"
     : clsx(
-        "text-[10px] font-bold uppercase tracking-widest",
+        "text-[13px] font-medium uppercase tracking-widest",
         isDark ? "text-zinc-400" : "opacity-60"
       );
 
@@ -114,7 +114,7 @@ export function ThemePreview({
           </p>
           {!compact && (
             <p
-              className="text-base font-bold truncate sm:text-lg"
+              className="text-base font-medium truncate sm:text-lg"
               style={{ fontFamily: headingFont, color: isDark ? "#fafafa" : undefined }}
             >
               {template.name}
@@ -129,8 +129,8 @@ export function ThemePreview({
         <span
           className={
             compact
-              ? "shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
-              : "shrink-0 self-start rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide sm:self-center"
+              ? "shrink-0 rounded-full px-2 py-0.5 text-[13px] font-medium uppercase tracking-wide"
+              : "shrink-0 self-start rounded-full px-3 py-1 text-[13px] font-medium uppercase tracking-wide sm:self-center"
           }
           style={toneBadgeStyle}
         >
@@ -159,7 +159,7 @@ export function ThemePreview({
             <div>
               <p
                 className={clsx(
-                  "mb-1 text-[10px] font-bold uppercase tracking-widest",
+                  "mb-1 text-[13px] font-medium uppercase tracking-widest",
                   isDark ? "text-zinc-400" : "text-text-muted"
                 )}
               >
@@ -172,7 +172,7 @@ export function ThemePreview({
             <div>
               <p
                 className={clsx(
-                  "mb-1 text-[10px] font-bold uppercase tracking-widest",
+                  "mb-1 text-[13px] font-medium uppercase tracking-widest",
                   isDark ? "text-zinc-400" : "text-text-muted"
                 )}
               >
@@ -231,8 +231,8 @@ function QuestionnaireMock({
       <div
         className={
           compact
-            ? "flex items-center justify-between text-[9px] font-semibold uppercase tracking-wider"
-            : "flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider"
+            ? "flex items-center justify-between text-[13px] font-medium uppercase tracking-wider"
+            : "flex items-center justify-between text-[13px] font-medium uppercase tracking-wider"
         }
         style={{ color: mutedLabel }}
       >
@@ -243,7 +243,7 @@ function QuestionnaireMock({
         <div className="h-full w-2/5 rounded-full" style={{ backgroundColor: accent }} />
       </div>
       <p
-        className={compact ? "pt-0.5 text-xs font-semibold" : "pt-1 text-sm font-semibold"}
+        className={compact ? "pt-0.5 text-[13px] font-medium" : "pt-1 text-sm font-medium"}
         style={{ fontFamily: headingFont, color: isDark ? "#fafafa" : colors.text }}
       >
         {nicheLabel
@@ -256,7 +256,7 @@ function QuestionnaireMock({
       ).map((opt, i) => (
         <div
           key={opt}
-          className={compact ? "rounded-md border px-2 py-1.5 text-[10px]" : "rounded-lg border px-3 py-2 text-xs"}
+          className={compact ? "rounded-md border px-2 py-1.5 text-[13px]" : "rounded-lg border px-3 py-2 text-xs"}
           style={{
             fontFamily: bodyFont,
             borderColor: i === 1 ? accent : cardBorder,
@@ -270,8 +270,8 @@ function QuestionnaireMock({
       <div
         className={
           compact
-            ? "mt-1 rounded-md py-1.5 text-center text-[10px] font-bold text-white"
-            : "mt-2 rounded-lg py-2 text-center text-xs font-bold text-white"
+            ? "mt-1 rounded-md py-1.5 text-center text-[13px] font-medium text-white"
+            : "mt-2 rounded-lg py-2 text-center text-[13px] font-medium text-white"
         }
         style={{ backgroundColor: continueBg }}
       >

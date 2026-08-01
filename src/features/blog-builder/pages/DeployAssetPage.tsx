@@ -384,7 +384,7 @@ export default function DeployAssetPage({
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-xl border border-border-dim bg-white px-4 py-2.5 text-sm font-semibold text-text-secondary transition-colors hover:border-accent/30 hover:bg-accent/5 hover:text-text-primary"
+            className="inline-flex items-center gap-2 rounded-xl border border-border-dim bg-white px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-100 hover:text-text-primary"
           >
             <ArrowLeft size={16} aria-hidden />
             Back to Template

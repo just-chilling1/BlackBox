@@ -51,7 +51,7 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
       <button
         type="button"
         aria-label="Close video"
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -60,7 +60,7 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border-dim bg-surface px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5">
-          <h2 className="min-w-0 flex-1 truncate pr-2 text-sm font-bold text-text-heading sm:text-base">
+          <h2 className="min-w-0 flex-1 truncate pr-2 text-sm font-medium text-text-heading sm:text-base">
             {title}
           </h2>
           <div className="flex shrink-0 items-center gap-2">
@@ -77,7 +77,7 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-slate-100 hover:text-text-heading active:scale-95"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-brass-100 hover:text-text-heading active:scale-95"
             >
               <X size={20} />
             </button>
@@ -99,7 +99,7 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
                 href={videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-white/10 px-6 py-3 font-bold text-white hover:bg-white/20"
+                className="rounded-xl bg-white/10 px-6 py-3 font-medium text-white hover:bg-white/20"
               >
                 Open video in a new tab
               </a>
@@ -109,26 +109,23 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
 
         {/* Account verified / withdraw ad — Profit Loop pattern */}
         <div
-          className="relative shrink-0 overflow-hidden border-t border-emerald-200 bg-emerald-50/90 px-5 py-4 sm:px-6"
+          className="relative shrink-0 overflow-hidden border-t border-[var(--bb-line-brass)] bg-grad-tint px-5 py-4 sm:px-6"
           style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
         >
-          <div className="pointer-events-none absolute -left-16 -top-20 h-48 w-48 rounded-full bg-emerald-400/25 blur-3xl" />
-          <div className="pointer-events-none absolute -right-14 -bottom-24 h-52 w-52 rounded-full bg-emerald-300/20 blur-3xl" />
-
           <div className="relative flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
             <div className="flex flex-1 items-center gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-600 shadow-[0_0_22px_rgba(5,150,105,0.35)]">
-                <Check className="h-5 w-5 text-white" strokeWidth={3} />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-brass-200 text-brass-700">
+                <Check className="h-5 w-5" strokeWidth={1.75} />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-700">
+                <p className="text-[13px] font-medium tracking-[0.08em] text-brass-700">
                   Account Verified
                 </p>
-                <p className="mt-1 text-base font-semibold leading-snug text-slate-900">
+                <p className="mt-1 text-base font-normal leading-snug text-ink">
                   Congratulations! You&apos;re eligible to withdraw{" "}
-                  <span className="font-extrabold text-emerald-700">$416.34</span>
+                  <span className="font-medium text-brass-700">$416.34</span>
                 </p>
-                <p className="mt-0.5 text-xs font-medium text-emerald-800/60">
+                <p className="mt-0.5 text-[13px] text-ink-5">
                   Available balance from your activity
                 </p>
               </div>
@@ -137,10 +134,10 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
               href={offers.videoWithdrawUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-emerald-600 px-7 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-500 active:translate-y-0 sm:w-auto"
+              className="btn-primary flex h-12 w-full shrink-0 sm:w-auto"
             >
               Withdraw Now
-              <ArrowRight className="h-4 w-4" strokeWidth={3} />
+              <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
             </a>
           </div>
         </div>

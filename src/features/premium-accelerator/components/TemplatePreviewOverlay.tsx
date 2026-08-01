@@ -69,7 +69,7 @@ export function TemplatePreviewOverlay({
       <button
         type="button"
         aria-label="Close preview"
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -83,9 +83,9 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border-dim bg-surface px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5">
           <div className="min-w-0">
             {preview?.niche && (
-              <p className="text-[10px] font-bold uppercase tracking-wider text-accent">{preview.niche}</p>
+              <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">{preview.niche}</p>
             )}
-            <h2 id="accelerator-preview-title" className="truncate text-sm font-bold text-text-heading sm:text-base">
+            <h2 id="accelerator-preview-title" className="truncate text-sm font-medium text-text-heading sm:text-base">
               {title}
             </h2>
             {preview?.templateName && (
@@ -96,18 +96,18 @@ export function TemplatePreviewOverlay({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-all duration-200 hover:bg-slate-100 hover:text-text-heading active:scale-95"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-all duration-200 hover:bg-brass-100 hover:text-text-heading active:scale-95"
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="flex shrink-0 gap-1 border-b border-divider bg-slate-50/80 px-4 py-2 sm:px-5">
+        <div className="flex shrink-0 gap-1 border-b border-divider bg-canvas/80 px-4 py-2 sm:px-5">
           <button
             type="button"
             onClick={() => setTab("sales-page")}
             className={clsx(
-              "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+              "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               tab === "sales-page"
                 ? "bg-white text-text-primary shadow-sm"
                 : "text-text-muted hover:text-text-primary"
@@ -120,7 +120,7 @@ export function TemplatePreviewOverlay({
             type="button"
             onClick={() => setTab("thread")}
             className={clsx(
-              "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+              "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               tab === "thread"
                 ? "bg-white text-text-primary shadow-sm"
                 : "text-text-muted hover:text-text-primary"
@@ -129,23 +129,23 @@ export function TemplatePreviewOverlay({
             <MessageSquare size={14} />
             X thread
             {threadCount > 0 && (
-              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+              <span className="rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
                 {threadCount}
               </span>
             )}
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50/40">
+        <div className="min-h-0 flex-1 overflow-y-auto bg-canvas/40">
           {loading && (
             <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-text-muted">
-              <Loader2 size={28} className="animate-spin text-accent" />
+              <Loader2 size={28} className="animate-spin text-brass-700" />
               <p className="text-sm">Loading template preview…</p>
             </div>
           )}
 
           {!loading && error && (
-            <div className="m-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <div className="m-4 rounded-lg border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-[15px] text-[var(--bb-danger)]">
               {error}
             </div>
           )}

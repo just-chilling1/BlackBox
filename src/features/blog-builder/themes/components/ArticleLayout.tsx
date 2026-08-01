@@ -44,7 +44,7 @@ function RelatedSidebar({
         <ul className="space-y-4">
           {related.map((p) => (
             <li key={p.slug}>
-              <Link href={`/sites/${siteSlug}/${p.slug}`} className="text-sm font-semibold leading-snug hover:text-[var(--blog-accent)]">
+              <Link href={`/sites/${siteSlug}/${p.slug}`} className="text-sm font-medium leading-snug hover:text-[var(--blog-accent)]">
                 {p.title}
               </Link>
             </li>

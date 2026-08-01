@@ -166,8 +166,8 @@ export default function ResetPasswordPage() {
         if (checking) {
             return (
                 <div className="flex flex-col items-center gap-4 py-8">
-                    <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                    <p className="text-sm text-text-secondary">Verifying your reset link...</p>
+                    <div className="w-8 h-8 border-2 border-brass-700 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-[15px] text-ink-3">Verifying your reset link...</p>
                 </div>
             );
         }
@@ -179,12 +179,12 @@ export default function ResetPasswordPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-5 py-4"
                 >
-                    <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center">
-                        <CheckCircle2 size={32} className="text-green-400" />
+                    <div className="w-16 h-16 bg-success/10 border border-success/20 rounded-full flex items-center justify-center">
+                        <CheckCircle2 size={32} className="text-[var(--bb-success)]" />
                     </div>
                     <div className="flex flex-col items-center gap-2 text-center">
-                        <p className="text-sm text-text-primary font-semibold">Password updated!</p>
-                        <p className="text-xs text-text-secondary">Redirecting you to login...</p>
+                        <p className="text-[15px] text-ink font-medium">Password updated!</p>
+                        <p className="text-[13px] text-ink-3">Redirecting you to login...</p>
                     </div>
                 </motion.div>
             );
@@ -197,12 +197,12 @@ export default function ResetPasswordPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-5 py-4"
                 >
-                    <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center">
-                        <AlertTriangle size={32} className="text-red-400" />
+                    <div className="w-16 h-16 bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 rounded-full flex items-center justify-center">
+                        <AlertTriangle size={32} className="text-[var(--bb-danger)]" />
                     </div>
                     <div className="flex flex-col items-center gap-2 text-center">
-                        <p className="text-sm text-text-primary font-semibold">Link Expired or Invalid</p>
-                        <p className="text-xs text-text-secondary leading-relaxed max-w-xs">
+                        <p className="text-[15px] text-ink font-medium">Link Expired or Invalid</p>
+                        <p className="text-[13px] text-ink-3 leading-relaxed max-w-xs">
                             {error || "This password reset link has expired or is invalid. Please request a new one."}
                         </p>
                     </div>
@@ -223,17 +223,18 @@ export default function ResetPasswordPage() {
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-red-500/10 border border-red-500/20 p-4 rounded-sm flex items-center gap-3 text-red-400 text-sm"
+                        className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[var(--bb-danger)] text-sm"
                     >
                         <span>{error}</span>
                     </motion.div>
                 )}
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">New Password</label>
+                    <label htmlFor="reset-password" className="auth-field-label">New Password</label>
                     <div className="relative group">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors" size={18} />
+                        <Lock className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
                         <input
+                            id="reset-password"
                             type={showPassword ? "text" : "password"}
                             required
                             value={password}
@@ -244,7 +245,7 @@ export default function ResetPasswordPage() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-amber-800 transition-colors"
+                            className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-brass-700"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -252,10 +253,11 @@ export default function ResetPasswordPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-text-muted ml-1">Confirm Password</label>
+                    <label htmlFor="reset-confirm-password" className="auth-field-label">Confirm Password</label>
                     <div className="relative group">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors" size={18} />
+                        <Lock className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
                         <input
+                            id="reset-confirm-password"
                             type={showPassword ? "text" : "password"}
                             required
                             value={confirmPassword}
@@ -287,7 +289,7 @@ export default function ResetPasswordPage() {
     return (
         <AuthLayout subtitle={pageSubtitle}>
             <div className="flex flex-col items-center gap-1 text-center -mt-2">
-                <h1 className="brand-font text-[28px] text-text-primary leading-tight">
+                <h1 className="brand-font text-[34px] text-ink leading-tight">
                     {pageTitle}
                 </h1>
             </div>
@@ -295,18 +297,18 @@ export default function ResetPasswordPage() {
             {renderContent()}
 
             {(ready || checking) && !success && (
-                <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-6">
+                <div className="flex flex-col items-center gap-4 auth-divider pt-6">
                     <Link
                         href="/login"
-                        className="text-xs text-text-muted hover:text-amber-800 transition-colors"
+                        className="auth-link"
                     >
                         Back to Login
                     </Link>
                 </div>
             )}
 
-            <div className="flex items-center justify-center gap-1 text-[10px] text-text-muted">
-                <ShieldCheck size={10} className="text-green-400" />
+            <div className="flex items-center justify-center gap-1 text-[13px] text-ink-5">
+                <ShieldCheck size={14} className="text-[var(--bb-success)]" />
                 <span>256-bit Encrypted</span>
             </div>
         </AuthLayout>

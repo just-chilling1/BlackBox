@@ -106,7 +106,7 @@ export default function LinkVaultPage() {
             {saved ? "Link Saved" : saving ? "Saving..." : "Save link"}
           </button>
           {saved && !error && (
-            <span className="text-sm font-medium text-emerald-700">Saved to Links Library</span>
+            <span className="text-sm font-medium text-success">Saved to Links Library</span>
           )}
         </div>
       </div>

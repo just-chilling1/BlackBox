@@ -5,7 +5,7 @@ import { getNavIcon } from "@/lib/nav-icons";
 import { brand } from "@/config/brand.config";
 
 interface BrandLogoProps {
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "sidebar" | "lg";
   showTagline?: boolean;
   compact?: boolean;
   splitTitle?: boolean;
@@ -14,22 +14,31 @@ interface BrandLogoProps {
 
 const SIZES = {
   sm: {
-    box: "w-9 h-9 sm:w-10 sm:h-10",
+    box: "w-10 h-10 sm:w-11 sm:h-11",
     icon: 20,
-    imgHeight: "h-9 sm:h-10",
-    wordmarkHeight: "h-10 sm:h-11",
-    img: 40,
-    title: "text-base sm:text-[18px] lg:text-[22px]",
-    tagline: "text-[9px] sm:text-[10px]",
+    imgHeight: "h-10 w-10 sm:h-11 sm:w-11",
+    wordmarkHeight: "h-12 sm:h-14",
+    img: 44,
+    title: "text-base sm:text-[18px]",
+    tagline: "text-[13px]",
   },
   md: {
-    box: "w-10 h-10 sm:w-12 sm:h-12",
+    box: "w-11 h-11 sm:w-12 sm:h-12",
     icon: 22,
-    imgHeight: "h-10 sm:h-12",
-    wordmarkHeight: "h-11 sm:h-12",
+    imgHeight: "h-11 w-11 sm:h-12 sm:w-12",
+    wordmarkHeight: "h-14 sm:h-16",
     img: 48,
     title: "text-lg sm:text-[22px]",
-    tagline: "text-[10px]",
+    tagline: "text-[13px]",
+  },
+  sidebar: {
+    box: "w-12 h-12 sm:w-14 sm:h-14",
+    icon: 24,
+    imgHeight: "h-12 w-12 sm:h-14 sm:w-14",
+    wordmarkHeight: "h-16 w-auto sm:h-[4.5rem]",
+    img: 56,
+    title: "text-lg sm:text-xl",
+    tagline: "text-[13px]",
   },
   lg: {
     box: "w-14 h-14 sm:w-16 sm:h-16",
@@ -38,7 +47,7 @@ const SIZES = {
     wordmarkHeight: "h-16 sm:h-[5.25rem] md:h-24",
     img: 80,
     title: "text-xl sm:text-[28px] lg:text-[32px]",
-    tagline: "text-xs sm:text-sm",
+    tagline: "text-[13px] sm:text-[15px]",
   },
 };
 
@@ -73,14 +82,14 @@ export function BrandLogo({
           className={clsx(
             "w-auto object-contain shrink-0",
             compact ? s.imgHeight : s.wordmarkHeight,
-            isWordmarkImage && !compact ? "max-w-none" : "max-w-full"
+            isWordmarkImage && !compact ? "max-w-[min(100%,20rem)]" : "max-w-full"
           )}
           loading="eager"
           decoding="async"
         />
       ) : (
         <div
-          className={`${s.box} bg-accent flex items-center justify-center rounded-lg shadow-gold shrink-0`}
+          className={`${s.box} bg-grad-brass flex items-center justify-center rounded-lg shadow-brass shrink-0`}
         >
           <Icon size={s.icon} className="text-black" />
         </div>
@@ -96,7 +105,7 @@ export function BrandLogo({
             {brand.productName}
           </span>
           {showTagline && (
-            <span className={`${s.tagline} font-bold text-text-muted mt-0.5 sm:mt-1 truncate`}>
+            <span className={`${s.tagline} font-medium text-text-muted mt-0.5 sm:mt-1 truncate`}>
               {brand.tagline}
             </span>
           )}

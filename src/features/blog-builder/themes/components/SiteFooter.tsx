@@ -26,7 +26,7 @@ export function SiteFooter({
       <footer className="blog-footer mt-auto">
         <div className="blog-footer-inner grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div>
-            <p className="font-bold text-lg">{brand.name}</p>
+            <p className="font-medium text-lg">{brand.name}</p>
             <p className="mt-2 text-sm leading-relaxed blog-meta">{brand.tagline}</p>
             <p className="blog-disclosure">
               We may earn a commission when you buy through links on this site. This helps support

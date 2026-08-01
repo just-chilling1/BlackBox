@@ -25,7 +25,7 @@ export function EarningsTestimonials() {
 
   return (
     <div className="relative surface-inset border-border-dim/30 p-5 overflow-hidden">
-      <Quote size={20} className="text-accent/40 mb-3" />
+      <Quote size={20} className="text-ink-6 mb-3" />
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
@@ -36,11 +36,11 @@ export function EarningsTestimonials() {
         >
           <p className="text-sm text-text-secondary leading-relaxed italic">&ldquo;{current.quote}&rdquo;</p>
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-text-primary">
+            <span className="font-medium text-text-primary">
               {current.name} · {current.location}
             </span>
             {current.amount !== "$0" && (
-              <span className="text-green-400 font-bold">{current.amount}</span>
+              <span className="text-success font-medium">{current.amount}</span>
             )}
           </div>
         </motion.div>

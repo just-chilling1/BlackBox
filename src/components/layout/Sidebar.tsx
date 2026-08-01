@@ -13,6 +13,7 @@ import {
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { brand } from "@/config/brand.config";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
   getVisibleWorkflowSteps,
   getCoreResourceNav,
@@ -133,34 +134,18 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             href="/dashboard"
             onClick={handleNavClick}
             className={clsx(
-              "transition-opacity hover:opacity-80",
-              collapsed ? "flex w-full justify-center" : "block min-w-0"
+              "transition-opacity hover:opacity-90",
+              collapsed ? "flex w-full justify-center" : "block min-w-0 flex-1"
             )}
             title={brand.productName}
           >
-            {collapsed ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={brand.logo.iconSrc}
-                alt={brand.logo.alt}
-                width={40}
-                height={40}
-                className="h-10 w-10 shrink-0 rounded-xl object-contain shadow-sm"
-              />
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={brand.logo.src}
-                alt={brand.logo.alt}
-                className="h-11 w-auto max-w-[min(100%,17.5rem)] object-contain object-left sm:h-12"
-              />
-            )}
+            <BrandLogo size="sidebar" showTagline={false} compact={collapsed} />
           </Link>
           <button
             type="button"
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-slate-100 hover:text-text-primary"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-text-muted transition-colors hover:bg-brass-100 hover:text-text-primary"
           >
             {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
           </button>
@@ -187,8 +172,8 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           ) : null}
 
           {!collapsed && exclusiveOffers.length > 0 ? (
-            <div className="mt-4 space-y-2 rounded-xl border border-accent/25 bg-accent/[0.06] p-3">
-              <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-accent">
+            <div className="mt-4 space-y-2 premium-nav-section p-3">
+              <p className="premium-nav-section-label px-1">
                 Exclusive Offers
               </p>
               {exclusiveOffers.map((offer) => (
@@ -197,11 +182,11 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
                   href={offer.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-accent/10 hover:text-accent"
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-[13px] font-normal text-ink-2 transition-colors hover:bg-[rgba(28,27,24,0.04)] hover:text-brass-700"
                 >
-                  <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                  <PlayCircle className="h-4 w-4 shrink-0 text-brass-700" />
                   <span className="flex-1">{offer.title}</span>
-                  <ExternalLink className="h-3 w-3 text-accent" />
+                  <ExternalLink className="h-3 w-3 text-ink-6" />
                 </a>
               ))}
             </div>
@@ -214,13 +199,13 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
         <div className={clsx("p-3", collapsed && "px-2")}>
           <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-black shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-grad-brass text-[15px] font-medium text-brass-900 shadow-brass">
               {userInitials}
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <div className="brand-font truncate text-sm font-bold text-text-heading">{displayName}</div>
-                <div className="text-xs text-text-secondary">Active Member</div>
+                <div className="brand-font truncate text-[15px] text-ink">{displayName}</div>
+                <div className="text-[13px] text-ink-5">Active Member</div>
               </div>
             )}
             <button

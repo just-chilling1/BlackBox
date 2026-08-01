@@ -60,7 +60,7 @@ export default function LoginPage() {
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-red-500/10 border border-red-500/20 p-4 rounded-sm flex items-center gap-3 text-red-400 text-sm"
+            className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[#A32D2D] text-[15px]"
           >
             <ShieldAlert size={18} />
             <span>{error}</span>
@@ -68,12 +68,13 @@ export default function LoginPage() {
         )}
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">
+          <label htmlFor="login-email" className="auth-field-label">
             Email
           </label>
           <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" size={18} />
+            <Mail className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
             <input
+              id="login-email"
               type="email"
               required
               value={email}
@@ -85,12 +86,13 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#475569] ml-1">
+          <label htmlFor="login-password" className="auth-field-label">
             Password
           </label>
           <div className="relative group">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#475569] group-focus-within:text-accent transition-colors" size={18} />
+            <Lock className="auth-field-icon absolute left-4 top-1/2 -translate-y-1/2" size={18} />
             <input
+              id="login-password"
               type={showPassword ? "text" : "password"}
               required
               value={password}
@@ -100,8 +102,9 @@ export default function LoginPage() {
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] cursor-pointer transition-colors hover:text-amber-800"
+              className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-brass-700"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -109,7 +112,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex justify-end -mt-1">
-          <Link href="/forgot-password" className="text-[11px] text-text-muted hover:text-amber-800 transition-colors">
+          <Link href="/forgot-password" className="auth-link">
             Forgot Password?
           </Link>
         </div>
@@ -126,16 +129,16 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="flex flex-col items-center gap-4 border-t border-black/10 pt-8">
-        <p className="text-[#475569] text-xs">New here?</p>
-        <Link href="/signup" className="brand-font text-amber-800 text-xs font-bold tracking-wide hover:text-amber-950 transition-colors">
+      <div className="flex flex-col items-center gap-4 auth-divider pt-8">
+        <p className="text-ink-3 text-[13px]">New here?</p>
+        <Link href="/signup" className="auth-link brand-font text-[15px]">
           Sign Up
         </Link>
       </div>
 
       {socialProof.enabled && socialProof.loginPage.activeMembers > 0 && (
-        <p className="text-center text-[11px] text-text-muted">
-          <strong className="text-green-400">{socialProof.loginPage.activeMembers}</strong> members active now
+        <p className="text-center text-[13px] text-ink-5">
+          <span className="text-[var(--bb-success)]">{socialProof.loginPage.activeMembers}</span> members active now
         </p>
       )}
     </AuthLayout>

@@ -27,16 +27,12 @@ export function PremiumFeatureNavList({
 
   const itemClass = (isActive: boolean) =>
     clsx(
-      "premium-sidebar-item flex items-center gap-3 rounded-xl font-medium transition-all duration-300",
+      "premium-sidebar-item flex items-center gap-3 rounded-md font-normal transition-[background-color,border-color,box-shadow,color] duration-[160ms]",
       mobile
-        ? "min-h-[52px] px-4 py-3 text-base font-semibold"
-        : "py-3 text-sm",
+        ? "min-h-[52px] px-4 py-3 text-[15px]"
+        : "min-h-[44px] py-3 text-[15px]",
       collapsed && !mobile ? "justify-center px-0" : mobile ? "" : "px-3",
-      isActive
-        ? "is-active text-text-heading"
-        : mobile
-          ? "text-text-secondary"
-          : "text-text-muted"
+      isActive && "is-active"
     );
 
   return (
@@ -50,11 +46,11 @@ export function PremiumFeatureNavList({
       {!collapsed && (
         <p
           className={clsx(
-            "flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[10px] font-bold uppercase tracking-widest text-accent",
-            mobile && "mb-0 px-2 pt-1 text-xs font-semibold tracking-widest"
+            "premium-nav-section-label flex items-center gap-1.5 px-2.5 pb-2 pt-1.5",
+            mobile && "mb-0 px-2 pt-1"
           )}
         >
-          <Sparkles className={clsx("animate-premium-pulse shrink-0", mobile ? "h-3.5 w-3.5" : "h-3 w-3")} fill="currentColor" />
+          <Sparkles className={clsx("shrink-0 text-brass-700", mobile ? "h-3.5 w-3.5" : "h-3 w-3")} strokeWidth={1.75} />
           {PREMIUM_SECTION_LABEL}
         </p>
       )}
@@ -81,18 +77,11 @@ export function PremiumFeatureNavList({
                   className={clsx(
                     "shrink-0",
                     mobile ? "h-5 w-5" : "h-[18px] w-[18px]",
-                    isActive ? "text-accent" : "text-accent/80"
+                    isActive ? "text-brass-300" : "text-ink-6"
                   )}
-                  strokeWidth={1.5}
+                  strokeWidth={1.75}
                 />
-                {!collapsed && <span className="tracking-wide">{item.label}</span>}
-                {!collapsed && !mobile && isActive && (
-                  <motion.div
-                    layoutId="activePremiumIndicator"
-                    className="ml-auto h-1.5 w-1.5 rounded-full bg-accent"
-                    style={{ boxShadow: "0 0 10px rgba(238, 179, 16, 0.7)" }}
-                  />
-                )}
+                {!collapsed && <span className="tracking-normal">{item.label}</span>}
               </WarmNavLink>
             </motion.li>
           );

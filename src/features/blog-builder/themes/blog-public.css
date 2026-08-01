@@ -8,7 +8,7 @@
   --blog-accent: #0f766e;
   --blog-accent-hover: #0d635c;
   --blog-border: rgba(20, 20, 20, 0.08);
-  --blog-pillar: #b45309;
+  --blog-pillar: #8A6414;
   --blog-hero-overlay: rgba(15, 118, 110, 0.06);
   --blog-gradient-from: #0f766e;
   --blog-gradient-to: #134e4a;
@@ -139,8 +139,8 @@
   color: inherit;
 }
 
-.blog-footer-inner .font-bold,
-.blog-footer-inner p.font-bold {
+.blog-footer-inner .font-medium,
+.blog-footer-inner p.font-medium {
   color: var(--blog-text);
 }
 
@@ -411,7 +411,7 @@
 }
 
 .blog-chip-gold {
-  background: rgba(180, 83, 9, 0.12);
+  background: rgba(138, 100, 20, 0.12);
   color: var(--blog-pillar);
 }
 

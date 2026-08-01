@@ -9,7 +9,7 @@ const MONEY_PATTERN = /(\$[\d,]+(?:-\$[\d,]+)?|\$[\d,]+,\s*\$[\d,]+,\s*or even \
 function emphasizeAmounts(text: string) {
   return text.split(MONEY_PATTERN).map((part, index) =>
     part.startsWith("$") ? (
-      <span key={`${part}-${index}`} className="font-semibold text-text-heading">
+      <span key={`${part}-${index}`} className="font-medium text-text-heading">
         {part}
       </span>
     ) : (
@@ -24,7 +24,7 @@ function formatParagraph(text: string) {
     return (
       <>
         The best part?{" "}
-        <span className="font-semibold text-text-heading">
+        <span className="font-medium text-text-heading">
           {text.slice(bestPartPrefix.length)}
         </span>
       </>
@@ -45,10 +45,10 @@ export function DashboardBonusAdCard() {
             <p key={paragraph.slice(0, 24)}>{formatParagraph(paragraph)}</p>
           ))}
 
-          <p className="flex items-start gap-2 font-semibold text-text-heading">
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+          <p className="flex items-start gap-2 font-medium text-text-heading">
+            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-brass-700" />
             <span>{ad.highlight}</span>
-            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+            <Flame className="mt-0.5 h-5 w-5 shrink-0 text-brass-700" />
           </p>
 
           <p>{emphasizeAmounts(ad.closing)}</p>
@@ -59,7 +59,7 @@ export function DashboardBonusAdCard() {
             href={ad.ctaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full max-w-xl items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-lg transition-all hover:brightness-110 sm:w-auto"
+            className="inline-flex w-full max-w-xl items-center justify-center gap-2 rounded-lg bg-grad-brass px-6 py-3 text-center text-sm font-medium text-black shadow-lg transition-all hover:brightness-110 sm:w-auto"
           >
             {ad.ctaLabel}
             <ArrowRight className="h-4 w-4 shrink-0" />
