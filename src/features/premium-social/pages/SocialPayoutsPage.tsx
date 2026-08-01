@@ -226,7 +226,7 @@ export default function SocialPayoutsPage() {
     return (
       <PremiumPageLayout
         title="Social Payouts"
-        subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+        subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
         animate={false}
       >
         <PageSkeleton cards={2} />
@@ -237,10 +237,10 @@ export default function SocialPayoutsPage() {
   return (
     <PremiumPageLayout
       title="Social Payouts"
-      subtitle="10X bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
+      subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
       footer={
         <PremiumFooter>
-          Powered by {brand.productName}. Social Payouts uses the 10X bulk post engine.
+          Powered by {brand.productName}. Social Payouts uses the bulk post engine.
         </PremiumFooter>
       }
     >
@@ -254,7 +254,7 @@ export default function SocialPayoutsPage() {
       ) : (
         <PremiumControlCard
           icon={Megaphone}
-          title="Bulk post generator (10X)"
+          title="Bulk post generator"
           description="One offer → many scroll-stopping posts with your link baked in."
         >
           <label className="block">
@@ -296,8 +296,8 @@ export default function SocialPayoutsPage() {
             {generating
               ? "Generating 10 posts…"
               : hasExistingPosts
-                ? "Regenerate 10X posts"
-                : "Generate 10X posts"}
+                ? "Regenerate posts"
+                : "Generate posts"}
           </button>
         </PremiumControlCard>
       )}

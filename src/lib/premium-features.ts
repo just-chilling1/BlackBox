@@ -19,7 +19,7 @@ const PREMIUM_DESCRIPTIONS: Record<string, string> = {
   "/autopilot": "Curated traffic sources checklist with promotion URL tracking.",
   "/accelerator": "200 pre-made sales pages + X threads across every niche.",
   "/recurring-wealth": "100 ready-to-publish authority articles with your link.",
-  "/social-payouts": "10X bulk social posts from any offer — copy and paste.",
+  "/social-payouts": "Bulk social posts from any offer — copy and paste.",
   "/protector": "Account security score and verification trust layer.",
 };
 

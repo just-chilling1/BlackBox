@@ -91,6 +91,13 @@
   --bb-grad-ink: linear-gradient(160deg, #2B2924, #16150F);
   --bb-grad-brass: linear-gradient(155deg, #F0D48A, #C9971F);
   --bb-grad-tint: linear-gradient(165deg, #FBF5E6, #F6EDDA);
+  --bb-offer-green-100: #eef6e8;
+  --bb-offer-green-200: #e0edd5;
+  --bb-offer-green-300: #c8deb8;
+  --bb-line-offer: rgba(59, 109, 17, 0.2);
+  --bb-grad-offer: linear-gradient(165deg, #eef6e8 0%, #e3f0d9 52%, #d4e8c8 100%);
+  --bb-grad-offer-accent: linear-gradient(155deg, #b8d4a4, #3b6d11);
+  --bb-shadow-offer: 0 4px 14px -4px rgba(59, 109, 17, 0.35);
 
   --bb-r-sm: 10px;
   --bb-r-md: 12px;
@@ -674,26 +681,27 @@ html[data-sidebar="collapsed"] {
     pointer-events: none;
     position: absolute;
     inset: 0;
+    opacity: 0.55;
     background: linear-gradient(
       105deg,
       transparent 0%,
-      transparent 40%,
-      rgba(255, 253, 248, 0.35) 48%,
-      rgba(240, 212, 138, 0.22) 50%,
-      rgba(255, 253, 248, 0.35) 52%,
-      transparent 60%,
+      transparent 46%,
+      rgba(255, 253, 248, 0.1) 49.5%,
+      rgba(240, 212, 138, 0.05) 50%,
+      rgba(255, 253, 248, 0.1) 50.5%,
+      transparent 54%,
       transparent 100%
     );
-    background-size: 220% 100%;
-    animation: premium-shimmer-sweep 6s ease-in-out infinite;
+    background-size: 280% 100%;
+    animation: premium-shimmer-sweep 18s ease-in-out infinite;
   }
 
   .premium-nav-section--highlighted {
     box-shadow:
       var(--bb-shadow-hover),
-      0 0 0 1px rgba(201, 151, 31, 0.14),
+      0 0 0 1px rgba(201, 151, 31, 0.12),
       inset 0 1px 0 rgba(255, 253, 248, 0.9);
-    animation: premium-panel-glow 3s ease-in-out infinite;
+    animation: premium-panel-glow 14s ease-in-out infinite;
   }
 
   .premium-nav-section--highlighted::after {
@@ -702,8 +710,8 @@ html[data-sidebar="collapsed"] {
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    border: 1px solid rgba(201, 151, 31, 0.2);
-    animation: premium-border-pulse 3s ease-in-out infinite;
+    border: 1px solid rgba(201, 151, 31, 0.14);
+    animation: premium-border-pulse 14s ease-in-out infinite;
   }
 
   @keyframes premium-shimmer-sweep {
@@ -718,10 +726,10 @@ html[data-sidebar="collapsed"] {
   @keyframes premium-border-pulse {
     0%,
     100% {
-      border-color: rgba(201, 151, 31, 0.14);
+      border-color: rgba(201, 151, 31, 0.1);
     }
     50% {
-      border-color: rgba(201, 151, 31, 0.28);
+      border-color: rgba(201, 151, 31, 0.16);
     }
   }
 
@@ -730,14 +738,14 @@ html[data-sidebar="collapsed"] {
     100% {
       box-shadow:
         var(--bb-shadow-card),
-        0 0 0 1px rgba(201, 151, 31, 0.1),
+        0 0 0 1px rgba(201, 151, 31, 0.08),
         inset 0 1px 0 rgba(255, 253, 248, 0.85);
     }
     50% {
       box-shadow:
-        var(--bb-shadow-hover),
-        0 0 0 1px rgba(201, 151, 31, 0.22),
-        inset 0 1px 0 rgba(255, 253, 248, 0.95);
+        var(--bb-shadow-card),
+        0 0 0 1px rgba(201, 151, 31, 0.13),
+        inset 0 1px 0 rgba(255, 253, 248, 0.9);
     }
   }
 
@@ -748,18 +756,18 @@ html[data-sidebar="collapsed"] {
       filter: brightness(1);
     }
     50% {
-      opacity: 0.85;
-      filter: brightness(1.15);
+      opacity: 0.96;
+      filter: brightness(1.04);
     }
   }
 
   @keyframes premium-sparkle-badge-glow {
     0%,
     100% {
-      box-shadow: 0 0 0 0 rgba(240, 212, 138, 0.2);
+      box-shadow: 0 0 0 0 rgba(240, 212, 138, 0.08);
     }
     50% {
-      box-shadow: 0 0 0 4px rgba(240, 212, 138, 0.08);
+      box-shadow: 0 0 0 2px rgba(240, 212, 138, 0.04);
     }
   }
 
@@ -772,11 +780,11 @@ html[data-sidebar="collapsed"] {
     border-radius: var(--bb-r-md);
     background: var(--bb-brass-200);
     border: 1px solid var(--bb-line-brass);
-    animation: premium-sparkle-badge-glow 2.4s ease-in-out infinite;
+    animation: premium-sparkle-badge-glow 8s ease-in-out infinite;
   }
 
   .premium-nav-sparkle {
-    animation: premium-sparkle-pulse 2.2s ease-in-out infinite;
+    animation: premium-sparkle-pulse 8s ease-in-out infinite;
   }
 
   .premium-nav-section-label--animated {
@@ -788,8 +796,8 @@ html[data-sidebar="collapsed"] {
     position: relative;
     overflow: hidden;
     border-radius: var(--bb-r-lg);
-    background: var(--bb-grad-tint);
-    border: 1px solid var(--bb-line-brass);
+    background: var(--bb-grad-offer);
+    border: 1px solid var(--bb-line-offer);
     box-shadow: var(--bb-shadow-card);
   }
 
@@ -801,8 +809,8 @@ html[data-sidebar="collapsed"] {
     bottom: 10px;
     width: 3px;
     border-radius: 999px;
-    background: var(--bb-grad-brass);
-    box-shadow: var(--bb-shadow-brass);
+    background: var(--bb-grad-offer-accent);
+    box-shadow: var(--bb-shadow-offer);
   }
 
   .exclusive-offers-nav-section-label {
@@ -821,7 +829,7 @@ html[data-sidebar="collapsed"] {
     width: 1rem;
     height: 1rem;
     flex-shrink: 0;
-    color: var(--bb-brass-700);
+    color: var(--bb-success);
   }
 
   .exclusive-offers-nav-item {
@@ -843,9 +851,9 @@ html[data-sidebar="collapsed"] {
 
   .exclusive-offers-nav-item:hover {
     background: var(--bb-surface);
-    border-color: var(--bb-line-brass);
+    border-color: var(--bb-line-offer);
     box-shadow: var(--bb-shadow-hover);
-    color: var(--bb-brass-700);
+    color: var(--bb-success);
   }
 
   .exclusive-offers-nav-play {
@@ -856,8 +864,8 @@ html[data-sidebar="collapsed"] {
     height: 2rem;
     flex-shrink: 0;
     border-radius: var(--bb-r-md);
-    background: var(--bb-brass-200);
-    color: var(--bb-brass-700);
+    background: var(--bb-offer-green-200);
+    color: var(--bb-success);
     transition:
       background-color var(--bb-dur) var(--bb-ease),
       color var(--bb-dur) var(--bb-ease),
@@ -865,9 +873,17 @@ html[data-sidebar="collapsed"] {
   }
 
   .exclusive-offers-nav-item:hover .exclusive-offers-nav-play {
-    background: var(--bb-grad-brass);
-    color: var(--bb-brass-900);
-    box-shadow: var(--bb-shadow-brass);
+    background: var(--bb-grad-offer-accent);
+    color: #f6faef;
+    box-shadow: var(--bb-shadow-offer);
+  }
+
+  .exclusive-offers-nav-external {
+    transition: color var(--bb-dur) var(--bb-ease);
+  }
+
+  .exclusive-offers-nav-item:hover .exclusive-offers-nav-external {
+    color: var(--bb-success);
   }
 
   .premium-nav-section-label {
@@ -1159,18 +1175,19 @@ html[data-sidebar="collapsed"] {
     pointer-events: none;
     position: absolute;
     inset: 0;
+    opacity: 0.5;
     background: linear-gradient(
       115deg,
       transparent 0%,
-      transparent 42%,
-      rgba(240, 212, 138, 0.09) 48%,
-      rgba(201, 151, 31, 0.14) 50%,
-      rgba(240, 212, 138, 0.09) 52%,
-      transparent 58%,
+      transparent 46%,
+      rgba(240, 212, 138, 0.04) 49.5%,
+      rgba(201, 151, 31, 0.06) 50%,
+      rgba(240, 212, 138, 0.04) 50.5%,
+      transparent 54%,
       transparent 100%
     );
-    background-size: 240% 100%;
-    animation: dashboard-ad-shimmer 7s ease-in-out infinite;
+    background-size: 300% 100%;
+    animation: dashboard-ad-shimmer 20s ease-in-out infinite;
   }
 
   .dashboard-bonus-ad-inner {

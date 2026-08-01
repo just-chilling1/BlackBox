@@ -21,6 +21,7 @@ import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
+import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
 import type { AcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
@@ -322,19 +323,17 @@ export default function AcceleratorPage() {
           ) : undefined
         }
       >
-        <label className="block">
+        <div className="block">
           <span className="mb-2 flex items-center gap-2 text-sm font-medium text-text-primary">
             <LinkIcon size={14} className="text-brass-700" />
             Your affiliate link
           </span>
-          <input
-            type="url"
+          <AffiliateLinkField
             value={affiliateLink}
-            onChange={(e) => setAffiliateLink(e.target.value)}
-            placeholder="https://..."
-            className="input-base w-full"
+            onChange={setAffiliateLink}
+            inputId="accelerator-affiliate-link"
           />
-        </label>
+        </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Filter size={14} className="text-text-muted" />

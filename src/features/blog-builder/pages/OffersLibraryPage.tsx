@@ -182,7 +182,7 @@ function OfferCard({
                 </ThreadListSection>
               ) : (
                 <p className="text-sm text-text-secondary">
-                  No Facebook posts saved for this offer yet. Open Social Payouts to generate 10X variants.
+                  No Facebook posts saved for this offer yet. Open Social Payouts to generate bulk variants.
                 </p>
               )}
 
