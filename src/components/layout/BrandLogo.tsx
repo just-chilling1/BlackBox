@@ -48,8 +48,8 @@ const SIZES = {
     box: "w-[38px] h-[38px]",
     icon: 18,
     imgHeight: "h-[38px] w-[38px]",
-    wordmarkHeight: "h-12 sm:h-14",
-    wordmarkWidth: "",
+    wordmarkHeight: "",
+    wordmarkWidth: "auth-brand-wordmark",
     img: 38,
     title: "text-[19px] sm:text-[24px]",
     tagline: "text-[13px] sm:text-[15px]",
@@ -74,8 +74,9 @@ export function BrandLogo({
     <div
       className={clsx(
         "flex min-w-0",
-        stacked ? "flex-col items-center gap-3 text-center" : "items-center",
-        !stacked && (compact ? "justify-center" : "gap-2.5 sm:gap-4"),
+        stacked ? "flex-col items-center gap-3 text-center" : compact ? "items-center justify-center" : "items-stretch w-full",
+        !stacked && !compact && "gap-0",
+        !stacked && compact && "gap-2.5 sm:gap-4",
         className
       )}
     >
@@ -86,14 +87,17 @@ export function BrandLogo({
           alt={brand.logo.alt}
           width={compact ? s.img : undefined}
           height={compact ? s.img : undefined}
-          className={clsx(
-            "object-contain shrink-0",
+          className={
             compact
-              ? clsx("w-auto", s.imgHeight)
+              ? clsx("shrink-0 object-contain w-auto", s.imgHeight)
               : isWordmarkImage && s.wordmarkWidth
                 ? s.wordmarkWidth
-                : clsx("w-auto", s.wordmarkHeight, isWordmarkImage ? "max-w-[min(100%,20rem)]" : "max-w-full")
-          )}
+                : clsx(
+                    "shrink-0 object-contain w-auto",
+                    s.wordmarkHeight,
+                    isWordmarkImage ? "max-w-[min(100%,20rem)]" : "max-w-full"
+                  )
+          }
           loading="eager"
           decoding="async"
         />

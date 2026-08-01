@@ -22,8 +22,8 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
         className="w-full max-w-md relative z-10"
       >
         <div className="glass-card p-5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <BrandLogo size="lg" showTagline={false} stacked />
+          <div className="flex flex-col items-center gap-3 text-center w-full">
+            <BrandLogo size="lg" showTagline={false} stacked className="w-full" />
             {subtitle && <p className="text-[15px] text-ink-3">{subtitle}</p>}
           </div>
           {children}

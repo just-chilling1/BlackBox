@@ -60,7 +60,7 @@ export function PremiumFeatureNavList({
           )}
         >
           <span className="premium-nav-sparkle-badge">
-            <Sparkles className="h-4 w-4 text-brass-300" strokeWidth={1.75} />
+            <Sparkles className="h-4 w-4 text-brass-700" strokeWidth={1.75} />
           </span>
           {PREMIUM_SECTION_LABEL}
         </p>
@@ -87,7 +87,7 @@ export function PremiumFeatureNavList({
                 <span className="premium-sidebar-icon-chip">
                   <Icon
                     className={clsx(
-                      "text-brass-300",
+                      "text-brass-700",
                       mobile ? "h-4 w-4" : "h-[18px] w-[18px]"
                     )}
                     strokeWidth={1.75}

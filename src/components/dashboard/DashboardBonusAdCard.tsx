@@ -9,7 +9,7 @@ const MONEY_PATTERN = /(\$[\d,]+(?:-\$[\d,]+)?|\$[\d,]+,\s*\$[\d,]+,\s*or even \
 function emphasizeAmounts(text: string) {
   return text.split(MONEY_PATTERN).map((part, index) =>
     part.startsWith("$") ? (
-      <span key={`${part}-${index}`} className="font-medium text-brass-700">
+      <span key={`${part}-${index}`} className="dashboard-bonus-ad-amount">
         {part}
       </span>
     ) : (
@@ -53,9 +53,9 @@ export function DashboardBonusAdCard() {
           ))}
 
           <p className="dashboard-bonus-ad-highlight">
-            <Flame className="h-5 w-5 shrink-0 text-brass-700" strokeWidth={1.75} aria-hidden />
+            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={1.75} aria-hidden />
             <span>{ad.highlight}</span>
-            <Flame className="h-5 w-5 shrink-0 text-brass-700" strokeWidth={1.75} aria-hidden />
+            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={1.75} aria-hidden />
           </p>
 
           <p className="dashboard-bonus-ad-closing">{emphasizeAmounts(ad.closing)}</p>
