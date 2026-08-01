@@ -1,12 +1,12 @@
 import { brand } from "@/config/brand.config";
 import { support } from "@/config/support.config";
-import { offers } from "@/config/offers.config";
+import { trainingContent } from "@/config/training.config";
 
 export const SUPPORT_EMAIL = support.email;
 export const SUPPORT_PORTAL_URL = support.helpCenterUrl;
 export const SUPPORT_MAILTO = `mailto:${support.email}`;
 export const APP_SUPPORT_NAME = brand.productName;
-export const FREE_TRAINING_URL = offers.exclusiveOffer3;
+export const FREE_TRAINING_URL = trainingContent.externalTrainingUrl;
 
 /** Verified sending domain on Resend — outbound sender only, not a support contact. */
 export const RESEND_SENDER_EMAIL = "support@reliteagency.com";

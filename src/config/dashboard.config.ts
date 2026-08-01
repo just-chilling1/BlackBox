@@ -2,10 +2,6 @@ import { brand } from "./brand.config";
 import { trainingContent } from "./training.config";
 
 export const dashboardContent = {
-  /** @deprecated Use dashboardContent.videos — kept for FeaturedVideoSection */
-  introVideoId: "",
-  introVideoTitle: "Get Started in 3 Minutes",
-  introVideoSubtitle: "Learn how to launch your first offer and start earning",
   eyebrow: "Home",
   get title() {
     return `Welcome to ${brand.productName}`;

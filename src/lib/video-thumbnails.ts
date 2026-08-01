@@ -26,12 +26,6 @@ export const ACADEMY_PREMIUM_THUMBNAILS = [
 
 const VIMEO_ID_REGEX = /vimeo\.com\/(?:video\/)?(\d+)/;
 
-export function getVideoThumbnail(videoUrl: string): string | null {
-  const match = videoUrl.match(VIMEO_ID_REGEX);
-  if (!match) return null;
-  return VIDEO_THUMBNAILS[match[1]] ?? null;
-}
-
 export function getVideoThumbnailById(id: string): string | null {
   return VIDEO_THUMBNAILS[id] ?? null;
 }

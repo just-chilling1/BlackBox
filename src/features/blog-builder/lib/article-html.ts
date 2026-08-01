@@ -1,6 +1,7 @@
 import type { ArmedLink } from "../types";
 import { stripAffiliateBlocks, weaveAffiliateLinks } from "./affiliate";
 import { insertAfterH2 } from "./html-insert";
+import { sanitizePostHtml } from "./sanitize-html";
 
 const LEADING_FIGURE_RE = /^<figure[^>]*>[\s\S]*?<\/figure>\s*/i;
 const INLINE_FIGURE_RE = /<figure[^>]*class="sms-inline-figure"[\s\S]*?<\/figure>/gi;
@@ -65,8 +66,10 @@ export function prepareArticleHtml(post: {
   armedLinks?: ArmedLink[];
   siteId?: string;
 }): string {
+  // Sanitize first so RLS/client writes cannot bypass API-only sanitization.
+  let html = sanitizePostHtml(post.html);
   // Featured hero is rendered by ArticleLayout — strip any duplicate of it from the body.
-  let html = stripLeadingHeroFigure(post.html, post.image_url);
+  html = stripLeadingHeroFigure(html, post.image_url);
   html = stripFiguresMatchingUrl(html, post.image_url);
 
   if (post.armedLinks?.length && post.siteId) {

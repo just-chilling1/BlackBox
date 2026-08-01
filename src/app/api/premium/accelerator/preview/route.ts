@@ -12,9 +12,10 @@ export async function GET(request: Request) {
   const guard = featureApiGuard("premium-accelerator");
   if (guard) return guard;
 
-  const { supabase } = await getApiUser();
-  const admin = getServiceRoleClient();
-  const db = admin ?? supabase;
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
 
   const url = new URL(request.url);
   const catalogId = Number(url.searchParams.get("catalogId"));
@@ -25,8 +26,9 @@ export async function GET(request: Request) {
   }
 
   try {
+    const admin = getServiceRoleClient();
     const preview = await loadAcceleratorTemplatePreview({
-      db,
+      db: admin ?? supabase,
       catalogId,
       affiliateUrl,
       appUrl: getServerAppUrl(request),

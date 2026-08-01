@@ -6,7 +6,6 @@ import {
   listRecurringStreamArticles,
   countSeededRecurringArticles,
   seedRecurringStreamArticles,
-  recurringStreamNeedsSeed,
 } from "@/features/premium-recurring/lib/seed-articles";
 import { RECURRING_STREAM_TARGET_COUNT } from "@/features/premium-recurring/lib/catalog";
 import { saveRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
@@ -20,6 +19,10 @@ export async function GET(request: Request) {
   if (guard) return guard;
 
   const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
   const url = new URL(request.url);
   const niche = url.searchParams.get("niche")?.trim() || "All";
   const previewArticleId = Number(url.searchParams.get("articleId"));
@@ -30,10 +33,6 @@ export async function GET(request: Request) {
     const reader = admin ?? supabase;
 
     if (previewArticleId && !Number.isNaN(previewArticleId) && previewSiteId) {
-      if (!user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
-      }
-
       const { data: siteRow } = await supabase
         .from("sites")
         .select("*")
@@ -49,10 +48,7 @@ export async function GET(request: Request) {
       return NextResponse.json(preview, { headers: NO_STORE_HEADERS });
     }
 
-    if (admin && (await recurringStreamNeedsSeed(admin))) {
-      await seedRecurringStreamArticles(admin);
-    }
-
+    // Seed is admin-only via secret-gated PUT — never trigger expensive work on anonymous/list GET.
     const articles = await listRecurringStreamArticles(reader, niche);
     const seededCount = admin ? await countSeededRecurringArticles(admin) : articles.length;
 

@@ -112,3 +112,24 @@ export function assertPublicHttpUrl(raw: string): URL {
   }
   return url;
 }
+
+/** Like assertPublicHttpsUrlResolved, but allows http as well (remote images). */
+export async function assertPublicHttpUrlResolved(raw: string): Promise<URL> {
+  const url = assertPublicHttpUrl(raw);
+  if (isIP(url.hostname)) return url;
+
+  try {
+    const records = await lookup(url.hostname, { all: true });
+    if (records.length === 0) throw new Error("Host could not be resolved");
+    for (const rec of records) {
+      if (isPrivateOrLocalHost(rec.address)) {
+        throw new Error("Host resolves to a private address");
+      }
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("private")) throw err;
+    throw new Error("Host could not be resolved");
+  }
+
+  return url;
+}

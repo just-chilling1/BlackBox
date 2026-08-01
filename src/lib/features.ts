@@ -1,4 +1,4 @@
-import { isFeatureEnabled, type FeatureId } from "@/config/features.config";
+import { isFeatureEnabled } from "@/config/features.config";
 import {
   homeNav,
   workflowSteps,
@@ -6,11 +6,8 @@ import {
   blogBuilderWorkflowSteps,
   blogBuilderGenerateNav,
   blogBuilderLibrariesNav,
-  blogBuilderCoreNav,
-  blogBuilderResourceNav,
   coreResourceNav,
   resourceNav,
-  upgradeNav,
   premiumNav,
   bottomNavTabs,
   bottomNavMoreLinks,
@@ -43,24 +40,12 @@ export function getBlogBuilderLibrariesNav(): NavItem[] {
   return filterNav(blogBuilderLibrariesNav);
 }
 
-export function getBlogBuilderCoreNav(): NavItem[] {
-  return [...getBlogBuilderGenerateNav(), ...getBlogBuilderLibrariesNav()];
-}
-
-export function getBlogBuilderResourceNav(): NavItem[] {
-  return getBlogBuilderCoreNav();
-}
-
 export function getCoreResourceNav(): NavItem[] {
   return filterNav(coreResourceNav);
 }
 
 export function getVisibleResourceNav(): NavItem[] {
   return filterNav(resourceNav);
-}
-
-export function getVisibleUpgradeNav(): NavItem[] {
-  return filterNav(upgradeNav);
 }
 
 export function getVisiblePremiumNav(): NavItem[] {
@@ -114,12 +99,4 @@ export function getWorkflowProgress(
   if (pathname === "/analysis" || hasAnalysis) return 2;
   if (pathname === "/search" || hasVariations) return 1;
   return 0;
-}
-
-/** Resolve which primary workflow feature is active for this product */
-export function getPrimaryWorkflowFeature(): FeatureId | null {
-  if (isFeatureEnabled("blog-builder")) return "blog-builder";
-  if (isFeatureEnabled("extraction-workflow")) return "extraction-workflow";
-  if (isFeatureEnabled("core-workflow")) return "core-workflow";
-  return null;
 }

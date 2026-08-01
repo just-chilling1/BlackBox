@@ -373,13 +373,16 @@ async function fetchImageBuffer(
   referer?: string
 ): Promise<Buffer | null> {
   try {
+    const { assertPublicHttpUrlResolved } = await import("@/lib/safe-url");
+    const safeUrl = (await assertPublicHttpUrlResolved(url)).toString();
+
     const headers: Record<string, string> = {
       "User-Agent": SCRAPE_USER_AGENT,
       Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
     };
     if (referer) headers.Referer = referer;
 
-    const response = await fetch(url, {
+    const response = await fetch(safeUrl, {
       signal: AbortSignal.timeout(timeoutMs),
       headers,
       redirect: "follow",

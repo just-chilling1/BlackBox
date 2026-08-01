@@ -20,7 +20,7 @@ const DEFAULT_TIPS = [
   },
   {
     title: "Tip",
-    body: `Fill training videos and set trainingContentReady = true when ${brand.productName} is ready.`,
+    body: `Add real Vimeo IDs in training.config.ts / dashboard.config.ts when ${brand.productName} videos are ready.`,
   },
 ];
 

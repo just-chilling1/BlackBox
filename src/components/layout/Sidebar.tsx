@@ -7,6 +7,8 @@ import {
   Lock,
   PanelLeftClose,
   PanelLeftOpen,
+  ExternalLink,
+  PlayCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
@@ -26,10 +28,11 @@ import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { BlogBuilderNav } from "@/features/blog-builder/components/BlogBuilderNav";
 import { storageKeys } from "@/lib/storage-keys";
 import { homeNav, supportNav, type NavItem } from "@/config/navigation.config";
+import { getExclusiveOffers } from "@/config/offers.config";
+import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { WarmNavLink } from "@/components/layout/WarmNavLink";
-import { SidebarPromos } from "@/components/layout/PromoOrchestrator";
 import {
   sidebarNavIconClass,
   sidebarNavItemClass,
@@ -51,6 +54,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const workflowProgress = workflow?.progress ?? 0;
   const blogEnabled = isFeatureEnabled("blog-builder");
   const showHomeNav = !workflowSteps.some((step) => step.path === homeNav.path);
+  const exclusiveOffers = getExclusiveOffers(trainingContent.externalTrainingUrl);
 
   const [displayName, setDisplayName] = useState("Member");
   const [userInitials, setUserInitials] = useState("BC");
@@ -182,7 +186,26 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} />
           ) : null}
 
-          {!collapsed ? <SidebarPromos /> : null}
+          {!collapsed && exclusiveOffers.length > 0 ? (
+            <div className="mt-4 space-y-2 rounded-xl border border-accent/25 bg-accent/[0.06] p-3">
+              <p className="px-1 text-[10px] font-bold uppercase tracking-widest text-accent">
+                Exclusive Offers
+              </p>
+              {exclusiveOffers.map((offer) => (
+                <a
+                  key={offer.href + offer.title}
+                  href={offer.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-accent/10 hover:text-accent"
+                >
+                  <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                  <span className="flex-1">{offer.title}</span>
+                  <ExternalLink className="h-3 w-3 text-accent" />
+                </a>
+              ))}
+            </div>
+          ) : null}
         </nav>
       </div>
 

@@ -81,9 +81,11 @@ export const promoSlots: PromoSlot[] = [
       ],
     },
   },
+  // Sidebar ads are driven by offers.config getExclusiveOffers() — keep these off
+  // to avoid a second divergent source of URLs.
   {
     id: "sidebar-promo-1",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -94,7 +96,7 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-2",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
@@ -105,12 +107,12 @@ export const promoSlots: PromoSlot[] = [
   },
   {
     id: "sidebar-promo-3",
-    enabled: true,
+    enabled: false,
     template: "sidebar-card",
     placement: "sidebar",
     content: {
       headline: "Fast Cash Training",
-      ctaUrl: trainingContent.externalTrainingUrl || "https://example.com/offer-3",
+      ctaUrl: trainingContent.externalTrainingUrl,
       sidebarSubtitle: "Claim Now",
     },
   },

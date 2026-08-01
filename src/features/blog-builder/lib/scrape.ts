@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { assertPublicHttpsUrl } from "@/lib/safe-url";
+import { assertPublicHttpsUrlResolved } from "@/lib/safe-url";
 
 export interface ScrapedPageInfo {
   title: string;
@@ -348,7 +348,7 @@ export async function scrapeRelevantImagesFromUrl(
 ): Promise<string[]> {
   let safeUrl: string;
   try {
-    safeUrl = assertPublicHttpsUrl(url).toString();
+    safeUrl = (await assertPublicHttpsUrlResolved(url)).toString();
   } catch {
     return [];
   }
@@ -387,7 +387,7 @@ export async function scrapeRelevantImagesFromUrl(
 export async function scrapeImageFromUrl(url: string): Promise<string | null> {
   let safeUrl: string;
   try {
-    safeUrl = assertPublicHttpsUrl(url).toString();
+    safeUrl = (await assertPublicHttpsUrlResolved(url)).toString();
   } catch {
     return null;
   }
@@ -438,10 +438,10 @@ function extractFeatures($: cheerio.CheerioAPI): string[] {
 }
 
 export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
-  // Defense in depth — route also validates; keep private hosts out of direct fetch.
+  // Defense in depth — resolve DNS so private/link-local targets cannot slip through.
   let safeUrl: string;
   try {
-    safeUrl = assertPublicHttpsUrl(url).toString();
+    safeUrl = (await assertPublicHttpsUrlResolved(url)).toString();
   } catch {
     return null;
   }

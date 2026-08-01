@@ -92,7 +92,11 @@ export const enabledFeatures: FeatureId[] = [
 ];
 
 export function isFeatureEnabled(id: FeatureId): boolean {
-  return enabledFeatures.includes(id);
+  if (enabledFeatures.includes(id)) return true;
+  // premium-10x is a documented alias of premium-social
+  if (id === "premium-10x") return enabledFeatures.includes("premium-social");
+  if (id === "premium-social") return enabledFeatures.includes("premium-10x");
+  return false;
 }
 
 export function getFeatureMeta(id: FeatureId): FeatureMeta | undefined {

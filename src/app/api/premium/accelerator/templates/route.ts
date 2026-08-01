@@ -15,9 +15,10 @@ export async function GET(request: Request) {
   const guard = featureApiGuard("premium-accelerator");
   if (guard) return guard;
 
-  const { supabase } = await getApiUser();
-  const admin = getServiceRoleClient();
-  const db = admin ?? supabase;
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
 
   const niche = new URL(request.url).searchParams.get("niche")?.trim() || "All";
   const catalog = buildAcceleratorCatalog().filter(
@@ -30,6 +31,9 @@ export async function GET(request: Request) {
   let seedStatusError: string | null = null;
 
   try {
+    // Prefer user-scoped client so RLS applies; service role only if needed for seed status.
+    const admin = getServiceRoleClient();
+    const db = admin ?? supabase;
     const status = await getAcceleratorSeedStatus(db);
     seededKeys = status.seededKeys;
     seededCount = status.seededCount;
@@ -52,7 +56,6 @@ export async function GET(request: Request) {
       total: ACCELERATOR_TARGET_COUNT,
       seededCount,
       ready,
-      usingServiceRole: Boolean(admin),
       ...(seedStatusError ? { seedStatusError } : {}),
     },
     { headers: NO_STORE_HEADERS }

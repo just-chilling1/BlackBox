@@ -1,4 +1,5 @@
 import { parseSalesPageDocument } from "../lib/product-sales-page-html";
+import { sanitizePostHtml } from "../lib/sanitize-html";
 import { QuestionnaireSiteEmbed } from "./QuestionnaireSiteEmbed";
 
 interface ProductSiteViewProps {
@@ -70,7 +71,8 @@ const LEGACY_CONTRAST_FIXES = `
 /** Renders a generated questionnaire or product page (full HTML document stored on the site). */
 export function ProductSiteView({ html }: ProductSiteViewProps) {
   const { styles, bodyHtml, googleFontsUrl } = parseSalesPageDocument(html);
-  const isQuestionnaire = bodyHtml.includes("questionnaire-root");
+  const safeBody = sanitizePostHtml(bodyHtml);
+  const isQuestionnaire = safeBody.includes("questionnaire-root");
 
   if (isQuestionnaire) {
     return <QuestionnaireSiteEmbed html={html} />;
@@ -88,7 +90,7 @@ export function ProductSiteView({ html }: ProductSiteViewProps) {
       <div className="product-sales-page-root min-h-screen isolate">
         {styles ? <style dangerouslySetInnerHTML={{ __html: styles }} /> : null}
         <style dangerouslySetInnerHTML={{ __html: LEGACY_CONTRAST_FIXES }} />
-        <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: safeBody }} />
       </div>
     </>
   );

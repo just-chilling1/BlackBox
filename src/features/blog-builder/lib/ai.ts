@@ -1,6 +1,5 @@
-const RAPIDAPI_KEY =
-  process.env.RAPIDAPI_KEY ?? "e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316";
-const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST ?? "chatgpt-42.p.rapidapi.com";
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY?.trim() || "";
+const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST?.trim() || "chatgpt-42.p.rapidapi.com";
 
 const DEFAULT_TIMEOUT_MS = 42_000;
 
