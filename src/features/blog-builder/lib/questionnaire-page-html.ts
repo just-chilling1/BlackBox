@@ -505,6 +505,9 @@ export function buildThemedQuestionnairePage(input: ThemedQuestionnaireInput): s
     };
 
     updateProgress();
+
+    // Deep link straight to the final offer step (used by "Check offer page").
+    if (location.hash === '#offer') showStep(questions.length + 1);
   })();
   </script>
 </body>

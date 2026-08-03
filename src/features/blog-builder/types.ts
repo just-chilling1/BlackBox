@@ -22,6 +22,7 @@ export interface BlogSite {
   title: string;
   tagline: string | null;
   slug: string;
+  owner_handle?: string | null;
   theme: string;
   theme_config?: ThemeConfig | null;
   armed_links: ArmedLink[];

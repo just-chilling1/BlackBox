@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { createPublicSupabaseClient } from "@/lib/supabase-public";
-import { SiteHomeView, ProductSiteView, getPublicBrand } from "@/features/blog-builder/themes";
+import {
+  buildSiteHomeMetadata,
+  renderSiteHome,
+  SITE_HOME_COLUMNS,
+  SITE_HOME_META_COLUMNS,
+  type SiteHomeRow,
+  type SiteHomeMetaRow,
+} from "@/features/blog-builder/lib/site-home-page";
+import { findLiveSiteBySlug } from "@/features/blog-builder/lib/public-site-lookup";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -10,64 +18,18 @@ type Props = { params: Promise<{ siteSlug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { siteSlug } = await params;
   const supabase = createPublicSupabaseClient();
-  const { data: site } = await supabase
-    .from("sites")
-    .select("title, tagline, hobby, territory, sales_page_html, sales_page_json, site_type")
-    .eq("slug", siteSlug)
-    .eq("status", "live")
-    .maybeSingle();
-
-  if (!site) return { title: "Not found" };
-
-  const isProductSite = site.site_type === "product" || Boolean(site.sales_page_html);
-  const salesCopy = site.sales_page_json as { subhook?: string; subtitle?: string; hook?: string } | null;
-  const productDescription =
-    (typeof salesCopy?.subtitle === "string" && salesCopy.subtitle.trim()) ||
-    (typeof salesCopy?.subhook === "string" && salesCopy.subhook.trim()) ||
-    (typeof site.tagline === "string" && site.tagline.trim()) ||
-    undefined;
-
-  const brand = getPublicBrand(site);
-  const title = brand.name;
-  const description = isProductSite ? productDescription ?? brand.tagline : brand.tagline;
-
-  return {
-    title,
-    description,
-    openGraph: { title, description, type: "website" },
-    twitter: { card: "summary", title, description },
-  };
+  const site = await findLiveSiteBySlug<SiteHomeMetaRow>(
+    supabase,
+    SITE_HOME_META_COLUMNS,
+    siteSlug
+  );
+  return buildSiteHomeMetadata(site);
 }
 
 export default async function SiteHomePage({ params }: Props) {
   const { siteSlug } = await params;
   const supabase = createPublicSupabaseClient();
-
-  const { data: site } = await supabase
-    .from("sites")
-    .select(
-      "id, title, tagline, slug, hobby, territory, theme, theme_config, template_key, site_type, sales_page_html"
-    )
-    .eq("slug", siteSlug)
-    .eq("status", "live")
-    .maybeSingle();
-
+  const site = await findLiveSiteBySlug<SiteHomeRow>(supabase, SITE_HOME_COLUMNS, siteSlug);
   if (!site) notFound();
-
-  const isProductSite =
-    site.site_type === "product" || Boolean(site.sales_page_html);
-
-  if (isProductSite && site.sales_page_html) {
-    return <ProductSiteView html={site.sales_page_html} />;
-  }
-
-  const { data: posts } = await supabase
-    .from("posts")
-    .select("title, slug, excerpt, is_pillar, created_at, image_url")
-    .eq("site_id", site.id)
-    .eq("status", "live")
-    .order("is_pillar", { ascending: false })
-    .order("created_at", { ascending: true });
-
-  return <SiteHomeView site={site} siteSlug={siteSlug} posts={posts ?? []} />;
+  return renderSiteHome(supabase, site);
 }

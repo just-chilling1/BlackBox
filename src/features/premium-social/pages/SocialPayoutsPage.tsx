@@ -34,6 +34,7 @@ import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { formatThreadVersionDate } from "@/features/publish-kit/lib/thread-batches";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import { getAppUrl } from "@/lib/brand-vars";
+import { sitePublicPath } from "@/lib/app-url";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
 interface SavedPost {
@@ -276,7 +277,7 @@ export default function SocialPayoutsPage() {
   const offerPageUrl = useMemo(() => {
     if (!selectedOffer) return "";
     const origin = typeof window !== "undefined" ? window.location.origin : getAppUrl();
-    return `${origin}/sites/${selectedOffer.site.slug}`;
+    return `${origin}${sitePublicPath(selectedOffer.site)}`;
   }, [selectedOffer]);
 
   // Group saved posts into generations (batches), newest first.

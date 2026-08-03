@@ -16,6 +16,7 @@ import {
   Link2,
 } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
+import { sitePublicPath } from "@/lib/app-url";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -190,7 +191,7 @@ export default function PromotePage() {
   const siteUrl = useMemo(() => {
     if (!selectedSite) return "";
     const origin = typeof window !== "undefined" ? window.location.origin : getAppUrl();
-    return `${origin}/sites/${selectedSite.slug}`;
+    return `${origin}${sitePublicPath(selectedSite)}`;
   }, [selectedSite]);
 
   const kitSite = useMemo(() => {

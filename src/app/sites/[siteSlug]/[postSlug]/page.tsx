@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { createPublicSupabaseClient } from "@/lib/supabase-public";
 import { buildArticleJsonLd } from "@/features/blog-builder/lib/seo";
+import { findLiveSiteBySlug } from "@/features/blog-builder/lib/public-site-lookup";
 import { SitePostView } from "@/features/blog-builder/themes";
 import { getAppUrl } from "@/lib/brand-vars";
 import { notFound } from "next/navigation";
@@ -13,12 +14,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { siteSlug, postSlug } = await params;
   const supabase = createPublicSupabaseClient();
 
-  const { data: site } = await supabase
-    .from("sites")
-    .select("id, slug")
-    .eq("slug", siteSlug)
-    .eq("status", "live")
-    .maybeSingle();
+  const site = await findLiveSiteBySlug<{ id: string; slug: string }>(
+    supabase,
+    "id, slug",
+    siteSlug
+  );
 
   if (!site) return { title: "Not found" };
 
@@ -53,12 +53,22 @@ export default async function PostPage({ params }: Props) {
   const { siteSlug, postSlug } = await params;
   const supabase = createPublicSupabaseClient();
 
-  const { data: site } = await supabase
-    .from("sites")
-    .select("id, title, slug, hobby, territory, tagline, theme, theme_config, armed_links, template_key")
-    .eq("slug", siteSlug)
-    .eq("status", "live")
-    .maybeSingle();
+  const site = await findLiveSiteBySlug<{
+    id: string;
+    title: string;
+    slug: string;
+    hobby: string;
+    territory: string | null;
+    tagline: string | null;
+    theme: string;
+    theme_config: import("@/features/blog-builder/types").ThemeConfig | null;
+    armed_links: import("@/features/blog-builder/types").ArmedLink[] | undefined;
+    template_key: string | null;
+  }>(
+    supabase,
+    "id, title, slug, hobby, territory, tagline, theme, theme_config, armed_links, template_key",
+    siteSlug
+  );
 
   if (!site) notFound();
 

@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Globe, Link2, Eye } from "lucide-react";
+import { Globe, Link2, Eye, Copy, Check, BadgeDollarSign } from "lucide-react";
+import { getAppUrl } from "@/lib/brand-vars";
+import { sitePublicPath } from "@/lib/app-url";
 import type { BlogSite } from "../types";
 
 interface DeploySitePreviewProps {
@@ -11,9 +14,23 @@ interface DeploySitePreviewProps {
 }
 
 export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePreviewProps) {
+  const [copied, setCopied] = useState(false);
+
   const armedCount = site.armed_links?.length ?? 0;
-  const publicPath = `/sites/${site.slug}`;
+  const publicPath = sitePublicPath(site);
+  const origin = typeof window !== "undefined" ? window.location.origin : getAppUrl();
+  const publicUrl = `${origin}${publicPath}`;
   const isLive = site.status === "live";
+
+  const copyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(publicUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  };
 
   return (
     <motion.div
@@ -21,23 +38,9 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
       animate={{ opacity: 1, y: 0 }}
       className="min-w-0 max-w-full rounded-xl border border-border-dim bg-white p-5 shadow-sm ring-1 ring-brass-100 sm:p-6"
     >
-      <div className="flex items-start justify-between gap-3">
-        <p className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
-          Cash asset initialized
-        </p>
-        {isLive && (
-          <Link
-            href={publicPath}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Open your live questionnaire in a new tab"
-            className="-mt-1 inline-flex shrink-0 items-center gap-2 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2 text-[13px] font-medium text-brass-700 transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-200"
-          >
-            <Eye size={16} strokeWidth={2} aria-hidden />
-            Check the questionnaire page
-          </Link>
-        )}
-      </div>
+      <p className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
+        Cash asset initialized
+      </p>
       <h2 className="brand-font text-xl tracking-tight text-text-heading sm:text-2xl">{site.title}</h2>
       {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
 
@@ -50,23 +53,52 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
           <Link2 size={14} className="text-brass-700" aria-hidden />
           {armedCount} product link{armedCount === 1 ? "" : "s"}
         </span>
-        <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-lg border border-border-dim bg-canvas px-3 py-1.5 font-mono text-text-secondary">
-          {publicPath}
-        </span>
       </div>
 
+      {isLive && (
+        <div className="mt-4 space-y-1.5">
+          <p className="text-xs font-medium text-text-muted">
+            Your link — share this anywhere you promote:
+          </p>
+          <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border-dim bg-canvas px-3 py-2.5">
+            <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-text-primary">
+              {publicUrl}
+            </span>
+            <button
+              type="button"
+              onClick={() => void copyUrl()}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brass-100 px-2.5 py-1.5 text-xs font-medium text-brass-700 transition-colors hover:bg-brass-200"
+            >
+              {copied ? <Check size={13} /> : <Copy size={13} />}
+              {copied ? "Copied" : "Copy"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {showLiveLink && isLive && (
-        <Link
-          href={publicPath}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="View website"
-          aria-label={`View ${site.title}`}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-grad-brass px-5 py-3 text-sm font-medium text-text-on-accent shadow-brass transition-all hover:brightness-105 sm:w-auto"
-        >
-          <Eye size={16} aria-hidden />
-          View live questionnaire
-        </Link>
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <Link
+            href={publicPath}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open the questionnaire your visitors will take"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-grad-brass px-5 py-3 text-sm font-medium text-text-on-accent shadow-brass transition-all hover:brightness-105"
+          >
+            <Eye size={16} aria-hidden />
+            Check questionnaire page
+          </Link>
+          <Link
+            href={`${publicPath}#offer`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Jump straight to the final page where your offer appears"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-5 py-3 text-sm font-medium text-brass-700 transition-colors hover:bg-brass-200"
+          >
+            <BadgeDollarSign size={16} aria-hidden />
+            Check offer page
+          </Link>
+        </div>
       )}
     </motion.div>
   );

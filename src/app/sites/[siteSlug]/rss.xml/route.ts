@@ -1,4 +1,5 @@
 import { createPublicSupabaseClient } from "@/lib/supabase-public";
+import { findLiveSiteBySlug } from "@/features/blog-builder/lib/public-site-lookup";
 import { getAppUrl } from "@/lib/brand-vars";
 
 export const dynamic = "force-dynamic";
@@ -10,12 +11,11 @@ export async function GET(_request: Request, { params }: Props) {
   const supabase = createPublicSupabaseClient();
   const base = process.env.NEXT_PUBLIC_APP_URL || getAppUrl();
 
-  const { data: site } = await supabase
-    .from("sites")
-    .select("id, title, tagline")
-    .eq("slug", siteSlug)
-    .eq("status", "live")
-    .maybeSingle();
+  const site = await findLiveSiteBySlug<{ id: string; title: string; tagline: string | null }>(
+    supabase,
+    "id, title, tagline",
+    siteSlug
+  );
 
   if (!site) {
     return new Response("Not found", { status: 404 });

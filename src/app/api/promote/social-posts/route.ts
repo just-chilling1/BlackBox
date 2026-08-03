@@ -201,7 +201,7 @@ export async function POST(request: Request) {
   }
 
   const offerPageUrl =
-    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug);
+    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug, site.owner_handle);
   const context = buildSitePromoteContext({ site, siteUrl: offerPageUrl, scrapedProductContext });
   const promoLink = offerPageUrl;
 

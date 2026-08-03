@@ -212,6 +212,61 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
         </>
       )}
 
+      <section className="wizard-panel overflow-hidden p-0">
+        <button
+          type="button"
+          onClick={() => setInstructionsOpen(!instructionsOpen)}
+          aria-expanded={instructionsOpen}
+          className="flex w-full items-center justify-between px-4 py-3.5 transition-colors hover:bg-page/80 sm:px-5"
+        >
+          <div className="flex items-center gap-3">
+            <div className="wizard-panel-icon">
+              <ClipboardPaste className="h-4 w-4" />
+            </div>
+            <span className="text-sm font-medium uppercase tracking-wider text-text-heading">
+              How to Get Your Affiliate Link
+            </span>
+          </div>
+          <ChevronDown
+            className={`h-5 w-5 text-text-muted transition-transform duration-200 ${instructionsOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        <div
+          className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+          style={{ gridTemplateRows: instructionsOpen ? "1fr" : "0fr" }}
+        >
+          <div className="overflow-hidden">
+            <div className="space-y-2 px-4 pb-4 sm:px-5 sm:pb-5">
+              {INSTRUCTION_STEPS.map((step) => (
+                <div key={step.number} className="wizard-inset-row">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
+                    <span className="text-[13px] font-medium text-brass-700">{step.number}</span>
+                  </div>
+                  <div className="min-w-0 flex-1 pt-0.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <step.icon className="h-3.5 w-3.5 shrink-0 text-brass-700" />
+                      <span className="text-sm text-text-primary">{step.text}</span>
+                    </div>
+                    {step.link && (
+                      <a
+                        href={step.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-brass-700 hover:text-brass-900 transition-colors"
+                      >
+                        {step.linkLabel}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="wizard-panel animate-fade-in-up overflow-hidden p-0">
         {hasVaultLinks && (
           <div
@@ -335,61 +390,6 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
             Continue to Niche
             <ArrowRight size={18} />
           </button>
-        </div>
-      </section>
-
-      <section className="wizard-panel overflow-hidden p-0">
-        <button
-          type="button"
-          onClick={() => setInstructionsOpen(!instructionsOpen)}
-          aria-expanded={instructionsOpen}
-          className="flex w-full items-center justify-between px-4 py-3.5 transition-colors hover:bg-page/80 sm:px-5"
-        >
-          <div className="flex items-center gap-3">
-            <div className="wizard-panel-icon">
-              <ClipboardPaste className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-medium uppercase tracking-wider text-text-heading">
-              How to Get Your Affiliate Link
-            </span>
-          </div>
-          <ChevronDown
-            className={`h-5 w-5 text-text-muted transition-transform duration-200 ${instructionsOpen ? "rotate-180" : ""}`}
-          />
-        </button>
-
-        <div
-          className="grid transition-[grid-template-rows] duration-300 ease-in-out"
-          style={{ gridTemplateRows: instructionsOpen ? "1fr" : "0fr" }}
-        >
-          <div className="overflow-hidden">
-            <div className="space-y-2 px-4 pb-4 sm:px-5 sm:pb-5">
-              {INSTRUCTION_STEPS.map((step) => (
-                <div key={step.number} className="wizard-inset-row">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
-                    <span className="text-[13px] font-medium text-brass-700">{step.number}</span>
-                  </div>
-                  <div className="min-w-0 flex-1 pt-0.5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <step.icon className="h-3.5 w-3.5 shrink-0 text-brass-700" />
-                      <span className="text-sm text-text-primary">{step.text}</span>
-                    </div>
-                    {step.link && (
-                      <a
-                        href={step.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-brass-700 hover:text-brass-900 transition-colors"
-                      >
-                        {step.linkLabel}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
     </div>

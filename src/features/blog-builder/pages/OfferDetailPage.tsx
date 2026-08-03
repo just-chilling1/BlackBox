@@ -42,6 +42,7 @@ import {
 import { formatThreadPosts } from "@/features/publish-kit/lib/thread-export";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import { getAppUrl } from "@/lib/brand-vars";
+import { sitePublicPath } from "@/lib/app-url";
 import { invalidateClientFetchCache } from "@/lib/client-fetch-cache";
 import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
 import type { SavedXThread } from "@/features/publish-kit/lib/x-threads-vault";
@@ -274,7 +275,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
   const siteUrl = useMemo(() => {
     if (!site) return "";
     const origin = typeof window !== "undefined" ? window.location.origin : getAppUrl();
-    return `${origin}/sites/${site.slug}`;
+    return `${origin}${sitePublicPath(site)}`;
   }, [site]);
 
   const patchThread = async (batchId: string, payload: Record<string, string>) => {

@@ -138,7 +138,11 @@ export async function GET(request: Request) {
       .order("created_at", { ascending: true });
 
     const facebookPostsRaw = await listFacebookPostsForSite(supabase, user.id, siteId).catch(() => []);
-    const offerPageUrl = buildOfferPageUrl(getServerAppUrl(request), summary.site.slug);
+    const offerPageUrl = buildOfferPageUrl(
+      getServerAppUrl(request),
+      summary.site.slug,
+      summary.site.owner_handle
+    );
     const facebookPosts = facebookPostsRaw.map((post) => ({
       ...post,
       body: resolveOfferPageLinksInText(post.body, offerPageUrl, summary.site.slug),

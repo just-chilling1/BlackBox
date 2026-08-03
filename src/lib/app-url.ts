@@ -52,8 +52,19 @@ export function getServerAppUrl(request?: Request): string {
   return stripTrailingSlash(getAppUrl());
 }
 
-export function buildOfferPageUrl(appUrl: string, slug: string): string {
-  return `${stripTrailingSlash(appUrl)}/sites/${slug}`;
+/** Path a site is served at — member-handle URLs for new sites, /sites/{slug} for legacy ones. */
+export function sitePublicPath(site: { slug: string; owner_handle?: string | null }): string {
+  return site.owner_handle
+    ? `/${site.owner_handle}/sites/${site.slug}`
+    : `/sites/${site.slug}`;
+}
+
+export function buildOfferPageUrl(
+  appUrl: string,
+  slug: string,
+  ownerHandle?: string | null
+): string {
+  return `${stripTrailingSlash(appUrl)}${sitePublicPath({ slug, owner_handle: ownerHandle })}`;
 }
 
 /** Rewrite stored offer links that used localhost or the wrong host. */

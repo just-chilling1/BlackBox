@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { getAppUrl } from "@/lib/brand-vars";
+import { sitePublicPath } from "@/lib/app-url";
 import { cachedClientFetch, invalidateClientFetchCache } from "@/lib/client-fetch-cache";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageHeader } from "@/components/ui/page-header";
@@ -179,7 +180,7 @@ export default function OffersLibraryPage() {
   const siteUrls = useMemo(() => {
     const map: Record<string, string> = {};
     for (const summary of summaries) {
-      map[summary.site.id] = `${origin}/sites/${summary.site.slug}`;
+      map[summary.site.id] = `${origin}${sitePublicPath(summary.site)}`;
     }
     return map;
   }, [summaries, origin]);

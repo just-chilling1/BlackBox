@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
   const site = siteRow as BlogSite;
   const promoLink =
-    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug);
+    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug, site.owner_handle);
 
   try {
     const scrapeClient = getServiceRoleClient();
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
 
   const { data: siteRow } = await supabase
     .from("sites")
-    .select("slug")
+    .select("slug, owner_handle")
     .eq("id", siteId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -103,7 +103,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
   }
 
-  const offerPageUrl = buildOfferPageUrl(getServerAppUrl(request), siteRow.slug);
+  const offerPageUrl = buildOfferPageUrl(
+    getServerAppUrl(request),
+    siteRow.slug,
+    siteRow.owner_handle
+  );
   const posts = await listFacebookPostsForSite(supabase, user.id, siteId);
 
   return NextResponse.json(
