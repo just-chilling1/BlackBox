@@ -13,13 +13,15 @@ import {
   Repeat,
   Copy,
   Check,
+  Trash2,
 } from "lucide-react";
 import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
 import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
 import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
 import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { getAppUrl } from "@/lib/brand-vars";
-import { cachedClientFetch } from "@/lib/client-fetch-cache";
+import { cachedClientFetch, invalidateClientFetchCache } from "@/lib/client-fetch-cache";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -36,6 +38,7 @@ function OfferCard({
   recurringArticles,
   loadingContent,
   onExpand,
+  onDeleteRequest,
   expanded,
 }: {
   summary: SiteVaultSummary;
@@ -45,6 +48,7 @@ function OfferCard({
   recurringArticles: SavedRecurringArticle[];
   loadingContent: boolean;
   onExpand: () => void;
+  onDeleteRequest: () => void;
   expanded: boolean;
 }) {
   const { site, xThreadCount = 0, facebookPostCount = 0, recurringArticleCount = 0 } = summary;
@@ -193,6 +197,17 @@ function OfferCard({
                   No authority articles saved for this offer yet. Open Recurring Stream to preview and save articles.
                 </p>
               )}
+
+              <div className="border-t border-border-dim pt-4">
+                <button
+                  type="button"
+                  onClick={onDeleteRequest}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/5 px-3 py-2 text-[13px] font-medium text-[var(--bb-danger)] transition-colors hover:bg-[var(--bb-danger)]/10"
+                >
+                  <Trash2 size={14} />
+                  Delete offer
+                </button>
+              </div>
             </>
           )}
         </div>
@@ -273,6 +288,9 @@ export default function OffersLibraryPage() {
   const [facebookPostsBySite, setFacebookPostsBySite] = useState<Record<string, SavedFacebookPost[]>>({});
   const [articlesBySite, setArticlesBySite] = useState<Record<string, SavedRecurringArticle[]>>({});
   const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<SiteVaultSummary | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     void cachedClientFetch<{ summaries?: SiteVaultSummary[] }>("/api/blog/site?lite=1")
@@ -330,6 +348,48 @@ export default function OffersLibraryPage() {
     void loadOfferContent(siteId);
   };
 
+  const handleConfirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(
+        `/api/blog/site?siteId=${encodeURIComponent(pendingDelete.site.id)}`,
+        { method: "DELETE" }
+      );
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setDeleteError(data.error ?? "Could not delete this offer. Please try again.");
+        return;
+      }
+
+      const deletedId = pendingDelete.site.id;
+      setSummaries((prev) => prev.filter((s) => s.site.id !== deletedId));
+      setThreadsBySite((prev) => {
+        const next = { ...prev };
+        delete next[deletedId];
+        return next;
+      });
+      setFacebookPostsBySite((prev) => {
+        const next = { ...prev };
+        delete next[deletedId];
+        return next;
+      });
+      setArticlesBySite((prev) => {
+        const next = { ...prev };
+        delete next[deletedId];
+        return next;
+      });
+      if (expandedId === deletedId) setExpandedId(null);
+      invalidateClientFetchCache("/api/blog/site");
+      setPendingDelete(null);
+    } catch {
+      setDeleteError("Could not delete this offer. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="page-container">
@@ -369,6 +429,12 @@ export default function OffersLibraryPage() {
         subtitle="Browse every sales page you launched. Expand an offer to view saved threads, Facebook posts, authority articles, or generate new content."
       />
 
+      {deleteError ? (
+        <p className="mb-4 rounded-xl border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-sm text-[var(--bb-danger)]">
+          {deleteError}
+        </p>
+      ) : null}
+
       <div className="space-y-4">
         {summaries.map((summary) => (
           <OfferCard
@@ -381,9 +447,34 @@ export default function OffersLibraryPage() {
             loadingContent={loadingContentId === summary.site.id}
             expanded={expandedId === summary.site.id}
             onExpand={() => toggleExpand(summary.site.id)}
+            onDeleteRequest={() => {
+              setDeleteError(null);
+              setPendingDelete(summary);
+            }}
           />
         ))}
       </div>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this offer?"
+        description={
+          pendingDelete
+            ? `"${pendingDelete.site.title}" and all saved threads, Facebook posts, and authority articles will be permanently removed. This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete offer"
+        cancelLabel="Keep offer"
+        destructive
+        loading={deleting}
+        onConfirm={() => void handleConfirmDelete()}
+        onCancel={() => {
+          if (!deleting) {
+            setPendingDelete(null);
+            setDeleteError(null);
+          }
+        }}
+      />
     </div>
   );
 }
