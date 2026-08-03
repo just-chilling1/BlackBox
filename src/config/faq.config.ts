@@ -22,11 +22,15 @@ export const faqSections: FaqSection[] = [
       },
       {
         q: "How do I create my first sales offer?",
-        a: 'Open Sales Offer Generator from the sidebar, paste your affiliate link, and follow the guided steps. When deployment finishes, your offer appears in Offers Library with matching X threads ready in X-Power Promotions.',
+        a: "Open Sales Offer Generator from the sidebar, add your affiliate link, and follow the guided steps. When deployment finishes you get your shareable link plus buttons to check the questionnaire page and the offer page, and the offer appears in Offers Library.",
       },
       {
         q: "Do I need my own affiliate link?",
         a: "Yes. Paste a valid affiliate or promotional URL when generating offers or cloning premium templates. That link is placed on your sales page and in generated promotion copy.",
+      },
+      {
+        q: "What link do I share when promoting?",
+        a: "Every offer gets a clean, readable URL that includes your member handle and the offer name. Copy it from the launch panel right after deployment, or anytime from the offer's page in Offers Library.",
       },
     ],
   },
@@ -39,11 +43,15 @@ export const faqSections: FaqSection[] = [
       },
       {
         q: "What is X-Power Promotions?",
-        a: "X-Power Promotions creates ready-to-post social threads for your offers. Pick an offer from Offers Library and generate batches of posts you can copy and publish.",
+        a: "X-Power Promotions turns any offer into a ready-to-post 10-post X story thread. Pick an offer, generate, then copy posts one by one or all at once and publish them to X.",
+      },
+      {
+        q: "Do new threads replace my old ones?",
+        a: "No. Every generation is saved as a new version, and older threads stay available. On the offer's page in Offers Library you can rename each version and pin your favorite so it opens first everywhere.",
       },
       {
         q: "How do I save links for reuse?",
-        a: 'Links save automatically when you add them in Sales Offer Generator, or you can add them directly in Links Library with a name, tag, and description.',
+        a: "Links save automatically when you use Save to Links Library in Sales Offer Generator, or click Create New Link in Links Library to add one with a name, tag, and description.",
       },
     ],
   },
@@ -52,15 +60,15 @@ export const faqSections: FaqSection[] = [
     items: [
       {
         q: "What is Links Library?",
-        a: "Links Library stores your affiliate and promo URLs so you can reuse them across new offers without retyping the same link every time.",
+        a: "Links Library stores your affiliate and promo URLs so you can reuse them across new offers without retyping. Each saved link shows which offers use it, and you can create, edit, or delete links anytime.",
       },
       {
         q: "What is Offers Library?",
-        a: "Offers Library is where your generated sales pages live. Open any offer to view its page, manage threads, or jump into X-Power Promotions.",
+        a: "Offers Library is where your generated sales pages live, with search, live/draft filters, and click counts on every card. Open an offer to see its shareable link, affiliate link, saved threads, posts, and articles in one place.",
       },
       {
         q: "Can I edit an offer after it is created?",
-        a: "You can regenerate promotion threads and reuse stored links. To change the underlying sales page, create a new offer from Sales Offer Generator with your updated link or settings.",
+        a: "You can change the offer's affiliate link with the Change button on its page in Offers Library, and generate new thread versions anytime. To change the sales page itself, launch a new offer from Sales Offer Generator.",
       },
     ],
   },
@@ -72,16 +80,16 @@ export const faqSections: FaqSection[] = [
         a: "Accelerator gives you access to 200 pre-made sales pages and X threads across popular niches. Add your affiliate link, pick a template, and clone a stored copy instantly.",
       },
       {
-        q: "What is Recurring Wealth Stream?",
-        a: "Recurring Wealth Stream provides ready-to-publish authority articles you can deploy to build long-term traffic and recurring affiliate income.",
+        q: "What is Recurring Stream?",
+        a: "Recurring Stream provides ready-to-publish authority articles woven around your offer. Preview with your link included, save articles to an offer, and follow the Where to use it guide for your blog, Medium, LinkedIn, or Quora.",
       },
       {
         q: "What are Social Payouts?",
-        a: "Social Payouts bulk-generates many Facebook post variants from a single offer so you can scale promotion without writing each post manually.",
+        a: "Social Payouts bulk-generates Facebook post variants from a single offer. Every generation is kept as a saved post set, and the built-in Facebook posting best practices show you how to post without breaking group rules.",
       },
       {
-        q: "What is Wealth Protector?",
-        a: "Wealth Protector helps you review account security signals and verification status so you can keep your member account in good standing.",
+        q: "What is Protector?",
+        a: "Protector is your account security overview — verification status, security checks, and a recent activity log — so you can keep your member account in good standing.",
       },
     ],
   },
