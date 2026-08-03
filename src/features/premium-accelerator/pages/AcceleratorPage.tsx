@@ -21,6 +21,9 @@ import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
@@ -310,6 +313,33 @@ export default function AcceleratorPage() {
         </PremiumFooter>
       }
     >
+      <PremiumVideoTutorial
+        title="Accelerator Training"
+        description="Watch how to browse the 200 pre-made sales pages, clone one with your affiliate link, and grab its ready-made story thread — all in under two minutes."
+        iframeTitle="Accelerator training video"
+        thumbnailSrc={getAcademyPremiumThumbnail(0) ?? undefined}
+      />
+
+      <PremiumStepsSection
+        steps={[
+          {
+            num: "1",
+            title: "Pick a template",
+            desc: "Browse 200 pre-made sales pages across every niche and preview any one before you commit.",
+          },
+          {
+            num: "2",
+            title: "Clone with your link",
+            desc: "Paste your affiliate link and the sales page plus its 10-post story thread become yours instantly.",
+          },
+          {
+            num: "3",
+            title: "Post the thread",
+            desc: "Copy the ready-made X story thread, post it, and your cloned page starts collecting clicks.",
+          },
+        ]}
+      />
+
       <PremiumControlCard
         icon={Rocket}
         title="200 Sales Pages + Story Threads"

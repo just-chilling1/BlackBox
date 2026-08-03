@@ -156,19 +156,26 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     return () => clearTimeout(t);
   }, [toast]);
 
+  // The parent remounts this panel per site (key={siteId}), so contentLoading
+  // starts true for each site without resetting it inside the effect.
   useEffect(() => {
-    setContentLoading(true);
     void fetchJson<{
       quota: ThreadGenerationQuota;
-      threads?: { text: string; angle: string | null; image_url?: string | null }[];
+      threads?: { text: string; angle: string | null; image_url?: string | null; batch_id?: string }[];
       tags?: { tag: string; reason: string }[];
     }>(`/api/promote/social-posts?siteId=${encodeURIComponent(site.siteId)}`)
       .then((res) => {
         if (!res.ok) return;
         if (res.data.quota) setQuota(res.data.quota);
-        if (Array.isArray(res.data.threads)) {
+        if (Array.isArray(res.data.threads) && res.data.threads.length > 0) {
+          // Threads accumulate as versions; show only the most recent batch here.
+          const threadRows = res.data.threads;
+          const latestBatchId = threadRows[0].batch_id;
+          const latest = latestBatchId
+            ? threadRows.filter((t) => t.batch_id === latestBatchId)
+            : threadRows;
           setPosts(
-            res.data.threads.map((thread) => ({
+            latest.map((thread) => ({
               text: thread.text,
               angle: thread.angle || undefined,
               imageUrl: thread.image_url || undefined,
@@ -342,7 +349,8 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
               Generate one {THREAD_POST_COUNT}-post product story thread — hook, failure, mechanism, proof, and a single CTA.
-              Posts 1, 4, and 7 include scraped product or stock niche images.
+              Posts 1, 4, and 7 include scraped product or stock niche images. Each generation is saved
+              as a new thread in your Offers Library, so previous versions are kept.
             </p>
             {contentLoading ? (
               <p className="text-sm text-text-muted flex items-center gap-2">

@@ -22,6 +22,9 @@ import { brand } from "@/config/brand.config";
 import { cachedClientFetch } from "@/lib/client-fetch-cache";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
@@ -278,7 +281,7 @@ export default function RecurringStreamPage() {
     if (html) setPreviewId(articleId);
   };
 
-  const useTemplate = async (articleId: number) => {
+  const applyTemplate = async (articleId: number) => {
     const saved = await saveArticleToOffer(articleId);
     if (!saved) return;
 
@@ -341,6 +344,37 @@ export default function RecurringStreamPage() {
         title="Recurring Stream"
         subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — pick an offer, preview with your link, and publish across platforms.`}
       />
+
+      <div className="mb-4">
+        <PremiumVideoTutorial
+          title="Recurring Stream Training"
+          description="Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog."
+          iframeTitle="Recurring Stream training video"
+          thumbnailSrc={getAcademyPremiumThumbnail(1) ?? undefined}
+        />
+      </div>
+
+      <div className="mb-4">
+        <PremiumStepsSection
+          steps={[
+            {
+              num: "1",
+              title: "Pick an offer",
+              desc: "Choose which sales page the articles should promote — your link is placed inside automatically.",
+            },
+            {
+              num: "2",
+              title: "Preview an article",
+              desc: "Browse 100 long-form authority articles by niche and preview any template with your link inside.",
+            },
+            {
+              num: "3",
+              title: "Publish anywhere",
+              desc: "Copy the article to Medium, LinkedIn, or your blog. Saved articles stay linked to your offer.",
+            },
+          ]}
+        />
+      </div>
 
       <section className="glass-card overflow-hidden p-0">
         <div className="border-b border-divider bg-brass-100 p-6 md:p-8">
@@ -494,7 +528,7 @@ export default function RecurringStreamPage() {
                 <button
                   type="button"
                   disabled={loadingAction?.articleId === previewArticle.id}
-                  onClick={() => void useTemplate(previewArticle.id)}
+                  onClick={() => void applyTemplate(previewArticle.id)}
                   className="btn-primary inline-flex items-center gap-2 text-sm"
                 >
                   {loadingAction?.articleId === previewArticle.id && loadingAction.action === "save" ? (
@@ -601,7 +635,7 @@ export default function RecurringStreamPage() {
                     !selectedSiteId ||
                     savedTemplateIds.has(article.id)
                   }
-                  onClick={() => void useTemplate(article.id)}
+                  onClick={() => void applyTemplate(article.id)}
                   className="btn-primary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
                 >
                   {loadingAction?.articleId === article.id && loadingAction.action === "save" ? (

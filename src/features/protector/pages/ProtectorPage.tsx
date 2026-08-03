@@ -19,6 +19,9 @@ import { PageLoading } from "@/components/ui/page-loading";
 import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
@@ -123,6 +126,33 @@ export default function ProtectorPage() {
       subtitle="Your account security overview — membership verification, encryption status, and activity monitoring in real time."
       footer={<PremiumFooter>Wealth Protector — powered by {brand.productName}.</PremiumFooter>}
     >
+      <PremiumVideoTutorial
+        title="Protector Training"
+        description="Watch what Wealth Protector monitors for you — account verification, encryption, and session security — and how to read your security overview."
+        iframeTitle="Protector training video"
+        thumbnailSrc={getAcademyPremiumThumbnail(3) ?? undefined}
+      />
+
+      <PremiumStepsSection
+        steps={[
+          {
+            num: "1",
+            title: "Check your status",
+            desc: "The security score and system badges at the top confirm your account and connection are protected.",
+          },
+          {
+            num: "2",
+            title: "Review the checks",
+            desc: "Each security check shows what's verified — email, encryption, session tokens, and API connectivity.",
+          },
+          {
+            num: "3",
+            title: "Watch the activity log",
+            desc: "Recent logins and security scans appear here, so anything unusual is easy to spot early.",
+          },
+        ]}
+      />
+
       <PremiumControlCard
         icon={ShieldCheck}
         title="Wealth Protector"

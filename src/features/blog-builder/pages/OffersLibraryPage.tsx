@@ -3,291 +3,164 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  ExternalLink,
-  FolderOpen,
-  Globe,
-  Megaphone,
-  ChevronDown,
-  Loader2,
-  FileText,
-  Repeat,
+  ArrowRight,
   Copy,
   Check,
+  Eye,
+  FolderOpen,
+  Globe,
+  Loader2,
+  MousePointerClick,
+  Search,
   Trash2,
 } from "lucide-react";
-import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
-import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
-import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
-import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { getAppUrl } from "@/lib/brand-vars";
 import { cachedClientFetch, invalidateClientFetchCache } from "@/lib/client-fetch-cache";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ThreadViewerModal } from "@/features/publish-kit/components/ThreadViewerModal";
+import {
+  groupThreadsIntoVersions,
+  preferredVersion,
+  type ThreadVersion,
+} from "@/features/publish-kit/lib/thread-batches";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 import type { SavedXThread } from "@/features/publish-kit/lib/x-threads-vault";
-import type { SavedRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
+
+const QUICK_ACTION_CLASS =
+  "inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700";
+
+function CopyUrlAction({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <button type="button" onClick={() => void handleCopy()} className={QUICK_ACTION_CLASS}>
+      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? "Copied" : "Copy URL"}
+    </button>
+  );
+}
 
 function OfferCard({
   summary,
   siteUrl,
-  threads,
-  facebookPosts,
-  recurringArticles,
-  loadingContent,
-  onExpand,
+  loadingThread,
+  onViewThread,
   onDeleteRequest,
-  expanded,
 }: {
   summary: SiteVaultSummary;
   siteUrl: string;
-  threads: SavedXThread[];
-  facebookPosts: SavedFacebookPost[];
-  recurringArticles: SavedRecurringArticle[];
-  loadingContent: boolean;
-  onExpand: () => void;
+  loadingThread: boolean;
+  onViewThread: () => void;
   onDeleteRequest: () => void;
-  expanded: boolean;
 }) {
   const { site, xThreadCount = 0, facebookPostCount = 0, recurringArticleCount = 0 } = summary;
   const territory = getSiteTerritory(site);
-  const affiliate = site.armed_links?.[0];
-  const hasThreads = xThreadCount > 0;
-  const hasFacebookPosts = facebookPostCount > 0;
-  const hasArticles = recurringArticleCount > 0;
+  const detailHref = `/offers/${encodeURIComponent(site.id)}`;
 
   return (
     <article className="glass-card overflow-hidden">
-      <button
-        type="button"
-        onClick={onExpand}
+      <Link
+        href={detailHref}
         className="flex w-full items-start gap-4 p-5 text-left transition-colors hover:bg-canvas"
       >
-        <div
-          className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-lg ${ site.status === "live" ? "bg-brass-100 text-brass-700" : "bg-brass-100 text-brass-700" }`}
-        >
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brass-100 text-brass-700">
           <FolderOpen size={22} />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="brand-font text-lg text-text-heading">{site.title}</h3>
-          {site.tagline && <p className="mt-0.5 text-sm text-text-secondary line-clamp-2">{site.tagline}</p>}
+          {site.tagline && (
+            <p className="mt-0.5 text-sm text-text-secondary line-clamp-2">{site.tagline}</p>
+          )}
           <div className="mt-2 flex flex-wrap gap-2">
             <span className="rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
               {territory}
             </span>
             <span
-              className={`rounded-full px-2 py-0.5 text-[13px] font-medium capitalize ${ site.status === "live" ? "bg-success/20 text-success" : "bg-black/10 text-text-muted" }`}
+              className={`rounded-full px-2 py-0.5 text-[13px] font-medium capitalize ${
+                site.status === "live" ? "bg-success/20 text-success" : "bg-black/10 text-text-muted"
+              }`}
             >
               {site.status}
             </span>
-            <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
-              {hasThreads ? `${xThreadCount}-post thread saved` : "No story thread yet"}
-            </span>
-            <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
-              {hasFacebookPosts
-                ? `${facebookPostCount} Facebook post${facebookPostCount !== 1 ? "s" : ""}`
-                : "No Facebook posts yet"}
-            </span>
-            <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
-              {hasArticles
-                ? `${recurringArticleCount} authority article${recurringArticleCount !== 1 ? "s" : ""}`
-                : "No authority articles yet"}
-            </span>
-          </div>
-        </div>
-        <ChevronDown
-          size={18}
-          className={`shrink-0 text-text-muted transition-transform ${expanded ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {expanded && (
-        <div className="space-y-4 border-t border-border-dim px-5 py-4">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {siteUrl && (
-              <a
-                href={siteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-brass-100 px-3 py-2 text-[13px] font-medium text-text-heading hover:bg-brass-100/70"
-              >
-                <Globe size={14} />
-                View sales page
-                <ExternalLink size={12} />
-              </a>
-            )}
-            {affiliate?.url && (
-              <a
-                href={affiliate.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-brass-100 px-3 py-2 text-[13px] font-medium text-text-heading hover:bg-brass-100/70"
-              >
-                <ExternalLink size={14} />
-                {affiliate.label || "Affiliate link"}
-              </a>
-            )}
-            <Link
-              href={`/promote?siteId=${encodeURIComponent(site.id)}`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-grad-brass px-3 py-2 text-[13px] font-medium text-[#0B0C10] hover:brightness-110"
-            >
-              <Megaphone size={14} />
-              {hasThreads ? "Regenerate story thread" : "Generate story thread"}
-            </Link>
-            <Link
-              href={`/social-payouts?siteId=${encodeURIComponent(site.id)}`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-brass-100 px-3 py-2 text-[13px] font-medium text-text-heading hover:bg-brass-100/70"
-            >
-              <Megaphone size={14} />
-              {hasFacebookPosts ? "Regenerate Facebook posts" : "Generate Facebook posts"}
-            </Link>
-            <Link
-              href="/recurring-wealth"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-brass-100 px-3 py-2 text-[13px] font-medium text-text-heading hover:bg-brass-100/70"
-            >
-              <Repeat size={14} />
-              {hasArticles ? "Browse authority articles" : "Add authority articles"}
-            </Link>
-          </div>
-
-          {loadingContent ? (
-            <div className="flex items-center gap-2 text-sm text-text-muted">
-              <Loader2 size={14} className="animate-spin" />
-              Loading saved content...
-            </div>
-          ) : (
-            <>
-              {threads.length > 0 ? (
-                <ThreadListSection title="Story thread" count={threads.length}>
-                  {threads.map((thread, i) => (
-                    <ThreadCard
-                      key={thread.id}
-                      index={i + 1}
-                      label={`Post ${i + 1} · ${thread.angle || "Post"}`}
-                      text={thread.text}
-                      imageUrl={thread.image_url}
-                      defaultOpen={i === 0}
-                    />
-                  ))}
-                </ThreadListSection>
-              ) : (
-                <p className="text-sm text-text-secondary">
-                  No story thread saved for this offer yet. Open X-Power Promotions to generate one.
-                </p>
-              )}
-
-              {facebookPosts.length > 0 ? (
-                <ThreadListSection title="Facebook posts (Social Payouts)" count={facebookPosts.length}>
-                  {facebookPosts.map((post) => (
-                    <FacebookPostCard key={post.id} post={post} resolvedText={post.body} />
-                  ))}
-                </ThreadListSection>
-              ) : (
-                <p className="text-sm text-text-secondary">
-                  No Facebook posts saved for this offer yet. Open Social Payouts to generate bulk variants.
-                </p>
-              )}
-
-              {recurringArticles.length > 0 ? (
-                <SavedArticlesSection articles={recurringArticles} />
-              ) : (
-                <p className="text-sm text-text-secondary">
-                  No authority articles saved for this offer yet. Open Recurring Stream to preview and save articles.
-                </p>
-              )}
-
-              <div className="border-t border-border-dim pt-4">
-                <button
-                  type="button"
-                  onClick={onDeleteRequest}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/5 px-3 py-2 text-[13px] font-medium text-[var(--bb-danger)] transition-colors hover:bg-[var(--bb-danger)]/10"
-                >
-                  <Trash2 size={14} />
-                  Delete offer
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </article>
-  );
-}
-
-function htmlToPlainText(html: string): string {
-  return html
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
-function SavedArticlesSection({ articles }: { articles: SavedRecurringArticle[] }) {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  const handleCopy = async (article: SavedRecurringArticle) => {
-    const text = `${article.title}\n\n${htmlToPlainText(article.html)}`;
-    await navigator.clipboard.writeText(text);
-    setCopiedId(article.id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <FileText size={14} className="text-brass-700" />
-        <h4 className="text-sm font-medium text-text-primary">
-          Authority articles ({articles.length})
-        </h4>
-      </div>
-      <div className="space-y-2">
-        {articles.map((article) => (
-          <details
-            key={article.id}
-            className="group rounded-xl border border-border-dim bg-page/60 overflow-hidden"
-          >
-            <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
-              <ChevronDown
-                size={14}
-                className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
-              />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">
-                {article.title}
+            {xThreadCount > 0 && (
+              <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
+                {xThreadCount} thread{xThreadCount !== 1 ? "s" : ""}
               </span>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  void handleCopy(article);
-                }}
-                className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-brass-100 px-2.5 py-1 text-[13px] font-medium text-text-secondary hover:bg-brass-100/70"
-              >
-                {copiedId === article.id ? <Check size={12} /> : <Copy size={12} />}
-                {copiedId === article.id ? "Copied" : "Copy"}
-              </button>
-            </summary>
-            <div
-              className="recurring-article-body border-t border-divider px-4 py-3 text-sm max-h-64 overflow-y-auto"
-              dangerouslySetInnerHTML={{ __html: article.html }}
-            />
-          </details>
-        ))}
+            )}
+            {facebookPostCount > 0 && (
+              <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
+                {facebookPostCount} Facebook post{facebookPostCount !== 1 ? "s" : ""}
+              </span>
+            )}
+            {recurringArticleCount > 0 && (
+              <span className="rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
+                {recurringArticleCount} article{recurringArticleCount !== 1 ? "s" : ""}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1 rounded-full bg-black/10 px-2 py-0.5 text-[13px] font-medium text-text-muted">
+              <MousePointerClick size={12} />
+              {summary.clickCount} click{summary.clickCount !== 1 ? "s" : ""}
+            </span>
+          </div>
+        </div>
+        <ArrowRight size={18} className="mt-1 shrink-0 text-text-muted" />
+      </Link>
+
+      <div className="flex flex-wrap items-center gap-1.5 border-t border-border-dim/70 px-5 py-3">
+        <Link
+          href={detailHref}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2 text-[13px] font-medium text-brass-700 transition-colors hover:bg-brass-100/70"
+        >
+          <Globe size={14} />
+          View offer
+        </Link>
+        {siteUrl && <CopyUrlAction url={siteUrl} />}
+        {xThreadCount > 0 && (
+          <button
+            type="button"
+            onClick={onViewThread}
+            disabled={loadingThread}
+            className={QUICK_ACTION_CLASS}
+          >
+            {loadingThread ? <Loader2 size={14} className="animate-spin" /> : <Eye size={14} />}
+            View thread
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onDeleteRequest}
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-text-muted transition-colors hover:bg-[var(--bb-danger)]/10 hover:text-[var(--bb-danger)]"
+        >
+          <Trash2 size={14} />
+          Delete
+        </button>
       </div>
-    </div>
+    </article>
   );
 }
 
 export default function OffersLibraryPage() {
   const [summaries, setSummaries] = useState<SiteVaultSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "live" | "draft">("all");
   const [threadsBySite, setThreadsBySite] = useState<Record<string, SavedXThread[]>>({});
-  const [facebookPostsBySite, setFacebookPostsBySite] = useState<Record<string, SavedFacebookPost[]>>({});
-  const [articlesBySite, setArticlesBySite] = useState<Record<string, SavedRecurringArticle[]>>({});
-  const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
+  const [loadingThreadId, setLoadingThreadId] = useState<string | null>(null);
+  const [viewer, setViewer] = useState<{ title: string; version: ThreadVersion } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<SiteVaultSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -311,41 +184,45 @@ export default function OffersLibraryPage() {
     return map;
   }, [summaries, origin]);
 
-  const loadOfferContent = async (siteId: string) => {
-    if (threadsBySite[siteId] && facebookPostsBySite[siteId] && articlesBySite[siteId]) return;
-    setLoadingContentId(siteId);
-    try {
-      const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, { cache: "no-store" });
-      const data = await res.json();
-      if (res.ok) {
-        if (Array.isArray(data.xThreads)) {
-          setThreadsBySite((prev) => ({ ...prev, [siteId]: data.xThreads as SavedXThread[] }));
-        }
-        if (Array.isArray(data.facebookPosts)) {
-          setFacebookPostsBySite((prev) => ({
-            ...prev,
-            [siteId]: data.facebookPosts as SavedFacebookPost[],
-          }));
-        }
-        if (Array.isArray(data.recurringArticles)) {
-          setArticlesBySite((prev) => ({
-            ...prev,
-            [siteId]: data.recurringArticles as SavedRecurringArticle[],
-          }));
-        }
-      }
-    } finally {
-      setLoadingContentId(null);
-    }
-  };
+  const filteredSummaries = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return summaries.filter((summary) => {
+      if (statusFilter !== "all" && summary.site.status !== statusFilter) return false;
+      if (!q) return true;
+      const haystack = [
+        summary.site.title,
+        summary.site.tagline ?? "",
+        getSiteTerritory(summary.site),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [summaries, query, statusFilter]);
 
-  const toggleExpand = (siteId: string) => {
-    if (expandedId === siteId) {
-      setExpandedId(null);
-      return;
+  const handleViewThread = async (summary: SiteVaultSummary) => {
+    const siteId = summary.site.id;
+    let threads = threadsBySite[siteId];
+
+    if (!threads) {
+      setLoadingThreadId(siteId);
+      try {
+        const res = await fetch(`/api/blog/site?siteId=${encodeURIComponent(siteId)}`, {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) return;
+        threads = Array.isArray(data.xThreads) ? (data.xThreads as SavedXThread[]) : [];
+        setThreadsBySite((prev) => ({ ...prev, [siteId]: threads! }));
+      } finally {
+        setLoadingThreadId(null);
+      }
     }
-    setExpandedId(siteId);
-    void loadOfferContent(siteId);
+
+    const version = preferredVersion(groupThreadsIntoVersions(threads ?? []));
+    if (version) {
+      setViewer({ title: summary.site.title, version });
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -370,17 +247,6 @@ export default function OffersLibraryPage() {
         delete next[deletedId];
         return next;
       });
-      setFacebookPostsBySite((prev) => {
-        const next = { ...prev };
-        delete next[deletedId];
-        return next;
-      });
-      setArticlesBySite((prev) => {
-        const next = { ...prev };
-        delete next[deletedId];
-        return next;
-      });
-      if (expandedId === deletedId) setExpandedId(null);
       invalidateClientFetchCache("/api/blog/site");
       setPendingDelete(null);
     } catch {
@@ -396,7 +262,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X threads, Facebook posts, and authority articles."
+          subtitle="Every launched sales page lives here with its saved threads, Facebook posts, and authority articles."
         />
         <PageSkeleton cards={2} />
       </div>
@@ -409,7 +275,7 @@ export default function OffersLibraryPage() {
         <PageHeader
           eyebrow="Offers library"
           title="Your generated sales offers"
-          subtitle="Every launched sales page lives here with its saved X threads, Facebook posts, and authority articles."
+          subtitle="Every launched sales page lives here with its saved threads, Facebook posts, and authority articles."
         />
         <EmptyState
           icon={FolderOpen}
@@ -426,7 +292,7 @@ export default function OffersLibraryPage() {
       <PageHeader
         eyebrow="Offers library"
         title="Your generated sales offers"
-        subtitle="Browse every sales page you launched. Expand an offer to view saved threads, Facebook posts, authority articles, or generate new content."
+        subtitle="Open an offer to see its links, story threads, and saved content — or use the quick actions below each card."
       />
 
       {deleteError ? (
@@ -435,25 +301,66 @@ export default function OffersLibraryPage() {
         </p>
       ) : null}
 
-      <div className="space-y-4">
-        {summaries.map((summary) => (
-          <OfferCard
-            key={summary.site.id}
-            summary={summary}
-            siteUrl={siteUrls[summary.site.id] ?? ""}
-            threads={threadsBySite[summary.site.id] ?? []}
-            facebookPosts={facebookPostsBySite[summary.site.id] ?? []}
-            recurringArticles={articlesBySite[summary.site.id] ?? []}
-            loadingContent={loadingContentId === summary.site.id}
-            expanded={expandedId === summary.site.id}
-            onExpand={() => toggleExpand(summary.site.id)}
-            onDeleteRequest={() => {
-              setDeleteError(null);
-              setPendingDelete(summary);
-            }}
-          />
-        ))}
-      </div>
+      {summaries.length >= 2 && (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div className="relative min-w-[220px] flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search offers by name or niche..."
+              aria-label="Search offers"
+              className="input-base w-full pl-9 text-sm"
+            />
+          </div>
+          <div className="flex items-center gap-1.5">
+            {(["all", "live", "draft"] as const).map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => setStatusFilter(status)}
+                className={`rounded-full px-3 py-1.5 text-[13px] font-medium capitalize transition-colors ${
+                  statusFilter === status
+                    ? "bg-grad-brass text-black"
+                    : "border border-border-dim bg-white text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+                }`}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {filteredSummaries.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-border-dim bg-page/40 px-4 py-6 text-center text-sm text-text-muted">
+          No offers match your search. Try a different name or clear the filters.
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {filteredSummaries.map((summary) => (
+            <OfferCard
+              key={summary.site.id}
+              summary={summary}
+              siteUrl={siteUrls[summary.site.id] ?? ""}
+              loadingThread={loadingThreadId === summary.site.id}
+              onViewThread={() => void handleViewThread(summary)}
+              onDeleteRequest={() => {
+                setDeleteError(null);
+                setPendingDelete(summary);
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <ThreadViewerModal
+        open={viewer !== null}
+        offerTitle={viewer?.title ?? ""}
+        version={viewer?.version ?? null}
+        onClose={() => setViewer(null)}
+      />
 
       <ConfirmDialog
         open={pendingDelete !== null}

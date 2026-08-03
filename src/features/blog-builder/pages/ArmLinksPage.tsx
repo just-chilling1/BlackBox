@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { clsx } from "clsx";
 import {
   Loader2,
   ArrowRight,
@@ -17,6 +18,8 @@ import {
   MousePointerClick,
   Copy,
   ClipboardPaste,
+  FolderOpen,
+  PenLine,
 } from "lucide-react";
 import { GlassInput } from "@/components/ui/glass-input";
 import { PageHeader } from "@/components/ui/page-header";
@@ -68,6 +71,8 @@ const INSTRUCTION_STEPS = [
   },
 ];
 
+type LinkMode = "library" | "manual";
+
 export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps = {}) {
   const router = useRouter();
   const { sessionLoaded, armedLinks, saveLinksToVault, armLinks } = useBlogBuilder();
@@ -78,7 +83,12 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
   const [linkSaved, setLinkSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [instructionsOpen, setInstructionsOpen] = useState(true);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
+  // null until the user picks a tab; default depends on whether the library has links.
+  const [modeOverride, setModeOverride] = useState<LinkMode | null>(null);
+
+  const hasVaultLinks = armedLinks.length > 0;
+  const mode: LinkMode = modeOverride ?? (hasVaultLinks ? "library" : "manual");
 
   const handleSelectFromVault = (link: ArmedLink | null) => {
     if (!link) {
@@ -135,6 +145,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
     try {
       await saveLinksToVault(nextLinks);
       setLinkSaved(true);
+      setSelectedVaultUrl(url);
       warmScrapeCache(url);
     } catch {
       setError("Could not save to Links Library. Try again.");
@@ -146,7 +157,11 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
   const handleContinue = async () => {
     const url = normalizeAffiliateUrl(linkUrl);
     if (!isValidAffiliateUrl(url)) {
-      setError("Please enter a valid affiliate link (https://...) before continuing.");
+      setError(
+        mode === "library"
+          ? "Select a saved link above, or switch to Enter Manually to paste a new one."
+          : "Please enter a valid affiliate link (https://...) before continuing."
+      );
       return;
     }
 
@@ -174,6 +189,11 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
     }
   };
 
+  const switchMode = (next: LinkMode) => {
+    setModeOverride(next);
+    setError(null);
+  };
+
   if (!sessionLoaded) {
     return <PageLoading message="Loading your session..." />;
   }
@@ -186,11 +206,137 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
           <PageHeader
             eyebrow="Step 1"
             title="Add Your Link"
-            subtitle='Paste any promotional or affiliate link below. It will be placed on your generated website. Use "Save to Links Library" if you want to reuse it later.'
+            subtitle="Choose a saved link from your Links Library, or paste a new promotional or affiliate link. It will be placed on your generated website."
           />
           <WizardStepper currentStep={1} />
         </>
       )}
+
+      <section className="wizard-panel animate-fade-in-up overflow-hidden p-0">
+        {hasVaultLinks && (
+          <div
+            className="flex gap-1 border-b border-border-dim/70 px-3 pt-2"
+            role="tablist"
+            aria-label="Link source"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "library"}
+              onClick={() => switchMode("library")}
+              className={clsx("tab-pill -mb-px", mode === "library" && "is-active")}
+            >
+              <FolderOpen size={15} />
+              Saved Links ({armedLinks.length})
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "manual"}
+              onClick={() => switchMode("manual")}
+              className={clsx("tab-pill -mb-px", mode === "manual" && "is-active")}
+            >
+              <PenLine size={15} />
+              Enter Manually
+            </button>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-4 p-4 sm:p-6">
+          {mode === "library" && hasVaultLinks ? (
+            <ContentReservePicker
+              links={armedLinks}
+              selectedUrl={selectedVaultUrl}
+              onSelect={handleSelectFromVault}
+              showDivider={false}
+            />
+          ) : (
+            <>
+              <div className="space-y-2">
+                <label className="wizard-form-label">Link Name</label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                    <Tag className="h-5 w-5" />
+                  </div>
+                  <GlassInput
+                    type="text"
+                    value={linkLabel}
+                    onChange={(e) => {
+                      const nextLabel = e.target.value;
+                      setLinkLabel(nextLabel);
+                      setLinkSaved(false);
+                      clearVaultSelectionIfEdited(linkUrl, nextLabel);
+                    }}
+                    placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
+                    className="h-12 pl-12 text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="wizard-form-label">Paste Your Affiliate Link</label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                    <Zap className="h-5 w-5" />
+                  </div>
+                  <GlassInput
+                    type="url"
+                    value={linkUrl}
+                    onChange={(e) => {
+                      const nextUrl = e.target.value;
+                      setLinkUrl(nextUrl);
+                      setLinkSaved(false);
+                      clearVaultSelectionIfEdited(nextUrl, linkLabel);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
+                    }}
+                    placeholder="Paste Digistore24 affiliate URL here..."
+                    className="h-12 pl-12 text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => void handleSaveToVault()}
+                  disabled={!linkUrl.trim() || loading}
+                  className="btn-secondary inline-flex items-center gap-2"
+                >
+                  {loading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : linkSaved ? (
+                    <Check size={18} />
+                  ) : (
+                    <Save size={18} />
+                  )}
+                  {linkSaved ? "Saved to Links Library" : "Save to Links Library"}
+                </button>
+                {linkSaved && (
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-success">
+                    <CheckCircle2 size={15} />
+                    Available for reuse anytime
+                  </span>
+                )}
+              </div>
+            </>
+          )}
+
+          {error && <ErrorBanner message={error} />}
+
+          <button
+            type="button"
+            onClick={() => void handleContinue()}
+            disabled={loading || !linkUrl.trim()}
+            className="btn-primary w-full disabled:opacity-40"
+          >
+            {loading ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
+            Continue to Niche
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </section>
 
       <section className="wizard-panel overflow-hidden p-0">
         <button
@@ -244,98 +390,6 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="wizard-panel animate-fade-in-up">
-        <div className="flex flex-col gap-4">
-          <ContentReservePicker
-            links={armedLinks}
-            selectedUrl={selectedVaultUrl}
-            onSelect={handleSelectFromVault}
-          />
-
-          <div className="space-y-2">
-            <label className="wizard-form-label">Link Name</label>
-            <div className="relative">
-              <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
-                <Tag className="h-5 w-5" />
-              </div>
-              <GlassInput
-                type="text"
-                value={linkLabel}
-                onChange={(e) => {
-                  const nextLabel = e.target.value;
-                  setLinkLabel(nextLabel);
-                  setLinkSaved(false);
-                  clearVaultSelectionIfEdited(linkUrl, nextLabel);
-                }}
-                placeholder="e.g. My Fitness eBook, Keto Supplement, etc."
-                className="h-12 pl-12 text-base"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="wizard-form-label">Paste Your Affiliate Link</label>
-            <div className="relative">
-              <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
-                <Zap className="h-5 w-5" />
-              </div>
-              <GlassInput
-                type="url"
-                value={linkUrl}
-                onChange={(e) => {
-                  const nextUrl = e.target.value;
-                  setLinkUrl(nextUrl);
-                  setLinkSaved(false);
-                  clearVaultSelectionIfEdited(nextUrl, linkLabel);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && linkUrl.trim()) void handleSaveToVault();
-                }}
-                placeholder="Paste Digistore24 affiliate URL here..."
-                className="h-12 pl-12 text-base"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => void handleSaveToVault()}
-              disabled={!linkUrl.trim() || loading}
-              className="btn-primary"
-            >
-              {loading ? (
-                <Loader2 size={18} className="animate-spin" />
-              ) : linkSaved ? (
-                <Check size={18} />
-              ) : (
-                <Save size={18} />
-              )}
-              {linkSaved ? "Link Saved" : "Save to Links Library"}
-            </button>
-            {linkSaved && (
-              <span className="flex items-center gap-1.5 text-sm font-medium text-success">
-                <CheckCircle2 size={15} />
-                Saved to your portfolio
-              </span>
-            )}
-          </div>
-
-          {error && <ErrorBanner message={error} />}
-
-          <button
-            type="button"
-            onClick={() => void handleContinue()}
-            disabled={loading}
-            className="btn-primary w-full"
-          >
-            {loading ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
-            Continue to Niche
-            <ArrowRight size={18} />
-          </button>
         </div>
       </section>
     </div>

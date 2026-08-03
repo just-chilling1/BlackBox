@@ -20,6 +20,9 @@ import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import { getAppUrl } from "@/lib/brand-vars";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
@@ -244,6 +247,33 @@ export default function SocialPayoutsPage() {
         </PremiumFooter>
       }
     >
+      <PremiumVideoTutorial
+        title="Social Payouts Training"
+        description="Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post."
+        iframeTitle="Social Payouts training video"
+        thumbnailSrc={getAcademyPremiumThumbnail(2) ?? undefined}
+      />
+
+      <PremiumStepsSection
+        steps={[
+          {
+            num: "1",
+            title: "Select an offer",
+            desc: "Pick any sales page from your Offers Library — its link gets baked into every post automatically.",
+          },
+          {
+            num: "2",
+            title: "Generate post variants",
+            desc: "One click creates 10+ Facebook posts with different hooks and angles so you never sound repetitive.",
+          },
+          {
+            num: "3",
+            title: "Copy and post",
+            desc: "Copy your favorites and paste them into groups and pages. All posts are saved to the offer for later.",
+          },
+        ]}
+      />
+
       {offers.length === 0 ? (
         <EmptyState
           icon={FolderOpen}

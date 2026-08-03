@@ -10,7 +10,12 @@ import {
   countRecurringArticlesBySite,
   listRecurringArticlesForSite,
 } from "@/features/premium-recurring/lib/recurring-articles-vault";
-import type { BlogSite } from "@/features/blog-builder/types";
+import {
+  detectLinkNetwork,
+  isValidAffiliateUrl,
+  normalizeAffiliateUrl,
+} from "@/features/blog-builder/lib/affiliate-url";
+import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
 
@@ -64,17 +69,20 @@ export async function GET(request: Request) {
   }
 
   if (lite && !siteId) {
-    const [facebookPostCounts, xThreadCounts, recurringArticleCounts] = await Promise.all([
-      countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-      countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-      countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-    ]);
+    const [facebookPostCounts, xThreadCounts, recurringArticleCounts, { data: liteClickRows }] =
+      await Promise.all([
+        countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+        countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+        countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+        supabase.from("affiliate_clicks").select("site_id").in("site_id", siteIds),
+      ]);
+    const liteClickCounts = countBySite(liteClickRows);
 
     const summaries: SiteVaultSummary[] = siteList.map((site) => ({
       site,
       postCount: 0,
       livePostCount: 0,
-      clickCount: 0,
+      clickCount: liteClickCounts[site.id] ?? 0,
       facebookPostCount: facebookPostCounts[site.id] ?? 0,
       xThreadCount: xThreadCounts[site.id] ?? 0,
       recurringArticleCount: recurringArticleCounts[site.id] ?? 0,
@@ -167,6 +175,71 @@ export async function GET(request: Request) {
     },
     { headers: NO_STORE_HEADERS }
   );
+}
+
+/** Update the offer's primary affiliate link after creation. */
+export async function PATCH(request: Request) {
+  const guard = featureApiGuard("blog-builder");
+  if (guard) return guard;
+
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
+  const body = await request.json().catch(() => ({}));
+  const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
+  const rawLink = (body.armedLink ?? {}) as Partial<ArmedLink>;
+
+  if (!siteId) {
+    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
+  }
+
+  const url = normalizeAffiliateUrl(typeof rawLink.url === "string" ? rawLink.url : "");
+  if (!isValidAffiliateUrl(url)) {
+    return NextResponse.json(
+      { error: "Enter a valid URL starting with https://" },
+      { status: 400, headers: NO_STORE_HEADERS }
+    );
+  }
+
+  const { data: siteRow } = await supabase
+    .from("sites")
+    .select("id, armed_links")
+    .eq("id", siteId)
+    .eq("user_id", user.id)
+    .eq("is_template", false)
+    .maybeSingle();
+
+  if (!siteRow) {
+    return NextResponse.json({ error: "Site not found" }, { status: 404, headers: NO_STORE_HEADERS });
+  }
+
+  const link: ArmedLink = {
+    label: typeof rawLink.label === "string" && rawLink.label.trim() ? rawLink.label.trim() : "Promotional Offer",
+    url,
+    network: detectLinkNetwork(url),
+    tag: typeof rawLink.tag === "string" && rawLink.tag.trim() ? rawLink.tag.trim() : undefined,
+    description:
+      typeof rawLink.description === "string" && rawLink.description.trim()
+        ? rawLink.description.trim()
+        : undefined,
+  };
+
+  const existing = Array.isArray(siteRow.armed_links) ? (siteRow.armed_links as ArmedLink[]) : [];
+  const nextLinks = [link, ...existing.slice(1)];
+
+  const { error } = await supabase
+    .from("sites")
+    .update({ armed_links: nextLinks })
+    .eq("id", siteId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500, headers: NO_STORE_HEADERS });
+  }
+
+  return NextResponse.json({ ok: true, armedLinks: nextLinks }, { headers: NO_STORE_HEADERS });
 }
 
 export async function DELETE(request: Request) {

@@ -22,7 +22,7 @@ const STEP_COPY: Record<
     eyebrow: "Step 1",
     title: "Add Your Link",
     subtitle:
-      'Paste any promotional or affiliate link below. It will be placed on your generated sales page. Use "Save to Links Library" if you want to reuse it later.',
+      "Choose a saved link from your Links Library, or paste a new promotional or affiliate link. It will be placed on your generated sales page.",
   },
   2: {
     eyebrow: "Step 2",

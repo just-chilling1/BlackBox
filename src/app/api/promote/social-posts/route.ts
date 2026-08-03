@@ -21,8 +21,12 @@ import {
   buildThreadUserPrompt,
 } from "@/features/publish-kit/lib/x-thread-rules";
 import {
+  deleteXThreadBatch,
   listXThreadsForSite,
+  renameXThreadBatch,
   saveXThreadBatch,
+  setXThreadBatchPinned,
+  ThreadColumnsMissingError,
 } from "@/features/publish-kit/lib/x-threads-vault";
 import { listXTagsForSite } from "@/features/publish-kit/lib/x-tags-vault";
 import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
@@ -60,6 +64,86 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({ quota }, { headers: NO_STORE_HEADERS });
+}
+
+export async function DELETE(request: Request) {
+  const guard = featureApiGuard("article-publish");
+  if (guard) return guard;
+
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
+  const params = new URL(request.url).searchParams;
+  const siteId = params.get("siteId")?.trim() || "";
+  const batchId = params.get("batchId")?.trim() || "";
+
+  if (!siteId || !batchId) {
+    return NextResponse.json(
+      { error: "siteId and batchId are required" },
+      { status: 400, headers: NO_STORE_HEADERS }
+    );
+  }
+
+  try {
+    await deleteXThreadBatch(supabase, user.id, siteId, batchId);
+    return NextResponse.json({ ok: true }, { headers: NO_STORE_HEADERS });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Failed to delete thread";
+    return NextResponse.json({ error: msg }, { status: 500, headers: NO_STORE_HEADERS });
+  }
+}
+
+const MAX_THREAD_LABEL_LENGTH = 60;
+
+export async function PATCH(request: Request) {
+  const guard = featureApiGuard("article-publish");
+  if (guard) return guard;
+
+  const { supabase, user } = await getApiUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
+  }
+
+  const body = await request.json().catch(() => ({}));
+  const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
+  const batchId = typeof body.batchId === "string" ? body.batchId.trim() : "";
+  const action = typeof body.action === "string" ? body.action : "";
+
+  if (!siteId || !batchId) {
+    return NextResponse.json(
+      { error: "siteId and batchId are required" },
+      { status: 400, headers: NO_STORE_HEADERS }
+    );
+  }
+
+  try {
+    if (action === "rename") {
+      const label =
+        typeof body.label === "string"
+          ? body.label.trim().slice(0, MAX_THREAD_LABEL_LENGTH)
+          : "";
+      await renameXThreadBatch(supabase, user.id, siteId, batchId, label || null);
+      return NextResponse.json({ ok: true, label: label || null }, { headers: NO_STORE_HEADERS });
+    }
+
+    if (action === "pin" || action === "unpin") {
+      await setXThreadBatchPinned(supabase, user.id, siteId, batchId, action === "pin");
+      return NextResponse.json({ ok: true }, { headers: NO_STORE_HEADERS });
+    }
+
+    return NextResponse.json(
+      { error: "action must be rename, pin, or unpin" },
+      { status: 400, headers: NO_STORE_HEADERS }
+    );
+  } catch (e) {
+    if (e instanceof ThreadColumnsMissingError) {
+      return NextResponse.json({ error: e.message }, { status: 409, headers: NO_STORE_HEADERS });
+    }
+    const msg = e instanceof Error ? e.message : "Failed to update thread";
+    return NextResponse.json({ error: msg }, { status: 500, headers: NO_STORE_HEADERS });
+  }
 }
 
 export async function POST(request: Request) {
