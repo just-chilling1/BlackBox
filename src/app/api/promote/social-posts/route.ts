@@ -267,13 +267,14 @@ export async function POST(request: Request) {
     });
 
     await recordThreadGeneration(supabase, user.id, siteId);
-    await saveXThreadBatch(supabase, user.id, siteId, postsWithImages);
+    const saved = await saveXThreadBatch(supabase, user.id, siteId, postsWithImages);
     const quotaAfter = await getThreadGenerationQuota(supabase, user.id);
 
     return NextResponse.json(
       {
         platform,
         posts: postsWithImages,
+        batchId: saved[0]?.batch_id ?? null,
         promoLink,
         quota: quotaAfter,
       },

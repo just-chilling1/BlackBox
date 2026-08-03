@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Copy,
   Check,
@@ -12,7 +12,9 @@ import {
   Loader2,
   Download,
   ClipboardCopy,
+  Pin,
 } from "lucide-react";
+import { clsx } from "clsx";
 import { fetchJson } from "@/lib/fetch-json";
 import { THREADS_PER_GENERATION, THREAD_IMAGE_POST_INDEXES } from "../lib/promote-constants";
 import {
@@ -22,8 +24,16 @@ import {
   promotionKitFilename,
   threadExportFilename,
 } from "../lib/thread-export";
+import {
+  groupThreadsIntoVersions,
+  sortVersionsForDisplay,
+  threadVersionName,
+  formatThreadVersionDate,
+  preferredVersion,
+  type ThreadVersion,
+} from "../lib/thread-batches";
+import type { SavedXThread } from "../lib/x-threads-vault";
 import { ThreadCard } from "./ThreadCard";
-import { ThreadListSection } from "./ThreadListSection";
 import { GenerationProgress } from "@/components/ui/generation-progress";
 import type {
   PromotePlatform,
@@ -31,6 +41,14 @@ import type {
   SocialPostResult,
 } from "../types";
 import type { ThreadGenerationQuota } from "../lib/thread-generation-quota";
+
+function versionToPosts(version: ThreadVersion): SocialPostResult[] {
+  return version.posts.map((post) => ({
+    text: post.text,
+    angle: post.angle || undefined,
+    imageUrl: post.image_url || undefined,
+  }));
+}
 
 const THREAD_POST_COUNT = THREADS_PER_GENERATION;
 const THREAD_IMAGE_COUNT = THREAD_IMAGE_POST_INDEXES.length;
@@ -135,20 +153,28 @@ function KitButton({
 }
 
 export function PublishKitPanel({ site }: { site: PublishKitSite }) {
-  const [posts, setPosts] = useState<SocialPostResult[]>([]);
+  const [threads, setThreads] = useState<SavedXThread[]>([]);
+  const [openBatchId, setOpenBatchId] = useState<string | null>(null);
   const [tags, setTags] = useState<{ tag: string; reason: string }[]>([]);
   const [contentLoading, setContentLoading] = useState(true);
   const [generateLoading, setGenerateLoading] = useState(false);
   const [tagsLoading, setTagsLoading] = useState(false);
   const [quota, setQuota] = useState<ThreadGenerationQuota | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [copiedAllThread, setCopiedAllThread] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" | "info" } | null>(null);
 
-  const visiblePosts = posts;
   const visibleTags = tags;
 
   const promoLink = useMemo(() => site.siteUrl || "", [site.siteUrl]);
+
+  // Saved threads grouped into versions (batches), pinned first then newest.
+  const versions = useMemo(() => groupThreadsIntoVersions(threads), [threads]);
+  const displayVersions = useMemo(() => sortVersionsForDisplay(versions), [versions]);
+  const versionNumbers = useMemo(() => {
+    const map = new Map<string, number>();
+    versions.forEach((v, i) => map.set(v.batchId, versions.length - i));
+    return map;
+  }, [versions]);
 
   useEffect(() => {
     if (!toast) return;
@@ -161,37 +187,26 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
   useEffect(() => {
     void fetchJson<{
       quota: ThreadGenerationQuota;
-      threads?: { text: string; angle: string | null; image_url?: string | null; batch_id?: string }[];
+      threads?: SavedXThread[];
       tags?: { tag: string; reason: string }[];
     }>(`/api/promote/social-posts?siteId=${encodeURIComponent(site.siteId)}`)
       .then((res) => {
         if (!res.ok) return;
         if (res.data.quota) setQuota(res.data.quota);
-        if (Array.isArray(res.data.threads) && res.data.threads.length > 0) {
-          // Threads accumulate as versions; show only the most recent batch here.
-          const threadRows = res.data.threads;
-          const latestBatchId = threadRows[0].batch_id;
-          const latest = latestBatchId
-            ? threadRows.filter((t) => t.batch_id === latestBatchId)
-            : threadRows;
-          setPosts(
-            latest.map((thread) => ({
-              text: thread.text,
-              angle: thread.angle || undefined,
-              imageUrl: thread.image_url || undefined,
-            }))
-          );
-        } else {
-          setPosts([]);
-        }
-        if (Array.isArray(res.data.tags)) {
-          setTags(res.data.tags);
-        } else {
-          setTags([]);
-        }
+        setThreads(Array.isArray(res.data.threads) ? res.data.threads : []);
+        setTags(Array.isArray(res.data.tags) ? res.data.tags : []);
       })
       .catch(() => {})
       .finally(() => setContentLoading(false));
+  }, [site.siteId]);
+
+  const refreshThreads = useCallback(async () => {
+    const res = await fetchJson<{ threads?: SavedXThread[] }>(
+      `/api/promote/social-posts?siteId=${encodeURIComponent(site.siteId)}`
+    );
+    if (res.ok && Array.isArray(res.data.threads)) {
+      setThreads(res.data.threads);
+    }
   }, [site.siteId]);
 
   const quotaBlocked = quota !== null && quota.remaining <= 0;
@@ -211,26 +226,29 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     }
   };
 
-  const copyAllThread = async () => {
-    if (visiblePosts.length === 0) return;
+  const copyVersion = async (version: ThreadVersion) => {
     try {
-      await navigator.clipboard.writeText(formatThreadPosts(visiblePosts));
-      setCopiedAllThread(true);
-      showToast(`Copied all ${visiblePosts.length} posts to clipboard`, "success");
-      setTimeout(() => setCopiedAllThread(false), 2000);
+      await navigator.clipboard.writeText(formatThreadPosts(versionToPosts(version)));
+      setCopiedKey(`version-${version.batchId}`);
+      showToast(`Copied all ${version.posts.length} posts to clipboard`, "success");
+      setTimeout(() => setCopiedKey(null), 2000);
     } catch {
       showToast("Could not copy to clipboard", "error");
     }
   };
 
-  const downloadThread = () => {
-    if (visiblePosts.length === 0) return;
-    downloadTextFile(threadExportFilename(site.siteName), formatThreadPosts(visiblePosts));
+  const downloadVersion = (version: ThreadVersion) => {
+    downloadTextFile(
+      threadExportFilename(site.siteName),
+      formatThreadPosts(versionToPosts(version))
+    );
     showToast("Story thread downloaded", "success");
   };
 
   const downloadPromotionKit = () => {
-    if (visiblePosts.length === 0 && visibleTags.length === 0) {
+    const kitVersion =
+      versions.find((v) => v.batchId === openBatchId) ?? preferredVersion(versions);
+    if (!kitVersion && visibleTags.length === 0) {
       showToast("Generate a thread or hashtags first", "info");
       return;
     }
@@ -240,7 +258,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         siteName: site.siteName,
         territory: site.territory,
         promoLink: promoLink || undefined,
-        posts: visiblePosts,
+        posts: kitVersion ? versionToPosts(kitVersion) : [],
         tags: visibleTags,
       })
     );
@@ -257,6 +275,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     const res = await fetchJson<{
       platform: PromotePlatform;
       posts: SocialPostResult[];
+      batchId?: string | null;
       quota?: ThreadGenerationQuota;
     }>("/api/promote/social-posts", {
       method: "POST",
@@ -267,15 +286,18 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         platform: PROMOTE_PLATFORM,
       }),
     });
-    setGenerateLoading(false);
 
     if (!res.ok) {
+      setGenerateLoading(false);
       showToast(res.error, "error");
       return;
     }
 
-    setPosts(res.data.posts || []);
     if (res.data.quota) setQuota(res.data.quota);
+    await refreshThreads();
+    setGenerateLoading(false);
+    // Expand the freshly generated version so results are immediately visible.
+    if (res.data.batchId) setOpenBatchId(res.data.batchId);
     showToast(`Story thread ready — ${THREAD_POST_COUNT} posts, ${THREAD_IMAGE_COUNT} niche images on posts 1, 4, and 7`, "success");
   };
 
@@ -378,55 +400,113 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                     : undefined
               }
             />
-            <KitButton
-              variant="primary"
-              onClick={runGenerate}
-              loading={generateLoading}
-              disabled={quotaBlocked}
-              className="w-full sm:w-fit px-5 py-3"
-            >
-              <Megaphone size={14} />
-              {generateLoading
-                ? `Generating ${THREAD_POST_COUNT}-post thread + ${THREAD_IMAGE_COUNT} images`
-                : `Generate story thread`}
-            </KitButton>
+            <div className="space-y-2">
+              <KitButton
+                variant="primary"
+                onClick={runGenerate}
+                loading={generateLoading}
+                disabled={quotaBlocked}
+                className="w-full sm:w-fit px-5 py-3"
+              >
+                <Megaphone size={14} />
+                {generateLoading
+                  ? `Generating ${THREAD_POST_COUNT}-post thread + ${THREAD_IMAGE_COUNT} images`
+                  : versions.length > 0
+                    ? "Generate new story thread"
+                    : "Generate story thread"}
+              </KitButton>
+              {versions.length > 0 && !generateLoading && (
+                <p className="text-xs text-text-muted">
+                  Each generation is saved as a new version — your older threads stay below.
+                </p>
+              )}
+            </div>
           </div>
 
-          {visiblePosts.length > 0 && (
+          {versions.length > 0 && (
             <div id="generation-results-thread" className="scroll-mt-24 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-[13px] font-medium text-text-secondary">
-                  {visiblePosts.length} post{visiblePosts.length !== 1 ? "s" : ""} ready to publish
+                  Saved thread versions ({versions.length})
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  <KitButton variant="secondary" onClick={() => void copyAllThread()}>
-                    {copiedAllThread ? <Check size={14} /> : <ClipboardCopy size={14} />}
-                    {copiedAllThread ? "All copied!" : "Copy all posts"}
-                  </KitButton>
-                  <KitButton variant="secondary" onClick={downloadThread}>
+                {(visibleTags.length > 0 || promoLink) && (
+                  <KitButton variant="ghost" onClick={downloadPromotionKit}>
                     <Download size={14} />
-                    Download thread
+                    Download full kit
                   </KitButton>
-                  {(visibleTags.length > 0 || promoLink) && (
-                    <KitButton variant="ghost" onClick={downloadPromotionKit}>
-                      <Download size={14} />
-                      Download full kit
-                    </KitButton>
-                  )}
-                </div>
+                )}
               </div>
-            <ThreadListSection title="Story thread" count={visiblePosts.length}>
-              {visiblePosts.map((post, i) => (
-                <ThreadCard
-                  key={i}
-                  index={i + 1}
-                  label={`Post ${i + 1} · ${post.angle || "Post"}`}
-                  text={post.text}
-                  imageUrl={post.imageUrl}
-                  defaultOpen={i === 0}
-                />
-              ))}
-            </ThreadListSection>
+
+              {displayVersions.map((version) => {
+                const open = openBatchId === version.batchId;
+                return (
+                  <section
+                    key={version.batchId}
+                    className="overflow-hidden rounded-xl border border-border-dim bg-white shadow-sm"
+                  >
+                    <div className="flex flex-wrap items-center gap-2 pr-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenBatchId((prev) =>
+                            prev === version.batchId ? null : version.batchId
+                          )
+                        }
+                        aria-expanded={open}
+                        className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-canvas"
+                      >
+                        <ChevronDown
+                          size={16}
+                          className={clsx(
+                            "shrink-0 text-ink-4 transition-transform",
+                            open && "rotate-180"
+                          )}
+                        />
+                        <div className="min-w-0">
+                          <p className="flex items-center gap-1.5 truncate text-sm font-medium text-ink">
+                            {version.pinned && (
+                              <Pin size={13} className="shrink-0 text-brass-700" aria-label="Pinned" />
+                            )}
+                            {threadVersionName(version, versionNumbers.get(version.batchId) ?? 1)}
+                          </p>
+                          <p className="text-xs text-text-muted">
+                            Generated {formatThreadVersionDate(version.createdAt)} ·{" "}
+                            {version.posts.length} post{version.posts.length !== 1 ? "s" : ""}
+                          </p>
+                        </div>
+                      </button>
+                      <div className="flex shrink-0 gap-1.5">
+                        <KitButton variant="secondary" onClick={() => void copyVersion(version)}>
+                          {copiedKey === `version-${version.batchId}` ? (
+                            <Check size={13} />
+                          ) : (
+                            <ClipboardCopy size={13} />
+                          )}
+                          Copy all
+                        </KitButton>
+                        <KitButton variant="ghost" onClick={() => downloadVersion(version)}>
+                          <Download size={13} />
+                        </KitButton>
+                      </div>
+                    </div>
+
+                    {open && (
+                      <div className="space-y-2 border-t border-border-dim bg-canvas p-2">
+                        {version.posts.map((post, i) => (
+                          <ThreadCard
+                            key={post.id}
+                            index={i + 1}
+                            label={`Post ${i + 1} · ${post.angle || "Post"}`}
+                            text={post.text}
+                            imageUrl={post.image_url || undefined}
+                            defaultOpen={i === 0}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
             </div>
           )}
         </section>
