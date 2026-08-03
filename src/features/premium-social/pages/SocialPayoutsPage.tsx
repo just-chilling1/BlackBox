@@ -6,10 +6,17 @@ import {
   Megaphone,
   Copy,
   Check,
+  ChevronDown,
+  ClipboardCopy,
+  Clock3,
+  Gift,
   Loader2,
+  MessagesSquare,
+  ScrollText,
+  Shuffle,
   Sparkles,
   FolderOpen,
-  ClipboardCopy,
+  Timer,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
@@ -22,16 +29,24 @@ import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumBestPracticesSection } from "@/components/premium/PremiumBestPracticesSection";
 import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
+import { formatThreadVersionDate } from "@/features/publish-kit/lib/thread-batches";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import { getAppUrl } from "@/lib/brand-vars";
 import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 
-const SITE_STORAGE_KEY = `${brand.storagePrefix}_social_payouts_site`;
-
 interface SavedPost {
   id: string;
   body: string;
+  batchId?: string;
+  createdAt?: string;
+}
+
+interface PostGeneration {
+  batchId: string;
+  createdAt: string;
+  posts: SavedPost[];
 }
 
 interface PostCardProps {
@@ -69,13 +84,118 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
   );
 });
 
+function GenerationCard({
+  generation,
+  name,
+  open,
+  onToggle,
+  copiedId,
+  onCopy,
+}: {
+  generation: PostGeneration;
+  name: string;
+  open: boolean;
+  onToggle: () => void;
+  copiedId: string | null;
+  onCopy: (post: SavedPost) => void;
+}) {
+  const [copiedAll, setCopiedAll] = useState(false);
+
+  const copyAll = async () => {
+    try {
+      const text = generation.posts
+        .map((post, i) => `Variant ${i + 1}\n${post.body}`)
+        .join("\n\n---\n\n");
+      await navigator.clipboard.writeText(text);
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <section className="glass-card overflow-hidden">
+      <div className="flex flex-wrap items-center gap-2 pr-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          className="flex min-w-0 flex-1 items-center gap-3 p-4 text-left transition-colors hover:bg-canvas"
+        >
+          <ChevronDown
+            size={16}
+            className={clsx("shrink-0 text-text-muted transition-transform", open && "rotate-180")}
+          />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-text-primary">{name}</p>
+            <p className="text-xs text-text-muted">
+              Generated {formatThreadVersionDate(generation.createdAt)} · {generation.posts.length}{" "}
+              post{generation.posts.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => void copyAll()}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+        >
+          {copiedAll ? <Check size={13} /> : <ClipboardCopy size={13} />}
+          {copiedAll ? "Copied!" : "Copy all"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="grid gap-3 border-t border-border-dim/70 p-4 sm:grid-cols-2">
+          {generation.posts.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} copiedId={copiedId} onCopy={onCopy} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function offerLabel(summary: SiteVaultSummary): string {
   const title = summary.site.title || getSiteTerritory(summary.site);
   if (summary.facebookPostCount > 0) {
-    return `${title} (${summary.facebookPostCount} posts)`;
+    return `${title} (${summary.facebookPostCount} saved posts)`;
   }
   return title;
 }
+
+const FACEBOOK_BEST_PRACTICES = [
+  {
+    icon: ScrollText,
+    title: "Read each group's rules first",
+    desc: "Some groups ban outside links, some only allow them on promo days like \"Self-Promo Saturday\", and some require admin approval. One rule-breaking post can get you muted or banned — check the pinned rules before every post.",
+  },
+  {
+    icon: Gift,
+    title: "Lead with value (70/30 rule)",
+    desc: "Spend your first 1–2 weeks in a group answering questions and sharing tips before dropping any link. Keep roughly 70% of your activity pure value and only 30% promotional — that's what keeps you welcome.",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Put your link in the first comment",
+    desc: "Posts with links in the body get their reach limited. Where the group allows it, keep the post itself helpful and drop your offer link in the first comment instead.",
+  },
+  {
+    icon: Shuffle,
+    title: "Use a different variant per group",
+    desc: "Identical text across groups is the clearest spam fingerprint on Facebook. That's exactly why you get 10 variants here — pick a different one for every group you post in.",
+  },
+  {
+    icon: Timer,
+    title: "Pace yourself",
+    desc: "Space posts at least 1–2 minutes apart and stay under roughly 25–50 groups a day. Blasting the same offer into 30 groups in one minute reads as a bot and tanks your account.",
+  },
+  {
+    icon: Clock3,
+    title: "Post at peak times & disclose",
+    desc: "Tuesday–Thursday mornings (8–10 AM) and lunch breaks (12–1 PM) tend to perform best — test your niche. And always add a short disclosure like \"I may earn a commission\" at the top of the post.",
+  },
+];
 
 export default function SocialPayoutsPage() {
   const searchParams = useSearchParams();
@@ -85,13 +205,16 @@ export default function SocialPayoutsPage() {
   const [offers, setOffers] = useState<SiteVaultSummary[]>([]);
   const [selectedSiteId, setSelectedSiteId] = useState("");
   const [postsBySite, setPostsBySite] = useState<Record<string, SavedPost[]>>({});
+  const [openBatchId, setOpenBatchId] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [copiedAll, setCopiedAll] = useState(false);
   const [error, setError] = useState("");
 
-  const posts = postsBySite[selectedSiteId] ?? [];
+  const posts = useMemo(
+    () => postsBySite[selectedSiteId] ?? [],
+    [postsBySite, selectedSiteId]
+  );
 
   useEffect(() => {
     void (async () => {
@@ -102,23 +225,10 @@ export default function SocialPayoutsPage() {
         const list = Array.isArray(data.summaries) ? (data.summaries as SiteVaultSummary[]) : [];
         setOffers(list);
 
-        if (list.length === 0) return;
-
-        const fromUrl =
-          initialSiteId && list.some((o) => o.site.id === initialSiteId) ? initialSiteId : null;
-        let fromStorage: string | null = null;
-        try {
-          fromStorage = localStorage.getItem(SITE_STORAGE_KEY);
-        } catch {
-          /* ignore */
+        // Only preselect when explicitly deep-linked (e.g. from Offers Library).
+        if (initialSiteId && list.some((o) => o.site.id === initialSiteId)) {
+          setSelectedSiteId(initialSiteId);
         }
-
-        const preferred =
-          fromUrl ??
-          (fromStorage && list.some((o) => o.site.id === fromStorage) ? fromStorage : null) ??
-          list[0].site.id;
-
-        setSelectedSiteId(preferred);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to load offers");
       } finally {
@@ -126,15 +236,6 @@ export default function SocialPayoutsPage() {
       }
     })();
   }, [initialSiteId]);
-
-  useEffect(() => {
-    if (!selectedSiteId) return;
-    try {
-      localStorage.setItem(SITE_STORAGE_KEY, selectedSiteId);
-    } catch {
-      /* ignore */
-    }
-  }, [selectedSiteId]);
 
   const loadPosts = useCallback(async (siteId: string) => {
     if (!siteId) return;
@@ -146,7 +247,7 @@ export default function SocialPayoutsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        const loaded = data.posts ?? [];
+        const loaded = (data.posts ?? []) as SavedPost[];
         setPostsBySite((prev) => ({ ...prev, [siteId]: loaded }));
         setOffers((prev) =>
           prev.map((o) =>
@@ -178,6 +279,21 @@ export default function SocialPayoutsPage() {
     return `${origin}/sites/${selectedOffer.site.slug}`;
   }, [selectedOffer]);
 
+  // Group saved posts into generations (batches), newest first.
+  const generations = useMemo<PostGeneration[]>(() => {
+    const map = new Map<string, PostGeneration>();
+    for (const post of posts) {
+      const batchId = post.batchId ?? "legacy";
+      let generation = map.get(batchId);
+      if (!generation) {
+        generation = { batchId, createdAt: post.createdAt ?? "", posts: [] };
+        map.set(batchId, generation);
+      }
+      generation.posts.push(post);
+    }
+    return [...map.values()];
+  }, [posts]);
+
   const hasExistingPosts = (selectedOffer?.facebookPostCount ?? 0) > 0 || posts.length > 0;
 
   const handleGenerate = async () => {
@@ -196,6 +312,10 @@ export default function SocialPayoutsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");
       await loadPosts(selectedSiteId);
+      // Expand the freshly generated set so results are immediately visible.
+      if (typeof data.batchId === "string" && data.batchId) {
+        setOpenBatchId(data.batchId);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Generation failed");
     } finally {
@@ -212,18 +332,6 @@ export default function SocialPayoutsPage() {
       /* ignore */
     }
   }, []);
-
-  const handleCopyAll = async () => {
-    if (posts.length === 0) return;
-    try {
-      const text = posts.map((post, i) => `Variant ${i + 1}\n${post.body}`).join("\n\n---\n\n");
-      await navigator.clipboard.writeText(text);
-      setCopiedAll(true);
-      setTimeout(() => setCopiedAll(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  };
 
   if (loading) {
     return (
@@ -269,9 +377,15 @@ export default function SocialPayoutsPage() {
           {
             num: "3",
             title: "Copy and post",
-            desc: "Copy your favorites and paste them into groups and pages. All posts are saved to the offer for later.",
+            desc: "Copy your favorites and paste them into groups and pages. Every generation is saved as its own set.",
           },
         ]}
+      />
+
+      <PremiumBestPracticesSection
+        title="Facebook Posting Best Practices"
+        subtitle="Follow these and your posts keep reaching people instead of getting flagged."
+        items={FACEBOOK_BEST_PRACTICES}
       />
 
       {offers.length === 0 ? (
@@ -291,9 +405,16 @@ export default function SocialPayoutsPage() {
             <span className="mb-2 block text-sm font-medium text-text-primary">Select offer</span>
             <select
               value={selectedSiteId}
-              onChange={(e) => setSelectedSiteId(e.target.value)}
+              onChange={(e) => {
+                setSelectedSiteId(e.target.value);
+                setOpenBatchId(null);
+                setError("");
+              }}
               className="input-base w-full"
             >
+              <option value="" disabled>
+                Choose an offer to promote…
+              </option>
               {offers.map((o) => (
                 <option key={o.site.id} value={o.site.id}>
                   {offerLabel(o)}
@@ -302,7 +423,7 @@ export default function SocialPayoutsPage() {
             </select>
           </label>
 
-          {selectedOffer && (
+          {selectedOffer ? (
             <p className="text-xs text-text-muted">
               Niche: {getSiteTerritory(selectedOffer.site)}
               {selectedOffer.site.armed_links?.[0]?.url
@@ -312,23 +433,34 @@ export default function SocialPayoutsPage() {
                 ? ` · ${selectedOffer.facebookPostCount} saved posts`
                 : ""}
             </p>
+          ) : (
+            <p className="text-xs text-text-muted">
+              Pick one of your offers to see its saved post sets and generate new ones.
+            </p>
           )}
 
           {error && <PremiumErrorAlert message={error} />}
 
-          <button
-            type="button"
-            disabled={generating || !selectedSiteId}
-            onClick={() => void handleGenerate()}
-            className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-            {generating
-              ? "Generating 10 posts…"
-              : hasExistingPosts
-                ? "Regenerate posts"
-                : "Generate posts"}
-          </button>
+          <div className="space-y-2">
+            <button
+              type="button"
+              disabled={generating || !selectedSiteId}
+              onClick={() => void handleGenerate()}
+              className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+            >
+              {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+              {generating
+                ? "Generating 10 posts…"
+                : hasExistingPosts
+                  ? "Generate new posts"
+                  : "Generate posts"}
+            </button>
+            {hasExistingPosts && !generating && (
+              <p className="text-xs text-text-muted">
+                Each generation is saved as a new post set — your older sets stay below.
+              </p>
+            )}
+          </div>
         </PremiumControlCard>
       )}
 
@@ -337,43 +469,35 @@ export default function SocialPayoutsPage() {
         label="Generating 10 scroll-stopping Facebook post variants..."
       />
 
-      {(loadingPosts || posts.length > 0) && (
-        <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-medium text-text-primary">
-              {loadingPosts && posts.length === 0
-                ? "Loading posts…"
-                : `${posts.length} post${posts.length !== 1 ? "s" : ""} ready`}
-            </h2>
-            {posts.length > 0 && (
-              <button
-                type="button"
-                onClick={() => void handleCopyAll()}
-                className="inline-flex items-center gap-2 text-sm font-medium text-brass-700"
-              >
-                {copiedAll ? <Check size={14} /> : <ClipboardCopy size={14} />}
-                {copiedAll ? "All copied!" : "Copy all"}
-              </button>
-            )}
-          </div>
+      {selectedSiteId && (loadingPosts || generations.length > 0) && (
+        <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-3">
+          <h2 className="text-lg font-medium text-text-primary">
+            {loadingPosts && generations.length === 0
+              ? "Loading saved posts…"
+              : `Saved post sets (${generations.length})`}
+          </h2>
 
-          {loadingPosts && posts.length === 0 ? (
+          {loadingPosts && generations.length === 0 ? (
             <div className="flex items-center gap-2 rounded-xl border border-divider bg-canvas px-4 py-6 text-sm text-text-muted">
               <Loader2 size={16} className="animate-spin" />
               Loading saved posts…
             </div>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {posts.map((post, i) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  index={i}
-                  copiedId={copiedId}
-                  onCopy={handleCopy}
-                />
-              ))}
-            </div>
+            generations.map((generation, i) => (
+              <GenerationCard
+                key={generation.batchId}
+                generation={generation}
+                name={`Post set #${generations.length - i}`}
+                open={openBatchId === generation.batchId}
+                onToggle={() =>
+                  setOpenBatchId((prev) =>
+                    prev === generation.batchId ? null : generation.batchId
+                  )
+                }
+                copiedId={copiedId}
+                onCopy={handleCopy}
+              />
+            ))
           )}
         </section>
       )}

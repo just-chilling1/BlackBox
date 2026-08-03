@@ -59,7 +59,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        posts: saved.map((p) => ({ id: p.id, body: p.body })),
+        posts: saved.map((p) => ({
+          id: p.id,
+          body: p.body,
+          batchId: p.batch_id,
+          createdAt: p.created_at,
+        })),
+        batchId: saved[0]?.batch_id ?? null,
         promoLink,
         count: saved.length,
       },
@@ -105,6 +111,8 @@ export async function GET(request: Request) {
       posts: posts.map((p) => ({
         id: p.id,
         body: resolveOfferPageLinksInText(p.body, offerPageUrl, siteRow.slug),
+        batchId: p.batch_id,
+        createdAt: p.created_at,
       })),
     },
     { headers: NO_STORE_HEADERS }
