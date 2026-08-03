@@ -1,13 +1,69 @@
-[excited] By the end of this one, you'll have turned a live offer into a ten-post X story thread you can copy and publish — without ever staring at a blank compose box. That's X-Power Promotions. For most members, this is where traffic actually starts. Your questionnaire site is the storefront. This page writes the story that walks people to the door. Ten posts, one arc, one call to action.
+[excited] This video shows you how to turn any live offer into a ten-post X story thread you can copy and publish — that's **X-Power Promotions**, and it's how you drive traffic without staring at a blank compose box.
 
-[calm] Go ahead and open X-Power Promotions under Generate in the sidebar. If you see "No offers to promote yet" — stop. Threads attach to offers in Offers Library, not to raw links. Click Start Sales Offer Generator, finish the wizard, come back. You want at least one site in the Select offer dropdown. When you're set, the header reads Generate X story thread. Open Select offer and pick the questionnaire site you wanna push. The label shows your niche title — and it might note a thread already exists. That's fine. You can regenerate later. Below that is the X story thread generator panel — a ten-post product story: hook, failure, mechanism, proof, single call to action. Posts one, four, and seven can come with niche images. Double-check the offer title before you click. Wrong offer means wrong story. Then click Generate story thread.
+You already learned the money map: offer live, traffic clicks, quiz converts, commission hits. X threads are the top-of-funnel story that pulls people toward your questionnaire site.
 
-[thoughtful] You'll see progress — something like generating your thread. Same moment, the gold Free Training banner. Badge says Free Training. Wake Up With An Extra one thousand to five thousand dollars in your bank account tomorrow. Click Watch The Free Training while the AI works — warning on screen says this will be taken down soon. It opens in a new tab. Generation doesn't need you watching. Takes a minute or two. Don't refresh. When posts appear, expand Post 1 — that's your hook. Skim the middle. Open Post 10 — the call to action should point to YOUR offer URL, not a random domain. Wrong link means wrong offer in the dropdown; fix it, then regenerate. Use Copy on individual posts, or export the whole thread if the panel offers a download.
+[calm] Open **X-Power Promotions** under the **Generate** section in the sidebar.
 
-[confident] That's generating. Now publishing — how you post decides whether it reads like a story or like spam. Two rhythms work. Post 1 alone as a tease — "how I fixed X" — then add Posts 2 through 10 as replies. Or publish as one connected thread if your audience reads long form. Either way, space posts five to fifteen minutes apart so the algorithm doesn't treat it like a dump. Leave the order alone — pain early, mechanism in the middle, proof before the CTA. Unless you already know storytelling, don't rearrange. If images landed on posts one, four, and seven, download them and compress if the files are huge. Slow images kill read-through on mobile. Before you post anything, click through your own live quiz once like a stranger. Then tweak Post 1 with one personal line so it doesn't feel factory-made. Keep Posts 2 through 10 mostly intact if you're short on time. Post where your niche actually lives. Zero or one niche hashtag is plenty — story threads live or die on the hook, not hashtag stuffing.
+If you see **No offers to promote yet**, you need one live offer first — click **Start Sales Offer Generator**, complete the wizard, then come back. Threads attach to offers in **Offers Library**, not to raw links.
 
-[warmly] Moves that work: generate a fresh thread for the same offer every couple of weeks and compare which hook gets more link clicks. If you've got Social Payouts, pair every new thread with one Facebook variant — same offer, two channels. Schedule when your niche is awake — fitness early morning, business mid-week lunch. Reply to comments on Post 1 within the first hour when you can. If a post runs over X's character limit, trim the last sentence, never the CTA. Pin Post 1 after you publish so late joiners find the entry; unpin when the campaign's done. And if your niche is sensitive — health claims, income claims — read every post out loud. Anything you'd hesitate to say to a friend? Take it out. The generator gives structure. Your judgment keeps the account safe.
+When you have offers, the page header reads **Generate X story thread**. Use the **Select offer** dropdown — pick the questionnaire site you want to promote. The label shows your niche title and may note if a thread already exists.
 
-[curious] Quick scenario. Your Health and Wellness offer promotes a meal-plan product. Select that offer, hit Generate story thread. Post 1 opens with a breakfast struggle people recognize. Middle posts introduce the quiz as a free assessment. Post 10 says take the two-minute quiz and links to your hosted URL. Copy Post 1, schedule it for tomorrow morning — that's the whole feature in one sitting. Common mistakes: generating before the offer's live, copying all ten posts as one blob with no line breaks, forgetting to check the link in Post 10, regenerating five times because Post 3 "feels off" — edit Posts 1 and 10 first before burning another full generation.
+Below that is the **X story thread generator** panel. Read the subtitle — you're getting a ten-post product story: hook, failure, mechanism, proof, single call to action. Posts one, four, and seven can include niche images when generated.
 
-[excited] Your action: pick your newest offer in Offers Library, open X-Power Promotions, generate one thread, and schedule Post 1 within twenty-four hours. Traffic starts when you publish — not when you watch this video. Go copy Post 1.
+Click **Generate story thread**.
+
+[thoughtful] The progress bar appears with a label like generating your thread. Same moment: the gold **Free Training** banner — **Multiply Your Earnings** or the wake-up headline depending on size. If you haven't registered for member training yet, click **Watch The Free Training >>** while the AI works. Spots-limited language on screen — treat it seriously.
+
+Generation takes a minute or two. Don't refresh.
+
+When posts appear, expand each **Post** section. Read Post 1 — that's your hook. Scan the CTA in Post 10 — it should point to your offer URL, not a random domain. Use **Copy** on individual posts or export the whole thread if the panel offers download.
+
+Publishing rhythm matters. Post 1 standalone can tease the thread — "🧵 how I fixed X" — then reply with Posts 2–10. Or publish as a connected thread if your audience reads long form. Either way, space posts five to fifteen minutes apart so the algorithm doesn't treat it as spam.
+
+The generator analyzes your offer page context — that's why selecting the correct offer in the dropdown matters. Wrong offer, wrong story. Double-check the site title before you generate.
+
+Thread roles follow a classic arc: pain in early posts, mechanism in the middle, proof before the CTA. Don't rearrange posts unless you know storytelling — the order is intentional.
+
+If images generate on posts one, four, and seven, download them and compress for X if file size is huge — slow images kill read-through.
+
+You can regenerate if the tone feels off — but tweak before you regenerate twice. Small edits beat waiting on another full generation unless the offer URL changed.
+
+[confident] Best practices.
+
+One: generate threads AFTER you've clicked through your live quiz once — you should know what the reader experiences at the end.
+
+Two: tweak voice lightly after copy — add one personal line in Post 1 so it doesn't feel factory-made.
+
+Three: post threads where your niche actually lives — don't spam unrelated hashtags.
+
+Power moves: generate a fresh thread for the same offer every two weeks and compare which hook gets more link clicks. Save screenshots of analytics next to the offer name in your notes. Pair every new thread with one Facebook variant from **Social Payouts** if you have that upgrade — same offer, two channels.
+
+Insider tip: posts one, four, and seven carry images — customize those visuals in your image editor with the same colors as your questionnaire site so the thread feels like one brand.
+
+Schedule posts when your niche is awake — fitness crowds early morning, business crowds mid-week lunch. Timing isn't magic, but it beats posting at three a.m. and wondering why nobody read Post 1.
+
+Engagement rule: reply to every comment on Post 1 within an hour when possible — the algorithm treats early conversation as signal. Your CTA is in the thread, but trust builds in replies.
+
+If a post exceeds X character limits, trim the last sentence, not the CTA. The link must survive edits.
+
+Export filenames if you download — name files with offer slug and date so you don't overwrite last week's thread in Downloads folder.
+
+When you promote the same offer monthly, regenerate threads instead of recycling identical text — platforms and humans both notice repeats.
+
+[warmly] Scenario: your Health & Wellness offer promotes a meal-plan product. Select that offer. Generate. Post 1 might open with a relatable breakfast struggle. Middle posts introduce the quiz as the "free assessment." Post 10 says take the two-minute quiz — link to your BlackBox Cash hosted URL. Reader completes quiz, hits your affiliate link, you earn on conversion.
+
+Common mistakes: generating before the offer is live; copying all ten posts as one blob without line breaks on X; forgetting to pin Post 1 after publishing.
+
+[excited] Your action: pick your newest offer in **Offers Library**, open **X-Power Promotions**, generate one thread, and schedule Post 1 within twenty-four hours.
+
+Traffic starts when you publish — not when you watch this video. Go copy Post 1.
+
+Still with me? Good. One thread this week beats ten tutorials with zero posts. The tool did its job when you click publish.
+
+Hook formulas that work: call out a mistake your reader makes, promise a short fix, then deliver the quiz as the fix. If Post 1 feels weak, rewrite only that post manually — keep Posts 2–10 intact to save time.
+
+Quote-tweet your own Post 1 from a second account if you have one — small accounts use this to restart momentum mid-week.
+
+Analytics: track link clicks in X analytics if available — note which offer plus hook combo won. Feed that back into the next **Generate story thread** run.
+
+Hashtags: zero or one niche hashtag max — story threads live or die on hook quality, not hashtag stuffing.

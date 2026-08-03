@@ -1,19 +1,67 @@
-[excited] Okay — by the end of this one, you're gonna have a live questionnaire site with your affiliate link sitting on the final page. And you won't have written any of it yourself. This is honestly the core of the whole app — everything else feeds off what we build here. So... Sales Offer Generator. Let's do it.
+[excited] By the end of this video you'll launch a live questionnaire site with your affiliate link on the final page — without writing the funnel yourself. That's the core of BlackBox Cash, and it all starts in **Sales Offer Generator**.
 
-Real quick before we click anything, just so you know what we're actually building. Somebody finds you on social. They land on a page. The page feels legit, they take the quiz, and at the end there's a recommendation — with your link on it. This wizard builds that middle part. The page. Four steps on screen: Add Your Link, Pick Your Niche, Choose a Template, Launch Your Offer. I'll walk every one.
+Quick map: you're bridging traffic from social or ads to a vendor checkout. This wizard builds the middle — the page people land on and trust. Four steps. I'll walk every click.
 
-[calm] Go ahead — open Sales Offer Generator in the sidebar. Step one, Add Your Link. There's a box right there — paste your promotional or affiliate URL into it. Don't have one yet? That's fine, don't close anything. Expand the Digistore24 instructions on this page. Free account, find a product in their Marketplace, hit Promote Now, copy the link it gives you, come back here, paste. If you're brand new, follow that literally. Takes a few minutes. When the app recognizes the URL, you might see a little badge that says digistore — good sign. If the link's invalid, it'll tell you. Fix it before you move on, 'cause everything downstream depends on that link being right. One more thing on this screen — do this even though it's optional — hit Save to Links Library. That stores the URL for next time. You'll see confirmation the link is armed. People ask about Amazon or other networks a lot — Digistore24 is the path we document on this page. Other URLs can work if they validate, but start with Digistore if you're new. Link pasted, saved, armed. Continue.
+[calm] Open **Sales Offer Generator** from the sidebar.
 
-Step two, Pick Your Niche. Nine options — Health and Wellness, Finance and Investing, Fitness and Sports, and the rest. The rule is simple: pick the one that matches the product you're actually promoting. Not the cool-sounding one. Not the one you wish you were in. I'm gonna go with Health and Wellness for this demo — food and fitness offers tend to convert when the quiz feels personal. Pick yours, and continue.
+**Step 1 — Add Your Link.** Paste your promotional or affiliate URL in the box. If you don't have one yet, expand the Digistore24 instructions on this page — create a free account, find a product in the Marketplace, click **Promote Now**, copy your link, paste it here.
 
-Step three, Choose a Template. Three layouts, plus color theme and fonts. I know this is where people stall. Don't chase perfect. Most traffic comes from a phone, so ask: which one looks clean on a phone? Preview if you want. Stuck between two? Take the simpler one. Fewer distractions means more people finish the quiz. You can always launch a second offer later and compare. Continue.
+You'll see steps like **Open Digistore24** if you expand the helper — follow them literally if you're brand new. The network badge may show **digistore** when the URL is recognized. Good sign.
 
-Step four, Launch Your Offer. You'll see a summary — niche, template, how many affiliate links are armed. When the panel says Ready to launch... [short pause] click Launch My Questionnaire Site. Now the build runs. Setup, Build, Launch — messages like "Writing quiz questions and building pages." Normal. Takes a few minutes. Don't panic if it looks stuck for a second. It's not stuck. It's writing an entire quiz.
+Optional but smart: click **Save to Links Library** so the URL is stored for your next offer. You should see confirmation that the link is armed. If the URL is invalid, the app will tell you — fix it before moving on.
 
-[thoughtful] While that bar's moving, the gold Free Training banner comes up. Badge says Free Training. Headline: Wake Up With An Extra one thousand to five thousand dollars in your bank account tomorrow. Click Watch The Free Training — it opens in a new tab. The warning on screen says this will be taken down soon. Register while the build runs. About thirty seconds. The build does not need you staring at it. If you ever see Try Deploy Again, that's a server hiccup — click it, let it resume. If you refresh mid-build, you'll get Continue Deployment. Either way, let it finish. Then... Your Questionnaire Is Live, with a link to view the site. Please don't skip this next part. Open your site. Click through the whole quiz like a visitor. On the final page, confirm it's YOUR affiliate link. That's your money path. Thirty seconds of checking and you know it works. We build quizzes instead of one big sales letter because people finish interactive pages — they don't finish walls of text.
+Some people ask: "Can I use Amazon or another network?" If the URL validates, yes — the wizard arms whatever tracking link you paste. Digistore24 is just the documented path on this page.
 
-[confident] A few habits worth building from launch number one. Match the niche to the product, always — a finance link at the end of a travel quiz feels off, and trust dies right there. Save every link to Links Library, even when you're in a hurry. Launch before you polish — first offer is practice with a real link; you iterate on offer two. Power move most people skip: take the same saved link through two or three different niches, then check Offers Library and see which quiz converts. While a build is running, plan your X-Power Promotions thread so the second the offer lands, you go straight into promotion. If you see something like "X of Y new websites remaining today," that's a daily limit — don't burn launches on templates you'll never promote. After launch, copy the live URL from the complete panel or Offers Library, open it on your phone, and ask a friend: "would you actually click through this quiz?"
+Go ahead and click continue when the link is saved.
 
-[warmly] Quick picture. Say you're promoting a weight-loss supplement from Digistore24. Paste that link, pick Health and Wellness, launch. A few minutes later there's a live quiz about habits, and on the results page it recommends that supplement through your tracking code. When you're ready, share that URL in a Facebook group or an X thread. That's this feature — not the whole business, just the machine that builds the page. Mistakes I see over and over: picking a niche you know nothing about, skipping Save to Links Library, killing the deploy halfway because it "looked stuck," and changing the affiliate link after launch expecting the live page to update — it doesn't. The page keeps whatever link it was born with. New tracking code from the vendor means launch a fresh offer.
+**Step 2 — Pick Your Niche.** You'll see nine options — Health & Wellness, Finance & Investing, Fitness & Sports, and the rest. Pick the topic that matches the product you're promoting, not the topic you wish you were in.
 
-[excited] Homework, one thing. Tonight — open Sales Offer Generator, paste one real affiliate link, click Launch My Questionnaire Site. Then open Offers Library and confirm it's sitting there. That's your first asset. Every other tool in this app exists to promote that one thing. Go launch.
+I'm gonna pick Health & Wellness for this demo — because food and fitness offers convert well when the quiz feels personal. Select yours and hit continue.
+
+**Step 3 — Choose a Template.** Three templates, then color theme and fonts. Don't chase perfect — pick the layout that feels clean on mobile. Most traffic is on phones. Preview if you want, then continue.
+
+If you're stuck between templates, pick the simplest layout — fewer distractions means higher quiz completion. You can always launch a second offer with a different template later and compare.
+
+**Step 4 — Launch Your Offer.** You'll see a summary: niche, template, how many affiliate links are armed. The panel says **Ready to launch** when everything locked in. When you're ready, click **Launch My Questionnaire Site**.
+
+Now the build runs — Setup, Build, Launch. You'll see messages like "Writing quiz questions and building pages." Normal. Takes a few minutes.
+
+[thoughtful] While that bar moves, look for the gold **Free Training** banner — badge says **Free Training**, headline about one thousand to five thousand dollars. That's member training on scaling without extra grind. **Watch The Free Training >>** opens in a new tab. Register while this finishes — the warning on screen is real: the page comes down. One click, then let the AI work.
+
+If it says **Try Deploy Again**, the server hiccuped — click and let it resume. **Continue Deployment** appears if you refresh mid-build.
+
+When complete, you'll see **Your Questionnaire Is Live** with a link to view the site. Open it — click through the quiz — confirm YOUR affiliate link sits on the final page. That's money-path QA.
+
+Why the quiz matters: people finish interactive pages more than static sales letters — that's why we generate questions instead of one long page. Your affiliate link on the results page catches them at peak curiosity.
+
+Deploy complete panel may offer generate another — fine if you're testing, but I'd promote the first offer before spinning up three more.
+
+[confident] Best practices — do these every launch.
+
+One: match niche to the product. A finance link on a travel quiz feels off and kills trust.
+
+Two: save links in **Links Library** even when you're in a hurry — future you will forget the URL.
+
+Three: launch before you perfect. Your first offer is practice with a real URL; iterate on offer two.
+
+Power moves most skip: reuse the same saved link across multiple niches to test which quiz converts best — same product, three territories, compare results in **Offers Library**. And when a build is running, queue your X-Power Promotions plan — the second the offer hits the library, jump straight to threads.
+
+Here's what nobody tells you about Step 4 quotas: if you see "X of Y new websites remaining today," that's a daily guardrail — plan your test launches instead of burning them all on templates you'll never promote. Unlimited accounts skip the worry, but discipline still wins.
+
+Why fonts and colors matter: matching your niche signal — soft greens for wellness, navy for finance — increases time-on-page. You don't need design school; pick a preset that feels like the product's world.
+
+When **DeploySiteLoader** cycles Setup → Build → Launch, read the ticker messages — "Drafting niche quiz questions," "Placing affiliate offer on final page." That's the software doing the work you'd otherwise bill hours for. Let it finish.
+
+After launch, copy your live URL from the complete panel or from **Offers Library**. Test on your phone. Send it to a friend and ask "would you click through this quiz?" — faster feedback than guessing.
+
+If the questionnaire feels long, remember: each question is a micro-commitment — by the results page, the reader already invested attention. That's when your affiliate CTA lands hardest. Trust the format.
+
+[warmly] Mini-scenario. Say you're promoting a weight-loss supplement from Digistore24. Paste that link. Pick **Health & Wellness**. Launch. Your quiz asks habit questions, then recommends the supplement on the results page with your tracking code. You share that URL in a Facebook group or X thread — anyone who buys, you earn commission. Same loop, any niche.
+
+Common mistakes: picking a niche you know nothing about; forgetting to save the link; abandoning the deploy during Build because it "looks stuck" — it's not stuck, it's writing questions.
+
+Another mistake: changing your affiliate link AFTER launch without creating a new offer — the live page keeps the old URL. Launch fresh if the vendor gives you a new tracking code.
+
+[excited] Action when this ends: open **Sales Offer Generator** if you haven't, paste ONE real affiliate link, and click **Launch My Questionnaire Site** tonight. Then open **Offers Library** and confirm the offer is there.
+
+That's your first asset. Everything else in BlackBox Cash promotes THAT. Go launch.
