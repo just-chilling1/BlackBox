@@ -1,8 +1,8 @@
 # BlackBox Cash — Phase 1 Setup
 
 Product slug: `blackbox-cash`  
-Repo mined: `c:\Users\gt\Desktop\test` (branch `main`, ff-only pull clean as of 2026-07-31)  
-Output folder (local): `training-video-system/blackbox-cash/` — canonical path `/Volumes/Transcend/Local Disk/Andrew/training-video-system/blackbox-cash/` not present on this machine.
+Repo mined: `/Volumes/Transcend/Local Disk/Andrew/blackboxcash` (branch `main`, ff-only pull clean as of 2026-08-01)  
+Live audit: localhost:3000 with `DEV_BYPASS_AUTH=true` — 9/11 routes pass on first viewport; dashboard CTA and promote generate button require scroll or live offer (expected).
 
 ---
 
@@ -10,11 +10,11 @@ Output folder (local): `training-video-system/blackbox-cash/` — canonical path
 
 | Field | Value |
 |---|---|
-| **Product name + promise** | **BlackBox Cash** — "Affiliate Sales & Promotions." Tagline from metadata: generate sales offers, promotion threads, and affiliate assets in one workspace. |
+| **Product name + promise** | **BlackBox Cash** — "Affiliate Sales & Promotions." Generate sales offers, promotion threads, and affiliate assets in one workspace. |
 | **Price paid** | Not stored in repo — buyer paid whatever the live checkout charged at purchase. Scripts refer to "what you invested" without inventing a dollar figure. |
-| **Dream customer** | Beginner-to-intermediate side-hustler who wants online income via affiliate marketing — has or can get a Digistore24 (or similar) affiliate link, limited tech/time, motivated by dashboard copy ($1k–$5k/day scale language). |
+| **Dream customer** | Beginner-to-intermediate side-hustler who wants online income via affiliate marketing — has or can get a Digistore24 affiliate link, limited tech/time, motivated by dashboard copy ($1k–$5k/day scale language). |
 | **Point A** | Watching make-money content, maybe bought courses before, never built a repeatable promotion system; overwhelmed by "create a funnel, write posts, build a site." |
-| **Point B** | Hosted sales offer live, affiliate link embedded, X story thread and Facebook post variants ready to copy-paste, libraries storing links and offers for reuse — promoting without rebuilding from scratch each time. |
+| **Point B** | Hosted questionnaire site live, affiliate link embedded, X story thread and Facebook post variants ready to copy-paste, libraries storing links and offers for reuse — promoting without rebuilding from scratch each time. |
 | **Vehicle** | Affiliate marketing: promote other people's products (Digistore24 marketplace) and earn commission on sales through your unique link. |
 | **Mechanism** | BlackBox Cash AI-builds niche questionnaire sales sites, arms them with the user's affiliate URL, generates X threads and bulk social posts, and stores everything in Links Library and Offers Library. Premium modules add 200 cloned templates, 100 authority articles, 10X Facebook variants, and security/trust UI. |
 | **Unfair advantage** | Collapses days of copywriting, page building, and thread drafting into guided steps + one-click generation — user only supplies the affiliate link and picks niche/template. |
@@ -22,7 +22,7 @@ Output folder (local): `training-video-system/blackbox-cash/` — canonical path
 | **First win (in-app, Disconnect close)** | Complete Sales Offer Generator Step 1: paste a valid affiliate URL and click **Save to Links Library** — link appears armed for the wizard. Stronger win: finish Step 4 **Launch My Questionnaire Site** and see the live offer in **Offers Library**. |
 | **Proof inventory** | No verified member testimonials in repo. FAQ and product copy only. Scripts use founder-voice proof, not invented user results. |
 | **Guarantee** | **30-Day Guarantee** — full refund within 30 days, no questions asked (support.config.ts). Processing 5–7 business days. |
-| **Effort truth** | User must obtain affiliate links, choose niches, launch offers, and manually post/copy promotion content to X and Facebook. First deploy takes several minutes of AI generation; promotion is ongoing. No price or typical earnings data in repo beyond marketing banners. |
+| **Effort truth** | User must obtain affiliate links, choose niches, launch offers, and manually post/copy promotion content to X and Facebook. First deploy takes several minutes of AI generation; promotion is ongoing. |
 
 ---
 
@@ -37,7 +37,6 @@ Output folder (local): `training-video-system/blackbox-cash/` — canonical path
 | blog-builder / article-publish (code ids) | Never spoken — use feature names above |
 | core-workflow steps (Search, Radar, etc.) | **Not enabled** in this build — do not reference |
 | "Multiply Your Results" (disabled global-top promo) | Use live **EarningsBanner** / **DashboardBonusAdCard** copy instead |
-| Skeleton placeholder video titles in training.config | Use **dashboard.config.ts** video track titles |
 
 ---
 
@@ -58,7 +57,7 @@ Output folder (local): `training-video-system/blackbox-cash/` — canonical path
   - **Social Payouts**
   - **Protector**
 - **Support**
-- Exclusive Offers block: **disabled** (`exclusiveOffersEnabled = false`) — do not script sidebar Exclusive Offers for this build.
+- Exclusive Offers block: **enabled** — Earn $400/Day Testing New Apps, Get Paid To Copy & Paste, **Fast Cash Training** (links to externalTrainingUrl)
 
 ### Dashboard (Home)
 - Eyebrow: **Home**
@@ -121,7 +120,7 @@ Nine niches: Health & Wellness, Finance & Investing, Fitness & Sports, Digital M
 | X-Power Promotions | Thread generation | **GenerationProgress** label + prominent **EarningsBanner** |
 | Accelerator | Clone template | **GenerationProgress** + banner |
 | Social Payouts | Bulk generate | **GenerationProgress** + banner |
-| Recurring Stream | Save/preview actions | Loader states (no banner on all actions — banner on heavy generation if shown) |
+| Recurring Stream | Save/preview actions | Loader states |
 
 ---
 
@@ -129,16 +128,14 @@ Nine niches: Health & Wellness, Finance & Investing, Fitness & Sports, Digital M
 
 | Surface | Verbatim copy (headline / CTA) | Destination | Where it appears |
 |---|---|---|---|
-| **DashboardBonusAdCard** | Body mentions "$1,000, $3,000, or even $5,000" and "wake up to an extra $1,000–$5,000 every single day." Highlight: "Ready to break free from financial stress…" CTA: **Yes! Show Me How To Earn $1,000–$5,000 A Day** | `trainingContent.externalTrainingUrl` (currently `https://example.com/training` — replace before launch) | Dashboard **between** dashboard videos 1–2 and 2–3 (NOT directly under video thumbnail) |
+| **DashboardBonusAdCard** | Badge: **Free member training**. Body mentions "$1,000, $3,000, or even $5,000" and "wake up to an extra $1,000–$5,000 every single day." Highlight: "Ready to break free from financial stress…" CTA: **Yes! Show Me How To Earn $1,000–$5,000 A Day**. Urgency: **Limited access — register while it's still available** | `trainingContent.externalTrainingUrl` (currently `https://example.com/training` — replace before launch) | Dashboard **between** dashboard videos 1–2 and 2–3 |
 | **EarningsBanner** (prominent) | Badge: **Free Training**. Headline: "Wake Up With An Extra **$1,000–$5,000** In Your Bank Account Tomorrow". Sub: "scale to $1,000–$5,000 every single day — without doing any extra work." CTA: **Watch The Free Training >>**. Warning: **Warning: This Will Be Taken Down Soon** | Same `externalTrainingUrl` | AI generation loaders (DeploySiteLoader, GenerationProgress) |
 | **EarningsBanner** (compact) | "Multiply Your Earnings To **$1,000 – $5,000** A Day". CTA: **Click Here To Learn How** | Same URL | Compact banner variant |
 | **Contact Support success** | "free training" / "$1,000–$5,000" / "scale to $1k–$5k per day". CTA: **Watch The Free Training >>**. Warning: "This may be taken down soon" | Same URL | After successful support message |
-| **Exclusive Offers** (disabled) | Would show Fast Cash Training etc. | — | **Not visible** in current build |
+| **Exclusive Offers** (sidebar) | **Fast Cash Training** — Claim Now | Same URL | Sidebar + mobile More sheet |
 
 **One-line spoken pitch (current banner language):**  
 "Register for the free training on scaling to one thousand — even five thousand dollars a day while your offer is building — spots are limited and the page comes down soon."
-
-**Scarcity on screen:** "Warning: This Will Be Taken Down Soon" / "This may be taken down soon"
 
 **Video 01 CTA placement:** Member finishes **Watch This First**, scrolls to the **bonus card directly below** (before **How The Money Flows**), clicks **Yes! Show Me How To Earn $1,000–$5,000 A Day**.
 
@@ -221,4 +218,3 @@ Nine niches: Health & Wellness, Finance & Investing, Fitness & Sports, Digital M
 1. Replace `trainingContent.externalTrainingUrl` with live webinar/registration URL.
 2. Add Vimeo IDs to `dashboard.config.ts` / `training.config.ts` videos.
 3. Confirm checkout price and any sales-page proof for script updates.
-4. Enable/configure Exclusive Offers if client wants sidebar CTAs in a future build.

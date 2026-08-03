@@ -1,73 +1,11 @@
-[warmly] **Recurring Stream** is your authority-content engine — one hundred long-form articles you can attach to any offer in **Offers Library**, preview with your affiliate link baked in, and publish across platforms for recurring traffic. You upgraded past one-off posts; this is how you stack SEO and email list value.
+[warmly] Recurring Stream is your authority-content engine. A hundred long-form articles you can attach to any offer in Offers Library, preview with your affiliate link already baked in, and publish across platforms — traffic that keeps showing up long after you post. X threads and Facebook variants are fast traffic. Recurring Stream is slow-burn. Same offer, different timeline. Pair them — don't pick one forever.
 
-[confident] Open **Recurring Stream** from **Premium Features**.
+[confident] Go ahead and open Recurring Stream under Premium Features. Subtitle: one hundred long-form authority articles — pick an offer, preview with your link, publish across platforms. First move, always: Select offer. Choose a live questionnaire site from Offers Library. Articles save against that offer so links stay consistent. Empty dropdown? Launch an offer in Sales Offer Generator first, then come back. Filter articles by niche or browse All. Each card shows title, excerpt, angle tag. Click Preview and you'll see the full piece with your offer woven in. From there: Copy article as plain text or HTML for your blog, Medium, newsletter — or use a template to save it to your offer. Saved articles stack, and Offers Library shows the count so you know what's ready to ship. Articles run a thousand-plus words. There's a cross-platform guide on the page — follow it once literally, then adapt to where you already have audience. Don't open six new platforms the same week. One channel done beats six half-started.
 
-Header: **Recurring Stream** — eyebrow **Premium**. Subtitle mentions long-form authority articles — pick an offer, preview with your link, publish cross-platform.
+[thoughtful] If saving or loading feels heavy, you might see a loader — and sometimes the gold Free Training banner. Badge Free Training, scale to one thousand — even five thousand dollars a day, Watch The Free Training, warning this will be taken down soon. If you haven't registered yet, that pause is a fine moment. Then come back to the article. Preview with your offer selected every time — embedded links pull from that site's armed URL. Switch offers? Re-preview before you copy. Don't paste yesterday's HTML for today's different quiz. HTML goes into WordPress, Ghost, editors that accept it. Plain text for LinkedIn or email. If a platform strips links, plain text with the full URL visible — ugly, converts better than a pretty post with a dead link. Add one personal intro when you paste. Platforms reward a human voice. Publishing checklist: preview, read claims aloud, copy, paste, personal intro, confirm CTA links to your quiz, publish, share the URL once on social.
 
-First, **Select offer** — choose a live questionnaire site from **Offers Library**. Articles save against that offer so links stay consistent.
+[confident] Best practices. Match article niche to offer niche. One article a week beats ten copied in one day with no follow-up — batch-preview three, publish across the week. Think SEO: consistent topic around the same offer builds authority. Email list? Paste an article into a newsletter with a free-guide subject and a CTA to the quiz. Power moves: turn one article into five social posts, combine with Social Payouts pointing Facebook variants at the same article URL. Don't edit embedded affiliate URLs inside the HTML unless you know markup — change offer selection and re-preview instead. Overwhelmed by a hundred articles? Filter one niche, save three favorites, publish the ugly first draft. Perfect drafts never ship. Readers who finish a long article self-qualify — they hit your quiz warmer than a cold one-line click. Slow season? Keep the weekly rhythm. Once articles are saved on an offer, your job is distribution, not more browsing.
 
-Filter articles by niche or browse **All**. Each card shows title, excerpt, angle tag. Click **Preview** to read the full piece with your offer woven in.
+[curious] Quick scenario. Your Fitness offer is live. Filter Recurring Stream to fitness, preview a morning-habit style article, copy the HTML into a free WordPress blog, CTA points at your quiz, share the blog URL once in a Facebook group. Traffic compounds while you sleep. That's the feature — not "write a hundred articles this weekend." Mistakes: wrong offer before save so links misalign, copying without reading claims you don't agree with, hoarding previews without publishing, double-clicking save during a long load.
 
-Actions on preview: **Copy** plain text or HTML for your blog, Medium, newsletter — wherever you publish. **Save to offer** attaches the article to your selected site for later.
-
-Articles run one thousand plus words — long enough for search intent, short enough to finish on a coffee break. Angle tags like **Guide** or trend angles hint how to frame the post when you share it.
-
-Cross-platform guide on the page maps where to syndicate — follow it once literally, then adapt to where you already have audience. Don't open six new platforms same week.
-
-Recurring Stream is slow-burn traffic — pair with Social Payouts for fast traffic while articles rank. Same offer, two timelines.
-
-When copying HTML, paste into editors that accept HTML — WordPress, Ghost, etc. Plain text copy works for LinkedIn or email if formatting breaks.
-
-Preview with your offer selected EVERY time — embedded links pull from that site's armed URL. Switch offers, re-preview before copy.
-
-Saved articles stack on the offer — check count in Offers Library label like "(3 saved)" so you know what's ready to publish.
-
-SEO mindset: one article per week on the same offer builds topical authority — search engines notice consistent domain plus topic, even if you're syndicating elsewhere too.
-
-Email list angle: paste article into newsletter with subject "free guide" and CTA to quiz — Recurring Stream becomes lead warmer, not just blog filler.
-
-Repurpose: pull three pull-quotes as image text posts — manual but high engagement — link back to full article and quiz.
-
-Don't edit embedded affiliate URLs inside HTML unless you know markup — change offer selection and re-preview instead.
-
-Angle filter helps when you're in saturated niche — pick contrarian angles first for attention, mainstream angles for trust later.
-
-Loading during save is normal for long HTML — don't double-click save.
-
-[thoughtful] Saving or generating heavy content may show loading — use that pause. If the gold **Free Training** banner appears anywhere in your session, register once — same member training on scaling income without extra grind. One mention, move on.
-
-[calm] Best practices.
-
-One: publish articles that match the offer's niche — finance article on finance offer.
-
-Two: add one personal intro paragraph when you paste — platforms reward human voice.
-
-Three: one article per week beats ten copied in one day with no follow-up.
-
-Power moves: turn one Recurring Stream article into five social posts — pull one insight per post, link back to the full article, link article to your quiz. Use **Cross Platform Guide** on the page if shown — it maps where to syndicate. Combine with **Social Payouts** for Facebook variants pointing to the same article URL.
-
-Mini-scenario: your Fitness offer is live. Filter Recurring Stream to fitness angles. Preview "Morning habit stack" article. Copy HTML to your free WordPress blog. CTA in article points to your BlackBox Cash quiz. Traffic compounds while you sleep.
-
-Mistakes: selecting the wrong offer before save — links misalign; copying without reading — you might promote claims you don't agree with; hoarding previews without publishing.
-
-[excited] Action: select your best offer, preview three articles, publish ONE this week on any platform you already have — even a simple LinkedIn article counts.
-
-Recurring means showing up. Ship one piece. Then schedule the next.
-
-Think of Recurring Stream as rent you pay once — publish the article, it keeps sending curious readers to your quiz while you sleep. Pair with email capture on your blog if you have one; the article warms them, the quiz converts them.
-
-Authority content also lowers skepticism — strangers who read a thousand-word guide trust your recommendation more than a single Facebook line. That's why these pieces are long on purpose.
-
-Publishing checklist: preview → read claims aloud → copy HTML → paste → add personal intro → CTA links to quiz → publish → share URL once on social. Seven steps, repeatable weekly.
-
-If platform strips links, plain-text copy with full URL visible — ugly but converts better than pretty post with dead link.
-
-Winter slow season? Recurring Stream keeps pipeline warm while you pause paid traffic — content still pulls organic search.
-
-Batch preview three articles Sunday, publish one Monday/Wednesday/Friday — rhythm beats heroics.
-
-Readers who finish long articles self-qualify — they're warmer leads than cold clicks. That's the hidden conversion boost Recurring Stream adds before they ever hit your quiz.
-
-If you're overwhelmed by one hundred articles, filter one niche and save three favorites — your short list beats browsing forever.
-
-Publish ugly first draft — you can update blog posts; perfect drafts never ship. Recurring Stream gives you pro starting point, not permission to procrastinate.
+[excited] Your action: select your best offer, preview three articles, publish ONE this week on any platform you already have — even a simple LinkedIn article counts. Recurring means showing up. Ship one piece... then schedule the next.
