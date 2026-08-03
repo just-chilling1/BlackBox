@@ -13,6 +13,10 @@ import { DeployLaunchPanel } from "../components/DeployLaunchPanel";
 import { DeploySitePreview } from "../components/DeploySitePreview";
 import { WizardStepper } from "../components/WizardStepper";
 import { useGenerationCompleteScroll } from "@/components/ui/generation-progress";
+import {
+  GenerationTrainingAd,
+  useGenerationTrainingAd,
+} from "@/components/ui/generation-training-ad";
 import { getReadyTemplateFromConfig } from "../themes";
 import { getSiteTerritory } from "../lib/site-territory";
 import type { ArmedLink, BlogSite } from "../types";
@@ -110,6 +114,7 @@ export default function DeployAssetPage({
 
   const isLoading = phase === "setup" || phase === "generating" || phase === "publishing";
   const isComplete = phase === "complete" && Boolean(site);
+  const trainingAd = useGenerationTrainingAd(isLoading, { showWhenComplete: isComplete });
 
   useGenerationCompleteScroll(isLoading, undefined, isComplete || isLoading);
 
@@ -176,6 +181,7 @@ export default function DeployAssetPage({
     setProductName(null);
     setCanResume(false);
     setError(null);
+    trainingAd.resetBanner();
   };
 
   const publishSite = async (siteId: string, siteSlug: string) => {
@@ -397,6 +403,12 @@ export default function DeployAssetPage({
           phase={phase === "setup" || phase === "generating" || phase === "publishing" ? phase : "generating"}
         />
       )}
+
+      <GenerationTrainingAd
+        show={trainingAd.showBanner}
+        bannerKey={trainingAd.bannerKey}
+        onDismiss={trainingAd.dismissBanner}
+      />
 
       {!isLoading && !isComplete && (phase === "idle" || phase === "error") && (
         <DeployLaunchPanel

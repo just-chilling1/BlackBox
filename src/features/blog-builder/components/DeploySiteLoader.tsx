@@ -4,7 +4,6 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Globe, Loader2, Rocket, Sparkles } from "lucide-react";
 import { AiLoadingBar } from "@/components/ui/AiLoadingBar";
-import { EarningsBanner } from "@/components/ui/earnings-banner";
 import { cn } from "@/lib/utils";
 import { useBlogBuilder } from "../context/BlogBuilderContext";
 
@@ -247,10 +246,6 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       aria-live="polite"
       aria-label={displayMessage}
     >
-      <div className="mb-5">
-        <EarningsBanner prominent />
-      </div>
-
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           <motion.div

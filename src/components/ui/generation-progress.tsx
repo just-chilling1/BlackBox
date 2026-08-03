@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { EarningsBanner } from "./earnings-banner";
+import {
+  GenerationTrainingAd,
+  useGenerationTrainingAd,
+} from "./generation-training-ad";
 
 export const GENERATION_RESULTS_ID = "generation-results";
 
@@ -61,25 +64,9 @@ export function GenerationProgress({
   scrollTargetId,
 }: GenerationProgressProps) {
   const [progress, setProgress] = useState(0);
-  const [bannerPinned, setBannerPinned] = useState(false);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
-  const [bannerKey, setBannerKey] = useState(0);
-  const wasActiveRef = useRef(false);
+  const trainingAd = useGenerationTrainingAd(active);
 
   useGenerationCompleteScroll(active, scrollTargetId, scrollOnComplete);
-
-  useEffect(() => {
-    if (active) {
-      setBannerPinned(true);
-      setBannerDismissed(false);
-      setBannerKey((key) => key + 1);
-    } else if (wasActiveRef.current) {
-      // Generation finished — re-show ad even if dismissed mid-run
-      setBannerDismissed(false);
-      setBannerKey((key) => key + 1);
-    }
-    wasActiveRef.current = active;
-  }, [active]);
 
   useEffect(() => {
     if (!active) {
@@ -97,19 +84,12 @@ export function GenerationProgress({
     return () => window.clearInterval(interval);
   }, [active]);
 
-  const showBannerEl = showBanner && bannerPinned && !bannerDismissed;
+  const showBannerEl = showBanner && trainingAd.showBanner;
 
   if (!showBannerEl && !active) return null;
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {showBannerEl ? (
-        <EarningsBanner
-          key={bannerKey}
-          prominent
-          onDismiss={() => setBannerDismissed(true)}
-        />
-      ) : null}
       {active ? (
         <div className="rounded-2xl border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
           <div className="mb-2.5 flex items-center gap-3">
@@ -123,6 +103,14 @@ export function GenerationProgress({
             />
           </div>
         </div>
+      ) : null}
+
+      {showBannerEl ? (
+        <GenerationTrainingAd
+          show
+          bannerKey={trainingAd.bannerKey}
+          onDismiss={trainingAd.dismissBanner}
+        />
       ) : null}
     </div>
   );

@@ -30,11 +30,11 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
             href={publicPath}
             target="_blank"
             rel="noopener noreferrer"
-            title="View website"
-            aria-label={`View ${site.title}`}
-            className="-mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700 transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-100"
+            title="Open your live questionnaire in a new tab"
+            className="-mt-1 inline-flex shrink-0 items-center gap-2 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2 text-[13px] font-medium text-brass-700 transition-colors hover:border-[var(--bb-line-brass)] hover:bg-brass-200"
           >
-            <Eye size={18} strokeWidth={2} />
+            <Eye size={16} strokeWidth={2} aria-hidden />
+            Check the questionnaire page
           </Link>
         )}
       </div>
