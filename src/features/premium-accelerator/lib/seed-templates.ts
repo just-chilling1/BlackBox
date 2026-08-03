@@ -8,6 +8,7 @@ import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-
 import {
   acceleratorTemplateKey,
   buildAcceleratorCatalog,
+  getAcceleratorCatalogEntry,
   type AcceleratorCatalogEntry,
 } from "./catalog";
 import {
@@ -80,6 +81,14 @@ function buildSalesPageForTemplate(entry: AcceleratorCatalogEntry, siteId: strin
   return { copy, salesPageHtml };
 }
 
+function getTemplateOwnerId(): string {
+  const ownerId = process.env.TEMPLATE_OWNER_ID?.trim();
+  if (!ownerId) {
+    throw new Error("TEMPLATE_OWNER_ID env is not set (must be a real Supabase user id).");
+  }
+  return ownerId;
+}
+
 async function attachAcceleratorThreadImages(params: {
   admin: SupabaseClient;
   ownerId: string;
@@ -109,6 +118,57 @@ async function attachAcceleratorThreadImages(params: {
   });
 }
 
+/** Backfill niche images on posts 1, 4, and 7 when thread rows exist but image_url is null. */
+export async function backfillAcceleratorTemplateImages(
+  admin: SupabaseClient,
+  catalogId: number
+): Promise<{ backfilled: boolean; siteId?: string }> {
+  const entry = getAcceleratorCatalogEntry(catalogId);
+  if (!entry) throw new Error("Template not found in catalog");
+
+  const existing = await loadSeededTemplate(admin, catalogId);
+  if (!existing || existing.threadCount < 10 || existing.imagesReady) {
+    return { backfilled: false, siteId: existing?.site.id };
+  }
+
+  const ownerId = existing.site.user_id;
+  if (!ownerId) throw new Error("Template owner is missing on seeded site.");
+  const existingThreads =
+    (await admin
+      .from("site_x_threads")
+      .select("id, text, angle, image_url")
+      .eq("site_id", existing.site.id)
+      .order("created_at", { ascending: true })).data ?? [];
+
+  const threadRows = existingThreads.map((row) => ({
+    text: (row as { text: string }).text,
+    angle: (row as { angle: string | null }).angle ?? "Post",
+  }));
+
+  const rowsWithImages = await attachAcceleratorThreadImages({
+    admin,
+    ownerId,
+    entry,
+    threadRows,
+  });
+
+  for (let i = 0; i < existingThreads.length; i++) {
+    const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
+      i as (typeof THREAD_IMAGE_POST_INDEXES)[number]
+    );
+    const imageUrl = imageSlot >= 0 ? rowsWithImages[i]?.image_url ?? null : null;
+    if (!imageUrl) continue;
+
+    const { error } = await admin
+      .from("site_x_threads")
+      .update({ image_url: imageUrl })
+      .eq("id", (existingThreads[i] as { id: string }).id);
+    if (error) throw new Error(error.message);
+  }
+
+  return { backfilled: true, siteId: existing.site.id };
+}
+
 /** Seed one accelerator template (idempotent — skips if already complete). */
 export async function seedAcceleratorTemplate(
   admin: SupabaseClient,
@@ -116,10 +176,6 @@ export async function seedAcceleratorTemplate(
   options?: { force?: boolean }
 ): Promise<{ skipped: boolean; siteId: string }> {
   const force = options?.force === true;
-  const ownerId = process.env.TEMPLATE_OWNER_ID?.trim();
-  if (!ownerId) {
-    throw new Error("TEMPLATE_OWNER_ID env is not set (must be a real Supabase user id).");
-  }
 
   const existing = await loadSeededTemplate(admin, entry.id);
   const threadsComplete =
@@ -133,6 +189,19 @@ export async function seedAcceleratorTemplate(
   if (threadsComplete) {
     return { skipped: true, siteId: existing.site.id };
   }
+
+  const needsImagesOnly =
+    !force &&
+    existing &&
+    existing.threadCount >= 10 &&
+    !existing.imagesReady;
+
+  if (needsImagesOnly) {
+    const result = await backfillAcceleratorTemplateImages(admin, entry.id);
+    return { skipped: !result.backfilled, siteId: result.siteId ?? existing.site.id };
+  }
+
+  const ownerId = getTemplateOwnerId();
 
   let site = existing?.site ?? null;
   const { copy, salesPageHtml } = buildSalesPageForTemplate(
@@ -194,42 +263,6 @@ export async function seedAcceleratorTemplate(
     !existing ||
     existingThreads.length < 10 ||
     existing?.threadsCorrupted === true;
-  const needsImagesOnly =
-    !force &&
-    existing &&
-    existingThreads.length >= 10 &&
-    !existing.imagesReady;
-
-  if (needsImagesOnly) {
-    const threadRows = existingThreads.map((row) => ({
-      text: (row as { text: string }).text,
-      angle: (row as { angle: string | null }).angle ?? "Post",
-    }));
-
-    const rowsWithImages = await attachAcceleratorThreadImages({
-      admin,
-      ownerId,
-      entry,
-      threadRows,
-    });
-
-    for (let i = 0; i < existingThreads.length; i++) {
-      const imageSlot = THREAD_IMAGE_POST_INDEXES.indexOf(
-        i as (typeof THREAD_IMAGE_POST_INDEXES)[number]
-      );
-      const imageUrl =
-        imageSlot >= 0 ? rowsWithImages[i]?.image_url ?? null : null;
-      if (!imageUrl) continue;
-
-      const { error } = await admin
-        .from("site_x_threads")
-        .update({ image_url: imageUrl })
-        .eq("id", (existingThreads[i] as { id: string }).id);
-      if (error) throw new Error(error.message);
-    }
-
-    return { skipped: false, siteId: site!.id };
-  }
 
   if (needsNewThreads) {
     await admin.from("site_x_threads").delete().eq("site_id", site!.id);

@@ -70,8 +70,8 @@ async function main() {
     );
   }
   if (!ownerId) {
-    throw new Error(
-      "TEMPLATE_OWNER_ID is missing. Set it to a real auth.users id that owns shared templates."
+    console.warn(
+      "TEMPLATE_OWNER_ID is not set — image-only backfill will still run; new template creation requires it."
     );
   }
 

@@ -4,8 +4,10 @@ import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { getServerAppUrl } from "@/lib/app-url";
 import { loadAcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
+import { backfillAcceleratorTemplateImages } from "@/features/premium-accelerator/lib/seed-templates";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 120;
 
 /** Return sales page HTML + X thread posts for preview (no clone). */
 export async function GET(request: Request) {
@@ -27,8 +29,18 @@ export async function GET(request: Request) {
 
   try {
     const admin = getServiceRoleClient();
+    const db = admin ?? supabase;
+
+    if (admin) {
+      try {
+        await backfillAcceleratorTemplateImages(admin, catalogId);
+      } catch (err) {
+        console.warn("[accelerator/preview] image backfill skipped:", err);
+      }
+    }
+
     const preview = await loadAcceleratorTemplatePreview({
-      db: admin ?? supabase,
+      db,
       catalogId,
       affiliateUrl,
       appUrl: getServerAppUrl(request),

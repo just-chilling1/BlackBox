@@ -8,6 +8,7 @@
     "start": "next start",
     "setup:supabase-auth": "node scripts/apply-supabase-auth-setup.mjs",
     "seed:accelerator": "npx tsx scripts/seed-accelerator.ts",
+    "seed:accelerator:images": "npx tsx scripts/backfill-accelerator-images.ts --all",
     "seed:accelerator:all": "node scripts/seed-all-accelerator-batches.mjs",
     "reseed:accelerator-threads": "npx tsx scripts/reseed-accelerator-threads.ts",
     "reseed:accelerator-threads:export": "node scripts/batch-reseed-accelerator.mjs",

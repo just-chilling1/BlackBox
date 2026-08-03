@@ -8,6 +8,7 @@ import {
   resolveAcceleratorQuestionnaireCopy,
 } from "./accelerator-sales-page";
 import { substituteThreadLinkPlaceholder } from "./x-thread-seeds";
+import { backfillAcceleratorTemplateImages } from "./seed-templates";
 import { slugify } from "@/features/blog-builder/lib/seo";
 import {
   THREAD_IMAGE_POST_INDEXES,
@@ -45,6 +46,12 @@ export async function cloneAcceleratorTemplate(params: {
   const template = (templateRows ?? [])[0] as BlogSite | undefined;
   if (!template?.sales_page_html) {
     throw new Error("This template has not been seeded yet. Contact support.");
+  }
+
+  try {
+    await backfillAcceleratorTemplateImages(db, catalogId);
+  } catch {
+    /* preview clone still works with template fallbacks */
   }
 
   const armedLinks: ArmedLink[] = [

@@ -6,6 +6,7 @@ import { getServerAppUrl } from "@/lib/app-url";
 import { cloneAcceleratorTemplate } from "@/features/premium-accelerator/lib/clone-template";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 120;
 
 /** Clone a pre-seeded accelerator template with the member's affiliate link. */
 export async function POST(request: Request) {
