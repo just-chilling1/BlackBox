@@ -89,10 +89,8 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
             Check questionnaire page
           </Link>
           <Link
-            href={`${publicPath}#offer`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Jump straight to the final page where your offer appears"
+            href={`/offers/${encodeURIComponent(site.id)}`}
+            title="Open this offer's page — links, threads, and settings"
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-5 py-3 text-sm font-medium text-brass-700 transition-colors hover:bg-brass-200"
           >
             <BadgeDollarSign size={16} aria-hidden />
