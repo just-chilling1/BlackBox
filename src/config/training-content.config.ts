@@ -59,7 +59,7 @@ export const trainingQuickStartChecklist = [
 /** Premium walkthrough slots — add Vimeo id when client provides video */
 export const trainingPremiumVideos = [
   {
-    id: "",
+    id: "1215530104",
     badge: "Accelerator",
     title: "Accelerator",
     description:
@@ -67,7 +67,7 @@ export const trainingPremiumVideos = [
     duration: "5+ min",
   },
   {
-    id: "",
+    id: "1215568587",
     badge: "Recurring Stream",
     title: "Recurring Stream",
     description:
@@ -75,7 +75,7 @@ export const trainingPremiumVideos = [
     duration: "5+ min",
   },
   {
-    id: "",
+    id: "1215574185",
     badge: "Social Payouts",
     title: "Social Payouts",
     description:
@@ -83,7 +83,7 @@ export const trainingPremiumVideos = [
     duration: "5+ min",
   },
   {
-    id: "",
+    id: "1215579801",
     badge: "Protector",
     title: "Protector",
     description:

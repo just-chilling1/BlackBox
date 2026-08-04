@@ -563,6 +563,81 @@ html[data-sidebar="collapsed"] {
     margin-inline: auto;
   }
 
+  /* Video overlay withdraw ad animations (Profit Loop pattern) */
+  @keyframes bannerBlobLeft {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translate(36px, 24px) scale(1.2);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bannerBlobRight {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1.15);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translate(-32px, -20px) scale(0.95);
+      opacity: 0.6;
+    }
+  }
+
+  .banner-blob-left {
+    animation: bannerBlobLeft 7s ease-in-out infinite;
+  }
+
+  .banner-blob-right {
+    animation: bannerBlobRight 8s ease-in-out infinite;
+  }
+
+  @keyframes adEmeraldPulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .ad-emerald-pulse {
+    animation: adEmeraldPulse 3.2s ease-in-out infinite;
+  }
+
+  @keyframes adSheen {
+    0% {
+      transform: translateX(-130%) skewX(-18deg);
+    }
+    60%,
+    100% {
+      transform: translateX(420%) skewX(-18deg);
+    }
+  }
+
+  .ad-sheen {
+    animation: adSheen 4.5s ease-in-out 0.8s infinite;
+  }
+
+  @keyframes adCtaGlow {
+    0%,
+    100% {
+      box-shadow: 0 0 16px rgba(0, 163, 108, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 34px rgba(0, 163, 108, 0.7);
+    }
+  }
+
+  .ad-cta-glow {
+    animation: adCtaGlow 2.4s ease-in-out infinite;
+  }
+
   .page-enter {
     animation: page-enter 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
   }

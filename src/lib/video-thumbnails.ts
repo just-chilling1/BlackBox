@@ -55,11 +55,16 @@ export function resolveVideoThumbnail(
 export function toEmbedUrl(videoUrl: string, autoplay = true): string {
   const match = videoUrl.match(VIMEO_ID_REGEX);
   const id = match?.[1] ?? videoUrl.replace(/\D/g, "");
+  // byline/portrait/title hide the uploader and channel info in the player chrome
   const params = new URLSearchParams({
     badge: "0",
+    byline: "0",
+    portrait: "0",
+    title: "0",
     autopause: "0",
     player_id: "0",
     app_id: "58479",
+    dnt: "1",
     ...(autoplay ? { autoplay: "1" } : {}),
   });
   return `https://player.vimeo.com/video/${id}?${params.toString()}`;

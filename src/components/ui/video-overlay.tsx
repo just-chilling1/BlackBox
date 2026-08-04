@@ -109,23 +109,37 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
 
         {/* Account verified / withdraw ad — Profit Loop pattern */}
         <div
-          className="relative shrink-0 overflow-hidden border-t border-[var(--bb-line-brass)] bg-grad-tint px-5 py-4 sm:px-6"
-          style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+          className="relative shrink-0 overflow-hidden border-t border-emerald-400/15 px-5 py-4 sm:px-6"
+          style={{
+            backgroundColor: "rgba(7, 12, 10, 0.96)",
+            paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+          }}
         >
+          <div className="banner-blob-left pointer-events-none absolute -left-16 -top-20 h-48 w-48 rounded-full bg-[#00a36c]/30 blur-3xl" />
+          <div className="banner-blob-right pointer-events-none absolute -bottom-24 -right-14 h-52 w-52 rounded-full bg-[#22d38b]/25 blur-3xl" />
+          <div className="ad-emerald-pulse pointer-events-none absolute inset-0 bg-gradient-to-r from-[#00a36c]/[0.12] via-transparent to-[#22d38b]/[0.12]" />
+          <div className="ad-sheen pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
           <div className="relative flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
             <div className="flex flex-1 items-center gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-brass-200 text-brass-700">
-                <Check className="h-5 w-5" strokeWidth={1.75} />
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                style={{
+                  backgroundColor: "#00a36c",
+                  boxShadow: "0 0 22px rgba(0,163,108,0.45)",
+                }}
+              >
+                <Check className="h-5 w-5 text-white" strokeWidth={3} />
               </div>
               <div className="min-w-0">
-                <p className="text-[13px] font-medium tracking-[0.08em] text-brass-700">
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#22d38b]">
                   Account Verified
                 </p>
-                <p className="mt-1 text-base font-normal leading-snug text-ink">
+                <p className="mt-1 text-base font-semibold leading-snug text-white">
                   Congratulations! You&apos;re eligible to withdraw{" "}
-                  <span className="font-medium text-brass-700">$416.34</span>
+                  <span className="font-extrabold text-[#22d38b]">$416.34</span>
                 </p>
-                <p className="mt-0.5 text-[13px] text-ink-5">
+                <p className="mt-0.5 text-xs font-medium text-emerald-100/55">
                   Available balance from your activity
                 </p>
               </div>
@@ -134,10 +148,10 @@ export function VideoOverlay({ open, onClose, videoUrl, title }: VideoOverlayPro
               href={offers.videoWithdrawUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary flex h-12 w-full shrink-0 sm:w-auto"
+              className="ad-cta-glow flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#00a36c] px-7 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#03b879] active:translate-y-0 sm:w-auto"
             >
               Withdraw Now
-              <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
+              <ArrowRight className="h-4 w-4" strokeWidth={3} />
             </a>
           </div>
         </div>
