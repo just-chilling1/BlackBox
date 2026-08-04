@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Clock, Play, Sparkles } from "lucide-react";
 
 interface PremiumVideoTutorialProps {
@@ -8,7 +9,7 @@ interface PremiumVideoTutorialProps {
   title: string;
   description: string;
   iframeTitle: string;
-  /** Poster shown in the placeholder while the video is not uploaded yet. */
+  /** Poster shown before the member clicks play (and while no video is uploaded). */
   thumbnailSrc?: string;
 }
 
@@ -19,14 +20,17 @@ export function PremiumVideoTutorial({
   iframeTitle,
   thumbnailSrc,
 }: PremiumVideoTutorialProps) {
+  const [playing, setPlaying] = useState(false);
+  const hasVideo = Boolean(vimeoId);
+
   return (
     <section className="glass-card overflow-hidden p-0">
       <div className="flex flex-col md:flex-row">
         <div className="relative bg-black/40 md:w-1/2">
           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-            {vimeoId ? (
+            {hasVideo && playing ? (
               <iframe
-                src={`https://player.vimeo.com/video/${vimeoId}?badge=0&byline=0&portrait=0&title=0&autopause=0&player_id=0&app_id=58479&dnt=1`}
+                src={`https://player.vimeo.com/video/${vimeoId}?badge=0&byline=0&portrait=0&title=0&autopause=0&player_id=0&app_id=58479&dnt=1&autoplay=1`}
                 className="absolute inset-0 h-full w-full"
                 frameBorder="0"
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
@@ -34,7 +38,13 @@ export function PremiumVideoTutorial({
                 title={iframeTitle}
               />
             ) : (
-              <div className="absolute inset-0" aria-label={`${iframeTitle} — coming soon`}>
+              <button
+                type="button"
+                onClick={() => hasVideo && setPlaying(true)}
+                disabled={!hasVideo}
+                aria-label={hasVideo ? `Play ${iframeTitle}` : `${iframeTitle} — coming soon`}
+                className="absolute inset-0 block w-full cursor-pointer text-left disabled:cursor-default"
+              >
                 {thumbnailSrc ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -49,15 +59,21 @@ export function PremiumVideoTutorial({
                 )}
                 <div className="video-thumb-scrim absolute inset-0" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-brass text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)]">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-brass text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105">
                     <Play className="ml-1 h-8 w-8 fill-white" />
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
-                    <Clock size={12} />
-                    Training video coming soon
-                  </span>
+                  {hasVideo ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
+                      ▶ Click to Play Video
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
+                      <Clock size={12} />
+                      Training video coming soon
+                    </span>
+                  )}
                 </div>
-              </div>
+              </button>
             )}
           </div>
         </div>
