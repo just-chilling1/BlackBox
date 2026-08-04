@@ -34,6 +34,7 @@ export async function middleware(request: NextRequest) {
         pathname === '/robots.txt' ||
         pathname === '/sitemap.xml' ||
         pathname === '/manifest.webmanifest' ||
+        pathname === '/free-training-popup.html' ||
         isStaticAsset ||
         isPublicHostedRoute
     const isOnboardingRoute = pathname === '/onboarding' || pathname.startsWith('/onboarding/')

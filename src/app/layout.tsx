@@ -5,6 +5,7 @@ import "./globals.css";
 import { brand } from "@/config/brand.config";
 import { storageKeys } from "@/lib/storage-keys";
 import { AppProviders } from "@/components/layout/AppProviders";
+import { VturbHeadPreloads } from "@/components/ui/vturb-head-preloads";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,6 +60,10 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
     >
       <head>
+        <VturbHeadPreloads
+          playerId="6a723793e82132383c2edc33"
+          streamAssetId="6a723759734ff4478beeff80"
+        />
         <Script
           id="sidebar-collapse-restore"
           strategy="beforeInteractive"
