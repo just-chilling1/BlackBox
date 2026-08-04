@@ -8,7 +8,6 @@ import {
   getDashboardStartCta,
   getDashboardVideos,
 } from "@/lib/dashboard-content";
-import { SupportCtaBanner } from "@/components/support/SupportCtaBanner";
 import { DashboardBonusAdCard } from "./DashboardBonusAdCard";
 import { DashboardVideoCard } from "./DashboardVideoCard";
 
@@ -55,8 +54,6 @@ export function DashboardVideoTrack() {
           <span className="text-balance">{academyCta.label}</span>
         </Link>
       </section>
-
-      <SupportCtaBanner />
     </div>
   );
 }

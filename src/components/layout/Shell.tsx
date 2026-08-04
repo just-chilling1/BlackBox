@@ -46,7 +46,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
     isMemberPublicSitePath(pathname);
 
   const hideSupportBanner =
-    pathname === "/dashboard" ||
     pathname === "/support" ||
     pathname.startsWith("/support/");
 
