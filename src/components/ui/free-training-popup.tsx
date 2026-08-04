@@ -9,6 +9,7 @@ const PLAYER_SCRIPT_SRC =
   "https://scripts.converteai.net/e9cd97bc-7bc8-4a23-bb2f-224a56a84d6b/players/6a723793e82132383c2edc33/v4/player.js";
 const COUNTDOWN_SECONDS = 10 * 60;
 const OPEN_DELAY_MS = 1200;
+const SESSION_SHOWN_KEY = "bb_free_training_popup_shown";
 
 const POPUP_STYLES = `
 @keyframes ftpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
@@ -100,6 +101,10 @@ export function FreeTrainingPopup() {
   const playerHostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (sessionStorage.getItem(SESSION_SHOWN_KEY) === "1") return;
+
+    sessionStorage.setItem(SESSION_SHOWN_KEY, "1");
+
     const timer = setTimeout(() => {
       setSecondsLeft(COUNTDOWN_SECONDS);
       setOpen(true);
