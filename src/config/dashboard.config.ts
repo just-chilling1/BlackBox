@@ -46,10 +46,4 @@ export const dashboardContent = {
     ctaLabel: "Yes! Show Me How To Earn $1,000–$5,000 A Day",
     ctaUrl: trainingContent.externalTrainingUrl,
   },
-  needHelp: {
-    title: "Need Help?",
-    subtitle: "Talk to your success manager",
-    ctaLabel: "Contact Support",
-    href: "/support",
-  },
 } as const;

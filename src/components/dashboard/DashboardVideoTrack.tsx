@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Headphones, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { dashboardContent } from "@/config/dashboard.config";
 import {
   getDashboardAcademyCta,
   getDashboardStartCta,
   getDashboardVideos,
 } from "@/lib/dashboard-content";
+import { SupportCtaBanner } from "@/components/support/SupportCtaBanner";
 import { DashboardBonusAdCard } from "./DashboardBonusAdCard";
-import { DashboardSection } from "./DashboardSection";
 import { DashboardVideoCard } from "./DashboardVideoCard";
 
 export function DashboardVideoTrack() {
@@ -56,27 +56,7 @@ export function DashboardVideoTrack() {
         </Link>
       </section>
 
-      <DashboardSection>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--bb-line-brass)] bg-brass-100 sm:h-14 sm:w-14">
-              <Headphones className="h-6 w-6 text-brass-700 sm:h-7 sm:w-7" />
-            </div>
-            <div className="min-w-0">
-              <h3 className="text-lg font-medium text-text-heading sm:text-xl">
-                {dashboardContent.needHelp.title}
-              </h3>
-              <p className="text-sm text-text-secondary">{dashboardContent.needHelp.subtitle}</p>
-            </div>
-          </div>
-          <Link
-            href={dashboardContent.needHelp.href}
-            className="btn-primary w-full shrink-0 px-6 sm:w-auto sm:px-8"
-          >
-            {dashboardContent.needHelp.ctaLabel}
-          </Link>
-        </div>
-      </DashboardSection>
+      <SupportCtaBanner />
     </div>
   );
 }
