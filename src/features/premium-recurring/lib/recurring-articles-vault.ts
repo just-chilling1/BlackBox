@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { countRowsBySiteIds } from "@/lib/site-counts";
 
 export interface SavedRecurringArticle {
   id: string;
@@ -57,20 +58,5 @@ export async function countRecurringArticlesBySite(
   userId: string,
   siteIds: string[]
 ): Promise<Record<string, number>> {
-  if (siteIds.length === 0) return {};
-
-  const { data, error } = await supabase
-    .from("site_recurring_articles")
-    .select("site_id")
-    .eq("user_id", userId)
-    .in("site_id", siteIds);
-
-  if (error) throw new Error(error.message);
-
-  const counts: Record<string, number> = {};
-  for (const row of data ?? []) {
-    const siteId = (row as { site_id: string }).site_id;
-    counts[siteId] = (counts[siteId] ?? 0) + 1;
-  }
-  return counts;
+  return countRowsBySiteIds(supabase, "site_recurring_articles", siteIds, { userId });
 }

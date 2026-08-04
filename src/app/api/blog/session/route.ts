@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { NO_STORE_HEADERS, PRIVATE_READ_CACHE_HEADERS } from "@/lib/api-cache-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -35,11 +35,13 @@ export async function GET() {
 
   const { data } = await supabase
     .from("blog_builder_sessions")
-    .select("*")
+    .select(
+      "step, hobby, territory, niche, suggestions, territory_chosen, links_armed, theme_chosen, theme_config, deploy_armed_links, deployed, site_id, site_slug, is_generating, generation_log, wizard_ui_step"
+    )
     .eq("user_id", user.id)
     .maybeSingle();
 
-  return NextResponse.json({ session: data ?? null }, { headers: NO_STORE_HEADERS });
+  return NextResponse.json({ session: data ?? null }, { headers: PRIVATE_READ_CACHE_HEADERS });
 }
 
 export async function PUT(request: Request) {

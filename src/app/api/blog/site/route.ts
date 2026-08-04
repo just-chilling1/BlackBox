@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { NO_STORE_HEADERS, PRIVATE_READ_CACHE_HEADERS } from "@/lib/api-cache-headers";
+import { countRowsBySiteIds } from "@/lib/site-counts";
 import { getDailyGenerationQuota } from "@/features/blog-builder/lib/site-quota";
 import { countFacebookPostsBySite, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { buildOfferPageUrl, getServerAppUrl, resolveOfferPageLinksInText } from "@/lib/app-url";
@@ -19,6 +20,9 @@ import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
 
+const SITE_LIST_COLUMNS =
+  "id, user_id, hobby, territory, title, tagline, slug, owner_handle, theme, theme_config, armed_links, status, site_type, created_at, is_template, template_key";
+
 export interface SiteVaultSummary {
   site: BlogSite;
   postCount: number;
@@ -29,13 +33,8 @@ export interface SiteVaultSummary {
   recurringArticleCount: number;
 }
 
-function countBySite(rows: { site_id: string | null }[] | null): Record<string, number> {
-  const counts: Record<string, number> = {};
-  for (const row of rows ?? []) {
-    if (!row.site_id) continue;
-    counts[row.site_id] = (counts[row.site_id] ?? 0) + 1;
-  }
-  return counts;
+function readCacheHeaders(lite: boolean) {
+  return lite ? PRIVATE_READ_CACHE_HEADERS : NO_STORE_HEADERS;
 }
 
 export async function GET(request: Request) {
@@ -51,12 +50,19 @@ export async function GET(request: Request) {
   const lite = new URL(request.url).searchParams.get("lite") === "1";
   const quota = await getDailyGenerationQuota(supabase, user.id);
 
-  const { data: sites } = await supabase
-    .from("sites")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("is_template", false)
-    .order("created_at", { ascending: false });
+  const { data: sites } = lite
+    ? await supabase
+        .from("sites")
+        .select(SITE_LIST_COLUMNS)
+        .eq("user_id", user.id)
+        .eq("is_template", false)
+        .order("created_at", { ascending: false })
+    : await supabase
+        .from("sites")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("is_template", false)
+        .order("created_at", { ascending: false });
 
   const siteList = (sites ?? []) as BlogSite[];
   const siteIds = siteList.map((s) => s.id);
@@ -69,26 +75,25 @@ export async function GET(request: Request) {
   }
 
   if (lite && !siteId) {
-    const [facebookPostCounts, xThreadCounts, recurringArticleCounts, { data: liteClickRows }] =
+    const [facebookPostCounts, xThreadCounts, recurringArticleCounts, clickCounts] =
       await Promise.all([
         countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
         countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
         countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-        supabase.from("affiliate_clicks").select("site_id").in("site_id", siteIds),
+        countRowsBySiteIds(supabase, "affiliate_clicks", siteIds),
       ]);
-    const liteClickCounts = countBySite(liteClickRows);
 
     const summaries: SiteVaultSummary[] = siteList.map((site) => ({
       site,
       postCount: 0,
       livePostCount: 0,
-      clickCount: liteClickCounts[site.id] ?? 0,
+      clickCount: clickCounts[site.id] ?? 0,
       facebookPostCount: facebookPostCounts[site.id] ?? 0,
       xThreadCount: xThreadCounts[site.id] ?? 0,
       recurringArticleCount: recurringArticleCounts[site.id] ?? 0,
     }));
 
-    return NextResponse.json({ summaries, quota }, { headers: NO_STORE_HEADERS });
+    return NextResponse.json({ summaries, quota }, { headers: readCacheHeaders(true) });
   }
 
   const { data: session } = await supabase
@@ -97,22 +102,15 @@ export async function GET(request: Request) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  const [{ data: postRows }, { data: clickRows }, facebookPostCounts, xThreadCounts, recurringArticleCounts] =
+  const [postCounts, livePostCounts, clickCounts, facebookPostCounts, xThreadCounts, recurringArticleCounts] =
     await Promise.all([
-    supabase.from("posts").select("site_id, status").in("site_id", siteIds),
-    supabase.from("affiliate_clicks").select("site_id").in("site_id", siteIds),
-    countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-    countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-    countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
-  ]);
-
-  const postCounts = countBySite(postRows);
-  const livePostCounts: Record<string, number> = {};
-  for (const row of postRows ?? []) {
-    if (!row.site_id || row.status !== "live") continue;
-    livePostCounts[row.site_id] = (livePostCounts[row.site_id] ?? 0) + 1;
-  }
-  const clickCounts = countBySite(clickRows);
+      countRowsBySiteIds(supabase, "posts", siteIds),
+      countRowsBySiteIds(supabase, "posts", siteIds, { status: "live" }),
+      countRowsBySiteIds(supabase, "affiliate_clicks", siteIds),
+      countFacebookPostsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+      countXThreadsBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+      countRecurringArticlesBySite(supabase, user.id, siteIds).catch(() => ({} as Record<string, number>)),
+    ]);
 
   const summaries: SiteVaultSummary[] = siteList.map((site) => ({
     site,

@@ -15,6 +15,7 @@ import { isValidAffiliateUrl, normalizeAffiliateUrl } from "../lib/affiliate-url
 
 import type { WizardStepNumber } from "../lib/wizard-step-props";
 import { cachedClientFetch, invalidateClientFetchCache } from "@/lib/client-fetch-cache";
+import { needsBlogSession, shouldStartFreshWizard } from "@/lib/blog-builder-routes";
 import { warmBlogSession } from "@/lib/warm-route-data";
 
 export type BlogBuilderStep = 0 | 1 | 2 | 3;
@@ -181,24 +182,6 @@ function vaultReadyLinks(links: ArmedLink[]): ArmedLink[] {
 
 const BlogBuilderContext = createContext<BlogBuilderContextType | undefined>(undefined);
 
-const BLOG_SESSION_ROUTES = [
-  "/sales-offer-generator",
-  "/territory",
-  "/theme",
-  "/arm-links",
-  "/offers",
-  "/link-vault",
-  "/deploy",
-  "/accelerator",
-  "/recurring-wealth",
-] as const;
-
-function needsBlogSession(pathname: string): boolean {
-  return BLOG_SESSION_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
-}
-
 export function BlogBuilderProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [state, setState] = useState<BlogBuilderState>(defaultState);
@@ -213,6 +196,13 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
     if (!sessionLoadPromise.current) {
       sessionLoadPromise.current = (async () => {
         try {
+          if (shouldStartFreshWizard(pathname)) {
+            const vaultJson = await cachedClientFetch<{ links: ArmedLink[] }>("/api/blog/link-vault");
+            const vaultLinks = Array.isArray(vaultJson.links) ? vaultJson.links : [];
+            setState({ ...defaultState, armedLinks: vaultLinks });
+            return;
+          }
+
           const [sessionJson, vaultJson] = await Promise.all([
             cachedClientFetch<{ session: DbSessionRow | null }>("/api/blog/session"),
             cachedClientFetch<{ links: ArmedLink[] }>("/api/blog/link-vault"),
@@ -235,7 +225,7 @@ export function BlogBuilderProvider({ children }: { children: React.ReactNode })
     }
 
     await sessionLoadPromise.current;
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!needsBlogSession(pathname)) {

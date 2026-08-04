@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -71,13 +70,6 @@ export default function SalesOfferGeneratorPage() {
     setWizardUiStep,
     startFreshOfferWizard,
   } = useBlogBuilder();
-  const freshStarted = useRef(false);
-
-  useEffect(() => {
-    if (!sessionLoaded || freshStarted.current) return;
-    freshStarted.current = true;
-    startFreshOfferWizard();
-  }, [sessionLoaded, startFreshOfferWizard]);
 
   const goToStep = (next: WizardStepNumber, justCompleted?: StepCompletionFlags) => {
     const maxStep = maxAccessibleStep(

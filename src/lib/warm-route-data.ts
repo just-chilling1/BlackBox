@@ -1,22 +1,7 @@
 import { cachedClientFetch } from "@/lib/client-fetch-cache";
-
-const BLOG_SESSION_ROUTES = [
-  "/sales-offer-generator",
-  "/territory",
-  "/theme",
-  "/arm-links",
-  "/offers",
-  "/link-vault",
-  "/deploy",
-  "/accelerator",
-  "/recurring-wealth",
-] as const;
+import { BLOG_SESSION_ROUTES, matchesBlogRoute } from "@/lib/blog-builder-routes";
 
 const SITE_LIST_ROUTES = ["/promote", "/offers", "/recurring-wealth", "/accelerator"] as const;
-
-function matchesRoute(path: string, routes: readonly string[]): boolean {
-  return routes.some((route) => path === route || path.startsWith(`${route}/`));
-}
 
 export function warmBlogSession(): void {
   void cachedClientFetch("/api/blog/session").catch(() => {});
@@ -34,10 +19,10 @@ export function warmRecurringArticles(niche?: string): void {
 
 /** Prefetch API data before navigation completes (sidebar hover / focus). */
 export function warmRouteData(path: string): void {
-  if (matchesRoute(path, BLOG_SESSION_ROUTES)) {
+  if (matchesBlogRoute(path, BLOG_SESSION_ROUTES)) {
     warmBlogSession();
   }
-  if (matchesRoute(path, SITE_LIST_ROUTES)) {
+  if (matchesBlogRoute(path, SITE_LIST_ROUTES)) {
     warmBlogSites();
   }
   if (path === "/recurring-wealth" || path.startsWith("/recurring-wealth/")) {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { NO_STORE_HEADERS, PRIVATE_READ_CACHE_HEADERS } from "@/lib/api-cache-headers";
 import type { ArmedLink } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ export async function GET() {
     .maybeSingle();
 
   const links = (data?.links ?? []) as ArmedLink[];
-  return NextResponse.json({ links }, { headers: NO_STORE_HEADERS });
+  return NextResponse.json({ links }, { headers: PRIVATE_READ_CACHE_HEADERS });
 }
 
 export async function PUT(request: Request) {

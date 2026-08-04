@@ -12,7 +12,7 @@ const PUBLIC_ROUTE_PREFIXES = [
 ]
 
 const ONBOARDING_COMPLETE_COOKIE = "bb_onboarding_complete";
-const ONBOARDING_COOKIE_MAX_AGE = 60 * 60 * 24;
+const ONBOARDING_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
