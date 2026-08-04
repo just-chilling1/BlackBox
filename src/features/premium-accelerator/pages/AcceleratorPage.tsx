@@ -314,6 +314,7 @@ export default function AcceleratorPage() {
       }
     >
       <PremiumVideoTutorial
+        vimeoId="1215530104"
         title="Accelerator Training"
         description="Watch how to browse the 200 pre-made sales pages, clone one with your affiliate link, and grab its ready-made story thread — all in under two minutes."
         iframeTitle="Accelerator training video"

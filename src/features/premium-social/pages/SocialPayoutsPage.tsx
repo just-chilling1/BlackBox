@@ -357,6 +357,7 @@ export default function SocialPayoutsPage() {
       }
     >
       <PremiumVideoTutorial
+        vimeoId="1215574185"
         title="Social Payouts Training"
         description="Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post."
         iframeTitle="Social Payouts training video"

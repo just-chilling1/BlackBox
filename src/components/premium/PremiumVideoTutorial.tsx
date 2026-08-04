@@ -26,7 +26,7 @@ export function PremiumVideoTutorial({
           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
             {vimeoId ? (
               <iframe
-                src={`https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
+                src={`https://player.vimeo.com/video/${vimeoId}?badge=0&byline=0&portrait=0&title=0&autopause=0&player_id=0&app_id=58479&dnt=1`}
                 className="absolute inset-0 h-full w-full"
                 frameBorder="0"
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"

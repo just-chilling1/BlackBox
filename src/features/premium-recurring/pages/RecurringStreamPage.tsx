@@ -347,6 +347,7 @@ export default function RecurringStreamPage() {
 
       <div className="mb-4">
         <PremiumVideoTutorial
+          vimeoId="1215568587"
           title="Recurring Stream Training"
           description="Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog."
           iframeTitle="Recurring Stream training video"

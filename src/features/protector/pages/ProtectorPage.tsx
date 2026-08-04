@@ -126,6 +126,7 @@ export default function ProtectorPage() {
       footer={<PremiumFooter>Wealth Protector — powered by {brand.productName}.</PremiumFooter>}
     >
       <PremiumVideoTutorial
+        vimeoId="1215579801"
         title="Protector Training"
         description="Watch what Wealth Protector monitors for you — account verification, encryption, and session security — and how to read your security overview."
         iframeTitle="Protector training video"
