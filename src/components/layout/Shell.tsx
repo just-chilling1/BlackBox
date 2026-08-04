@@ -24,6 +24,11 @@ const PromoOrchestrator = dynamic(
 /** Route prefixes that render without the app shell (public hosted pages). */
 const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
 
+/** Clean member URLs: /{handle}/sites/{slug} — must not render inside the logged-in shell. */
+function isMemberPublicSitePath(pathname: string): boolean {
+  return /^\/[^/]+\/sites(\/|$)/.test(pathname);
+}
+
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
@@ -36,7 +41,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/onboarding/") ||
     pathname.startsWith("/auth/");
 
-  const isPublicPage = PUBLIC_SHELL_BYPASS_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  const isPublicPage =
+    PUBLIC_SHELL_BYPASS_PREFIXES.some((prefix) => pathname.startsWith(prefix)) ||
+    isMemberPublicSitePath(pathname);
 
   const hideSupportBanner =
     pathname === "/dashboard" ||

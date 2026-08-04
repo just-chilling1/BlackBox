@@ -506,8 +506,9 @@ export function buildThemedQuestionnairePage(input: ThemedQuestionnaireInput): s
 
     updateProgress();
 
-    // Deep link straight to the final offer step (e.g. shared links with #offer).
+    // #start → intro (used by "Check questionnaire page"). #offer → final results step.
     if (location.hash === '#offer') showStep(questions.length + 1);
+    else showStep(0);
   })();
   </script>
 </body>

@@ -4,24 +4,24 @@ export const VIDEO_THUMBNAILS: Record<string, string> = {
 
 /** Dashboard video track — index 0–2 */
 export const DASHBOARD_VIDEO_THUMBNAILS = [
-  "/thumbnails/dashboard-01-watch-this-first.png",
-  "/thumbnails/dashboard-02-how-the-money-flows.png",
-  "/thumbnails/dashboard-03-five-minute-tour.png",
+  "/thumbnails/dashboard-01-watch-this-first.webp",
+  "/thumbnails/dashboard-02-how-the-money-flows.webp",
+  "/thumbnails/dashboard-03-five-minute-tour.webp",
 ] as const;
 
 /** Academy platform tutorials — index 0–2 */
 export const ACADEMY_PLATFORM_THUMBNAILS = [
-  "/thumbnails/academy-04-sales-offer-generator.png",
-  "/thumbnails/academy-05-x-power-promotions.png",
-  "/thumbnails/academy-06-links-offers-library.png",
+  "/thumbnails/academy-04-sales-offer-generator.webp",
+  "/thumbnails/academy-05-x-power-promotions.webp",
+  "/thumbnails/academy-06-links-offers-library.webp",
 ] as const;
 
 /** Academy premium tutorials — index 0–3 */
 export const ACADEMY_PREMIUM_THUMBNAILS = [
-  "/thumbnails/academy-07-accelerator.png",
-  "/thumbnails/academy-08-recurring-stream.png",
-  "/thumbnails/academy-09-social-payouts.png",
-  "/thumbnails/academy-10-protector.png",
+  "/thumbnails/academy-07-accelerator.webp",
+  "/thumbnails/academy-08-recurring-stream.webp",
+  "/thumbnails/academy-09-social-payouts.webp",
+  "/thumbnails/academy-10-protector.webp",
 ] as const;
 
 const VIMEO_ID_REGEX = /vimeo\.com\/(?:video\/)?(\d+)/;

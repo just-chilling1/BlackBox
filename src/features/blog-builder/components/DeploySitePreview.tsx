@@ -79,10 +79,10 @@ export function DeploySitePreview({ site, showLiveLink = false }: DeploySitePrev
       {showLiveLink && isLive && (
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
           <Link
-            href={publicPath}
+            href={`${publicPath}#start`}
             target="_blank"
             rel="noopener noreferrer"
-            title="Open the questionnaire your visitors will take"
+            title="Open the questionnaire from the first step"
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-grad-brass px-5 py-3 text-sm font-medium text-text-on-accent shadow-brass transition-all hover:brightness-105"
           >
             <Eye size={16} aria-hidden />
