@@ -171,8 +171,6 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
               />
             ) : null}
 
-            <ExclusiveOffersNavSection offers={exclusiveOffers} collapsed={collapsed} />
-
             {blogEnabled ? (
               <BlogBuilderNav
                 pathname={pathname}
@@ -188,6 +186,8 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
           {PREMIUM_FEATURES.length > 0 ? (
             <PremiumFeatureNavList collapsed={collapsed} onNavigate={handleNavClick} highlighted />
           ) : null}
+
+          <ExclusiveOffersNavSection offers={exclusiveOffers} collapsed={collapsed} />
         </nav>
       </div>
 
