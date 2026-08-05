@@ -21,11 +21,6 @@ const PromoOrchestrator = dynamic(
   { ssr: false }
 );
 
-const FreeTrainingPopup = dynamic(
-  () => import("@/components/ui/free-training-popup").then((m) => ({ default: m.FreeTrainingPopup })),
-  { ssr: false }
-);
-
 /** Route prefixes that render without the app shell (public hosted pages). */
 const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
 
@@ -83,7 +78,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
 
       <BottomNav />
-      <FreeTrainingPopup />
       {hasEnabledPromoOrchestrator() ? <PromoOrchestrator /> : null}
     </div>
   );
