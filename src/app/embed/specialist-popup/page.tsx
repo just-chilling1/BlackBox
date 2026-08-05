@@ -25,7 +25,14 @@ function EmbedInner() {
     }
   }, []);
 
-  return <SpecialistWelcomePopup forceOpen={preview} onOpenChange={notifyParent} />;
+  // Production embed: no forceOpen — popup calls /api/eligibility/specialist-popup
+  // (US/CA GeoIP + Mon–Fri 08:30–17:30 PT) before posting open:true to the parent.
+  // Preview (?preview=1 in dev, or ?preview=SECRET in prod) skips the gate for QA only.
+  if (preview) {
+    return <SpecialistWelcomePopup forceOpen onOpenChange={notifyParent} />;
+  }
+
+  return <SpecialistWelcomePopup onOpenChange={notifyParent} />;
 }
 
 export default function SpecialistPopupEmbedPage() {
