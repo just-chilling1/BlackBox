@@ -24,9 +24,18 @@ export async function middleware(request: NextRequest) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow')
 
     const { pathname } = request.nextUrl
+
+    if (
+      process.env.NODE_ENV !== "development" &&
+      (pathname === "/dev" || pathname.startsWith("/dev/"))
+    ) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
     const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/forgot-password') || pathname.startsWith('/reset-password') || pathname.startsWith('/auth/callback')
     const isStaticAsset = /\.(?:png|jpe?g|gif|svg|webp|ico|woff2?|ttf|otf|mp4|txt|xml)$/i.test(pathname)
     const isPublicHostedRoute = PUBLIC_ROUTE_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+    const isPublicEmbedRoute = pathname === '/embed' || pathname.startsWith('/embed/')
     const isPublicRoute =
         pathname.startsWith('/_next') ||
         pathname.startsWith('/api') ||
@@ -35,6 +44,7 @@ export async function middleware(request: NextRequest) {
         pathname === '/sitemap.xml' ||
         pathname === '/manifest.webmanifest' ||
         pathname === '/free-training-popup.html' ||
+        isPublicEmbedRoute ||
         isStaticAsset ||
         isPublicHostedRoute
     const isOnboardingRoute = pathname === '/onboarding' || pathname.startsWith('/onboarding/')

@@ -21,6 +21,14 @@ const PromoOrchestrator = dynamic(
   { ssr: false }
 );
 
+const SpecialistWelcomePopupHost = dynamic(
+  () =>
+    import("@/components/specialist-welcome-popup-host").then((m) => ({
+      default: m.SpecialistWelcomePopupHost,
+    })),
+  { ssr: false }
+);
+
 /** Route prefixes that render without the app shell (public hosted pages). */
 const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
 
@@ -78,6 +86,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
 
       <BottomNav />
+      <SpecialistWelcomePopupHost />
       {hasEnabledPromoOrchestrator() ? <PromoOrchestrator /> : null}
     </div>
   );
