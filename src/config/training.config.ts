@@ -8,7 +8,7 @@ export const trainingContent = {
   pageSubtitle:
     "Click-by-click walkthroughs for every core tool — watch in order after the Dashboard intro videos.",
   /** Used by global-top banner, sidebar promos, and modal-training */
-  externalTrainingUrl: "https://example.com/training",
+  externalTrainingUrl: "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea",
   /** Academy platform tutorials — videos 4–6 in the product roster */
   videos: [
     {

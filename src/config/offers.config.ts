@@ -5,11 +5,11 @@ export const PARTNER_LINK_PLACEHOLDER = "https://example.com/partner-offer";
 
 export const offers = {
   /** Sidebar / bottom-nav exclusive offer slots */
-  exclusiveOffer1: "https://example.com/offer-1",
-  exclusiveOffer2: "https://example.com/offer-2",
-  exclusiveOffer3: "https://example.com/offer-3",
+  exclusiveOffer1: "https://getrobinhod.com/fe-e?affid=digitalavalon",
+  exclusiveOffer2: "https://thedigitalavalon.a.explodely.com/?fid=G7BYO9W&aff=digitalavalon",
+  exclusiveOffer3: "https://thedigitalavalon.a.explodely.com/?fid=5SRWJGZ&aff=digitalavalon",
   /** Withdraw / account-verified ad under video overlays */
-  videoWithdrawUrl: "https://example.com/withdraw",
+  videoWithdrawUrl: "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea",
 } as const;
 
 export interface ExclusiveOffer {
