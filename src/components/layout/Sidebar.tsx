@@ -29,7 +29,6 @@ import { BlogBuilderNav } from "@/features/blog-builder/components/BlogBuilderNa
 import { storageKeys } from "@/lib/storage-keys";
 import { homeNav, supportNav, type NavItem } from "@/config/navigation.config";
 import { getExclusiveOffers } from "@/config/offers.config";
-import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { WarmNavLink } from "@/components/layout/WarmNavLink";
@@ -54,7 +53,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const workflowProgress = workflow?.progress ?? 0;
   const blogEnabled = isFeatureEnabled("blog-builder");
   const showHomeNav = !workflowSteps.some((step) => step.path === homeNav.path);
-  const exclusiveOffers = getExclusiveOffers(trainingContent.externalTrainingUrl);
+  const exclusiveOffers = getExclusiveOffers();
 
   const [displayName, setDisplayName] = useState("Member");
   const [userInitials, setUserInitials] = useState("BC");

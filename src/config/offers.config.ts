@@ -1,5 +1,3 @@
-import { trainingContent } from "./training.config";
-
 /** Replace with real partner/affiliate URLs before launch */
 export const PARTNER_LINK_PLACEHOLDER = "https://example.com/partner-offer";
 
@@ -22,12 +20,8 @@ export interface ExclusiveOffer {
 export const exclusiveOffersEnabled = true;
 
 /** Single source of truth for sidebar + mobile exclusive offers. */
-export function getExclusiveOffers(externalTrainingUrl?: string): ExclusiveOffer[] {
+export function getExclusiveOffers(): ExclusiveOffer[] {
   if (!exclusiveOffersEnabled) return [];
-  const trainingUrl =
-    externalTrainingUrl?.trim() ||
-    trainingContent.externalTrainingUrl?.trim() ||
-    offers.exclusiveOffer3;
   return [
     {
       title: "Earn $400/Day Testing New Apps",
@@ -41,7 +35,7 @@ export function getExclusiveOffers(externalTrainingUrl?: string): ExclusiveOffer
     },
     {
       title: "Fast Cash Training",
-      href: trainingUrl,
+      href: offers.exclusiveOffer3,
       subtitle: "Claim Now",
     },
   ];
