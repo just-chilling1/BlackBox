@@ -91,6 +91,7 @@ export const enabledFeatures: FeatureId[] = [
   "premium-recurring",
   "premium-social",
   "premium-dfy-profit",
+  "premium-autopilot",
   "protector",
 ];
 

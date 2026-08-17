@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { storageKeys } from "@/lib/storage-keys";
 
 export interface PremiumSettings {
   instant_income_niche: string | null;
@@ -15,6 +14,7 @@ const DEFAULT_SETTINGS: PremiumSettings = {
   autopilot_selected_niche: "All",
 };
 
+/** Server-side helper for reading shared premium settings rows. */
 export async function fetchPremiumSettings(
   supabase: SupabaseClient,
   userId: string
@@ -35,6 +35,7 @@ export async function fetchPremiumSettings(
   };
 }
 
+/** Server-side helper for upserting shared premium settings rows. */
 export async function upsertPremiumSettings(
   supabase: SupabaseClient,
   userId: string,
@@ -45,17 +46,4 @@ export async function upsertPremiumSettings(
     ...patch,
     updated_at: new Date().toISOString(),
   });
-}
-
-/** Migrate legacy localStorage autopilot completions to DB when premium APIs are wired. */
-export function migrateLegacyAutopilotLocalStorage(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(storageKeys.autopilotCompleted);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === "string") : [];
-  } catch {
-    return [];
-  }
 }
