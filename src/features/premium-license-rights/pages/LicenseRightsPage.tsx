@@ -1,23 +1,39 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import {
+  Award,
+  BookOpen,
+  Check,
   CheckCircle2,
+  Clock,
+  Copy,
   FileText,
+  LayoutTemplate,
   Loader2,
   Lock,
   Mail,
+  Palette,
+  Scale,
   Send,
+  Sparkles,
+  Tag,
 } from "lucide-react";
 import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
-import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
 import { SUPPORT_EMAIL } from "@/lib/support";
+import { cn } from "@/lib/utils";
 import { brand } from "@/config/brand.config";
-import { EDITION_CONTENTS } from "@/features/premium-license-rights/lib/edition-contents";
+import {
+  EDITION_CONTENTS,
+  type EditionContent,
+  type EditionIconId,
+} from "@/features/premium-license-rights/lib/edition-contents";
 import {
   DEFAULT_REQUEST_MESSAGE,
   REQUEST_SUBJECT,
@@ -31,9 +47,54 @@ import {
 type FormState = "idle" | "submitting" | "error";
 
 const fieldClass =
-  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
+  "w-full min-w-0 rounded-xl border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
 
 const labelClass = "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted";
+
+const EDITION_ICONS: Record<EditionIconId, typeof Scale> = {
+  scale: Scale,
+  palette: Palette,
+  layout: LayoutTemplate,
+  book: BookOpen,
+};
+
+function EditionContentCard({ item, index }: { item: EditionContent; index: number }) {
+  const Icon = EDITION_ICONS[item.icon];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.08 * index, duration: 0.35 }}
+    >
+      <GlassPanel
+        intensity="low"
+        className="group h-full border-[var(--bb-line-brass)]/60 transition-all duration-300 hover:border-brass-700/40"
+        contentClassName="p-4 sm:p-5"
+      >
+        <div className="flex items-start gap-4">
+          <div className="relative shrink-0">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700 transition-colors group-hover:bg-brass-700 group-hover:text-white">
+              <Icon size={20} aria-hidden />
+            </div>
+            <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[var(--bb-line-brass)] bg-page text-brass-700">
+              <Lock size={10} aria-hidden />
+            </div>
+          </div>
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm font-medium text-text-primary">{item.title}</h3>
+              <span className="rounded-full border border-[var(--bb-line-brass)] bg-page/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-brass-700">
+                Locked
+              </span>
+            </div>
+            <p className="text-xs leading-relaxed text-text-secondary">{item.description}</p>
+          </div>
+        </div>
+      </GlassPanel>
+    </motion.div>
+  );
+}
 
 function PendingActivationPanel({
   email,
@@ -45,12 +106,22 @@ function PendingActivationPanel({
   onReset: () => void;
 }) {
   return (
-    <div className="support-success-panel space-y-5 p-1">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="support-success-panel space-y-6 p-6 sm:p-8"
+    >
       <div className="flex flex-col items-center space-y-4 text-center">
         <div className="support-success-icon">
           <CheckCircle2 className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="support-success-title">Request received</h3>
+        <div className="space-y-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--bb-warning)]/25 bg-[var(--bb-warning)]/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-[var(--bb-warning)]">
+            <Clock size={12} aria-hidden />
+            Awaiting team activation
+          </span>
+          <h3 className="support-success-title">Request received</h3>
+        </div>
         <p className="support-success-body">
           {viaMailto ? (
             <>
@@ -77,6 +148,16 @@ function PendingActivationPanel({
       <button type="button" onClick={onReset} className="support-success-secondary-btn">
         Send another request
       </button>
+    </motion.div>
+  );
+}
+
+function FormSkeleton() {
+  return (
+    <div className="space-y-4" aria-hidden>
+      <div className="h-12 animate-pulse rounded-xl bg-page/60" />
+      <div className="h-36 animate-pulse rounded-xl bg-page/60" />
+      <div className="h-11 animate-pulse rounded-xl bg-page/60" />
     </div>
   );
 }
@@ -90,6 +171,7 @@ export default function LicenseRightsPage() {
   const [pending, setPending] = useState<PendingLicenseRightsRequest | null>(null);
   const [viaMailto, setViaMailto] = useState(false);
   const [ready, setReady] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   useEffect(() => {
     void getCachedClientUser().then((user) => {
@@ -108,6 +190,16 @@ export default function LicenseRightsPage() {
     setViaMailto(false);
     setFormState("idle");
     setErrorMessage("");
+  };
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(SUPPORT_EMAIL);
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
   };
 
   const handleSubmit = useCallback(
@@ -151,158 +243,239 @@ export default function LicenseRightsPage() {
     [email, message, userId]
   );
 
+  const statusBadge = pending ? (
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--bb-warning)]/25 bg-[var(--bb-warning)]/10 px-4 py-3">
+      <Clock size={16} className="text-[var(--bb-warning)]" aria-hidden />
+      <span className="text-sm font-medium uppercase tracking-wider text-[var(--bb-warning)]">
+        Pending review
+      </span>
+    </div>
+  ) : (
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-4 py-3">
+      <Lock size={16} className="text-brass-700" aria-hidden />
+      <span className="text-sm font-medium uppercase tracking-wider text-brass-700">
+        Activation required
+      </span>
+    </div>
+  );
+
+  const overviewStats = [
+    {
+      label: "Edition status",
+      value: pending ? "Pending review" : "Not activated",
+      icon: pending ? Clock : Lock,
+      tone: pending ? "text-[var(--bb-warning)]" : "text-brass-700",
+    },
+    {
+      label: "Ticket subject",
+      value: REQUEST_SUBJECT,
+      icon: Tag,
+      tone: "text-brass-700",
+    },
+    {
+      label: "Typical reply",
+      value: "2–48 hours",
+      icon: Clock,
+      tone: "text-text-secondary",
+    },
+  ];
+
   return (
     <PremiumPageLayout
       title="Full Turnkey Reseller & License Rights Edition"
-      subtitle={`Email support with the title "${REQUEST_SUBJECT}" so the ${brand.productName} team can activate this edition on your account.`}
+      subtitle={`Request activation from our support desk. Your ticket is filed as "${REQUEST_SUBJECT}" and the team unlocks this edition on your account.`}
       footer={<PremiumFooter />}
     >
-        <PremiumControlCard
-          icon={FileText}
-          title="Request activation"
-          description={`Tickets are sent to our support desk with the title "${REQUEST_SUBJECT}". The edition stays locked until the team activates it.`}
-        >
-          {!ready ? (
-            <div className="h-40 animate-pulse rounded-lg bg-page/60" aria-hidden />
-          ) : pending ? (
-            <PendingActivationPanel
-              email={pending.email}
-              viaMailto={viaMailto}
-              onReset={handleReset}
-            />
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-              <div className="min-w-0">
-                <label htmlFor="license-rights-email" className={labelClass}>
-                  Your email
-                </label>
-                <input
-                  id="license-rights-email"
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  disabled={formState === "submitting"}
-                  className={fieldClass}
-                />
-              </div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-[var(--bb-line-brass)] bg-linear-to-br from-brass-100 via-brass-100/80 to-page p-5 sm:p-6"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-grad-brass text-black shadow-sm">
+              <Award size={22} aria-hidden />
+            </div>
+            <div className="space-y-1">
+              <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                <Sparkles size={15} className="text-brass-700" aria-hidden />
+                Premium reseller edition
+              </p>
+              <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
+                Sell {brand.productName} under your own brand with turnkey assets. Submit one
+                request below — our team handles activation manually.
+              </p>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--bb-line-brass)] bg-page/80 px-3 py-1.5 text-xs font-medium text-brass-700 sm:self-center">
+            <Tag size={13} aria-hidden />
+            Subject: {REQUEST_SUBJECT}
+          </div>
+        </div>
+      </motion.div>
 
-              <div className="min-w-0">
-                <label htmlFor="license-rights-message" className={labelClass}>
-                  Your message
-                </label>
-                <textarea
-                  id="license-rights-message"
-                  name="message"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  required
+      <div className="stat-grid md:grid-cols-3">
+        {overviewStats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 * index }}
+          >
+            <GlassPanel intensity="low" className="h-full" contentClassName="p-4 sm:p-5">
+              <div className="mb-2 flex items-center gap-2">
+                <stat.icon className={cn("h-4 w-4", stat.tone)} aria-hidden />
+                <span className="text-[11px] font-medium uppercase tracking-wider text-text-muted">
+                  {stat.label}
+                </span>
+              </div>
+              <p className="text-lg font-medium text-text-heading">{stat.value}</p>
+            </GlassPanel>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="xl:col-span-7">
+          <PremiumControlCard
+            icon={FileText}
+            title="Request activation"
+            description={`We send your message to support with the title "${REQUEST_SUBJECT}".`}
+            badge={ready ? statusBadge : undefined}
+          >
+            {!ready ? (
+              <FormSkeleton />
+            ) : pending ? (
+              <PendingActivationPanel
+                email={pending.email}
+                viaMailto={viaMailto}
+                onReset={handleReset}
+              />
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="min-w-0">
+                  <label htmlFor="license-rights-email" className={labelClass}>
+                    Your email
+                  </label>
+                  <input
+                    id="license-rights-email"
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    disabled={formState === "submitting"}
+                    className={fieldClass}
+                  />
+                </div>
+
+                <div className="min-w-0">
+                  <label htmlFor="license-rights-message" className={labelClass}>
+                    Your message
+                  </label>
+                  <textarea
+                    id="license-rights-message"
+                    name="message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                    disabled={formState === "submitting"}
+                    rows={6}
+                    className={`${fieldClass} min-h-[148px] resize-y`}
+                  />
+                </div>
+
+                {formState === "error" && errorMessage ? (
+                  <PremiumErrorAlert message={errorMessage} />
+                ) : null}
+
+                <div className="rounded-xl border border-[var(--bb-line-brass)] bg-brass-100/70 px-4 py-3">
+                  <p className="text-xs leading-relaxed text-text-secondary">
+                    <span className="font-medium text-text-primary">What happens next:</span> Support
+                    receives your ticket, verifies your purchase, and replies when the reseller
+                    license is ready. Check spam if you don&apos;t hear back within 48 hours.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
                   disabled={formState === "submitting"}
-                  rows={6}
-                  className={`${fieldClass} min-h-[140px] resize-y`}
-                />
-                <p className="mt-2 text-xs text-text-muted">
-                  Subject is set automatically to{" "}
-                  <span className="font-medium text-text-secondary">{REQUEST_SUBJECT}</span>.
+                  className="btn-primary min-h-[46px] w-full"
+                >
+                  {formState === "submitting" ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Send License Rights request
+                    </span>
+                  )}
+                </button>
+
+                <div className="dashboard-nested-card flex gap-3 px-3 py-3">
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" aria-hidden />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs leading-snug text-text-secondary">
+                      Form not working? Copy our support email:
+                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyEmail()}
+                        className="break-all text-left text-sm font-medium text-brass-700 hover:underline"
+                      >
+                        {SUPPORT_EMAIL}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyEmail()}
+                        className="inline-flex items-center gap-1 rounded-md border border-border-dim bg-page px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-text-secondary transition-colors hover:border-brass-700 hover:text-brass-700"
+                      >
+                        {copiedEmail ? (
+                          <>
+                            <Check size={12} aria-hidden />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12} aria-hidden />
+                            Copy
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
+          </PremiumControlCard>
+        </div>
+
+        <div className="xl:col-span-5">
+          <section className="glass-card h-full p-5 sm:p-6">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+                <Lock size={18} aria-hidden />
+              </div>
+              <div>
+                <h2 className="text-lg font-medium text-text-primary">What you unlock</h2>
+                <p className="text-sm text-text-secondary">
+                  {EDITION_CONTENTS.length} deliverables included after activation
                 </p>
               </div>
-
-              {formState === "error" && errorMessage ? (
-                <PremiumErrorAlert message={errorMessage} />
-              ) : null}
-
-              <p className="rounded-lg border border-border-dim/70 bg-page/60 px-3 py-2.5 text-xs leading-relaxed text-text-muted">
-                <span className="font-medium text-text-secondary">Please note:</span> We reply to
-                the email above. Check spam or junk if you don&apos;t hear back within 48 hours.
-              </p>
-
-              <button
-                type="submit"
-                disabled={formState === "submitting"}
-                className="btn-primary min-h-[44px] w-full"
-              >
-                {formState === "submitting" ? (
-                  <span className="inline-flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Sending...
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center justify-center gap-2">
-                    <Send className="h-4 w-4" />
-                    Send License Rights request
-                  </span>
-                )}
-              </button>
-
-              <div className="dashboard-nested-card flex gap-2.5 px-3 py-2.5">
-                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
-                <div className="min-w-0">
-                  <p className="text-xs leading-snug text-text-secondary">
-                    Form not working? Copy our support email:
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-                    className="mt-1 block break-all text-left text-sm font-medium text-brass-700 hover:underline"
-                  >
-                    {SUPPORT_EMAIL}
-                  </button>
-                </div>
-              </div>
-            </form>
-          )}
-        </PremiumControlCard>
-
-        <section className="glass-card p-8">
-          <div className="mb-8 flex items-center gap-3">
-            <Lock size={22} className="text-brass-700" />
-            <h2 className="text-xl font-medium text-text-primary">Included — awaiting activation</h2>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {EDITION_CONTENTS.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col gap-3 rounded-2xl border border-[var(--bb-line-brass)] bg-brass-100 p-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-page/80 text-brass-700">
-                    <Lock size={18} aria-hidden />
-                  </div>
-                  <span className="rounded-full border border-[var(--bb-line-brass)] bg-page/70 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-brass-700">
-                    Awaiting activation
-                  </span>
-                </div>
-                <h3 className="text-lg font-medium text-text-primary">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-text-secondary">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <PremiumStepsSection
-          steps={[
-            {
-              num: "1",
-              title: "Send the request",
-              desc: `Use the form above. We file a support ticket titled "${REQUEST_SUBJECT}".`,
-              icon: Send,
-            },
-            {
-              num: "2",
-              title: "Team reviews it",
-              desc: "Support confirms your purchase and activates the reseller license on your account.",
-              icon: FileText,
-            },
-            {
-              num: "3",
-              title: "Edition unlocks here",
-              desc: "Once activated, the locked assets on this page become available to use and rebrand.",
-              icon: CheckCircle2,
-            },
-          ]}
-        />
+            </div>
+            <div className="space-y-3">
+              {EDITION_CONTENTS.map((item, index) => (
+                <EditionContentCard key={item.id} item={item} index={index} />
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
     </PremiumPageLayout>
   );
 }
