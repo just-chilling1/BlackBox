@@ -60,32 +60,32 @@ export const trainingQuickStartChecklist = [
 export const trainingPremiumVideos = [
   {
     id: "1215530104",
-    badge: "Accelerator",
-    title: "Accelerator",
+    badge: "Unlimited",
+    title: "Unlimited",
     description:
       "Clone from two hundred pre-made sales pages and ten-post X threads — swap in your affiliate link in minutes.",
     duration: "5+ min",
   },
   {
     id: "1215568587",
-    badge: "Recurring Stream",
-    title: "Recurring Stream",
+    badge: "Guaranteed High-Ticket Payouts",
+    title: "Guaranteed High-Ticket Payouts",
     description:
       "Attach long-form authority articles to any offer, preview with your link baked in, and publish for recurring traffic.",
     duration: "5+ min",
   },
   {
     id: "1215574185",
-    badge: "Social Payouts",
-    title: "Social Payouts",
+    badge: "Instant Income",
+    title: "Instant Income",
     description:
       "Generate ten-plus Facebook post variants from one offer — different hooks and angles, ready to copy and paste.",
     duration: "5+ min",
   },
   {
     id: "1215579801",
-    badge: "Protector",
-    title: "Protector",
+    badge: "Cyber Protection",
+    title: "Cyber Protection",
     description:
       "Account security dashboard — verification status, encryption checks, and activity log for peace of mind.",
     duration: "2+ min",

@@ -116,26 +116,26 @@ export default function ProtectorPage() {
   );
 
   if (loading) {
-    return <PageLoading message="Loading Wealth Protector..." />;
+    return <PageLoading message="Loading Cyber Protection..." />;
   }
 
   return (
     <PremiumPageLayout
-      title="Protector"
+      title="Cyber Protection"
       subtitle="Your account security overview — membership verification, encryption status, and activity monitoring in real time."
-      footer={<PremiumFooter>Wealth Protector — powered by {brand.productName}.</PremiumFooter>}
+      footer={<PremiumFooter>Cyber Protection — powered by {brand.productName}.</PremiumFooter>}
     >
       <PremiumVideoTutorial
         vimeoId="1215579801"
-        title="Protector Training"
-        description="Watch what Wealth Protector monitors for you — account verification, encryption, and session security — and how to read your security overview."
-        iframeTitle="Protector training video"
+        title="Cyber Protection Training"
+        description="Watch what Cyber Protection monitors for you — account verification, encryption, and session security — and how to read your security overview."
+        iframeTitle="Cyber Protection training video"
         thumbnailSrc={getAcademyPremiumThumbnail(3) ?? undefined}
       />
 
       <PremiumControlCard
         icon={ShieldCheck}
-        title="Wealth Protector"
+        title="Cyber Protection"
         description="Your account security overview. Everything is monitored in real time."
         badge={
           <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-4 py-3 sm:px-5">

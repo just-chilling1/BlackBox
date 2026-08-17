@@ -294,7 +294,7 @@ export default function AcceleratorPage() {
   if (loading && templates.length === 0) {
     return (
       <PremiumPageLayout
-        title="Accelerator"
+        title="Unlimited"
         subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
         animate={false}
       >
@@ -305,19 +305,19 @@ export default function AcceleratorPage() {
 
   return (
     <PremiumPageLayout
-      title="Accelerator"
+      title="Unlimited"
       subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
       footer={
         <PremiumFooter>
-          Powered by {brand.productName}. Accelerator templates are seeded once via admin — members always clone stored copies.
+          Powered by {brand.productName}. Unlimited templates are seeded once via admin — members always clone stored copies.
         </PremiumFooter>
       }
     >
       <PremiumVideoTutorial
         vimeoId="1215530104"
-        title="Accelerator Training"
+        title="Unlimited Training"
         description="Watch how to browse the 200 pre-made sales pages, clone one with your affiliate link, and grab its ready-made story thread — all in under two minutes."
-        iframeTitle="Accelerator training video"
+        iframeTitle="Unlimited training video"
         thumbnailSrc={getAcademyPremiumThumbnail(0) ?? undefined}
       />
 

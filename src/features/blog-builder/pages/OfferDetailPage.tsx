@@ -541,7 +541,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
             <div>
               <h2 className="text-base font-medium text-text-heading">Facebook posts</h2>
               <p className="text-sm text-text-secondary">
-                Bulk post variants from Social Payouts.
+                Bulk post variants from Instant Income.
               </p>
             </div>
             <Link
@@ -571,7 +571,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
             <div>
               <h2 className="text-base font-medium text-text-heading">Authority articles</h2>
               <p className="text-sm text-text-secondary">
-                Long-form articles from Recurring Stream.
+                Long-form articles from Guaranteed High-Ticket Payouts.
               </p>
             </div>
             <Link href="/recurring-wealth" className="btn-secondary text-sm">

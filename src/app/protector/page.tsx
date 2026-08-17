@@ -3,7 +3,7 @@ import { loadFeaturePage } from "@/lib/load-feature-page";
 
 const ProtectorPage = loadFeaturePage(
   () => import("@/features/protector/pages/ProtectorPage"),
-  "Loading Protector..."
+  "Loading Cyber Protection..."
 );
 
 export default function Page() {

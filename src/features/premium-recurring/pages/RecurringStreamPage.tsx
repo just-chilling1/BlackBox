@@ -325,7 +325,7 @@ export default function RecurringStreamPage() {
       <div className="page-container">
         <PageHeader
           eyebrow="Premium"
-          title="Recurring Stream"
+          title="Guaranteed High-Ticket Payouts"
           subtitle={`${seededCount || 100} long-form authority articles — pick an offer, preview with your link, and publish across platforms.`}
         />
         <PageSkeleton cards={2} />
@@ -341,16 +341,16 @@ export default function RecurringStreamPage() {
     >
       <PageHeader
         eyebrow="Premium"
-        title="Recurring Stream"
+        title="Guaranteed High-Ticket Payouts"
         subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — pick an offer, preview with your link, and publish across platforms.`}
       />
 
       <div className="mb-4">
         <PremiumVideoTutorial
           vimeoId="1215568587"
-          title="Recurring Stream Training"
+          title="Guaranteed High-Ticket Payouts Training"
           description="Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog."
-          iframeTitle="Recurring Stream training video"
+          iframeTitle="Guaranteed High-Ticket Payouts training video"
           thumbnailSrc={getAcademyPremiumThumbnail(1) ?? undefined}
         />
       </div>

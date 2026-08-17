@@ -76,20 +76,20 @@ export const faqSections: FaqSection[] = [
     title: "Premium Features",
     items: [
       {
-        q: "What is Accelerator?",
-        a: "Accelerator gives you access to 200 pre-made sales pages and X threads across popular niches. Add your affiliate link, pick a template, and clone a stored copy instantly.",
+        q: "What is Unlimited?",
+        a: "Unlimited gives you access to 200 pre-made sales pages and X threads across popular niches. Add your affiliate link, pick a template, and clone a stored copy instantly.",
       },
       {
-        q: "What is Recurring Stream?",
-        a: "Recurring Stream provides ready-to-publish authority articles woven around your offer. Preview with your link included, save articles to an offer, and follow the Where to use it guide for your blog, Medium, LinkedIn, or Quora.",
+        q: "What is Guaranteed High-Ticket Payouts?",
+        a: "Guaranteed High-Ticket Payouts provides ready-to-publish authority articles woven around your offer. Preview with your link included, save articles to an offer, and follow the Where to use it guide for your blog, Medium, LinkedIn, or Quora.",
       },
       {
-        q: "What are Social Payouts?",
-        a: "Social Payouts bulk-generates Facebook post variants from a single offer. Every generation is kept as a saved post set, and the built-in Facebook posting best practices show you how to post without breaking group rules.",
+        q: "What is Instant Income?",
+        a: "Instant Income bulk-generates Facebook post variants from a single offer. Every generation is kept as a saved post set, and the built-in Facebook posting best practices show you how to post without breaking group rules.",
       },
       {
-        q: "What is Protector?",
-        a: "Protector is your account security overview — verification status, security checks, and a recent activity log — so you can keep your member account in good standing.",
+        q: "What is Cyber Protection?",
+        a: "Cyber Protection is your account security overview — verification status, security checks, and a recent activity log — so you can keep your member account in good standing.",
       },
     ],
   },

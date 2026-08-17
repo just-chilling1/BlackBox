@@ -337,7 +337,7 @@ export default function SocialPayoutsPage() {
   if (loading) {
     return (
       <PremiumPageLayout
-        title="Social Payouts"
+        title="Instant Income"
         subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
         animate={false}
       >
@@ -348,19 +348,19 @@ export default function SocialPayoutsPage() {
 
   return (
     <PremiumPageLayout
-      title="Social Payouts"
+      title="Instant Income"
       subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
       footer={
         <PremiumFooter>
-          Powered by {brand.productName}. Social Payouts uses the bulk post engine.
+          Powered by {brand.productName}. Instant Income uses the bulk post engine.
         </PremiumFooter>
       }
     >
       <PremiumVideoTutorial
         vimeoId="1215574185"
-        title="Social Payouts Training"
+        title="Instant Income Training"
         description="Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post."
-        iframeTitle="Social Payouts training video"
+        iframeTitle="Instant Income training video"
         thumbnailSrc={getAcademyPremiumThumbnail(2) ?? undefined}
       />
 

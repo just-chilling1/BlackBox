@@ -3,7 +3,7 @@ import { loadFeaturePage } from "@/lib/load-feature-page";
 
 const RecurringStreamPage = loadFeaturePage(
   () => import("@/features/premium-recurring/pages/RecurringStreamPage"),
-  "Loading Recurring Stream..."
+  "Loading Guaranteed High-Ticket Payouts..."
 );
 
 export default function Page() {

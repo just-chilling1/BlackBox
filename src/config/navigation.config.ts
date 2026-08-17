@@ -114,12 +114,13 @@ export const upgradeNav: NavItem[] = [
 /** Premium section — single source for sidebar, bottom nav, dashboard widget */
 export const premiumNav: NavItem[] = [
   { path: "/dfy", label: "Done-For-You", icon: "Scan", feature: "premium-dfy" },
+  { path: "/dfy-profit", label: "Done-For-You Profit", icon: "Wallet", feature: "premium-dfy-profit" },
   { path: "/instant", label: "Instant Income", icon: "Sparkles", feature: "premium-instant" },
   { path: "/autopilot", label: "Automated Profits", icon: "Rocket", feature: "premium-autopilot" },
-  { path: "/accelerator", label: "Accelerator", icon: "Zap", feature: "premium-accelerator" },
-  { path: "/recurring-wealth", label: "Recurring Stream", icon: "Repeat", feature: "premium-recurring" },
-  { path: "/social-payouts", label: "Social Payouts", icon: "Globe", feature: "premium-social" },
-  { path: "/protector", label: "Protector", icon: "ShieldCheck", feature: "protector" },
+  { path: "/accelerator", label: "Unlimited", icon: "Zap", feature: "premium-accelerator" },
+  { path: "/recurring-wealth", label: "Guaranteed High-Ticket Payouts", icon: "Repeat", feature: "premium-recurring" },
+  { path: "/social-payouts", label: "Instant Income", icon: "Globe", feature: "premium-social" },
+  { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
 ];
 
 export const premiumSectionLabel = "Premium Features";
