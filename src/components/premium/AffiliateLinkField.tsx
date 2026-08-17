@@ -161,7 +161,7 @@ export function AffiliateLinkField({
           links={vaultLinks}
           selectedUrl={selectedVaultUrl}
           onSelect={handleSelectFromVault}
-          roundedClassName="rounded-2xl"
+          roundedClassName="rounded-[50%]"
         />
       ) : (
         <p className="text-xs text-text-muted">
@@ -181,7 +181,7 @@ export function AffiliateLinkField({
           value={value}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={placeholder}
-          className="input-base w-full rounded-2xl"
+          className="input-base w-full rounded-[50%]"
         />
       </label>
 
