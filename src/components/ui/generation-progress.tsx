@@ -91,7 +91,7 @@ export function GenerationProgress({
   return (
     <div className="flex w-full flex-col gap-4">
       {active ? (
-        <div className="rounded-[50%] border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
+        <div className="rounded-2xl border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
           <div className="mb-2.5 flex items-center gap-3">
             <Loader2 size={16} className="shrink-0 animate-spin text-brass-700" />
             <span className="text-[13px] font-medium text-text-primary sm:text-sm">{label}</span>
