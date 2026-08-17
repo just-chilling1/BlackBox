@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Loader2, Sparkles, Wallet } from "lucide-react";
+import { Check, Loader2, Sparkles, Wallet } from "lucide-react";
+import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
@@ -19,12 +20,13 @@ import {
   type DfySalesResult,
 } from "@/features/dfy-profit/components/DfyResultPanel";
 
-type Stage = "idle" | "sales" | "article" | "posts" | "done";
+type Stage = "idle" | "sales" | "article" | "posts" | "thread" | "done";
 
 const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
   sales: "Building your sales page with a random template…",
   article: "Writing your authority article…",
   posts: "Generating 3 Facebook posts…",
+  thread: "Writing your X story thread…",
 };
 
 export default function DfyProfitPage() {
@@ -35,16 +37,25 @@ export default function DfyProfitPage() {
   const [sales, setSales] = useState<DfySalesResult | null>(null);
   const [article, setArticle] = useState<DfyArticleResult | null>(null);
   const [posts, setPosts] = useState<DfyFacebookPost[]>([]);
+  const [thread, setThread] = useState<{
+    id: string;
+    text: string;
+    angle: string | null;
+    imageUrl: string | null;
+  }[]>([]);
   const [productContext, setProductContext] = useState("");
   const [productName, setProductName] = useState("");
   const [nicheLabel, setNicheLabel] = useState("");
   const [lastTemplateId, setLastTemplateId] = useState<string | undefined>();
   const [articleError, setArticleError] = useState("");
   const [postsError, setPostsError] = useState("");
+  const [threadError, setThreadError] = useState("");
   const [retryingArticle, setRetryingArticle] = useState(false);
   const [retryingPosts, setRetryingPosts] = useState(false);
+  const [retryingThread, setRetryingThread] = useState(false);
 
-  const generating = stage === "sales" || stage === "article" || stage === "posts";
+  const generating =
+    stage === "sales" || stage === "article" || stage === "posts" || stage === "thread";
 
   const runArticleStage = useCallback(
     async (siteId: string, ctx: string, name: string, nicheName: string) => {
@@ -62,9 +73,8 @@ export default function DfyProfitPage() {
       if (!res.ok) throw new Error(data.error || "Article generation failed");
       return {
         title: data.title as string,
-        url: data.url as string,
+        excerpt: data.excerpt as string,
         html: data.html as string,
-        slug: data.slug as string,
       } satisfies DfyArticleResult;
     },
     []
@@ -81,6 +91,17 @@ export default function DfyProfitPage() {
     return (data.posts ?? []) as DfyFacebookPost[];
   }, []);
 
+  const runThreadStage = useCallback(async (siteId: string) => {
+    const res = await fetch("/api/premium/dfy-profit/x-thread", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ siteId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "X thread generation failed");
+    return (data.posts ?? []) as typeof thread;
+  }, []);
+
   const handleGenerate = async () => {
     if (!isValidAffiliateUrl(affiliateUrl)) {
       setError("Enter a valid affiliate URL starting with https://");
@@ -94,9 +115,11 @@ export default function DfyProfitPage() {
     setError("");
     setArticleError("");
     setPostsError("");
+    setThreadError("");
     setSales(null);
     setArticle(null);
     setPosts([]);
+    setThread([]);
     setStage("sales");
 
     let siteId = "";
@@ -154,6 +177,14 @@ export default function DfyProfitPage() {
       setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
     }
 
+    setStage("thread");
+    try {
+      const threadResult = await runThreadStage(siteId);
+      setThread(threadResult);
+    } catch (e) {
+      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
+    }
+
     setStage("done");
   };
 
@@ -190,6 +221,20 @@ export default function DfyProfitPage() {
     }
   };
 
+  const handleRetryThread = async () => {
+    if (!sales?.siteId) return;
+    setRetryingThread(true);
+    setThreadError("");
+    try {
+      const result = await runThreadStage(sales.siteId);
+      setThread(result);
+    } catch (e) {
+      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
+    } finally {
+      setRetryingThread(false);
+    }
+  };
+
   return (
     <PremiumPageLayout
       title="Done-For-You Profit"
@@ -223,7 +268,7 @@ export default function DfyProfitPage() {
       <PremiumControlCard
         icon={Wallet}
         title="Generate your kit"
-        description="One click creates a hosted sales page, a live authority article, and three Facebook posts."
+        description="One click creates a hosted sales page, copy-ready authority article, three Facebook posts, and an X story thread."
       >
         <div className="space-y-2">
           <span className="block text-sm font-medium text-text-primary">Affiliate link</span>
@@ -234,24 +279,31 @@ export default function DfyProfitPage() {
           />
         </div>
 
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-text-primary">Niche</span>
-          <select
-            value={niche}
-            onChange={(e) => setNiche(e.target.value)}
-            className="input-base w-full"
-            disabled={generating}
-          >
-            <option value="" disabled>
-              Choose a niche…
-            </option>
-            {NICHE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <fieldset>
+          <legend className="mb-3 text-sm font-medium text-text-primary">2. Niche</legend>
+          <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--bb-line-brass)] bg-canvas/60 p-3">
+            {NICHE_OPTIONS.map((option) => {
+              const selected = niche === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  disabled={generating}
+                  onClick={() => setNiche(option.value)}
+                  className={clsx(
+                    "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] font-medium transition-colors disabled:opacity-50",
+                    selected
+                      ? "border-[var(--bb-line-brass)] bg-grad-brass text-black shadow-[0_0_18px_rgba(203,161,53,0.24)]"
+                      : "border-border-dim bg-surface text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-text-primary"
+                  )}
+                >
+                  {selected && <Check size={13} />}
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
         {error && <PremiumErrorAlert message={error} />}
 
@@ -279,12 +331,19 @@ export default function DfyProfitPage() {
         sales={sales}
         article={article}
         posts={posts}
+        thread={thread}
         articleError={articleError}
         postsError={postsError}
+        threadError={threadError}
+        isGeneratingArticle={stage === "article"}
+        isGeneratingPosts={stage === "posts"}
+        isGeneratingThread={stage === "thread"}
         retryingArticle={retryingArticle}
         retryingPosts={retryingPosts}
+        retryingThread={retryingThread}
         onRetryArticle={() => void handleRetryArticle()}
         onRetryPosts={() => void handleRetryPosts()}
+        onRetryThread={() => void handleRetryThread()}
       />
     </PremiumPageLayout>
   );

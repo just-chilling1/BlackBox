@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
-import { buildOfferPageUrl, getServerAppUrl, sitePublicPath } from "@/lib/app-url";
 import { loadOwnedSite } from "@/features/blog-builder/lib/generation-pipeline";
 import { generateAuthorityArticleForSite } from "@/features/dfy-profit/lib/generate-authority-article";
 
@@ -38,26 +37,17 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateAuthorityArticleForSite({
-      supabase,
-      userId: user.id,
       site,
       productName,
       nicheLabel,
       productContext,
     });
 
-    const appUrl = getServerAppUrl(request);
-    const articlePath = `${sitePublicPath(site)}/${result.slug}`;
-    const url = `${appUrl}${articlePath}`;
-
     return NextResponse.json(
       {
         title: result.title,
-        slug: result.slug,
-        url,
         html: result.html,
-        postId: result.post.id,
-        offerUrl: buildOfferPageUrl(appUrl, site.slug, site.owner_handle),
+        excerpt: result.excerpt,
       },
       { headers: NO_STORE_HEADERS }
     );

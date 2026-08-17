@@ -6,6 +6,7 @@ import { buildOfferPageUrl, getServerAppUrl } from "@/lib/app-url";
 import { saveFacebookPostBatch } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { loadOwnedSite } from "@/features/blog-builder/lib/generation-pipeline";
 import { generateFacebookPostsForOffer } from "@/features/publish-kit/lib/generate-facebook-posts";
+import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -44,13 +45,36 @@ export async function POST(request: Request) {
       scrapeClient,
     });
 
-    const saved = await saveFacebookPostBatch(supabase, user.id, siteId, generated.slice(0, 3));
+    const postBodies = generated.slice(0, DFY_FACEBOOK_POST_COUNT);
+    const imageResults = await generateThreadImagesForPosts({
+      posts: postBodies.map((text, index) => ({
+        text,
+        angle: index === 0 ? "Hook" : "Product reveal",
+      })),
+      postIndexes: [0, 1],
+      territory: site.territory || site.hobby,
+      productName: site.title,
+      hobby: site.hobby,
+      userId: user.id,
+      supabase,
+      scrapeUrl: site.armed_links?.[0]?.url,
+    });
+    const saved = await saveFacebookPostBatch(
+      supabase,
+      user.id,
+      siteId,
+      postBodies.map((body, index) => ({
+        body,
+        imageUrl: index < 2 ? imageResults[index] : null,
+      }))
+    );
 
     return NextResponse.json(
       {
         posts: saved.map((p) => ({
           id: p.id,
           body: p.body,
+          imageUrl: p.image_url,
           batchId: p.batch_id,
           createdAt: p.created_at,
         })),
