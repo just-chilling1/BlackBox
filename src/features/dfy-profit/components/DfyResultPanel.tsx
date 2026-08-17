@@ -34,7 +34,6 @@ export interface DfyArticleResult {
 export interface DfyFacebookPost {
   id: string;
   body: string;
-  imageUrl?: string | null;
 }
 
 interface DfyResultPanelProps {

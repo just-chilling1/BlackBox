@@ -12,6 +12,7 @@ export const maxDuration = 120;
 
 const DFY_FACEBOOK_POST_COUNT = 3;
 
+/** Done-For-You Profit: generate Facebook post variants the same way as Social Payouts. */
 export async function POST(request: Request) {
   const guard = featureApiGuard("premium-dfy-profit");
   if (guard) return guard;
@@ -46,15 +47,11 @@ export async function POST(request: Request) {
       scrapeClient,
     });
 
-    const postBodies = generated.slice(0, DFY_FACEBOOK_POST_COUNT);
     const saved = await saveFacebookPostBatch(
       supabase,
       user.id,
       siteId,
-      postBodies.map((body) => ({
-        body,
-        imageUrl: null,
-      }))
+      generated.slice(0, DFY_FACEBOOK_POST_COUNT)
     );
 
     return NextResponse.json(
@@ -62,7 +59,6 @@ export async function POST(request: Request) {
         posts: saved.map((p) => ({
           id: p.id,
           body: p.body,
-          imageUrl: p.image_url,
           batchId: p.batch_id,
           createdAt: p.created_at,
         })),
