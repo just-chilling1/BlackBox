@@ -20,9 +20,11 @@ import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import {
   NICHES,
   filterSourcesByNiche,
+  resolveAutopilotNiche,
   type SourceType,
 } from "@/features/premium-autopilot/lib/traffic-sources";
 import {
+  fetchLatestOffer,
   fetchAutopilotState,
   migrateLegacyCompletions,
   saveAutopilotSettings,
@@ -30,6 +32,11 @@ import {
 } from "@/features/premium-autopilot/lib/autopilot-client";
 
 const PAGE_SIZE = 24;
+const LINK_PLACEHOLDER = "[YOUR_LINK]";
+
+function renderSourceCopy(template: string, pageUrl: string) {
+  return template.replaceAll("{LINK}", pageUrl || LINK_PLACEHOLDER);
+}
 
 const typeBadgeColor: Record<SourceType, string> = {
   Forum: "bg-brass-100 text-brass-700 border-[var(--bb-line-brass)]",
@@ -55,18 +62,30 @@ export default function AutomatedProfitsPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      let state = await fetchAutopilotState();
-      state = await migrateLegacyCompletions(state);
+      const [initialState, latestOffer] = await Promise.all([
+        fetchAutopilotState(),
+        fetchLatestOffer(),
+      ]);
+      const state = await migrateLegacyCompletions(initialState);
       if (cancelled) return;
 
-      if (state?.promotion_url) {
-        setPageUrl(state.promotion_url);
-        lastSavedUrl.current = state.promotion_url;
+      const savedUrl = state?.promotion_url?.trim() ?? "";
+      if (savedUrl) {
+        setPageUrl(savedUrl);
+        lastSavedUrl.current = savedUrl;
+      } else if (latestOffer?.promotionUrl) {
+        setPageUrl(latestOffer.promotionUrl);
+        lastSavedUrl.current = latestOffer.promotionUrl;
       }
-      if (state?.selected_niche) {
-        setSelectedNiche(state.selected_niche);
-        lastSavedNiche.current = state.selected_niche;
-      }
+
+      const savedNiche = resolveAutopilotNiche(state?.selected_niche);
+      const hasSavedNiche = savedNiche !== "All";
+      const defaultNiche = hasSavedNiche
+        ? savedNiche
+        : latestOffer?.niche ?? "All";
+      setSelectedNiche(defaultNiche);
+      if (hasSavedNiche) lastSavedNiche.current = savedNiche;
+
       if (state?.completed_source_ids?.length) {
         setCompleted(new Set(state.completed_source_ids));
       }
@@ -158,14 +177,14 @@ export default function AutomatedProfitsPage() {
   return (
     <PremiumPageLayout
       title="Automated Profits"
-      subtitle="100+ free traffic sources — submit your link once and get ongoing traffic automatically. Members have generated over 2.8 million visitors using these sources."
+      subtitle="180 practical traffic sources across 9 niches — choose the market your offer was built for and share it where it is genuinely useful."
       footer={<PremiumFooter />}
     >
       <PremiumVideoTutorial
         vimeoId="1171734563"
         iframeTitle="Automated Profits Tutorial"
         title="How to Use Automated Income"
-        description="Watch this quick tutorial to learn how to submit your link to these 100+ traffic sources and get automated traffic forever!"
+        description="Watch this quick tutorial to learn how to share your offer responsibly across relevant traffic sources."
       />
 
       <PremiumStepsSection
@@ -174,17 +193,17 @@ export default function AutomatedProfitsPage() {
           {
             num: "1",
             title: "Pick Your Niche",
-            desc: "Choose your niche below and get 100+ traffic sources specifically for your market.",
+            desc: "Choose the niche your offer was built for and get 20 practical traffic sources tailored to that market.",
           },
           {
             num: "2",
-            title: "Submit Your Link",
-            desc: "Follow the simple step-by-step instructions to submit your link to each site. Takes 5-15 minutes per site.",
+            title: "Share Your Offer",
+            desc: "Follow the platform rules and use the step-by-step guidance to share your offer where it directly helps the conversation.",
           },
           {
             num: "3",
-            title: "Get Automatic Traffic",
-            desc: "Once submitted, these sites send you traffic automatically. No daily work needed!",
+            title: "Build Consistent Visibility",
+            desc: "Return to the sources that work for you, contribute useful answers, and track the places you have completed.",
           },
         ]}
       />
@@ -194,9 +213,9 @@ export default function AutomatedProfitsPage() {
         <div>
           <span className="text-sm font-medium text-brass-700">Pro Tip: </span>
           <span className="text-sm text-text-secondary">
-            Set aside 2-3 hours and submit to as many sources as possible. The
-            more you submit to, the more automatic traffic you get. Most members
-            submit to 50+ sources in their first week!
+            Start with a few sources where you can genuinely help the audience.
+            Read each community&apos;s rules first, and only share your offer when
+            it directly supports your answer.
           </span>
         </div>
       </div>
@@ -356,14 +375,7 @@ export default function AutomatedProfitsPage() {
                               <span className="text-brass-700 font-medium shrink-0 mt-0.5">
                                 {i + 1}.
                               </span>
-                              <span>
-                                {pageUrl
-                                  ? step.replace(
-                                      /your (page )?(URL|link|page url)/gi,
-                                      pageUrl
-                                    )
-                                  : step}
-                              </span>
+                              <span>{renderSourceCopy(step, pageUrl)}</span>
                             </div>
                           ))}
                         </div>
@@ -375,19 +387,13 @@ export default function AutomatedProfitsPage() {
                           </div>
                           <div className="bg-black/30 border border-border-dim rounded-lg p-3 flex items-center justify-between gap-3">
                             <p className="text-sm text-text-secondary flex-1 break-all">
-                              {source.description.replace(
-                                "{LINK}",
-                                pageUrl || "[YOUR_LINK]"
-                              )}
+                              {renderSourceCopy(source.description, pageUrl)}
                             </p>
                             <button
                               type="button"
                               onClick={() => {
                                 void navigator.clipboard.writeText(
-                                  source.description.replace(
-                                    "{LINK}",
-                                    pageUrl || "[YOUR_LINK]"
-                                  )
+                                  renderSourceCopy(source.description, pageUrl)
                                 );
                                 setCopiedDescId(source.id);
                                 window.setTimeout(

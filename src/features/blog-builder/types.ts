@@ -103,7 +103,7 @@ export interface NicheOption {
   label: string;
 }
 
-export const NICHE_OPTIONS: NicheOption[] = [
+export const NICHE_OPTIONS = [
   { value: "health", label: "Health & Wellness" },
   { value: "finance", label: "Finance & Investing" },
   { value: "fitness", label: "Fitness & Sports" },
@@ -113,7 +113,7 @@ export const NICHE_OPTIONS: NicheOption[] = [
   { value: "education", label: "Education & Learning" },
   { value: "business", label: "Business & Entrepreneurship" },
   { value: "travel", label: "Travel & Lifestyle" },
-];
+] as const satisfies readonly NicheOption[];
 
 export const WIZARD_STEPS = [
   { number: 1, title: "Add Your Link", description: "Save your promotional or affiliate link" },
