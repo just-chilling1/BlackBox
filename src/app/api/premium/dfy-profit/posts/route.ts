@@ -6,7 +6,6 @@ import { buildOfferPageUrl, getServerAppUrl } from "@/lib/app-url";
 import { saveFacebookPostBatch } from "@/features/blog-builder/lib/facebook-posts-vault";
 import { loadOwnedSite } from "@/features/blog-builder/lib/generation-pipeline";
 import { generateFacebookPostsForOffer } from "@/features/publish-kit/lib/generate-facebook-posts";
-import { generateThreadImagesForPosts } from "@/features/publish-kit/lib/thread-images";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -42,33 +41,19 @@ export async function POST(request: Request) {
       site,
       promoLink,
       postCount: DFY_FACEBOOK_POST_COUNT,
-      // Leave the route enough time to create and persist the two post visuals.
       timeoutMs: 45_000,
       maxRetries: 1,
       scrapeClient,
     });
 
     const postBodies = generated.slice(0, DFY_FACEBOOK_POST_COUNT);
-    const imageResults = await generateThreadImagesForPosts({
-      posts: postBodies.map((text, index) => ({
-        text,
-        angle: index === 0 ? "Hook" : "Product reveal",
-      })),
-      postIndexes: [0, 1],
-      territory: site.territory || site.hobby,
-      productName: site.title,
-      hobby: site.hobby,
-      userId: user.id,
-      supabase,
-      scrapeUrl: site.armed_links?.[0]?.url,
-    });
     const saved = await saveFacebookPostBatch(
       supabase,
       user.id,
       siteId,
-      postBodies.map((body, index) => ({
+      postBodies.map((body) => ({
         body,
-        imageUrl: index < 2 ? imageResults[index] : null,
+        imageUrl: null,
       }))
     );
 

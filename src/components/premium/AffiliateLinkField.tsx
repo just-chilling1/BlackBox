@@ -161,6 +161,7 @@ export function AffiliateLinkField({
           links={vaultLinks}
           selectedUrl={selectedVaultUrl}
           onSelect={handleSelectFromVault}
+          roundedClassName="rounded-2xl"
         />
       ) : (
         <p className="text-xs text-text-muted">
@@ -180,7 +181,7 @@ export function AffiliateLinkField({
           value={value}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={placeholder}
-          className="input-base w-full"
+          className="input-base w-full rounded-2xl"
         />
       </label>
 
@@ -189,7 +190,7 @@ export function AffiliateLinkField({
           type="button"
           onClick={() => void handleSaveToVault()}
           disabled={!canSave}
-          className="btn-secondary inline-flex items-center gap-2 text-sm disabled:opacity-40"
+          className="btn-secondary inline-flex items-center gap-2 border-[var(--bb-line-brass)] bg-brass-100/40 text-sm font-medium text-brass-700 shadow-sm hover:bg-brass-100/70 disabled:opacity-40"
         >
           {saving ? (
             <Loader2 size={14} className="animate-spin" />
@@ -201,7 +202,10 @@ export function AffiliateLinkField({
           {saved && isInVault ? "Saved to Links Library" : "Save to Links Library"}
         </button>
         {vaultLinks.length > 0 && (
-          <Link href="/link-vault" className="text-xs text-text-muted hover:text-brass-700">
+          <Link
+            href="/link-vault"
+            className="btn-secondary inline-flex items-center gap-2 border-[var(--bb-line-brass)] text-sm font-medium text-text-primary shadow-sm hover:bg-surface-field"
+          >
             Manage saved links
           </Link>
         )}

@@ -8,7 +8,6 @@ import {
   ExternalLink,
   FileText,
   Globe,
-  ImageIcon,
   Loader2,
   Megaphone,
   RefreshCw,
@@ -215,7 +214,7 @@ export function DfyResultPanel({
           </p>
         </div>
         {isGeneratingPosts && posts.length === 0 ? (
-          <p className="inline-flex items-center gap-2 text-sm text-text-muted"><Loader2 size={14} className="animate-spin" />Generating 3 Facebook posts…</p>
+          <p className="inline-flex items-center gap-2 text-sm text-text-muted"><Loader2 size={14} className="animate-spin" />Generating Facebook posts…</p>
         ) : postsError && posts.length === 0 ? (
           <button type="button" disabled={retryingPosts} onClick={onRetryPosts} className="btn-secondary inline-flex items-center gap-2 text-sm disabled:opacity-50">
             {retryingPosts ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
@@ -234,8 +233,6 @@ export function DfyResultPanel({
                     </button>
                   </div>
                   <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.body}</p>
-                  {post.imageUrl ? <img src={post.imageUrl} alt={`Facebook post ${index + 1} visual`} className="mt-auto aspect-square w-full rounded-xl object-cover" /> : null}
-                  {post.imageUrl ? <span className="inline-flex items-center gap-1 text-xs text-text-muted"><ImageIcon size={12} />Visual included</span> : null}
                 </article>
               );
             })}

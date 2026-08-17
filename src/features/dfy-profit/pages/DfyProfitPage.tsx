@@ -23,10 +23,10 @@ import {
 type Stage = "idle" | "sales" | "thread" | "article" | "posts" | "done";
 
 const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
-  sales: "Building your sales page with a random template…",
+  sales: "Building your sales page…",
   thread: "Writing your X story thread…",
   article: "Writing your authority article…",
-  posts: "Generating 3 Facebook posts…",
+  posts: "Generating Facebook posts…",
 };
 
 export default function DfyProfitPage() {
@@ -238,7 +238,7 @@ export default function DfyProfitPage() {
   return (
     <PremiumPageLayout
       title="Done-For-You Profit"
-      subtitle="Paste your affiliate link, pick a niche, and get a live sales page, authority article, and 3 Facebook posts in one run."
+      subtitle="Paste your affiliate link, pick a niche, and get a live sales page, authority article, and Facebook posts in one run."
       footer={
         <PremiumFooter>
           Powered by {brand.productName}. Kits also appear in your Offers Library.
@@ -260,7 +260,7 @@ export default function DfyProfitPage() {
           {
             num: "3",
             title: "Generate your kit",
-            desc: "We build a random-template sales page, an authority article, and 3 Facebook posts.",
+            desc: "We build a random-template sales page, an authority article, and Facebook posts.",
           },
         ]}
       />
@@ -268,7 +268,7 @@ export default function DfyProfitPage() {
       <PremiumControlCard
         icon={Wallet}
         title="Generate your kit"
-        description="One click creates a hosted sales page, copy-ready authority article, three Facebook posts, and an X story thread."
+        description="One click creates a hosted sales page, copy-ready authority article, Facebook posts, and an X story thread."
       >
         <div className="space-y-2">
           <span className="block text-sm font-medium text-text-primary">Affiliate link</span>

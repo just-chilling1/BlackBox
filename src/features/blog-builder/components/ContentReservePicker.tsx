@@ -19,6 +19,8 @@ interface ContentReservePickerProps {
   selectedUrl: string | null;
   onSelect: (link: ArmedLink | null) => void;
   showDivider?: boolean;
+  /** Extra classes for saved-link cards and the search field */
+  roundedClassName?: string;
 }
 
 export function ContentReservePicker({
@@ -26,6 +28,7 @@ export function ContentReservePicker({
   selectedUrl,
   onSelect,
   showDivider = true,
+  roundedClassName = "rounded-xl",
 }: ContentReservePickerProps) {
   const [query, setQuery] = useState("");
 
@@ -59,7 +62,7 @@ export function ContentReservePicker({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search saved links by name or URL..."
             aria-label="Search saved links"
-            className="input-base w-full pl-9 text-sm"
+            className={clsx("input-base w-full pl-9 text-sm", roundedClassName)}
           />
         </div>
       )}
@@ -80,6 +83,7 @@ export function ContentReservePicker({
                 onClick={() => onSelect(isSelected ? null : link)}
                 className={clsx(
                   "select-card flex w-full items-center gap-3 p-3",
+                  roundedClassName,
                   isSelected && "is-selected"
                 )}
               >
