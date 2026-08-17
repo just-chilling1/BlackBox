@@ -20,13 +20,13 @@ import {
   type DfySalesResult,
 } from "@/features/dfy-profit/components/DfyResultPanel";
 
-type Stage = "idle" | "sales" | "article" | "posts" | "thread" | "done";
+type Stage = "idle" | "sales" | "thread" | "article" | "posts" | "done";
 
 const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
   sales: "Building your sales page with a random template…",
+  thread: "Writing your X story thread…",
   article: "Writing your authority article…",
   posts: "Generating 3 Facebook posts…",
-  thread: "Writing your X story thread…",
 };
 
 export default function DfyProfitPage() {
@@ -161,6 +161,14 @@ export default function DfyProfitPage() {
       return;
     }
 
+    setStage("thread");
+    try {
+      const threadResult = await runThreadStage(siteId);
+      setThread(threadResult);
+    } catch (e) {
+      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
+    }
+
     setStage("article");
     try {
       const articleResult = await runArticleStage(siteId, ctx, name, nicheName);
@@ -175,14 +183,6 @@ export default function DfyProfitPage() {
       setPosts(postsResult);
     } catch (e) {
       setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
-    }
-
-    setStage("thread");
-    try {
-      const threadResult = await runThreadStage(siteId);
-      setThread(threadResult);
-    } catch (e) {
-      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
     }
 
     setStage("done");
@@ -291,10 +291,10 @@ export default function DfyProfitPage() {
                   disabled={generating}
                   onClick={() => setNiche(option.value)}
                   className={clsx(
-                    "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] font-medium transition-colors disabled:opacity-50",
+                    "inline-flex items-center gap-1.5 rounded-[999px] border px-4 py-2.5 text-[13px] font-medium transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0",
                     selected
                       ? "border-[var(--bb-line-brass)] bg-grad-brass text-black shadow-[0_0_18px_rgba(203,161,53,0.24)]"
-                      : "border-border-dim bg-surface text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-text-primary"
+                      : "border-border-dim bg-surface text-text-secondary hover:-translate-y-0.5 hover:border-[var(--bb-line-brass)] hover:bg-brass-100/60 hover:text-text-primary hover:shadow-sm"
                   )}
                 >
                   {selected && <Check size={13} />}
@@ -321,7 +321,7 @@ export default function DfyProfitPage() {
       <GenerationProgress
         active={generating}
         label={
-          stage === "sales" || stage === "article" || stage === "posts"
+          stage === "sales" || stage === "thread" || stage === "article" || stage === "posts"
             ? STAGE_LABELS[stage]
             : "Generating…"
         }
@@ -335,9 +335,9 @@ export default function DfyProfitPage() {
         articleError={articleError}
         postsError={postsError}
         threadError={threadError}
+        isGeneratingThread={stage === "thread"}
         isGeneratingArticle={stage === "article"}
         isGeneratingPosts={stage === "posts"}
-        isGeneratingThread={stage === "thread"}
         retryingArticle={retryingArticle}
         retryingPosts={retryingPosts}
         retryingThread={retryingThread}

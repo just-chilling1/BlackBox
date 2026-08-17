@@ -42,6 +42,9 @@ export async function POST(request: Request) {
       site,
       promoLink,
       postCount: DFY_FACEBOOK_POST_COUNT,
+      // Leave the route enough time to create and persist the two post visuals.
+      timeoutMs: 45_000,
+      maxRetries: 1,
       scrapeClient,
     });
 

@@ -15,6 +15,10 @@ export interface GenerateFacebookPostsParams {
   site: BlogSite;
   promoLink: string;
   postCount?: number;
+  /** Keep staged flows within their API route deadline. */
+  timeoutMs?: number;
+  /** Limit retries when follow-up work must finish in the same API route. */
+  maxRetries?: number;
   /** Optional service-role client for affiliate page scraping. */
   scrapeClient?: SupabaseClient | null;
 }
@@ -51,8 +55,8 @@ export async function generateFacebookPostsForOffer(
 
   const raw = await generateWithGPT(system, userPrompt, {
     temperature: 0.82,
-    maxRetries: 4,
-    timeoutMs: 120_000,
+    maxRetries: params.maxRetries ?? 4,
+    timeoutMs: params.timeoutMs ?? 120_000,
   });
 
   const parsed = extractJsonFromText(raw);
