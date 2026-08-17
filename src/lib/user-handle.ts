@@ -8,7 +8,7 @@ import { getServiceRoleClient } from "@/lib/api-auth";
 const RESERVED_HANDLES = new Set([
   "academy", "accelerator", "analysis", "api", "arm-links", "asset", "auth",
   "autopilot", "brand-preview", "dashboard", "deploy", "dfy", "dfy-profit",
-  "forgot-password", "instant", "link-vault", "login", "offers", "onboarding",
+  "forgot-password", "instant", "license-rights", "link-vault", "login", "offers", "onboarding",
   "promote", "protector", "radar", "recurring-wealth", "replies", "reset-password",
   "sales-offer-generator", "scale-training", "search", "signup", "sites",
   "social-payouts", "support", "territory", "theme", "training", "admin",

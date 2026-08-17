@@ -121,6 +121,7 @@ export const premiumNav: NavItem[] = [
   { path: "/recurring-wealth", label: "Guaranteed High-Ticket Payouts", icon: "Repeat", feature: "premium-recurring" },
   { path: "/social-payouts", label: "Instant Income", icon: "Globe", feature: "premium-social" },
   { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
+  { path: "/license-rights", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },
 ];
 
 export const premiumSectionLabel = "Premium Features";

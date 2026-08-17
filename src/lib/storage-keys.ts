@@ -11,4 +11,5 @@ export const storageKeys = {
   workflowSelectedPosts: `${prefix}_selected_posts`,
   workflowHistory: `${prefix}_history`,
   autopilotCompleted: `${prefix}_autopilot_completed`,
+  licenseRightsRequest: `${prefix}_license_rights_request`,
 } as const;

@@ -33,6 +33,7 @@ export const FEATURE_IDS = [
   "premium-automation",
   "premium-recurring",
   "protector",
+  "premium-license-rights",
 ] as const;
 
 export type FeatureId = (typeof FEATURE_IDS)[number];
@@ -79,6 +80,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
   { id: "premium-recurring", tier: "premium", description: "100 ready-to-publish authority articles (Guaranteed High-Ticket Payouts).", guide: "premium-recurring" },
   { id: "protector", tier: "premium", description: "Account security score and verification trust UI.", guide: "protector" },
+  { id: "premium-license-rights", tier: "premium", description: "Reseller license request form — send a License Rights ticket and wait for team activation.", guide: "premium-license-rights" },
 ];
 
 /** Skeleton ships with training only. Enable modules per product. */
@@ -93,6 +95,7 @@ export const enabledFeatures: FeatureId[] = [
   "premium-dfy-profit",
   "premium-autopilot",
   "protector",
+  "premium-license-rights",
 ];
 
 export function isFeatureEnabled(id: FeatureId): boolean {

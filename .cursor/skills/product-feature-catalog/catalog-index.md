@@ -99,6 +99,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | `premium-accelerator` | PREMIUM | Bulk-generate websites and ready-to-post content | [premium-accelerator](features/premium-accelerator.md) |
 | `premium-social` | PREMIUM | Pre-made Facebook posts with images | [premium-social](features/premium-social.md) |
 | `protector` | PREMIUM | Account security score and trust UI | [protector](features/protector.md) |
+| `premium-license-rights` | PREMIUM | Reseller license request form — ticket titled "License Rights" until team activation | [premium-license-rights](features/premium-license-rights.md) |
 
 ---
 

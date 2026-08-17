@@ -14,12 +14,39 @@ function escapeHtml(text: string): string {
     .replace(/\n/g, "<br>");
 }
 
-async function sendViaResend(email: string, message: string, userId: string): Promise<boolean> {
+/** Single-line, bounded subject for email/ticket headers. */
+function sanitizeSubject(raw: unknown): string {
+  if (typeof raw !== "string") return "";
+  return raw.replace(/[\r\n]+/g, " ").trim().slice(0, 80);
+}
+
+function ticketBody(email: string, message: string, userId: string, requestType: string) {
+  const requestTypeText = requestType ? `Request type: ${requestType}\n` : "";
+  const requestTypeHtml = requestType
+    ? `<br><strong>Request type:</strong> ${escapeHtml(requestType)}`
+    : "";
+
+  return {
+    text: `Customer email: ${email}\nSoftware: ${APP_SUPPORT_NAME}\n${requestTypeText}\nCustomer inquiry is:\n${message}\n\n---\nUser ID: ${userId}`,
+    html: `<p><strong>Customer email:</strong> ${escapeHtml(email)}<br><strong>Software:</strong> ${APP_SUPPORT_NAME}${requestTypeHtml}</p><p><strong>Customer inquiry is:</strong></p><p>${escapeHtml(message)}</p><p><em>User ID: ${userId}</em></p>`,
+  };
+}
+
+async function sendViaResend(
+  email: string,
+  message: string,
+  userId: string,
+  requestType: string
+): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
 
   const from =
     process.env.RESEND_FROM_EMAIL || `${APP_SUPPORT_NAME} <${RESEND_SENDER_EMAIL}>`;
+  const { text, html } = ticketBody(email, message, userId, requestType);
+  const subject = requestType
+    ? `${APP_SUPPORT_NAME} — ${requestType} from ${email}`
+    : `${APP_SUPPORT_NAME} support request from ${email}`;
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -28,9 +55,9 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
       from,
       to: [SUPPORT_EMAIL],
       reply_to: email,
-      subject: `${APP_SUPPORT_NAME} support request from ${email}`,
-      text: `Customer email: ${email}\nSoftware: ${APP_SUPPORT_NAME}\n\nCustomer inquiry is:\n${message}\n\n---\nUser ID: ${userId}`,
-      html: `<p><strong>Customer email:</strong> ${escapeHtml(email)}<br><strong>Software:</strong> ${APP_SUPPORT_NAME}</p><p><strong>Customer inquiry is:</strong></p><p>${escapeHtml(message)}</p><p><em>User ID: ${userId}</em></p>`,
+      subject,
+      text,
+      html,
     }),
   });
 
@@ -43,19 +70,28 @@ async function sendViaResend(email: string, message: string, userId: string): Pr
   return true;
 }
 
-async function sendViaFreshdesk(email: string, message: string, userId: string): Promise<boolean> {
+async function sendViaFreshdesk(
+  email: string,
+  message: string,
+  userId: string,
+  requestType: string
+): Promise<boolean> {
   const apiKey = process.env.FRESHDESK_API_KEY;
   if (!apiKey) return false;
 
   const auth = Buffer.from(`${apiKey}:X`).toString("base64");
+  const { html } = ticketBody(email, message, userId, requestType);
+  const subject = requestType
+    ? `${APP_SUPPORT_NAME} — ${requestType}`
+    : `${APP_SUPPORT_NAME} — Dashboard Support Request`;
 
   const res = await fetch(`https://${FRESHDESK_DOMAIN}.freshdesk.com/api/v2/tickets`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Basic ${auth}` },
     body: JSON.stringify({
       email,
-      subject: `${APP_SUPPORT_NAME} — Dashboard Support Request`,
-      description: `<p><strong>Customer email:</strong> ${escapeHtml(email)}<br><strong>Software:</strong> ${APP_SUPPORT_NAME}</p><p><strong>Customer inquiry is:</strong></p><p>${escapeHtml(message)}</p><p><em>User ID: ${userId}</em></p>`,
+      subject,
+      description: html,
       priority: 2,
       status: 2,
     }),
@@ -80,6 +116,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const message = typeof body.message === "string" ? body.message.trim() : "";
+    const subject = sanitizeSubject(body.subject);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
@@ -90,8 +127,8 @@ export async function POST(request: Request) {
     }
 
     const sent =
-      (await sendViaFreshdesk(email, message, userId)) ||
-      (await sendViaResend(email, message, userId));
+      (await sendViaFreshdesk(email, message, userId, subject)) ||
+      (await sendViaResend(email, message, userId, subject));
 
     if (!sent) {
       return NextResponse.json(

@@ -21,6 +21,7 @@ const PREMIUM_DESCRIPTIONS: Record<string, string> = {
   "/recurring-wealth": "100 ready-to-publish authority articles with your link.",
   "/social-payouts": "Bulk social posts from any offer — copy and paste.",
   "/protector": "Account security score and verification trust layer.",
+  "/license-rights": "Request reseller license rights — our team activates the edition.",
 };
 
 /**
