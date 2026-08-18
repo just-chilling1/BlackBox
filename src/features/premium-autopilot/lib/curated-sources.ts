@@ -2,7 +2,10 @@ import {
   AUTOPILOT_NICHE_PROFILES,
   type AutopilotNicheKey,
 } from "./niche-profiles";
-import { buildCuratedInstructions } from "./instruction-copy";
+import {
+  buildCuratedInstructions,
+  buildSubmissionDescription,
+} from "./instruction-copy";
 import type { Difficulty, SourceType, TrafficSource } from "./source-types";
 
 type CuratedDefinition = {
@@ -521,7 +524,12 @@ function buildCuratedSource(
     traffic: definition.traffic ?? "50-300 visitors/month",
     time: definition.time ?? "10 minutes",
     url: definition.url,
-    description: `I put together ${profile.offerAngle} with useful next steps. If it is relevant to your question, you can find it here: {LINK}`,
+    description: buildSubmissionDescription({
+      type: definition.type,
+      name: definition.name,
+      offerAngle: profile.offerAngle,
+      variant: index,
+    }),
     instructions: buildCuratedInstructions({
       type: definition.type,
       name: definition.name,

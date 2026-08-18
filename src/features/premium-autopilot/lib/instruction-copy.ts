@@ -97,6 +97,57 @@ export function buildCuratedInstructions(opts: {
   }
 }
 
+export function buildSubmissionDescription(opts: {
+  type: SourceType;
+  name: string;
+  offerAngle: string;
+  variant?: number;
+}): string {
+  const { type, name, offerAngle } = opts;
+  const variant = Math.abs(opts.variant ?? 0) % 3;
+  const link = "{LINK}";
+
+  const templates: Record<SourceType, readonly [string, string, string]> = {
+    Forum: [
+      `For anyone on ${name} still looking for a next step: I put together ${offerAngle} here: ${link}`,
+      `I keep ${offerAngle} for ${name} members who want extra reading — skip it if it is not a fit: ${link}`,
+      `Sharing ${offerAngle} in this ${name} thread because it covers a few of the follow-up questions: ${link}`,
+    ],
+    Social: [
+      `If it helps this ${name} conversation, I put together ${offerAngle} as optional extra reading: ${link}`,
+      `Saved ${offerAngle} for people in ${name} who want a practical next step: ${link}`,
+      `Posting ${offerAngle} for ${name} — ignore it if it is off-topic: ${link}`,
+    ],
+    Directory: [
+      `Resource listing for ${name}: ${offerAngle}. Visit: ${link}`,
+      `${name} submission: ${offerAngle} with useful next steps at ${link}`,
+      `Added ${offerAngle} to ${name} so people can open the full page here: ${link}`,
+    ],
+    Blog: [
+      `Left this for ${name} readers who want a fuller walkthrough: ${offerAngle} — ${link}`,
+      `If this ${name} piece is useful, I also put together ${offerAngle} with extra steps: ${link}`,
+      `One extra resource for ${name} readers: ${offerAngle}. Full page: ${link}`,
+    ],
+    "Q&A": [
+      `I wrote a longer answer as ${offerAngle} for this ${name} question. Optional reading: ${link}`,
+      `If you want the full walkthrough after this ${name} answer, I keep ${offerAngle} here: ${link}`,
+      `Extra context for this ${name} thread: ${offerAngle}. Skip if you already have what you need: ${link}`,
+    ],
+    Classified: [
+      `${name} listing: ${offerAngle}. Details here: ${link}`,
+      `Offering ${offerAngle} via ${name}. Open the page for the full write-up: ${link}`,
+      `Posted on ${name}: ${offerAngle} with next steps at ${link}`,
+    ],
+    Video: [
+      `Full resource from this ${name} video: ${offerAngle} — ${link}`,
+      `More detail than I could fit on ${name}: ${offerAngle}. Page is here: ${link}`,
+      `${name} follow-up: ${offerAngle} with the steps from the video: ${link}`,
+    ],
+  };
+
+  return templates[type][variant];
+}
+
 function defaultFocus(type: SourceType, community: string) {
   switch (type) {
     case "Forum":

@@ -9,6 +9,7 @@ type PlatformPlaybook = {
   time: string;
   visitors: readonly [number, number];
   url: string;
+  description: string;
   instructions: readonly string[];
 };
 
@@ -36,6 +37,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "10 minutes",
     visitors: [150, 800],
     url: "https://www.reddit.com/{SUBREDDIT}/",
+    description:
+      "If it helps anyone in {SUBREDDIT}: I put together {OFFER_ANGLE} as extra reading here: {LINK}",
     instructions: [
       "Go to {SUBREDDIT} and create a Reddit account if you don't already have one.",
       "Read the community rules, then comment helpfully on 3-5 existing posts so you don't look like a brand-new promo account.",
@@ -52,6 +55,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "12 minutes",
     visitors: [100, 600],
     url: "https://www.quora.com/",
+    description:
+      "I wrote a longer walkthrough as {OFFER_ANGLE} for this Quora question. Optional reading: {LINK}",
     instructions: [
       "Go to quora.com and create a free account with a real name, photo, and a short bio about {KEYWORDS}.",
       "Search for current questions about {KEYWORDS}, especially 'how to' and 'what should I read' threads.",
@@ -68,6 +73,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "15 minutes",
     visitors: [120, 750],
     url: "https://www.pinterest.com/",
+    description:
+      "Pin: {OFFER_ANGLE} for {KEYWORDS}. Full steps here: {LINK}",
     instructions: [
       "Go to pinterest.com and create a free business account.",
       "Create a board around {KEYWORDS} with a clear title and description.",
@@ -84,6 +91,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "15 minutes",
     visitors: [80, 500],
     url: "https://www.facebook.com/groups/",
+    description:
+      "Sharing {OFFER_ANGLE} for anyone in this {COMMUNITY} group who wants a practical next step: {LINK}",
     instructions: [
       "Go to facebook.com/groups and search for active groups serving the {COMMUNITY} (5K+ members is a good filter).",
       "Join 5-10 groups and read each group's self-promotion rules before you post anything.",
@@ -100,6 +109,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "25 minutes",
     visitors: [70, 450],
     url: "https://medium.com/",
+    description:
+      "I published extra context as {OFFER_ANGLE} for Medium readers who want the full walkthrough: {LINK}",
     instructions: [
       "Go to medium.com and create a free account. Add a photo and a bio about {KEYWORDS}.",
       "Write an original 500-800 word article that teaches one useful idea — not a promotional summary of the page.",
@@ -116,6 +127,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "30 minutes",
     visitors: [90, 650],
     url: "https://www.youtube.com/",
+    description:
+      "Full resource from this YouTube video: {OFFER_ANGLE} — {LINK}",
     instructions: [
       "Go to youtube.com and create or log into your channel. Add a photo and a short channel description.",
       "Record a short original video that teaches one {KEYWORDS} topic. Lead with the value, not a pitch.",
@@ -132,6 +145,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "20 minutes",
     visitors: [100, 700],
     url: "https://www.tiktok.com/",
+    description:
+      "More detail than I could fit on TikTok: {OFFER_ANGLE}. Link is in my profile: {LINK}",
     instructions: [
       "Go to tiktok.com and create or log into your account. Use a photo and a bio that mentions {KEYWORDS}.",
       "Record an original short video with one useful takeaway for the {COMMUNITY}. Hook in the first 2 seconds.",
@@ -148,6 +163,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "20 minutes",
     visitors: [70, 500],
     url: "https://www.instagram.com/",
+    description:
+      "Full guide is in my Instagram bio: {OFFER_ANGLE} {LINK}",
     instructions: [
       "Go to instagram.com and set up a profile with a photo, a bio, and {LINK} in the bio field.",
       "Publish an original post or carousel that teaches one useful idea for the {COMMUNITY}.",
@@ -164,6 +181,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "10 minutes",
     visitors: [50, 350],
     url: "https://x.com/",
+    description:
+      "Wrote this up as {OFFER_ANGLE} if anyone on X wants the longer version: {LINK}",
     instructions: [
       "Go to x.com and set up a profile with a photo, a bio about {KEYWORDS}, and {LINK} in the website field.",
       "Write a concise, useful point about {KEYWORDS}. Teach one idea in the post itself.",
@@ -180,6 +199,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "15 minutes",
     visitors: [40, 300],
     url: "https://www.linkedin.com/",
+    description:
+      "I put together {OFFER_ANGLE} for people working on {KEYWORDS}: {LINK}",
     instructions: [
       "Go to linkedin.com and complete your profile with a photo, headline, and About section covering {KEYWORDS}.",
       "Share a professional insight or short how-to related to {KEYWORDS}. Write it as advice, not an ad.",
@@ -196,6 +217,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "15 minutes",
     visitors: [20, 150],
     url: "https://www.google.com/search?q={DIRECTORY_QUERY}",
+    description:
+      "Directory listing: {OFFER_ANGLE} for the {COMMUNITY}. Visit: {LINK}",
     instructions: [
       "Search Google for reputable {DIRECTORY_QUERY} and open 2-3 directories that actually get traffic.",
       "Skip low-quality 'submit to 1,000 sites' lists. If the directory looks spammy, leave it.",
@@ -212,6 +235,8 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     time: "20 minutes",
     visitors: [30, 200],
     url: "https://www.google.com/search?q={KEYWORDS}+blogs",
+    description:
+      "I thought your {COMMUNITY} readers might find {OFFER_ANGLE} useful as a follow-up: {LINK}",
     instructions: [
       "Search for current {KEYWORDS} blogs and open a recent article that serves the {COMMUNITY}.",
       "Read it fully, then leave a specific comment or email the author with one useful addition — not a generic pitch.",
@@ -264,10 +289,7 @@ export function buildPlatformSources(
       traffic: `${min}-${max} visitors/month`,
       time: playbook.time,
       url: interpolateSourceText(playbook.url, profile),
-      description: interpolateSourceText(
-        "I put together {OFFER_ANGLE} with useful next steps. If it is relevant to your question, you can find it here: {LINK}",
-        profile
-      ),
+      description: interpolateSourceText(playbook.description, profile),
       instructions: playbook.instructions.map((instruction) =>
         interpolateSourceText(instruction, profile)
       ),
