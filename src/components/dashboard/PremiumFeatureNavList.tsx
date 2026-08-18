@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { WarmNavLink } from "@/components/layout/WarmNavLink";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES, PREMIUM_SECTION_LABEL } from "@/lib/premium-features";
@@ -16,6 +16,20 @@ interface PremiumFeatureNavListProps {
   highlighted?: boolean;
 }
 
+function sectionClassName(
+  collapsed: boolean,
+  mobile: boolean,
+  highlighted: boolean,
+  className?: string
+) {
+  return clsx(
+    "premium-nav-section",
+    highlighted && "premium-nav-section--highlighted",
+    mobile ? "p-2.5" : collapsed ? "mt-4 p-1.5" : "mt-6 p-2.5",
+    className
+  );
+}
+
 export function PremiumFeatureNavList({
   collapsed = false,
   mobile = false,
@@ -24,8 +38,31 @@ export function PremiumFeatureNavList({
   highlighted = true,
 }: PremiumFeatureNavListProps) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (PREMIUM_FEATURES.length === 0) return null;
+
+  const outerClass = sectionClassName(collapsed, mobile, highlighted, className);
+
+  if (!mounted) {
+    return (
+      <div className={outerClass} aria-hidden>
+        <div className="premium-nav-section-shimmer" />
+        {!collapsed ? (
+          <div className="relative z-[1] mx-2 mb-2 mt-1 h-5 animate-pulse rounded bg-brass-100/80" />
+        ) : null}
+        <div className="relative z-[1] space-y-1 px-1">
+          {Array.from({ length: Math.min(PREMIUM_FEATURES.length, 4) }).map((_, i) => (
+            <div key={i} className="h-11 animate-pulse rounded-md bg-brass-100/60" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const itemClass = (isActive: boolean) =>
     clsx(
@@ -38,17 +75,7 @@ export function PremiumFeatureNavList({
     );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.28, ease: [0.2, 0, 0, 1] }}
-      className={clsx(
-        "premium-nav-section",
-        highlighted && "premium-nav-section--highlighted",
-        mobile ? "p-2.5" : collapsed ? "mt-4 p-1.5" : "mt-6 p-2.5",
-        className
-      )}
-    >
+    <div className={outerClass}>
       <div className="premium-nav-section-shimmer" aria-hidden />
 
       {!collapsed && (
@@ -67,17 +94,12 @@ export function PremiumFeatureNavList({
       )}
 
       <ul className={clsx("relative z-[1]", mobile ? "space-y-1.5" : "space-y-1")}>
-        {PREMIUM_FEATURES.map((item, index) => {
+        {PREMIUM_FEATURES.map((item) => {
           const isActive = isNavPathActive(pathname, item.href);
           const Icon = item.icon;
 
           return (
-            <motion.li
-              key={item.href}
-              initial={{ opacity: 0, x: mobile ? 0 : -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.12 + index * 0.07, duration: 0.24 }}
-            >
+            <li key={item.href}>
               <WarmNavLink
                 href={item.href}
                 onClick={onNavigate}
@@ -95,10 +117,10 @@ export function PremiumFeatureNavList({
                 </span>
                 {!collapsed && <span className="tracking-normal">{item.label}</span>}
               </WarmNavLink>
-            </motion.li>
+            </li>
           );
         })}
       </ul>
-    </motion.div>
+    </div>
   );
 }

@@ -1,27 +1,21 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  CheckCircle2,
-  Users,
-  Clock,
-  ExternalLink,
-  Lightbulb,
-  Clipboard,
-  Copy,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Lightbulb } from "lucide-react";
 import { clsx } from "clsx";
 import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
+import { SourceCard } from "@/features/premium-autopilot/components/SourceCard";
+import { SourceInstructionsOverlay } from "@/features/premium-autopilot/components/SourceInstructionsOverlay";
 import {
   NICHES,
   filterSourcesByNiche,
   resolveAutopilotNiche,
-  type SourceType,
+  SOURCES,
 } from "@/features/premium-autopilot/lib/traffic-sources";
 import {
   fetchLatestOffer,
@@ -37,16 +31,6 @@ const LINK_PLACEHOLDER = "[YOUR_LINK]";
 function renderSourceCopy(template: string, pageUrl: string) {
   return template.replaceAll("{LINK}", pageUrl || LINK_PLACEHOLDER);
 }
-
-const typeBadgeColor: Record<SourceType, string> = {
-  Forum: "bg-brass-100 text-brass-700 border-[var(--bb-line-brass)]",
-  Social: "bg-success/15 text-success border-success/25",
-  Directory: "bg-blue-500/15 text-blue-400 border-blue-500/25",
-  Blog: "bg-purple-500/15 text-purple-400 border-purple-500/25",
-  "Q&A": "bg-[var(--bb-warning)]/15 text-[var(--bb-warning)] border-[var(--bb-warning)]/25",
-  Classified: "bg-pink-500/15 text-pink-400 border-pink-500/25",
-  Video: "bg-red-500/15 text-red-400 border-red-500/25",
-};
 
 export default function AutomatedProfitsPage() {
   const [selectedNiche, setSelectedNiche] = useState("All");
@@ -173,6 +157,8 @@ export default function AutomatedProfitsPage() {
       : 0;
 
   const hasMore = visibleCount < filteredSources.length;
+  const selectedSource =
+    SOURCES.find((source) => source.id === expandedId) ?? null;
 
   return (
     <PremiumPageLayout
@@ -283,176 +269,17 @@ export default function AutomatedProfitsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {visibleSources.map((source, idx) => {
-            const isExpanded = expandedId === source.id;
-            const isDone = completed.has(source.id);
-
-            return (
-              <motion.div
-                key={source.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(idx * 0.03, 0.8) }}
-                className={clsx(
-                  "bg-surface border rounded-xl overflow-hidden transition-all",
-                  isDone
-                    ? "border-[var(--bb-line-brass)] bg-brass-100"
-                    : "border-border-dim hover:border-[var(--bb-line-brass)]"
-                )}
-              >
-                <div className="p-5 flex flex-col gap-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={clsx(
-                        "text-[13px] font-medium px-2 py-0.5 rounded border uppercase tracking-wider",
-                        typeBadgeColor[source.type]
-                      )}
-                    >
-                      {source.type}
-                    </span>
-                    <span
-                      className={clsx(
-                        "text-[13px] font-medium px-2 py-0.5 rounded border uppercase tracking-wider",
-                        source.difficulty === "Easy"
-                          ? "bg-success/15 text-success border-success/25"
-                          : "bg-yellow-500/15 text-yellow-400 border-yellow-500/25"
-                      )}
-                    >
-                      {source.difficulty}
-                    </span>
-                    {isDone && (
-                      <span className="text-[13px] font-medium px-2 py-0.5 rounded bg-brass-200 text-brass-700 border border-[var(--bb-line-brass)] uppercase tracking-wider ml-auto">
-                        Done
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="text-base font-medium text-text-primary">
-                    {source.name}
-                  </h3>
-
-                  <div className="flex items-center gap-4 text-xs text-text-muted">
-                    <div className="flex items-center gap-1.5">
-                      <Users size={12} className="text-brass-700" />
-                      <span>Traffic: {source.traffic}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock size={12} className="text-brass-700" />
-                      <span>Time: {source.time}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setExpandedId(isExpanded ? null : source.id)
-                    }
-                    className="w-full btn-primary py-3 text-sm mt-1"
-                  >
-                    <ExternalLink size={14} />
-                    <span>
-                      {isExpanded ? "Hide Instructions" : "View Instructions"}
-                    </span>
-                  </button>
-                </div>
-
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-5 pb-5 flex flex-col gap-4 border-t border-border-dim pt-4">
-                        <div className="flex flex-col gap-2.5">
-                          {source.instructions.map((step, i) => (
-                            <div
-                              key={i}
-                              className="flex items-start gap-2.5 text-sm text-text-secondary"
-                            >
-                              <span className="text-brass-700 font-medium shrink-0 mt-0.5">
-                                {i + 1}.
-                              </span>
-                              <span>{renderSourceCopy(step, pageUrl)}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                          <div className="flex items-center gap-2 text-sm font-medium text-brass-700">
-                            <Clipboard size={14} />
-                            <span>Use This Description When Submitting:</span>
-                          </div>
-                          <div className="bg-black/30 border border-border-dim rounded-lg p-3 flex items-center justify-between gap-3">
-                            <p className="text-sm text-text-secondary flex-1 break-all">
-                              {renderSourceCopy(source.description, pageUrl)}
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                void navigator.clipboard.writeText(
-                                  renderSourceCopy(source.description, pageUrl)
-                                );
-                                setCopiedDescId(source.id);
-                                window.setTimeout(
-                                  () => setCopiedDescId(null),
-                                  2000
-                                );
-                              }}
-                              className={clsx(
-                                "shrink-0 px-3 py-1.5 rounded-lg text-[13px] font-medium flex items-center gap-1.5 transition-all",
-                                copiedDescId === source.id
-                                  ? "bg-grad-brass text-black"
-                                  : "bg-surface border border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)]"
-                              )}
-                            >
-                              {copiedDescId === source.id ? (
-                                <CheckCircle2 size={12} />
-                              ) : (
-                                <Copy size={12} />
-                              )}
-                              <span>
-                                {copiedDescId === source.id
-                                  ? "Copied!"
-                                  : "Copy Description"}
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <a
-                            href={source.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-secondary py-2.5 text-xs flex-1"
-                          >
-                            <ExternalLink size={13} />
-                            <span>Open {source.name}</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => void toggleCompleted(source.id)}
-                            className={clsx(
-                              "py-2.5 px-4 rounded-lg text-[13px] font-medium flex items-center gap-2 transition-all",
-                              isDone
-                                ? "bg-grad-brass text-black"
-                                : "bg-surface border border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)]"
-                            )}
-                          >
-                            <CheckCircle2 size={13} />
-                            <span>{isDone ? "Completed" : "Mark Done"}</span>
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+          {visibleSources.map((source, idx) => (
+            <SourceCard
+              key={source.id}
+              source={source}
+              isDone={completed.has(source.id)}
+              index={idx}
+              onView={() => setExpandedId(source.id)}
+              onToggleComplete={() => void toggleCompleted(source.id)}
+            />
+          ))}
         </div>
 
         {hasMore && (
@@ -472,6 +299,27 @@ export default function AutomatedProfitsPage() {
           </div>
         )}
       </section>
+
+      <SourceInstructionsOverlay
+        source={selectedSource}
+        isDone={selectedSource ? completed.has(selectedSource.id) : false}
+        copied={
+          selectedSource != null && copiedDescId === selectedSource.id
+        }
+        onClose={() => setExpandedId(null)}
+        onToggleComplete={() => {
+          if (selectedSource) void toggleCompleted(selectedSource.id);
+        }}
+        onCopyDescription={() => {
+          if (!selectedSource) return;
+          void navigator.clipboard.writeText(
+            renderSourceCopy(selectedSource.description, pageUrl)
+          );
+          setCopiedDescId(selectedSource.id);
+          window.setTimeout(() => setCopiedDescId(null), 2000);
+        }}
+        renderCopy={(template) => renderSourceCopy(template, pageUrl)}
+      />
     </PremiumPageLayout>
   );
 }

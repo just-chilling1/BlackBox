@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { PREMIUM_FEATURES } from "@/lib/premium-features";
@@ -20,8 +20,26 @@ export function PremiumUpgradesWidget({
   variant = "featured",
 }: PremiumUpgradesWidgetProps) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (PREMIUM_FEATURES.length === 0) return null;
+
+  if (!mounted) {
+    return (
+      <div
+        className={clsx(
+          "premium-upgrades-panel min-h-[10rem] animate-pulse rounded-xl bg-brass-100/40",
+          variant === "sidebar" && "premium-upgrades-panel--sidebar min-w-0 w-full",
+          className
+        )}
+        aria-hidden
+      />
+    );
+  }
 
   if (variant === "sidebar") {
     return (
@@ -37,17 +55,12 @@ export function PremiumUpgradesWidget({
         </div>
 
         <div className="flex flex-col gap-2">
-          {PREMIUM_FEATURES.map((feature, index) => {
+          {PREMIUM_FEATURES.map((feature) => {
             const isActive = isNavPathActive(pathname, feature.href);
             const Icon = feature.icon;
 
             return (
-              <motion.div
-                key={feature.href}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + index * 0.05, duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-              >
+              <div key={feature.href}>
                 <Link
                   href={feature.href}
                   onClick={onNavigate}
@@ -90,7 +103,7 @@ export function PremiumUpgradesWidget({
                     )}
                   </span>
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -111,18 +124,12 @@ export function PremiumUpgradesWidget({
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
-        {PREMIUM_FEATURES.map((feature, index) => {
+        {PREMIUM_FEATURES.map((feature) => {
           const isActive = isNavPathActive(pathname, feature.href);
           const Icon = feature.icon;
 
           return (
-            <motion.div
-              key={feature.href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.08, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-              className="min-w-0"
-            >
+            <div key={feature.href} className="min-w-0">
               <Link
                 href={feature.href}
                 onClick={onNavigate}
@@ -169,7 +176,7 @@ export function PremiumUpgradesWidget({
                   )}
                 </span>
               </Link>
-            </motion.div>
+            </div>
           );
         })}
       </div>

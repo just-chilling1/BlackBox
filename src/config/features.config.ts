@@ -95,6 +95,7 @@ export const enabledFeatures: FeatureId[] = [
   "premium-dfy-profit",
   "premium-autopilot",
   "protector",
+  "premium-license-rights",
 ];
 
 export function isFeatureEnabled(id: FeatureId): boolean {

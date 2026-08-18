@@ -37,9 +37,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [150, 800],
     url: "https://www.reddit.com/{SUBREDDIT}/",
     instructions: [
-      "Read {SUBREDDIT}'s rules before posting or commenting.",
-      "Answer a relevant question in detail before mentioning {LINK}.",
-      "Only share {LINK} when it directly supports the discussion.",
+      "Go to {SUBREDDIT} and create a Reddit account if you don't already have one.",
+      "Read the community rules, then comment helpfully on 3-5 existing posts so you don't look like a brand-new promo account.",
+      "Find a current question about {KEYWORDS}. Write a detailed answer in your own words before you mention any link.",
+      "Share {LINK} only when it directly supports the discussion, using the description below.",
+      "Come back a few times this week. Helpful comments keep ranking — Reddit removes bare promotional posts immediately.",
     ],
   },
   {
@@ -51,9 +53,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [100, 600],
     url: "https://www.quora.com/",
     instructions: [
-      "Search for current questions about {KEYWORDS}.",
-      "Write a complete, useful answer in your own words.",
-      "Include {LINK} as an optional resource when it answers the question.",
+      "Go to quora.com and create a free account with a real name, photo, and a short bio about {KEYWORDS}.",
+      "Search for current questions about {KEYWORDS}, especially 'how to' and 'what should I read' threads.",
+      "Write a complete answer in your own words (a few paragraphs). Lead with the advice, not the link.",
+      "Include {LINK} once as an optional resource when it actually answers the question, using the description below.",
+      "Answer 2-3 related questions this week. Detailed Quora answers keep showing up in search and send traffic for months.",
     ],
   },
   {
@@ -65,9 +69,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [120, 750],
     url: "https://www.pinterest.com/",
     instructions: [
-      "Create a board around {KEYWORDS}.",
-      "Publish an original visual that explains one helpful tip.",
-      "Use {LINK} as the destination only when the pin accurately represents the page.",
+      "Go to pinterest.com and create a free business account.",
+      "Create a board around {KEYWORDS} with a clear title and description.",
+      "Design an original pin (Canva is fine) that teaches one helpful tip — the image should match the page.",
+      "Set the pin destination to {LINK} and write a keyword-rich description using the text below.",
+      "Pin 5-10 related ideas this week. Consistent, useful pins keep sending visitors long after you publish them.",
     ],
   },
   {
@@ -79,9 +85,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [80, 500],
     url: "https://www.facebook.com/groups/",
     instructions: [
-      "Join groups relevant to the {COMMUNITY}.",
-      "Read each group's self-promotion rules before participating.",
-      "Share {LINK} only after providing a useful, on-topic contribution.",
+      "Go to facebook.com/groups and search for active groups serving the {COMMUNITY} (5K+ members is a good filter).",
+      "Join 5-10 groups and read each group's self-promotion rules before you post anything.",
+      "Comment helpfully on other members' posts for a day or two so you are not a brand-new link dropper.",
+      "Share a useful post or comment and include {LINK} only where the group allows it, using the description below.",
+      "Post 2-3 times per week in the groups that stay active. Groups reward members who keep contributing.",
     ],
   },
   {
@@ -93,9 +101,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [70, 450],
     url: "https://medium.com/",
     instructions: [
-      "Write an original article about {KEYWORDS}.",
-      "Include useful context instead of a promotional summary.",
-      "Link to {LINK} only where it gives the reader a relevant next step.",
+      "Go to medium.com and create a free account. Add a photo and a bio about {KEYWORDS}.",
+      "Write an original 500-800 word article that teaches one useful idea — not a promotional summary of the page.",
+      "Place {LINK} once, where it gives the reader a relevant next step, using the description below.",
+      "Add tags for {KEYWORDS} and submit to a relevant publication if one accepts the topic.",
+      "Publish 1-2 helpful articles this week. Medium pieces that people finish and clap for keep sending traffic.",
     ],
   },
   {
@@ -107,9 +117,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [90, 650],
     url: "https://www.youtube.com/",
     instructions: [
-      "Create an original video that teaches one {KEYWORDS} topic.",
-      "Make the title and description accurately match the video.",
-      "Place {LINK} in the description only if it expands on the video.",
+      "Go to youtube.com and create or log into your channel. Add a photo and a short channel description.",
+      "Record a short original video that teaches one {KEYWORDS} topic. Lead with the value, not a pitch.",
+      "Write a title and description that accurately match the video so it can be found in search.",
+      "Place {LINK} in the description (and pinned comment if you use one) using the description below.",
+      "Reply to comments. Videos that keep getting replies keep getting recommended and sending visitors.",
     ],
   },
   {
@@ -121,9 +133,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [100, 700],
     url: "https://www.tiktok.com/",
     instructions: [
-      "Create an original short video with one useful takeaway.",
-      "Use relevant tags: {HASHTAGS}.",
-      "Add {LINK} to your profile only if your account is eligible for a link.",
+      "Go to tiktok.com and create or log into your account. Use a photo and a bio that mentions {KEYWORDS}.",
+      "Record an original short video with one useful takeaway for the {COMMUNITY}. Hook in the first 2 seconds.",
+      "Add relevant tags: {HASHTAGS}. Keep the caption about the tip, not a sales pitch.",
+      "Add {LINK} to your profile (or the allowed link field) using the description below if your account can show a link.",
+      "Post a few times this week and reply to comments. Accounts that teach something useful keep getting recommended.",
     ],
   },
   {
@@ -135,9 +149,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [70, 500],
     url: "https://www.instagram.com/",
     instructions: [
-      "Publish an original post or carousel for the {COMMUNITY}.",
-      "Use relevant tags: {HASHTAGS}.",
-      "Use {LINK} in your bio only when it accurately matches the post.",
+      "Go to instagram.com and set up a profile with a photo, a bio, and {LINK} in the bio field.",
+      "Publish an original post or carousel that teaches one useful idea for the {COMMUNITY}.",
+      "Use relevant tags: {HASHTAGS}. Write a caption that helps first and mentions the resource second.",
+      "Tell people the full guide is in your bio, and keep {LINK} there so it matches the post.",
+      "Post a few times this week and reply to comments. Saved and shared posts keep sending profile visits.",
     ],
   },
   {
@@ -149,9 +165,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [50, 350],
     url: "https://x.com/",
     instructions: [
-      "Write a concise, useful point about {KEYWORDS}.",
-      "Reply thoughtfully to relevant conversations instead of dropping links.",
-      "Share {LINK} only when it adds context to the conversation.",
+      "Go to x.com and set up a profile with a photo, a bio about {KEYWORDS}, and {LINK} in the website field.",
+      "Write a concise, useful point about {KEYWORDS}. Teach one idea in the post itself.",
+      "Reply thoughtfully to 5-10 related conversations instead of dropping a link into every thread.",
+      "Share {LINK} only when it adds context the reader asked for, using the description below.",
+      "Stay active a few times this week. Replies and useful threads keep sending profile visits over time.",
     ],
   },
   {
@@ -163,9 +181,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [40, 300],
     url: "https://www.linkedin.com/",
     instructions: [
-      "Share a professional insight related to {KEYWORDS}.",
-      "Use a clear, factual description of the resource.",
-      "Add {LINK} only where it is relevant to your professional audience.",
+      "Go to linkedin.com and complete your profile with a photo, headline, and About section covering {KEYWORDS}.",
+      "Share a professional insight or short how-to related to {KEYWORDS}. Write it as advice, not an ad.",
+      "Use a clear, factual description of the resource and add {LINK} only where it is relevant to that audience.",
+      "Comment on 5 related posts from other people in the {COMMUNITY} so your profile looks active.",
+      "Post 1-2 useful updates this week. LinkedIn keeps showing posts that people comment on.",
     ],
   },
   {
@@ -177,9 +197,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [20, 150],
     url: "https://www.google.com/search?q={DIRECTORY_QUERY}",
     instructions: [
-      "Search for reputable {DIRECTORY_QUERY}.",
-      "Review submission requirements and avoid low-quality listing sites.",
-      "Submit {LINK} with an accurate title and description when the directory allows it.",
+      "Search Google for reputable {DIRECTORY_QUERY} and open 2-3 directories that actually get traffic.",
+      "Skip low-quality 'submit to 1,000 sites' lists. If the directory looks spammy, leave it.",
+      "Create an account if required and fill every field: title, category, and the description below.",
+      "Submit {LINK} with an accurate title that matches the page. Inaccurate listings get rejected or dropped.",
+      "Recheck the listing in a few days. If it is approved, the directory can send visitors for months with no extra work.",
     ],
   },
   {
@@ -191,9 +213,11 @@ const PLATFORM_PLAYBOOKS: PlatformPlaybookTuple = [
     visitors: [30, 200],
     url: "https://www.google.com/search?q={KEYWORDS}+blogs",
     instructions: [
-      "Identify a current article serving the {COMMUNITY}.",
-      "Offer a specific, useful addition to the author or editor.",
-      "Share {LINK} only if it is genuinely useful to their readers.",
+      "Search for current {KEYWORDS} blogs and open a recent article that serves the {COMMUNITY}.",
+      "Read it fully, then leave a specific comment or email the author with one useful addition — not a generic pitch.",
+      "Offer {LINK} only if it is genuinely useful to their readers, using the description below.",
+      "If the site accepts guest posts, pitch one original outline instead of asking them to 'add your link'.",
+      "Follow up once if they reply. A single useful mention on a relevant blog can send visitors for a long time.",
     ],
   },
 ];
