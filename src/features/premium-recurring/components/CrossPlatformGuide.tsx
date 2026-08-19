@@ -74,7 +74,7 @@ export function CrossPlatformGuide() {
 
   return (
     <section className="glass-card p-5 md:p-6">
-      <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-brass-700">
+      <p className="text-[13px] font-medium uppercase tracking-[0.16em] text-pulse-700">
         Where to use it
       </p>
       <p className="mt-1 text-sm text-text-secondary">
@@ -123,7 +123,7 @@ export function CrossPlatformGuide() {
             transition={{ duration: 0.18 }}
             className="mt-4 flex items-center gap-2 rounded-xl border border-dashed border-border-dim bg-page/40 px-4 py-5 text-sm text-text-muted"
           >
-            <MousePointerClick size={16} className="shrink-0 text-brass-700" aria-hidden />
+            <MousePointerClick size={16} className="shrink-0 text-pulse-700" aria-hidden />
             Select a platform above to see exactly how to post there.
           </motion.div>
         )}

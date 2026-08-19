@@ -23,7 +23,7 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
     <div className="flex flex-col gap-3 rounded-xl border border-border-dim/90 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[13px] font-medium uppercase tracking-wider text-text-muted">
-          <Facebook size={12} className="text-brass-700" aria-hidden />
+          <Facebook size={12} className="text-pulse-700" aria-hidden />
           {new Date(post.created_at).toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -42,7 +42,7 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
           "inline-flex items-center justify-center gap-2 self-start rounded-lg px-4 py-2 text-[13px] font-medium uppercase tracking-wide transition-all duration-200 active:scale-[0.98]",
           copied
             ? "bg-success text-white"
-            : "bg-grad-brass text-text-on-accent shadow-brass hover:brightness-110 hover:shadow-brass"
+            : "bg-grad-pulse text-text-on-accent shadow-pulse hover:brightness-110 hover:shadow-pulse"
         )}
       >
         {copied ? (

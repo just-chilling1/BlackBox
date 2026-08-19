@@ -23,13 +23,14 @@ export function SupportCtaBanner({
   return (
     <section
       className={clsx(
-        "relative overflow-hidden rounded-2xl border border-border-dim bg-white shadow-sm",
+        "relative overflow-hidden rounded-2xl border border-[var(--np-line-pulse)] bg-[var(--np-surface)] shadow-[var(--np-shadow-card)]",
         className
       )}
     >
-      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+      <div className="pointer-events-none absolute inset-0 bg-[var(--np-grad-tint)] opacity-60" aria-hidden />
+      <div className="relative flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
         <div className="flex items-start gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-200 text-pulse-500">
             <Headphones size={20} strokeWidth={1.75} />
           </div>
           <div className="min-w-0">
@@ -40,7 +41,7 @@ export function SupportCtaBanner({
 
         <Link
           href={href}
-          className="btn-secondary w-full shrink-0 sm:w-auto text-sm px-5"
+          className="btn-primary relative w-full shrink-0 sm:w-auto text-sm px-5"
         >
           {ctaLabel}
           <ArrowRight size={16} />

@@ -166,7 +166,7 @@ export default function ResetPasswordPage() {
         if (checking) {
             return (
                 <div className="flex flex-col items-center gap-4 py-8">
-                    <div className="w-8 h-8 border-2 border-brass-700 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-2 border-pulse-700 border-t-transparent rounded-full animate-spin" />
                     <p className="text-[15px] text-ink-3">Verifying your reset link...</p>
                 </div>
             );
@@ -180,7 +180,7 @@ export default function ResetPasswordPage() {
                     className="flex flex-col items-center gap-5 py-4"
                 >
                     <div className="w-16 h-16 bg-success/10 border border-success/20 rounded-full flex items-center justify-center">
-                        <CheckCircle2 size={32} className="text-[var(--bb-success)]" />
+                        <CheckCircle2 size={32} className="text-[var(--np-success)]" />
                     </div>
                     <div className="flex flex-col items-center gap-2 text-center">
                         <p className="text-[15px] text-ink font-medium">Password updated!</p>
@@ -197,8 +197,8 @@ export default function ResetPasswordPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center gap-5 py-4"
                 >
-                    <div className="w-16 h-16 bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 rounded-full flex items-center justify-center">
-                        <AlertTriangle size={32} className="text-[var(--bb-danger)]" />
+                    <div className="w-16 h-16 bg-[var(--np-danger)]/10 border border-[var(--np-danger)]/20 rounded-full flex items-center justify-center">
+                        <AlertTriangle size={32} className="text-[var(--np-danger)]" />
                     </div>
                     <div className="flex flex-col items-center gap-2 text-center">
                         <p className="text-[15px] text-ink font-medium">Link Expired or Invalid</p>
@@ -223,7 +223,7 @@ export default function ResetPasswordPage() {
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[var(--bb-danger)] text-sm"
+                        className="bg-[var(--np-danger)]/10 border border-[var(--np-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[var(--np-danger)] text-sm"
                     >
                         <span>{error}</span>
                     </motion.div>
@@ -245,7 +245,7 @@ export default function ResetPasswordPage() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-brass-700"
+                            className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-pulse-700"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -308,7 +308,7 @@ export default function ResetPasswordPage() {
             )}
 
             <div className="flex items-center justify-center gap-1 text-[13px] text-ink-5">
-                <ShieldCheck size={14} className="text-[var(--bb-success)]" />
+                <ShieldCheck size={14} className="text-[var(--np-success)]" />
                 <span>256-bit Encrypted</span>
             </div>
         </AuthLayout>

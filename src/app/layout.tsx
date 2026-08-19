@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/brand.config";
+import { getBrandCssVars } from "@/lib/brand-vars";
 import { storageKeys } from "@/lib/storage-keys";
 import { AppProviders } from "@/components/layout/AppProviders";
+
+const brandStyle = getBrandCssVars();
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,10 +16,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-fraunces",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -34,7 +37,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: brand.productName,
   },
 };
@@ -55,8 +58,8 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${fraunces.variable}`}
-      style={{ colorScheme: "light" }}
+      className={`${inter.variable} ${spaceGrotesk.variable}`}
+      style={{ ...brandStyle, colorScheme: "dark" }}
     >
       <head>
         <Script
@@ -68,7 +71,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="text-text-primary selection:bg-brass-200 antialiased"
+        className="text-text-primary selection:bg-pulse-200 antialiased"
         style={{ backgroundColor: brand.colors.page }}
       >
         <AppProviders>{children}</AppProviders>

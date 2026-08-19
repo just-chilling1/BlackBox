@@ -39,7 +39,7 @@ function PreviewCard({
             <h2 className="text-lg font-medium text-ink">{concept.name}</h2>
             <p className="mt-1 max-w-xl text-sm leading-relaxed text-ink-3">{concept.description}</p>
           </div>
-          <span className="rounded-full bg-brass-100 px-3 py-1 text-[13px] font-medium text-brass-700">
+          <span className="rounded-full bg-pulse-100 px-3 py-1 text-[13px] font-medium text-pulse-700">
             {concept.tag}
           </span>
         </div>
@@ -53,7 +53,7 @@ function PreviewCard({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${base}/logo.png`} alt={concept.name} className="h-9 w-auto max-w-[220px] object-contain object-left" />
             <div className="mt-5 space-y-2">
-              <div className="h-9 rounded-lg bg-brass-100" />
+              <div className="h-9 rounded-lg bg-pulse-100" />
               <div className="h-9 rounded-lg bg-canvas" />
               <div className="h-9 rounded-lg bg-canvas" />
             </div>
@@ -69,9 +69,9 @@ function PreviewCard({
               <img src={`${base}/logo.png`} alt={concept.name} className="h-10 w-auto max-w-[240px] object-contain" />
             </div>
             <div className="space-y-3">
-              <div className="h-11 rounded-xl bg-brass-100" />
-              <div className="h-11 rounded-xl bg-brass-100" />
-              <div className="h-12 rounded-xl bg-brass-500" />
+              <div className="h-11 rounded-xl bg-pulse-100" />
+              <div className="h-11 rounded-xl bg-pulse-100" />
+              <div className="h-12 rounded-xl bg-pulse-500" />
             </div>
           </div>
         </div>
@@ -108,12 +108,12 @@ export default function BrandPreviewPage() {
     <div className="min-h-dvh bg-[#F8FAFC]">
       <header className="border-b border-border-dim bg-white px-6 py-8">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[13px] font-medium uppercase tracking-widest text-brass-500">Brand preview</p>
+          <p className="text-[13px] font-medium uppercase tracking-widest text-pulse-500">Brand preview</p>
           <h1 className="mt-2 text-3xl font-medium text-ink">Pick a logo direction</h1>
           <p className="mt-2 max-w-2xl text-ink-3">
             All three concepts below use the same brass (<code className="text-ink-2">#C9971F</code>) and charcoal palette on a light-mode UI. Reply with <strong>A</strong>, <strong>B</strong>, or <strong>C</strong> to finalize.
           </p>
-          <Link href="/dashboard" className="mt-4 inline-block text-sm font-medium text-brass-700 hover:underline">
+          <Link href="/dashboard" className="mt-4 inline-block text-sm font-medium text-pulse-700 hover:underline">
             ← Back to dashboard
           </Link>
         </div>

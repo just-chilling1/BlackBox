@@ -29,7 +29,7 @@ export function GlassPanel({
         className
       )}
     >
-      <div className="absolute inset-0 bg-linear-to-br from-brass-100/40 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-pulse-100/40 to-transparent pointer-events-none" />
       <div className={cn("relative z-10 h-full min-h-0", contentClassName)}>{children}</div>
     </motion.div>
   );

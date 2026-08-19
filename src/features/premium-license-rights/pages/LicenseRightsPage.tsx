@@ -47,7 +47,7 @@ import {
 type FormState = "idle" | "submitting" | "error";
 
 const fieldClass =
-  "w-full min-w-0 rounded-xl border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
+  "w-full min-w-0 rounded-xl border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-pulse-700 focus:outline-none focus:ring-2 focus:ring-pulse-100 transition-all";
 
 const labelClass = "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted";
 
@@ -69,22 +69,22 @@ function EditionContentCard({ item, index }: { item: EditionContent; index: numb
     >
       <GlassPanel
         intensity="low"
-        className="group h-full border-[var(--bb-line-brass)]/60 transition-all duration-300 hover:border-brass-700/40"
+        className="group h-full border-[var(--np-line-pulse)]/60 transition-all duration-300 hover:border-pulse-700/40"
         contentClassName="p-4 sm:p-5"
       >
         <div className="flex items-start gap-4">
           <div className="relative shrink-0">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700 transition-colors group-hover:bg-brass-700 group-hover:text-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700 transition-colors group-hover:bg-pulse-700 group-hover:text-white">
               <Icon size={20} aria-hidden />
             </div>
-            <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[var(--bb-line-brass)] bg-page text-brass-700">
+            <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[var(--np-line-pulse)] bg-page text-pulse-700">
               <Lock size={10} aria-hidden />
             </div>
           </div>
           <div className="min-w-0 flex-1 space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-medium text-text-primary">{item.title}</h3>
-              <span className="rounded-full border border-[var(--bb-line-brass)] bg-page/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-brass-700">
+              <span className="rounded-full border border-[var(--np-line-pulse)] bg-page/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-pulse-700">
                 Locked
               </span>
             </div>
@@ -116,7 +116,7 @@ function PendingActivationPanel({
           <CheckCircle2 className="h-6 w-6" aria-hidden />
         </div>
         <div className="space-y-2">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--bb-warning)]/25 bg-[var(--bb-warning)]/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-[var(--bb-warning)]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-[var(--np-warning)]">
             <Clock size={12} aria-hidden />
             Awaiting team activation
           </span>
@@ -244,16 +244,16 @@ export default function LicenseRightsPage() {
   );
 
   const statusBadge = pending ? (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--bb-warning)]/25 bg-[var(--bb-warning)]/10 px-4 py-3">
-      <Clock size={16} className="text-[var(--bb-warning)]" aria-hidden />
-      <span className="text-sm font-medium uppercase tracking-wider text-[var(--bb-warning)]">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10 px-4 py-3">
+      <Clock size={16} className="text-[var(--np-warning)]" aria-hidden />
+      <span className="text-sm font-medium uppercase tracking-wider text-[var(--np-warning)]">
         Pending review
       </span>
     </div>
   ) : (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-4 py-3">
-      <Lock size={16} className="text-brass-700" aria-hidden />
-      <span className="text-sm font-medium uppercase tracking-wider text-brass-700">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 px-4 py-3">
+      <Lock size={16} className="text-pulse-700" aria-hidden />
+      <span className="text-sm font-medium uppercase tracking-wider text-pulse-700">
         Activation required
       </span>
     </div>
@@ -264,13 +264,13 @@ export default function LicenseRightsPage() {
       label: "Edition status",
       value: pending ? "Pending review" : "Not activated",
       icon: pending ? Clock : Lock,
-      tone: pending ? "text-[var(--bb-warning)]" : "text-brass-700",
+      tone: pending ? "text-[var(--np-warning)]" : "text-pulse-700",
     },
     {
       label: "Ticket subject",
       value: REQUEST_SUBJECT,
       icon: Tag,
-      tone: "text-brass-700",
+      tone: "text-pulse-700",
     },
     {
       label: "Typical reply",
@@ -289,16 +289,16 @@ export default function LicenseRightsPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-[var(--bb-line-brass)] bg-linear-to-br from-brass-100 via-brass-100/80 to-page p-5 sm:p-6"
+        className="rounded-2xl border border-[var(--np-line-pulse)] bg-linear-to-br from-pulse-100 via-pulse-100/80 to-page p-5 sm:p-6"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-grad-brass text-black shadow-sm">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-grad-pulse text-black shadow-sm">
               <Award size={22} aria-hidden />
             </div>
             <div className="space-y-1">
               <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
-                <Sparkles size={15} className="text-brass-700" aria-hidden />
+                <Sparkles size={15} className="text-pulse-700" aria-hidden />
                 Premium reseller edition
               </p>
               <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
@@ -307,7 +307,7 @@ export default function LicenseRightsPage() {
               </p>
             </div>
           </div>
-          <div className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--bb-line-brass)] bg-page/80 px-3 py-1.5 text-xs font-medium text-brass-700 sm:self-center">
+          <div className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--np-line-pulse)] bg-page/80 px-3 py-1.5 text-xs font-medium text-pulse-700 sm:self-center">
             <Tag size={13} aria-hidden />
             Subject: {REQUEST_SUBJECT}
           </div>
@@ -390,7 +390,7 @@ export default function LicenseRightsPage() {
                   <PremiumErrorAlert message={errorMessage} />
                 ) : null}
 
-                <div className="rounded-xl border border-[var(--bb-line-brass)] bg-brass-100/70 px-4 py-3">
+                <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/70 px-4 py-3">
                   <p className="text-xs leading-relaxed text-text-secondary">
                     <span className="font-medium text-text-primary">What happens next:</span> Support
                     receives your ticket, verifies your purchase, and replies when the reseller
@@ -426,14 +426,14 @@ export default function LicenseRightsPage() {
                       <button
                         type="button"
                         onClick={() => void handleCopyEmail()}
-                        className="break-all text-left text-sm font-medium text-brass-700 hover:underline"
+                        className="break-all text-left text-sm font-medium text-pulse-700 hover:underline"
                       >
                         {SUPPORT_EMAIL}
                       </button>
                       <button
                         type="button"
                         onClick={() => void handleCopyEmail()}
-                        className="inline-flex items-center gap-1 rounded-md border border-border-dim bg-page px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-text-secondary transition-colors hover:border-brass-700 hover:text-brass-700"
+                        className="inline-flex items-center gap-1 rounded-md border border-border-dim bg-page px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-text-secondary transition-colors hover:border-pulse-700 hover:text-pulse-700"
                       >
                         {copiedEmail ? (
                           <>
@@ -458,7 +458,7 @@ export default function LicenseRightsPage() {
         <div className="xl:col-span-5">
           <section className="glass-card h-full p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700">
                 <Lock size={18} aria-hidden />
               </div>
               <div>

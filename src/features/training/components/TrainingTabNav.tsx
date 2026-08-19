@@ -26,8 +26,8 @@ export function TrainingTabNav() {
             className={clsx(
               "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium uppercase tracking-[0.12em] transition-all",
               isActive
-                ? "bg-grad-brass text-text-on-accent shadow-[0_0_20px_color-mix(in_srgb,var(--brand-primary)_25%,transparent)]"
-                : "border border-border-dim/40 bg-surface/40 text-text-primary hover:border-[var(--bb-line-brass)] hover:bg-brass-100"
+                ? "bg-grad-pulse text-text-on-accent shadow-[0_0_20px_color-mix(in_srgb,var(--brand-primary)_25%,transparent)]"
+                : "border border-border-dim/40 bg-surface/40 text-text-primary hover:border-[var(--np-line-pulse)] hover:bg-pulse-100"
             )}
           >
             <Icon size={14} />

@@ -7,7 +7,7 @@ export const dashboardContent = {
     return `Welcome to ${brand.productName}`;
   },
   subtitle:
-    "Build sales offers, publish promotions, and manage your affiliate assets — follow the steps below to launch in minutes.",
+    "Watch the three videos below — then activate your first asset. NullPing builds the money page. You just pick the product.",
   startHereTitle: "Start Here",
   /** Dashboard video track — set Vimeo ids here or in training.config.ts videos[] */
   videos: [

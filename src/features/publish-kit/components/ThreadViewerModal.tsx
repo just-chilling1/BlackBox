@@ -92,7 +92,7 @@ function ThreadViewerContent({
             <button
               type="button"
               onClick={() => void copyAll()}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
             >
               {copiedAll ? <Check size={14} /> : <ClipboardCopy size={14} />}
               {copiedAll ? "Copied!" : "Copy all posts"}

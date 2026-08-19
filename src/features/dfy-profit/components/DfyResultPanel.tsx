@@ -96,7 +96,7 @@ export function DfyResultPanel({
       {sales && (
         <article className="glass-card space-y-3 p-5">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brass-100 text-brass-700">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pulse-100 text-pulse-700">
               <Globe size={18} />
             </div>
             <div className="min-w-0 flex-1">
@@ -131,7 +131,7 @@ export function DfyResultPanel({
 
       <ThreadListSection title="X story thread" count={thread.length || undefined} defaultOpen={thread.length > 0}>
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brass-100 text-lg font-semibold text-brass-700">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pulse-100 text-lg font-semibold text-pulse-700">
             X
           </span>
           <div className="min-w-0">
@@ -169,7 +169,7 @@ export function DfyResultPanel({
 
       <ThreadListSection title="Authority article" count={article ? 1 : undefined} defaultOpen={Boolean(article)}>
         <div className="flex items-start gap-3">
-          <FileText size={18} className="mt-0.5 shrink-0 text-brass-700" />
+          <FileText size={18} className="mt-0.5 shrink-0 text-pulse-700" />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-text-primary">{article?.title || "Authority article"}</p>
             <p className="mt-1 text-sm text-text-secondary">
@@ -187,9 +187,9 @@ export function DfyResultPanel({
         ) : article ? (
           <details open className="group overflow-hidden rounded-xl border border-border-dim bg-white">
             <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
-              <FileText size={14} className="shrink-0 text-brass-700" />
+              <FileText size={14} className="shrink-0 text-pulse-700" />
               <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">{article.title}</span>
-              <button type="button" onClick={(event) => { event.preventDefault(); void copyText("article-html", article.html); }} className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-brass-100 px-2.5 py-1 text-[13px] font-medium text-text-secondary hover:bg-brass-100/70">
+              <button type="button" onClick={(event) => { event.preventDefault(); void copyText("article-html", article.html); }} className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-pulse-100 px-2.5 py-1 text-[13px] font-medium text-text-secondary hover:bg-pulse-100/70">
                 {copiedId === "article-html" ? <Check size={12} /> : <Copy size={12} />}
                 {copiedId === "article-html" ? "Copied" : "Copy HTML"}
               </button>
@@ -207,7 +207,7 @@ export function DfyResultPanel({
 
       <ThreadListSection title="Facebook posts" count={posts.length || undefined} defaultOpen={posts.length > 0}>
         <div className="flex items-start gap-3">
-          <Megaphone size={18} className="mt-0.5 shrink-0 text-brass-700" />
+          <Megaphone size={18} className="mt-0.5 shrink-0 text-pulse-700" />
           <p className="text-sm text-text-secondary">
             {posts.length > 0 ? `${posts.length} ready-to-copy variants` : postsError || "Your Facebook post variants will appear here."}
           </p>
@@ -224,10 +224,10 @@ export function DfyResultPanel({
             {posts.map((post, index) => {
               const copied = copiedId === post.id;
               return (
-                <article key={post.id} className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--bb-line-brass)]">
+                <article key={post.id} className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)]">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">Variant {index + 1}</p>
-                    <button type="button" onClick={() => void copyText(post.id, post.body)} className={clsx("inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors", copied ? "bg-brass-200 text-brass-700" : "bg-brass-100 text-text-secondary hover:bg-brass-100/70")}>
+                    <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">Variant {index + 1}</p>
+                    <button type="button" onClick={() => void copyText(post.id, post.body)} className={clsx("inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors", copied ? "bg-pulse-200 text-pulse-700" : "bg-pulse-100 text-text-secondary hover:bg-pulse-100/70")}>
                       {copied ? <Check size={12} /> : <Copy size={12} />}{copied ? "Copied" : "Copy"}
                     </button>
                   </div>

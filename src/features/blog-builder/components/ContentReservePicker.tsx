@@ -89,20 +89,20 @@ export function ContentReservePicker({
               >
                 <Link2
                   size={16}
-                  className={clsx("shrink-0", isSelected ? "text-brass-700" : "text-text-muted")}
+                  className={clsx("shrink-0", isSelected ? "text-pulse-700" : "text-text-muted")}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p
                       className={clsx(
                         "select-card-label truncate",
-                        isSelected && "font-medium text-brass-700"
+                        isSelected && "font-medium text-pulse-700"
                       )}
                     >
                       {link.label || "Untitled Link"}
                     </p>
                     {networkLabel && (
-                      <span className="shrink-0 rounded-full border border-[var(--bb-line-brass)] bg-brass-100 px-2 py-0.5 text-[11px] font-medium text-brass-700">
+                      <span className="shrink-0 rounded-full border border-[var(--np-line-pulse)] bg-pulse-100 px-2 py-0.5 text-[11px] font-medium text-pulse-700">
                         {networkLabel}
                       </span>
                     )}

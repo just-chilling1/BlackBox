@@ -7,6 +7,7 @@ import { isDevAuthBypassEnabled } from '@/lib/dev-bypass'
 const PUBLIC_ROUTE_PREFIXES = [
   '/sites/',
   '/s/',
+  '/m/',
   '/article/',
   '/review/',
 ]

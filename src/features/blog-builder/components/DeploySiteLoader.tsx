@@ -87,7 +87,7 @@ function TypingDots() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="deploy-typing-dot inline-block h-1 w-1 rounded-full bg-brass-1000"
+          className="deploy-typing-dot inline-block h-1 w-1 rounded-full bg-pulse-1000"
           style={{ animationDelay: `${i * 0.18}s` }}
         />
       ))}
@@ -112,8 +112,8 @@ function BrowserChrome() {
           style={{ animationDelay: `${i * 0.22}s` }}
         />
       ))}
-      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-brass-100">
-        <span className="deploy-url-shimmer absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-brass-300/40 to-transparent" />
+      <div className="relative ml-2 h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-pulse-100">
+        <span className="deploy-url-shimmer absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-pulse-300/40 to-transparent" />
       </div>
     </div>
   );
@@ -131,7 +131,7 @@ function SkeletonBlock({ index, className, visible }: { index: number; className
       transition={{ delay: index * 0.12, duration: 0.45, ease: "easeOut" }}
       className={cn(
         "deploy-block relative overflow-hidden rounded-md border border-divider",
-        "bg-gradient-to-r from-brass-100 via-brass-100 to-transparent",
+        "bg-gradient-to-r from-pulse-100 via-pulse-100 to-transparent",
         className,
         visible && "deploy-block--live"
       )}
@@ -162,11 +162,11 @@ function SkeletonPreview({ phase }: { phase: DeployLoaderPhase }) {
       <SkeletonBlock index={5} className={SKELETON_BLOCKS[5].className} visible={5 < visibleBlocks} />
 
       <div
-        className="deploy-scan pointer-events-none absolute inset-x-0 top-2 h-px bg-gradient-to-r from-transparent via-brass-300 to-brass-500 opacity-90 shadow-brass"
+        className="deploy-scan pointer-events-none absolute inset-x-0 top-2 h-px bg-gradient-to-r from-transparent via-pulse-300 to-pulse-500 opacity-90 shadow-pulse"
         aria-hidden
       />
       <div
-        className="deploy-scan-glow pointer-events-none absolute inset-x-0 top-2 h-8 bg-gradient-to-b from-brass-100 to-transparent"
+        className="deploy-scan-glow pointer-events-none absolute inset-x-0 top-2 h-8 bg-gradient-to-b from-pulse-100 to-transparent"
         aria-hidden
       />
     </div>
@@ -249,17 +249,17 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           <motion.div
-            className="deploy-rocket-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100"
+            className="deploy-rocket-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100"
             aria-hidden
           >
-            <Rocket size={18} className="text-brass-700" />
+            <Rocket size={18} className="text-pulse-700" />
           </motion.div>
           <div className="min-w-0 space-y-2">
-            <p className="flex items-center gap-1.5 text-[13px] font-medium uppercase tracking-[0.16em] text-brass-700">
+            <p className="flex items-center gap-1.5 text-[13px] font-medium uppercase tracking-[0.16em] text-pulse-700">
               <Sparkles size={11} className="deploy-sparkle shrink-0" aria-hidden />
               Site Assembly
             </p>
-            <div className="rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2.5">
+            <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 px-3 py-2.5">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={displayMessage}
@@ -269,7 +269,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                   transition={{ duration: 0.25 }}
                   className="flex items-start gap-2"
                 >
-                  <Loader2 size={16} className="mt-0.5 shrink-0 animate-spin text-brass-700" aria-hidden />
+                  <Loader2 size={16} className="mt-0.5 shrink-0 animate-spin text-pulse-700" aria-hidden />
                   <p className="text-sm font-medium leading-snug text-text-primary sm:text-base">
                     {displayMessage}
                     {!latestLog && <TypingDots />}
@@ -286,7 +286,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
         <BrowserChrome />
         <SkeletonPreview phase={phase} />
         <p className="mt-3 flex items-center justify-center gap-2 text-center text-[13px] font-medium text-text-secondary">
-          <Loader2 size={12} className="animate-spin text-brass-700" aria-hidden />
+          <Loader2 size={12} className="animate-spin text-pulse-700" aria-hidden />
           {skeletonCaption}
         </p>
       </div>
@@ -298,9 +298,9 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 8 }}
           transition={{ duration: 0.3 }}
-          className="mt-3 flex items-center gap-2 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2 text-[13px] font-medium text-text-primary"
+          className="mt-3 flex items-center gap-2 rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100 px-3 py-2 text-[13px] font-medium text-text-primary"
         >
-          <span className="deploy-activity-pulse h-2 w-2 shrink-0 rounded-full bg-grad-brass" aria-hidden />
+          <span className="deploy-activity-pulse h-2 w-2 shrink-0 rounded-full bg-grad-pulse" aria-hidden />
           <span className="truncate">{tickerMessage}</span>
         </motion.p>
       </AnimatePresence>
@@ -314,7 +314,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
               animate={{ opacity: 0.65, height: "auto" }}
               className="flex items-center gap-2 truncate text-[13px] text-text-muted"
             >
-              <Check size={12} className="shrink-0 text-brass-700" aria-hidden />
+              <Check size={12} className="shrink-0 text-pulse-700" aria-hidden />
               <span className="line-through decoration-text-muted/40">{line}</span>
             </motion.li>
           ))}
@@ -333,15 +333,15 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                   layout
                   animate={
                     isActive
-                      ? { scale: [1, 1.06, 1], boxShadow: "var(--bb-shadow-brass)" }
+                      ? { scale: [1, 1.06, 1], boxShadow: "var(--np-shadow-pulse)" }
                       : { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }
                   }
                   transition={isActive ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}
                   className={cn(
                     "flex shrink-0 items-center justify-center rounded-full font-medium transition-colors duration-300",
-                    isDone && "h-7 w-7 bg-grad-brass text-text-on-accent text-[13px]",
-                    isActive && "h-9 w-9 bg-grad-brass text-text-on-accent text-sm ring-2 ring-[var(--bb-line-brass)] ring-offset-2 ring-offset-surface",
-                    !isDone && !isActive && "h-7 w-7 border border-border-dim bg-brass-100 text-[13px] text-text-muted/70"
+                    isDone && "h-7 w-7 bg-grad-pulse text-text-on-accent text-[13px]",
+                    isActive && "h-9 w-9 bg-grad-pulse text-text-on-accent text-sm ring-2 ring-[var(--np-line-pulse)] ring-offset-2 ring-offset-surface",
+                    !isDone && !isActive && "h-7 w-7 border border-border-dim bg-pulse-100 text-[13px] text-text-muted/70"
                   )}
                   aria-current={isActive ? "step" : undefined}
                 >
@@ -350,7 +350,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                 <span
                   className={cn(
                     "hidden truncate uppercase tracking-wider sm:inline",
-                    isActive ? "text-sm font-medium text-text-primary" : isDone ? "text-[13px] font-medium text-brass-700" : "text-[13px] font-medium text-text-muted/60"
+                    isActive ? "text-sm font-medium text-text-primary" : isDone ? "text-[13px] font-medium text-pulse-700" : "text-[13px] font-medium text-text-muted/60"
                   )}
                 >
                   {step.label}
@@ -359,7 +359,7 @@ function DeploySiteLoaderInner({ phase = "generating", className }: DeploySiteLo
                   <span className="relative hidden h-0.5 flex-1 overflow-hidden rounded-full sm:block" aria-hidden>
                     <span className="absolute inset-0 bg-black/[0.06]" />
                     <motion.span
-                      className="absolute inset-y-0 left-0 rounded-full bg-grad-brass"
+                      className="absolute inset-y-0 left-0 rounded-full bg-grad-pulse"
                       initial={{ width: "0%" }}
                       animate={{ width: isDone ? "100%" : isActive ? "55%" : "0%" }}
                       transition={{ duration: 0.5, ease: "easeOut" }}

@@ -34,7 +34,7 @@ export function FloatingSupportButton() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label={floatingWidget.ariaLabel}
-          className="support-float-trigger fixed bottom-4 right-4 z-50 flex items-center gap-2.5 rounded-full border border-[var(--bb-line-brass)] bg-grad-brass px-5 py-3 text-sm font-medium text-text-on-accent shadow-brass ring-2 ring-white/80 transition-all hover:brightness-110 hover:shadow-brass active:scale-[0.98] sm:bottom-6 sm:right-6 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"
+          className="support-float-trigger fixed bottom-4 right-4 z-50 flex items-center gap-2.5 rounded-full border border-[var(--np-line-pulse)] bg-grad-pulse px-5 py-3 text-sm font-medium text-text-on-accent shadow-pulse ring-2 ring-white/80 transition-all hover:brightness-110 hover:shadow-pulse active:scale-[0.98] sm:bottom-6 sm:right-6 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"
         >
           <HelpCircle className="h-5 w-5 shrink-0" aria-hidden />
           {floatingWidget.label}
@@ -63,7 +63,7 @@ export function FloatingSupportButton() {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close support panel"
-              className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-brass-100 hover:text-text-heading"
+              className="rounded-lg p-1.5 text-text-secondary transition-colors hover:bg-pulse-100 hover:text-text-heading"
             >
               <X className="h-4 w-4" />
             </button>

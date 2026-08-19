@@ -190,7 +190,7 @@ export function AffiliateLinkField({
           type="button"
           onClick={() => void handleSaveToVault()}
           disabled={!canSave}
-          className="btn-secondary inline-flex items-center gap-2 border-[var(--bb-line-brass)] bg-brass-100/40 text-sm font-medium text-brass-700 shadow-sm hover:bg-brass-100/70 disabled:opacity-40"
+          className="btn-secondary inline-flex items-center gap-2 border-[var(--np-line-pulse)] bg-pulse-100/40 text-sm font-medium text-pulse-700 shadow-sm hover:bg-pulse-100/70 disabled:opacity-40"
         >
           {saving ? (
             <Loader2 size={14} className="animate-spin" />
@@ -204,7 +204,7 @@ export function AffiliateLinkField({
         {vaultLinks.length > 0 && (
           <Link
             href="/link-vault"
-            className="btn-secondary inline-flex items-center gap-2 border-[var(--bb-line-brass)] text-sm font-medium text-text-primary shadow-sm hover:bg-surface-field"
+            className="btn-secondary inline-flex items-center gap-2 border-[var(--np-line-pulse)] text-sm font-medium text-text-primary shadow-sm hover:bg-surface-field"
           >
             Manage saved links
           </Link>

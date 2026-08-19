@@ -83,7 +83,7 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border-dim bg-surface px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5">
           <div className="min-w-0">
             {preview?.niche && (
-              <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">{preview.niche}</p>
+              <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">{preview.niche}</p>
             )}
             <h2 id="accelerator-preview-title" className="truncate text-sm font-medium text-text-heading sm:text-base">
               {title}
@@ -96,7 +96,7 @@ export function TemplatePreviewOverlay({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-all duration-200 hover:bg-brass-100 hover:text-text-heading active:scale-95"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-all duration-200 hover:bg-pulse-100 hover:text-text-heading active:scale-95"
           >
             <X size={20} />
           </button>
@@ -129,7 +129,7 @@ export function TemplatePreviewOverlay({
             <MessageSquare size={14} />
             X thread
             {threadCount > 0 && (
-              <span className="rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
+              <span className="rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
                 {threadCount}
               </span>
             )}
@@ -139,13 +139,13 @@ export function TemplatePreviewOverlay({
         <div className="min-h-0 flex-1 overflow-y-auto bg-canvas/40">
           {loading && (
             <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-text-muted">
-              <Loader2 size={28} className="animate-spin text-brass-700" />
+              <Loader2 size={28} className="animate-spin text-pulse-700" />
               <p className="text-sm">Loading template preview…</p>
             </div>
           )}
 
           {!loading && error && (
-            <div className="m-4 rounded-lg border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-[15px] text-[var(--bb-danger)]">
+            <div className="m-4 rounded-lg border border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 px-4 py-3 text-[15px] text-[var(--np-danger)]">
               {error}
             </div>
           )}

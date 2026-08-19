@@ -191,7 +191,7 @@ export default function InstantIncomePage() {
                     className="w-full p-8 flex items-center justify-between text-left"
                 >
                     <div className="flex items-center gap-3">
-                        <BookOpen size={22} className="text-brass-700" />
+                        <BookOpen size={22} className="text-pulse-700" />
                         <h2 className="text-xl font-medium text-text-primary">How to Find & Post in Facebook Groups</h2>
                     </div>
                     {showGuide ? <ChevronUp size={20} className="text-text-muted" /> : <ChevronDown size={20} className="text-text-muted" />}
@@ -210,10 +210,10 @@ export default function InstantIncomePage() {
                                 <div className="bg-surface border border-border-dim rounded-xl p-6 flex flex-col gap-3">
                                     <h3 className="text-base font-medium text-text-primary">Step 1: Find Facebook Groups</h3>
                                     <ul className="flex flex-col gap-2.5 text-sm text-text-secondary leading-relaxed">
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Go to Facebook and click the search bar at the top. Type keywords like &quot;weight loss support&quot;, &quot;make money online&quot;, or &quot;fitness motivation&quot;</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Click &quot;Groups&quot; in the left sidebar to see only groups (not pages or people)</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Join 10-15 groups with 5,000+ members. Bigger groups = more people seeing your posts = more money!</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Wait for the group admin to approve you (usually takes 1-24 hours). Be patient - it&apos;s worth it!</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Go to Facebook and click the search bar at the top. Type keywords like &quot;weight loss support&quot;, &quot;make money online&quot;, or &quot;fitness motivation&quot;</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Click &quot;Groups&quot; in the left sidebar to see only groups (not pages or people)</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Join 10-15 groups with 5,000+ members. Bigger groups = more people seeing your posts = more money!</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Wait for the group admin to approve you (usually takes 1-24 hours). Be patient - it&apos;s worth it!</li>
                                     </ul>
                                 </div>
 
@@ -221,9 +221,9 @@ export default function InstantIncomePage() {
                                 <div className="bg-surface border border-border-dim rounded-xl p-6 flex flex-col gap-3">
                                     <h3 className="text-base font-medium text-text-primary">Step 2: Read the Group Rules</h3>
                                     <ul className="flex flex-col gap-2.5 text-sm text-text-secondary leading-relaxed">
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Click &quot;About&quot; in the group to see the rules. Most groups allow personal stories but not direct selling</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Our posts are written as personal success stories, so they&apos;re usually allowed. But always check first!</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>If a group says &quot;no links&quot;, you can still post the message and send the link in private messages to people who ask</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Click &quot;About&quot; in the group to see the rules. Most groups allow personal stories but not direct selling</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Our posts are written as personal success stories, so they&apos;re usually allowed. But always check first!</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>If a group says &quot;no links&quot;, you can still post the message and send the link in private messages to people who ask</li>
                                     </ul>
                                 </div>
 
@@ -231,10 +231,10 @@ export default function InstantIncomePage() {
                                 <div className="bg-surface border border-border-dim rounded-xl p-6 flex flex-col gap-3">
                                     <h3 className="text-base font-medium text-text-primary">Step 3: Post Your Message</h3>
                                     <ul className="flex flex-col gap-2.5 text-sm text-text-secondary leading-relaxed">
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Click &quot;Write something...&quot; in the group. Paste your copied message. Click &quot;Post&quot;. That&apos;s it!</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span><strong className="text-text-primary">Best times to post:</strong> 7-9 AM (before work), 12-1 PM (lunch break), 7-9 PM (after work). People are most active then!</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>Post in 3-5 different groups per day. DON&apos;T post in all groups at once or Facebook might think you&apos;re spamming</li>
-                                        <li className="flex gap-2"><span className="text-brass-700 mt-0.5">•</span>When people comment, reply within 1 hour! Be friendly and helpful. This makes your post show up more in the group</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Click &quot;Write something...&quot; in the group. Paste your copied message. Click &quot;Post&quot;. That&apos;s it!</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span><strong className="text-text-primary">Best times to post:</strong> 7-9 AM (before work), 12-1 PM (lunch break), 7-9 PM (after work). People are most active then!</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>Post in 3-5 different groups per day. DON&apos;T post in all groups at once or Facebook might think you&apos;re spamming</li>
+                                        <li className="flex gap-2"><span className="text-pulse-700 mt-0.5">•</span>When people comment, reply within 1 hour! Be friendly and helpful. This makes your post show up more in the group</li>
                                     </ul>
                                 </div>
                             </div>
@@ -246,7 +246,7 @@ export default function InstantIncomePage() {
             {/* How Much Can You Make? */}
             <section className="glass-card p-8">
                 <div className="flex items-center gap-3 mb-6">
-                    <DollarSign size={22} className="text-brass-700" />
+                    <DollarSign size={22} className="text-pulse-700" />
                     <h2 className="text-xl font-medium text-text-primary">How Much Can You Make?</h2>
                 </div>
                 <p className="text-text-secondary mb-5 leading-relaxed">
@@ -259,7 +259,7 @@ export default function InstantIncomePage() {
                         "The more groups you join and post in, the more money you make. It's that simple!"
                     ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 text-sm text-text-secondary">
-                            <span className="text-brass-700 font-medium mt-0.5">•</span>
+                            <span className="text-pulse-700 font-medium mt-0.5">•</span>
                             <span>{item}</span>
                         </div>
                     ))}
@@ -281,8 +281,8 @@ export default function InstantIncomePage() {
                                 className={clsx(
                                     "px-5 py-2.5 rounded-full text-sm font-medium transition-all border",
                                     selectedNiche === niche
-                                        ? "bg-grad-brass border-[var(--bb-line-brass)] text-black"
-                                        : "bg-surface border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-text-primary"
+                                        ? "bg-grad-pulse border-[var(--np-line-pulse)] text-black"
+                                        : "bg-surface border-border-dim text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-text-primary"
                                 )}
                             >
                                 {niche}
@@ -294,7 +294,7 @@ export default function InstantIncomePage() {
                 {/* Where to Get Your Affiliate Link */}
                 <div className="glass-card p-6 flex flex-col gap-4">
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 size={16} className="text-brass-700" />
+                        <CheckCircle2 size={16} className="text-pulse-700" />
                         <h3 className="text-base font-medium text-text-primary">Where to Get Your Affiliate Link</h3>
                     </div>
                     <p className="text-sm text-text-secondary leading-relaxed">
@@ -303,7 +303,7 @@ export default function InstantIncomePage() {
                     <div className="bg-surface border border-border-dim rounded-xl p-5 flex flex-col gap-3">
                         <p className="text-sm font-medium text-text-secondary">How to Get Started (3 Easy Steps):</p>
                         <ol className="flex flex-col gap-2 text-sm text-text-secondary list-decimal list-inside">
-                            <li>Go to <a href="https://www.digistore24.com" target="_blank" rel="noopener noreferrer" className="text-brass-700 hover:underline">digistore24.com</a> and create a FREE account (takes 2 minutes)</li>
+                            <li>Go to <a href="https://www.digistore24.com" target="_blank" rel="noopener noreferrer" className="text-pulse-700 hover:underline">digistore24.com</a> and create a FREE account (takes 2 minutes)</li>
                             <li>Browse products in your chosen niche above and click &quot;Promote&quot; on any product</li>
                             <li>Copy your unique affiliate link and paste it in the box below</li>
                         </ol>
@@ -325,7 +325,7 @@ export default function InstantIncomePage() {
                     <input
                         type="url"
                         placeholder="https://your-affiliate-link.com"
-                        className="w-full bg-surface border border-border-dim rounded-xl px-5 py-4 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-brass-700/50 transition-colors"
+                        className="w-full bg-surface border border-border-dim rounded-xl px-5 py-4 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-pulse-700/50 transition-colors"
                         value={affiliateLink}
                         onChange={(e) => setAffiliateLink(e.target.value)}
                     />
@@ -357,7 +357,7 @@ export default function InstantIncomePage() {
                             <h2 className="text-xl font-medium text-text-primary">
                                 {filteredPosts.length} Posts Ready — {selectedNiche}
                             </h2>
-                            <span className="text-[13px] font-medium text-brass-700 bg-brass-100 border border-[var(--bb-line-brass)] px-3 py-1.5 rounded-full">
+                            <span className="text-[13px] font-medium text-pulse-700 bg-pulse-100 border border-[var(--np-line-pulse)] px-3 py-1.5 rounded-full">
                                 Copy → Paste → Earn
                             </span>
                         </div>
@@ -375,11 +375,11 @@ export default function InstantIncomePage() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: Math.min(idx * 0.03, 1) }}
-                                        className="bg-surface border border-border-dim rounded-xl p-5 flex flex-col gap-4 hover:border-[var(--bb-line-brass)] transition-all group"
+                                        className="bg-surface border border-border-dim rounded-xl p-5 flex flex-col gap-4 hover:border-[var(--np-line-pulse)] transition-all group"
                                     >
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[13px] font-medium text-brass-700 bg-brass-100 px-2.5 py-1 rounded-md uppercase tracking-widest">
+                                                <span className="text-[13px] font-medium text-pulse-700 bg-pulse-100 px-2.5 py-1 rounded-md uppercase tracking-widest">
                                                     {post.niche}
                                                 </span>
                                                 <span className="text-[13px] text-text-muted">Post #{idx + 1}</span>
@@ -390,7 +390,7 @@ export default function InstantIncomePage() {
                                                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all",
                                                     isCopied
                                                         ? "bg-success text-white"
-                                                        : "bg-brass-100 border border-[var(--bb-line-brass)] text-brass-700 hover:bg-grad-brass hover:text-black"
+                                                        : "bg-pulse-100 border border-[var(--np-line-pulse)] text-pulse-700 hover:bg-grad-pulse hover:text-black"
                                                 )}
                                             >
                                                 {isCopied ? <Check size={12} /> : <Copy size={12} />}

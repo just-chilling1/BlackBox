@@ -47,11 +47,14 @@ export async function GET(request: Request) {
 
   const { data: site } = await reader
     .from("sites")
-    .select("armed_links")
+    .select("armed_links, product_url")
     .eq("id", siteId)
     .maybeSingle();
 
   const links = Array.isArray(site?.armed_links) ? (site.armed_links as ArmedLink[]) : [];
+  if (typeof site?.product_url === "string" && site.product_url.trim()) {
+    links.push({ label: "product", url: site.product_url, network: "other" });
+  }
   const allowed = new Set(
     links
       .map((l) => {

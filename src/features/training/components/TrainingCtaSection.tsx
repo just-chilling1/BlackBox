@@ -10,7 +10,7 @@ export function TrainingCtaSection() {
 
   return (
     <section className="glass-card overflow-hidden">
-      <div className="border-b border-[var(--bb-line-brass)] bg-brass-100 px-5 py-6 sm:px-8">
+      <div className="border-b border-[var(--np-line-pulse)] bg-pulse-100 px-5 py-6 sm:px-8">
         <h2 className="text-lg font-medium text-text-heading">{trainingCta.headline}</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary">
           {trainingCta.subcopy}

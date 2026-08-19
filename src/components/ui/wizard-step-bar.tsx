@@ -16,7 +16,7 @@ export function WizardStepBar({ breadcrumb, step, total = 4, className }: Wizard
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[13px] font-medium uppercase tracking-widest text-brass-700 truncate">
+        <p className="text-[13px] font-medium uppercase tracking-widest text-pulse-700 truncate">
           {breadcrumb}
         </p>
         <span className="text-xs text-text-muted shrink-0">

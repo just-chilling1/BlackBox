@@ -2,11 +2,11 @@ import { clsx } from "clsx";
 import type { Difficulty, SourceType } from "@/features/premium-autopilot/lib/source-types";
 
 const TYPE_BADGE: Record<SourceType, string> = {
-  Forum: "bg-brass-100 text-brass-700 border-[var(--bb-line-brass)]",
-  Social: "bg-[var(--bb-offer-green-100)] text-success border-[var(--bb-line-offer)]",
+  Forum: "bg-pulse-100 text-pulse-700 border-[var(--np-line-pulse)]",
+  Social: "bg-[var(--np-offer-green-100)] text-success border-[var(--np-line-offer)]",
   Directory: "bg-canvas text-ink-3 border-border-dim",
-  Blog: "bg-brass-100/70 text-brass-700 border-[var(--bb-line-brass)]",
-  "Q&A": "bg-brass-100 text-[var(--bb-warning)] border-[var(--bb-line-brass)]",
+  Blog: "bg-pulse-100/70 text-pulse-700 border-[var(--np-line-pulse)]",
+  "Q&A": "bg-pulse-100 text-[var(--np-warning)] border-[var(--np-line-pulse)]",
   Classified: "bg-canvas text-ink-3 border-border-dim",
   Video: "bg-canvas text-ink-3 border-border-dim",
 };
@@ -30,8 +30,8 @@ export function SourceDifficultyBadge({ difficulty }: { difficulty: Difficulty }
       className={clsx(
         "rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em]",
         difficulty === "Easy"
-          ? "border-[var(--bb-line-offer)] bg-[var(--bb-offer-green-100)] text-success"
-          : "border-[var(--bb-line-brass)] bg-brass-100 text-[var(--bb-warning)]"
+          ? "border-[var(--np-line-offer)] bg-[var(--np-offer-green-100)] text-success"
+          : "border-[var(--np-line-pulse)] bg-pulse-100 text-[var(--np-warning)]"
       )}
     >
       {difficulty}

@@ -153,11 +153,11 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            className="relative z-10 flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full max-w-full flex-col overflow-hidden rounded-t-2xl border border-[var(--bb-line-brass)] glass-surface shadow-2xl sm:h-auto sm:max-h-[88vh] sm:max-w-3xl sm:rounded-2xl"
+            className="relative z-10 flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full max-w-full flex-col overflow-hidden rounded-t-2xl border border-[var(--np-line-pulse)] glass-surface shadow-2xl sm:h-auto sm:max-h-[88vh] sm:max-w-3xl sm:rounded-2xl"
           >
             <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-black/10 glass-tile rounded-none">
               <div className="flex items-center gap-2 min-w-0">
-                <Eye size={18} className="text-brass-700 shrink-0" />
+                <Eye size={18} className="text-pulse-700 shrink-0" />
                 <p
                   id="post-preview-title"
                   className="text-sm font-medium text-text-heading truncate"
@@ -170,7 +170,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                   <button
                     type="button"
                     onClick={() => setEditing(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-brass-900 bg-grad-brass hover:opacity-90"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-pulse-900 bg-grad-pulse hover:opacity-90"
                   >
                     <Pencil size={14} />
                     Edit
@@ -181,7 +181,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                     type="button"
                     onClick={save}
                     disabled={saving}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-text-on-accent bg-grad-brass hover:opacity-90 disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-text-on-accent bg-grad-pulse hover:opacity-90 disabled:opacity-60"
                   >
                     {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                     Save
@@ -204,7 +204,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
               )}
 
               {error && (
-                <p className="mb-4 rounded-lg border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/10 p-3 text-sm text-[var(--bb-danger)]/90">
+                <p className="mb-4 rounded-lg border border-[var(--np-danger)]/30 bg-[var(--np-danger)]/10 p-3 text-sm text-[var(--np-danger)]/90">
                   {error}
                 </p>
               )}
@@ -222,7 +222,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="mb-1 text-[13px] uppercase tracking-widest text-brass-700">Title</p>
+                    <p className="mb-1 text-[13px] uppercase tracking-widest text-pulse-700">Title</p>
                     <h2 className="brand-font text-lg leading-snug text-text-heading sm:text-xl">{post.title}</h2>
                   </div>
                   {post.excerpt && (
@@ -250,7 +250,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
               {!loading && post && editing && (
                 <div className="flex min-w-0 max-w-full flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[13px] uppercase tracking-widest text-brass-700">Featured image</span>
+                    <span className="text-[13px] uppercase tracking-widest text-pulse-700">Featured image</span>
                     <input
                       ref={heroInputRef}
                       type="file"
@@ -278,7 +278,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                         type="button"
                         onClick={() => heroInputRef.current?.click()}
                         disabled={uploadingHero}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-brass-900 bg-grad-brass hover:opacity-90 disabled:opacity-60"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-pulse-900 bg-grad-pulse hover:opacity-90 disabled:opacity-60"
                       >
                         {uploadingHero ? (
                           <Loader2 size={14} className="animate-spin" />
@@ -300,7 +300,7 @@ export function PostPreviewModal({ postId, onClose, onSaved }: PostPreviewModalP
                     </div>
                   </div>
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-[13px] uppercase tracking-widest text-brass-700">Title</span>
+                    <span className="text-[13px] uppercase tracking-widest text-pulse-700">Title</span>
                     <input
                       value={draft.title}
                       onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}

@@ -43,7 +43,7 @@ export function DashboardBonusAdCard() {
 
       <div className="dashboard-bonus-ad-inner">
         <p className="dashboard-bonus-ad-badge">
-          <Sparkles className="h-3.5 w-3.5 text-brass-300" strokeWidth={1.75} aria-hidden />
+          <Sparkles className="h-3.5 w-3.5 text-pulse-300" strokeWidth={1.75} aria-hidden />
           Free member training
         </p>
 

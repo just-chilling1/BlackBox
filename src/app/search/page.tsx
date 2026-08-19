@@ -1,10 +1,5 @@
-import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import SearchPage from "@/features/core-workflow/pages/SearchPage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return (
-    <FeatureGuard feature="core-workflow">
-      <SearchPage />
-    </FeatureGuard>
-  );
+  redirect("/activate");
 }

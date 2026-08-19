@@ -1,5 +1,5 @@
 /**
- * BlackBox Cash Academy content — platform tutorials, premium walkthroughs, and launch helpers.
+ * NullPing Cash Academy content — platform tutorials, premium walkthroughs, and launch helpers.
  * Add Vimeo IDs in training.config.ts (platform) and below (premium) when videos are uploaded.
  */
 

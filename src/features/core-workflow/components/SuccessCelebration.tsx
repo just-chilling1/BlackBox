@@ -44,7 +44,7 @@ export function SuccessCelebration({ show, title, subtitle, onDone }: SuccessCel
           <motion.div
             initial={{ y: 30 }}
             animate={{ y: 0 }}
-            className="relative flex flex-col items-center gap-5 surface-nested rounded-3xl border-[var(--bb-line-brass)] p-10 shadow-[0_0_60px_rgba(234,179,8,0.15)] max-w-sm"
+            className="relative flex flex-col items-center gap-5 surface-nested rounded-3xl border-[var(--np-line-pulse)] p-10 shadow-[0_0_60px_rgba(234,179,8,0.15)] max-w-sm"
           >
             <div className="relative">
               {Array.from({ length: 20 }).map((_, i) => (
@@ -58,9 +58,9 @@ export function SuccessCelebration({ show, title, subtitle, onDone }: SuccessCel
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="w-20 h-20 bg-brass-100 rounded-full flex items-center justify-center border-2 border-[var(--bb-line-brass)]"
+                className="w-20 h-20 bg-pulse-100 rounded-full flex items-center justify-center border-2 border-[var(--np-line-pulse)]"
               >
-                <CheckCircle2 size={40} className="text-brass-700" />
+                <CheckCircle2 size={40} className="text-pulse-700" />
               </motion.div>
             </div>
             <div className="text-center flex flex-col gap-2">
@@ -71,7 +71,7 @@ export function SuccessCelebration({ show, title, subtitle, onDone }: SuccessCel
               initial={{ width: "100%" }}
               animate={{ width: "0%" }}
               transition={{ duration: 2.5, ease: "linear" }}
-              className="h-1 bg-grad-brass rounded-full self-start"
+              className="h-1 bg-grad-pulse rounded-full self-start"
             />
           </motion.div>
         </motion.div>

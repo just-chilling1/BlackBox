@@ -54,9 +54,7 @@ export function getServerAppUrl(request?: Request): string {
 
 /** Path a site is served at — member-handle URLs for new sites, /sites/{slug} for legacy ones. */
 export function sitePublicPath(site: { slug: string; owner_handle?: string | null }): string {
-  return site.owner_handle
-    ? `/${site.owner_handle}/sites/${site.slug}`
-    : `/sites/${site.slug}`;
+  return `/m/${site.slug}`;
 }
 
 export function buildOfferPageUrl(

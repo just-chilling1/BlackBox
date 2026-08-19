@@ -56,7 +56,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const exclusiveOffers = getExclusiveOffers();
 
   const [displayName, setDisplayName] = useState("Member");
-  const [userInitials, setUserInitials] = useState("BC");
+  const [userInitials, setUserInitials] = useState("NP");
 
   useEffect(() => {
     void getCachedClientUser().then((user) => {
@@ -143,8 +143,9 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             type="button"
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            suppressHydrationWarning
             className={clsx(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-ink-3 transition-colors hover:bg-brass-100 hover:text-ink",
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-ink-3 transition-colors hover:bg-pulse-100 hover:text-ink",
               !collapsed && "ml-auto"
             )}
           >
@@ -195,7 +196,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
         <div className={clsx("p-3", collapsed && "px-2")}>
           <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-grad-brass text-[15px] font-medium text-brass-900 shadow-brass">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-grad-pulse text-[15px] font-medium text-pulse-900 shadow-pulse">
               {userInitials}
             </div>
             {!collapsed && (

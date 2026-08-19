@@ -68,7 +68,7 @@ export default function SignupPage() {
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[#A32D2D] text-[15px]"
+            className="bg-[var(--np-danger)]/10 border border-[var(--np-danger)]/20 p-4 rounded-sm flex items-center gap-3 text-[#A32D2D] text-[15px]"
           >
             <ShieldAlert size={18} />
             <span>{error}</span>
@@ -124,7 +124,7 @@ export default function SignupPage() {
               type="button"
               aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword(!showPassword)}
-              className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-brass-700"
+              className="auth-field-icon absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-pulse-700"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>

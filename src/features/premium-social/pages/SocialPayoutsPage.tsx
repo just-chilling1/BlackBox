@@ -61,9 +61,9 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
   const isCopied = copiedId === post.id;
 
   return (
-    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--bb-line-brass)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
+    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">
+        <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">
           Variant {index + 1}
         </p>
         <button
@@ -72,8 +72,8 @@ const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostC
           className={clsx(
             "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors",
             isCopied
-              ? "bg-brass-200 text-brass-700"
-              : "bg-brass-100 text-text-secondary hover:bg-brass-100/70"
+              ? "bg-pulse-200 text-pulse-700"
+              : "bg-pulse-100 text-text-secondary hover:bg-pulse-100/70"
           )}
         >
           {isCopied ? <Check size={12} /> : <Copy size={12} />}
@@ -139,7 +139,7 @@ function GenerationCard({
         <button
           type="button"
           onClick={() => void copyAll()}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
         >
           {copiedAll ? <Check size={13} /> : <ClipboardCopy size={13} />}
           {copiedAll ? "Copied!" : "Copy all"}
@@ -337,7 +337,7 @@ export default function SocialPayoutsPage() {
   if (loading) {
     return (
       <PremiumPageLayout
-        title="Instant Income"
+        title="Pin Multiplier"
         subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
         animate={false}
       >
@@ -348,7 +348,7 @@ export default function SocialPayoutsPage() {
 
   return (
     <PremiumPageLayout
-      title="Instant Income"
+      title="Pin Multiplier"
       subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
       footer={
         <PremiumFooter>

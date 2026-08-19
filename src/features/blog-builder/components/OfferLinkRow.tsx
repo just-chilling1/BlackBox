@@ -32,8 +32,8 @@ export function CopyUrlButton({
       className={clsx(
         "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors",
         primary
-          ? "border border-[var(--bb-line-brass)] bg-grad-brass text-black hover:opacity-90"
-          : "border border-border-dim bg-white text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+          ? "border border-[var(--np-line-pulse)] bg-grad-pulse text-black hover:opacity-90"
+          : "border border-border-dim bg-white text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
       )}
     >
       {copied ? <Check size={13} /> : <Copy size={13} />}
@@ -62,7 +62,7 @@ export function OfferLinkRow({
       className={clsx(
         "flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3",
         primary
-          ? "border-[var(--bb-line-brass)] bg-brass-100/50"
+          ? "border-[var(--np-line-pulse)] bg-pulse-100/50"
           : "border-border-dim bg-page/60"
       )}
     >
@@ -70,8 +70,8 @@ export function OfferLinkRow({
         className={clsx(
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
           primary
-            ? "bg-grad-brass text-black"
-            : "border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700"
+            ? "bg-grad-pulse text-black"
+            : "border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700"
         )}
       >
         <Icon size={15} />
@@ -80,7 +80,7 @@ export function OfferLinkRow({
         <p
           className={clsx(
             "text-[13px] font-medium uppercase tracking-wider",
-            primary ? "text-brass-700" : "text-text-secondary"
+            primary ? "text-pulse-700" : "text-text-secondary"
           )}
         >
           {title}
@@ -93,7 +93,7 @@ export function OfferLinkRow({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-2.5 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-2.5 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
         >
           <ExternalLink size={13} />
           Open

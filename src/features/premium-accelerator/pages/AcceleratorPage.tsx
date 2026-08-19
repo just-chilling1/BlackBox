@@ -66,16 +66,16 @@ const TemplateCard = memo(function TemplateCard({
 
   return (
     <article
-      className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--bb-line-brass)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]"
+      className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-[13px] font-medium uppercase tracking-wider text-brass-700">{template.niche}</p>
+          <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">{template.niche}</p>
           <h3 className="mt-1 line-clamp-2 font-medium text-text-primary">{template.productName}</h3>
           <p className="mt-1 text-xs text-text-muted">{template.templateName}</p>
         </div>
         {!template.seeded && (
-          <span className="shrink-0 rounded bg-brass-100 px-2 py-0.5 text-[13px] text-text-muted">
+          <span className="shrink-0 rounded bg-pulse-100 px-2 py-0.5 text-[13px] text-text-muted">
             Pending
           </span>
         )}
@@ -294,7 +294,7 @@ export default function AcceleratorPage() {
   if (loading && templates.length === 0) {
     return (
       <PremiumPageLayout
-        title="Unlimited"
+        title="Asset Vault"
         subtitle="200 pre-made sales pages + 10-post X story threads with niche images."
         animate={false}
       >
@@ -305,7 +305,7 @@ export default function AcceleratorPage() {
 
   return (
     <PremiumPageLayout
-      title="Unlimited"
+      title="Asset Vault"
       subtitle={`${seededCount} of 200 pre-made sales pages + story threads across every niche. Each clone includes a 10-post thread with images on posts 1, 4, and 7.`}
       footer={
         <PremiumFooter>
@@ -315,7 +315,7 @@ export default function AcceleratorPage() {
     >
       <PremiumVideoTutorial
         vimeoId="1215530104"
-        title="Unlimited Training"
+        title="Asset Vault Training"
         description="Watch how to browse the 200 pre-made sales pages, clone one with your affiliate link, and grab its ready-made story thread — all in under two minutes."
         iframeTitle="Unlimited training video"
         thumbnailSrc={getAcademyPremiumThumbnail(0) ?? undefined}
@@ -347,7 +347,7 @@ export default function AcceleratorPage() {
         description="Each template includes a ready-made 10-post X story thread with niche images — clone instantly with your link."
         badge={
           !ready ? (
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--bb-line-brass)] bg-brass-100/10 px-3 py-1 text-[13px] font-medium text-brass-700">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--np-line-pulse)] bg-pulse-100/10 px-3 py-1 text-[13px] font-medium text-pulse-700">
               {refreshing && <Loader2 size={12} className="animate-spin" />}
               Seeding in progress ({seededCount}/200)
             </span>
@@ -356,7 +356,7 @@ export default function AcceleratorPage() {
       >
         <div className="block">
           <span className="mb-2 flex items-center gap-2 text-sm font-medium text-text-primary">
-            <LinkIcon size={14} className="text-brass-700" />
+            <LinkIcon size={14} className="text-pulse-700" />
             Your affiliate link
           </span>
           <AffiliateLinkField

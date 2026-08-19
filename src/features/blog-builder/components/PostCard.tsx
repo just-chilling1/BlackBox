@@ -26,7 +26,7 @@ export function PostCard({ post, siteSlug }: { post: BlogPost; siteSlug: string 
           <Link
             href={href}
             target="_blank"
-            className="inline-flex items-center gap-1 text-brass-700 hover:underline"
+            className="inline-flex items-center gap-1 text-pulse-700 hover:underline"
           >
             View live <ExternalLink size={12} />
           </Link>

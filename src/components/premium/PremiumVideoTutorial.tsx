@@ -56,7 +56,7 @@ export function PremiumVideoTutorial({
                 )}
                 <div className="video-thumb-scrim absolute inset-0" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-brass text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-pulse text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105">
                     <Play className="ml-1 h-8 w-8 fill-white" />
                   </span>
                   {hasVideo ? (
@@ -75,8 +75,8 @@ export function PremiumVideoTutorial({
           </div>
           <div className="flex flex-col justify-center gap-4 p-8 md:w-1/2 md:p-10">
             <div className="flex items-center gap-2">
-              <Sparkles size={14} className="text-brass-700" />
-              <span className="text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
+              <Sparkles size={14} className="text-pulse-700" />
+              <span className="text-[13px] font-medium uppercase tracking-[0.2em] text-pulse-700">
                 Watch First
               </span>
             </div>

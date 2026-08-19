@@ -188,7 +188,7 @@ export default function DfyPage() {
                         )}>
                             <span className={clsx(
                                 "flex h-6 w-6 items-center justify-center rounded-full text-[13px] font-medium",
-                                step >= s.num ? "bg-grad-brass text-black shadow-brass" : "bg-brass-100 text-text-muted"
+                                step >= s.num ? "bg-grad-pulse text-black shadow-pulse" : "bg-pulse-100 text-text-muted"
                             )}>
                                 {step > s.num ? <Check size={12} strokeWidth={3} /> : s.num}
                             </span>
@@ -196,7 +196,7 @@ export default function DfyPage() {
                         </div>
                         {i < 2 && (
                             <ChevronRight size={14} className={clsx(
-                                step > s.num ? "text-brass-700" : "text-text-muted/30"
+                                step > s.num ? "text-pulse-700" : "text-text-muted/30"
                             )} />
                         )}
                     </div>
@@ -214,7 +214,7 @@ export default function DfyPage() {
                         className="flex flex-col gap-6"
                     >
                         <div className="flex items-center gap-3 px-1">
-                            <Zap size={18} className="text-brass-700" />
+                            <Zap size={18} className="text-pulse-700" />
                             <h2 className="text-xl font-medium text-text-heading">Choose Your Keyword</h2>
                         </div>
 
@@ -226,21 +226,21 @@ export default function DfyPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.06 }}
                                     onClick={() => handleSelectKeyword(kw)}
-                                    className="glass-card p-6 flex flex-col gap-4 text-left group hover:border-[var(--bb-line-brass)] transition-all relative overflow-hidden"
+                                    className="glass-card p-6 flex flex-col gap-4 text-left group hover:border-[var(--np-line-pulse)] transition-all relative overflow-hidden"
                                 >
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-brass-100 blur-3xl -mr-10 -mt-10 group-hover:bg-brass-100 transition-colors" />
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-pulse-100 blur-3xl -mr-10 -mt-10 group-hover:bg-pulse-100 transition-colors" />
 
                                     <div className="flex items-center justify-between">
                                         <span className="bg-surface border border-border-dim px-2.5 py-1 rounded-md text-[13px] font-medium text-text-muted uppercase tracking-widest">
                                             {kw.niche}
                                         </span>
-                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-brass-100 border border-[var(--bb-line-brass)] text-[13px] font-medium text-brass-700 uppercase tracking-widest">
+                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-pulse-100 border border-[var(--np-line-pulse)] text-[13px] font-medium text-pulse-700 uppercase tracking-widest">
                                             <Flame size={10} />
                                             <span>High Intent</span>
                                         </div>
                                     </div>
 
-                                    <h3 className="text-[16px] font-medium text-text-heading group-hover:text-brass-700 transition-colors leading-snug">
+                                    <h3 className="text-[16px] font-medium text-text-heading group-hover:text-pulse-700 transition-colors leading-snug">
                                         &ldquo;{kw.label}&rdquo;
                                     </h3>
 
@@ -248,7 +248,7 @@ export default function DfyPage() {
                                         {kw.description}
                                     </p>
 
-                                    <div className="flex items-center gap-2 text-[13px] font-medium text-brass-700 uppercase tracking-widest mt-auto pt-3 border-t border-border-dim/30 group-hover:gap-3 transition-all">
+                                    <div className="flex items-center gap-2 text-[13px] font-medium text-pulse-700 uppercase tracking-widest mt-auto pt-3 border-t border-border-dim/30 group-hover:gap-3 transition-all">
                                         <span>Select This Keyword</span>
                                         <ChevronRight size={13} />
                                     </div>
@@ -269,8 +269,8 @@ export default function DfyPage() {
                     >
                         <div className="glass-card p-5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-brass-100 flex items-center justify-center">
-                                    <Check size={16} className="text-brass-700" />
+                                <div className="w-9 h-9 rounded-lg bg-pulse-100 flex items-center justify-center">
+                                    <Check size={16} className="text-pulse-700" />
                                 </div>
                                 <div>
                                     <p className="text-[13px] font-medium text-text-muted uppercase tracking-widest">Selected Keyword</p>
@@ -279,7 +279,7 @@ export default function DfyPage() {
                             </div>
                             <button
                                 onClick={() => setStep(1)}
-                                className="text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors flex items-center gap-1.5"
+                                className="text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors flex items-center gap-1.5"
                             >
                                 <RotateCcw size={12} />
                                 Change
@@ -288,8 +288,8 @@ export default function DfyPage() {
 
                         <div className="glass-card p-8 flex flex-col gap-6">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-brass-100 flex items-center justify-center">
-                                    <LinkIcon size={18} className="text-brass-700" />
+                                <div className="w-10 h-10 rounded-lg bg-pulse-100 flex items-center justify-center">
+                                    <LinkIcon size={18} className="text-pulse-700" />
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-medium text-text-heading">Provide Your Digistore Affiliate Link</h2>
@@ -301,7 +301,7 @@ export default function DfyPage() {
                                 <input
                                     type="url"
                                     placeholder="https://www.digistore24.com/redir/XXXXX/your-id/"
-                                    className="w-full surface-inset border-border-dim/40 px-4 py-4 text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-[var(--bb-line-brass)] transition-colors"
+                                    className="w-full surface-inset border-border-dim/40 px-4 py-4 text-sm text-text-primary placeholder:text-text-muted/40 outline-none focus:border-[var(--np-line-pulse)] transition-colors"
                                     value={affiliateLink}
                                     onChange={(e) => {
                                         setAffiliateLink(e.target.value);
@@ -310,7 +310,7 @@ export default function DfyPage() {
                                     onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
                                 />
                                 {error && (
-                                    <p className="text-[13px] text-[var(--bb-danger)] font-medium px-1">{error}</p>
+                                    <p className="text-[13px] text-[var(--np-danger)] font-medium px-1">{error}</p>
                                 )}
                             </div>
 
@@ -338,15 +338,15 @@ export default function DfyPage() {
                         {/* Recap bar */}
                         <div className="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-brass-100 border border-[var(--bb-line-brass)] rounded-lg">
-                                    <Flame size={12} className="text-brass-700" />
-                                    <span className="text-[13px] font-medium text-brass-700">{selectedKeyword?.niche}</span>
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-pulse-100 border border-[var(--np-line-pulse)] rounded-lg">
+                                    <Flame size={12} className="text-pulse-700" />
+                                    <span className="text-[13px] font-medium text-pulse-700">{selectedKeyword?.niche}</span>
                                 </div>
                                 <span className="text-[13px] font-medium text-text-primary">&ldquo;{selectedKeyword?.label}&rdquo;</span>
                             </div>
                             <button
                                 onClick={handleReset}
-                                className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                                className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                             >
                                 <RotateCcw size={12} />
                                 Start Over
@@ -370,7 +370,7 @@ export default function DfyPage() {
                                     <h2 className="text-lg font-medium text-text-heading">
                                         {results.length} Posts Found — Replies Ready
                                     </h2>
-                                    <span className="text-[13px] font-medium text-brass-700 bg-brass-100 border border-[var(--bb-line-brass)] px-3 py-1 rounded-full">
+                                    <span className="text-[13px] font-medium text-pulse-700 bg-pulse-100 border border-[var(--np-line-pulse)] px-3 py-1 rounded-full">
                                         Copy Reply → Paste Under Post → Earn
                                     </span>
                                 </div>
@@ -393,8 +393,8 @@ export default function DfyPage() {
                                                             <span className={clsx(
                                                                 "text-[13px] font-medium uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
                                                                 item.post.platform === "Reddit"
-                                                                    ? "text-[var(--bb-warning)] border-[var(--bb-warning)]/20 bg-[var(--bb-warning)]/10"
-                                                                    : "text-[var(--bb-danger)] border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10"
+                                                                    ? "text-[var(--np-warning)] border-[var(--np-warning)]/20 bg-[var(--np-warning)]/10"
+                                                                    : "text-[var(--np-danger)] border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10"
                                                             )}>
                                                                 {item.post.platform}
                                                             </span>
@@ -412,7 +412,7 @@ export default function DfyPage() {
                                                         href={item.post.url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brass-100 border border-[var(--bb-line-brass)] text-[13px] font-medium text-brass-700 hover:bg-brass-200 transition-all"
+                                                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pulse-100 border border-[var(--np-line-pulse)] text-[13px] font-medium text-pulse-700 hover:bg-pulse-200 transition-all"
                                                     >
                                                         <ExternalLink size={11} />
                                                         <span>Go to Post</span>
@@ -427,9 +427,9 @@ export default function DfyPage() {
                                                             const isCopied = copiedId === uniqueId;
 
                                                             return (
-                                                                <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-[var(--bb-line-brass)] transition-all group">
+                                                                <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-[var(--np-line-pulse)] transition-all group">
                                                                     <div className="flex items-center justify-between mb-2.5">
-                                                                        <span className="text-[13px] font-medium text-brass-700 uppercase tracking-widest">
+                                                                        <span className="text-[13px] font-medium text-pulse-700 uppercase tracking-widest">
                                                                             {labels[rIdx] || `Reply #${rIdx + 1}`}
                                                                         </span>
                                                                         <button
@@ -438,7 +438,7 @@ export default function DfyPage() {
                                                                                 "flex items-center gap-1 px-2 py-1 rounded text-[13px] font-medium transition-all",
                                                                                 isCopied
                                                                                     ? "bg-success text-white"
-                                                                                    : "bg-page border border-border-dim text-text-muted hover:bg-grad-brass hover:text-black hover:border-[var(--bb-line-brass)]"
+                                                                                    : "bg-page border border-border-dim text-text-muted hover:bg-grad-pulse hover:text-black hover:border-[var(--np-line-pulse)]"
                                                                             )}
                                                                         >
                                                                             {isCopied ? <Check size={10} /> : <Copy size={10} />}
@@ -463,7 +463,7 @@ export default function DfyPage() {
                         {/* Error in step 3 */}
                         {!loadingPhase && results.length === 0 && error && (
                             <div className="flex flex-col items-center py-16 gap-4">
-                                <p className="text-sm text-[var(--bb-danger)]">{error}</p>
+                                <p className="text-sm text-[var(--np-danger)]">{error}</p>
                                 <button onClick={() => setStep(2)} className="btn-primary">
                                     <RotateCcw size={14} />
                                     <span>Try Again</span>

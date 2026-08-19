@@ -9,15 +9,15 @@ interface QuickActionCardProps {
   icon: LucideIcon;
   href: string;
   buttonText: string;
-  accent?: "gold" | "ink" | "brass";
+  accent?: "gold" | "ink" | "brass" | "pulse";
 }
 
 const accents = {
   gold: {
-    text: "text-brass-700",
-    tile: "bg-brass-100 border-[var(--bb-line-brass)]",
-    hoverBorder: "hover:border-[var(--bb-line-brass)]",
-    bar: "from-brass-300 to-brass-500",
+    text: "text-pulse-700",
+    tile: "bg-pulse-100 border-[var(--np-line-pulse)]",
+    hoverBorder: "hover:border-[var(--np-line-pulse)]",
+    bar: "from-pulse-300 to-pulse-500",
   },
   ink: {
     text: "text-ink-3",
@@ -26,10 +26,16 @@ const accents = {
     bar: "from-ink-4 to-ink-2",
   },
   brass: {
-    text: "text-brass-700",
-    tile: "bg-brass-200 border-[var(--bb-line-brass)]",
-    hoverBorder: "hover:border-[var(--bb-line-brass)]",
-    bar: "from-brass-300 to-brass-500",
+    text: "text-pulse-700",
+    tile: "bg-pulse-200 border-[var(--np-line-pulse)]",
+    hoverBorder: "hover:border-[var(--np-line-pulse)]",
+    bar: "from-pulse-300 to-pulse-500",
+  },
+  pulse: {
+    text: "text-pulse-700",
+    tile: "bg-pulse-200 border-[var(--np-line-pulse)]",
+    hoverBorder: "hover:border-[var(--np-line-pulse)]",
+    bar: "from-pulse-300 to-pulse-500",
   },
 } as const;
 

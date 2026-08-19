@@ -53,11 +53,11 @@ export function PremiumFeatureNavList({
       <div className={outerClass} aria-hidden>
         <div className="premium-nav-section-shimmer" />
         {!collapsed ? (
-          <div className="relative z-[1] mx-2 mb-2 mt-1 h-5 animate-pulse rounded bg-brass-100/80" />
+          <div className="relative z-[1] mx-2 mb-2 mt-1 h-5 animate-pulse rounded bg-pulse-100/80" />
         ) : null}
         <div className="relative z-[1] space-y-1 px-1">
           {Array.from({ length: Math.min(PREMIUM_FEATURES.length, 4) }).map((_, i) => (
-            <div key={i} className="h-11 animate-pulse rounded-md bg-brass-100/60" />
+            <div key={i} className="h-11 animate-pulse rounded-md bg-pulse-100/60" />
           ))}
         </div>
       </div>
@@ -87,7 +87,7 @@ export function PremiumFeatureNavList({
           )}
         >
           <span className="premium-nav-sparkle-badge">
-            <Sparkles className="h-4 w-4 text-brass-700" strokeWidth={1.75} />
+            <Sparkles className="h-4 w-4 text-pulse-500" strokeWidth={1.75} />
           </span>
           {PREMIUM_SECTION_LABEL}
         </p>
@@ -109,7 +109,7 @@ export function PremiumFeatureNavList({
                 <span className="premium-sidebar-icon-chip">
                   <Icon
                     className={clsx(
-                      "text-brass-700",
+                      "text-pulse-500",
                       mobile ? "h-4 w-4" : "h-[18px] w-[18px]"
                     )}
                     strokeWidth={1.75}

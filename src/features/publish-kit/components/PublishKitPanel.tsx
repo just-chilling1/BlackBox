@@ -77,7 +77,7 @@ function CollapsibleResultSection({
         />
         <span className="min-w-0 flex-1 text-sm font-medium text-ink">{title}</span>
         {count !== undefined && (
-          <span className="shrink-0 rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-ink-3">
+          <span className="shrink-0 rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-ink-3">
             {count}
           </span>
         )}
@@ -109,7 +109,7 @@ function CollapsibleResultItem({
           className="mt-0.5 shrink-0 text-ink-4 transition-transform group-open:rotate-180"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-medium uppercase tracking-wide text-brass-700">{label}</p>
+          <p className="text-[13px] font-medium uppercase tracking-wide text-pulse-700">{label}</p>
           {preview && (
             <p className="mt-0.5 line-clamp-2 text-sm text-ink-2 group-open:hidden">{preview}</p>
           )}
@@ -139,9 +139,9 @@ function KitButton({
     "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60";
   const styles =
     variant === "primary"
-      ? "bg-grad-brass text-text-on-accent shadow-brass hover:brightness-110 hover:shadow-brass active:scale-[0.98]"
+      ? "bg-grad-pulse text-text-on-accent shadow-pulse hover:brightness-110 hover:shadow-pulse active:scale-[0.98]"
       : variant === "ghost"
-        ? "text-ink-2 hover:bg-brass-100 hover:text-ink active:scale-[0.98]"
+        ? "text-ink-2 hover:bg-pulse-100 hover:text-ink active:scale-[0.98]"
         : "btn-subtle";
 
   return (
@@ -327,7 +327,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
     <div className="flex flex-col gap-6 min-w-0">
       {toast && (
         <div
-          className={`rounded-lg border px-4 py-3 text-sm ${ toast.variant === "error" ? "border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 text-[var(--bb-danger)]" : toast.variant === "success" ? "border-[var(--bb-line-brass)] bg-brass-100 text-text-heading" : "border-border-dim bg-brass-100 text-ink-2" }`}
+          className={`rounded-lg border px-4 py-3 text-sm ${ toast.variant === "error" ? "border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 text-[var(--np-danger)]" : toast.variant === "success" ? "border-[var(--np-line-pulse)] bg-pulse-100 text-text-heading" : "border-border-dim bg-pulse-100 text-ink-2" }`}
         >
           {toast.message}
         </div>
@@ -336,15 +336,15 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
       <div className="glass-card flex flex-col gap-4 p-4 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[13px] font-medium uppercase tracking-widest text-brass-700">X-Power Promotions</p>
+            <p className="text-[13px] font-medium uppercase tracking-widest text-pulse-700">X-Power Promotions</p>
             <h2 className="mt-1 brand-font text-xl text-text-heading">{site.siteName}</h2>
             {site.tagline && <p className="mt-1 text-sm text-text-secondary">{site.tagline}</p>}
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full border border-[var(--bb-line-brass)] bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
+              <span className="rounded-full border border-[var(--np-line-pulse)] bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
                 {site.territory}
               </span>
               <span
-                className={`rounded-full px-2 py-0.5 text-[13px] font-medium capitalize ${ site.status === "live" ? "border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700" : "bg-brass-100 text-ink-3" }`}
+                className={`rounded-full px-2 py-0.5 text-[13px] font-medium capitalize ${ site.status === "live" ? "border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700" : "bg-pulse-100 text-ink-3" }`}
               >
                 {site.status}
               </span>
@@ -366,7 +366,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         <section className="space-y-3">
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-medium text-text-heading flex items-center gap-2">
-              <Sparkles size={16} className="text-brass-700" />
+              <Sparkles size={16} className="text-pulse-700" />
               Generate story thread
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed">
@@ -465,7 +465,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
                         <div className="min-w-0">
                           <p className="flex items-center gap-1.5 truncate text-sm font-medium text-ink">
                             {version.pinned && (
-                              <Pin size={13} className="shrink-0 text-brass-700" aria-label="Pinned" />
+                              <Pin size={13} className="shrink-0 text-pulse-700" aria-label="Pinned" />
                             )}
                             {threadVersionName(version, versionNumbers.get(version.batchId) ?? 1)}
                           </p>
@@ -514,7 +514,7 @@ export function PublishKitPanel({ site }: { site: PublishKitSite }) {
         <section className="space-y-3 border-t border-border-dim pt-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-medium text-text-heading flex items-center gap-2">
-              <Hash size={16} className="text-brass-700" />
+              <Hash size={16} className="text-pulse-700" />
               Bonus hashtags
             </h3>
             <KitButton onClick={runTags} loading={tagsLoading}>

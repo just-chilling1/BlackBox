@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Sparkles, CheckCircle2 } from "lucide-react";
 import { dashboardContent } from "@/config/dashboard.config";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
-import { getDashboardSubtitle } from "@/lib/dashboard-content";
 import { DashboardTipsWidget } from "@/components/dashboard/DashboardTipsWidget";
 import { DashboardSection } from "@/components/dashboard/DashboardSection";
 import { RouteLoading } from "@/components/ui/route-loading";
@@ -101,14 +100,15 @@ export default function DashboardPage() {
   const welcomeTitle = firstName
     ? `${dashboardContent.title}, ${firstName}`
     : dashboardContent.title;
-  const welcomeSubtitle = getDashboardSubtitle();
 
   return (
     <div className="page-container mx-auto w-full max-w-7xl">
       <header className="flex min-w-0 flex-col gap-2 pt-1">
         {dashboardContent.eyebrow ? <span className="page-eyebrow">{dashboardContent.eyebrow}</span> : null}
         <h1 className="ds-h1">{welcomeTitle}</h1>
-        <p className="ds-subtitle max-w-3xl">{welcomeSubtitle}</p>
+        <p className="ds-subtitle max-w-3xl" suppressHydrationWarning>
+          {dashboardContent.subtitle}
+        </p>
       </header>
 
       <div className="grid grid-cols-1 gap-5 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
@@ -124,22 +124,22 @@ export default function DashboardPage() {
       </div>
 
       {showDevChecklist ? (
-        <DashboardSection className="border-dashed border-[var(--bb-line-brass)]">
+        <DashboardSection className="border-dashed border-[var(--np-line-pulse)]">
           <div className="flex items-center gap-3">
-            <Sparkles className="shrink-0 text-brass-700" size={20} />
+            <Sparkles className="shrink-0 text-pulse-700" size={20} />
             <span className="font-medium text-text-primary">Developer setup checklist</span>
           </div>
           <ul className="mt-4 flex flex-col gap-3">
             {SETUP_STEPS.map((step) => (
               <li key={step.title} className="flex gap-3 text-sm">
-                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-brass-700" />
+                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-pulse-700" />
                 <div>
                   <p className="font-medium text-text-primary">{step.title}</p>
                   <p className="leading-relaxed text-text-secondary">{step.body}</p>
                   {"href" in step && step.href ? (
                     <Link
                       href={step.href}
-                      className="mt-1 inline-block text-[13px] font-medium text-brass-700 hover:underline"
+                      className="mt-1 inline-block text-[13px] font-medium text-pulse-700 hover:underline"
                     >
                       Open page →
                     </Link>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
             ))}
           </ul>
           <p className="mt-4 text-xs text-text-muted">
-            Full handoff guide: <code className="text-brass-700">DEVELOPER-SETUP.md</code> in the project root.
+            Full handoff guide: <code className="text-pulse-700">DEVELOPER-SETUP.md</code> in the project root.
           </p>
         </DashboardSection>
       ) : null}

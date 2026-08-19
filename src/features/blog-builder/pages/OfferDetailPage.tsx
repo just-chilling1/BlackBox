@@ -50,7 +50,7 @@ import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-pos
 import type { SavedRecurringArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
 
 const QUICK_ACTION_CLASS =
-  "inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700";
+  "inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700";
 
 function htmlToPlainText(html: string): string {
   return html
@@ -115,11 +115,11 @@ function ThreadVersionRow({
     <div
       className={`flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 ${
         version.pinned
-          ? "border-[var(--bb-line-brass)] bg-brass-100/40"
+          ? "border-[var(--np-line-pulse)] bg-pulse-100/40"
           : "border-border-dim bg-page/60"
       }`}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700">
         <Megaphone size={15} />
       </div>
 
@@ -143,7 +143,7 @@ function ThreadVersionRow({
               type="button"
               onClick={() => void saveName()}
               disabled={savingName}
-              className="inline-flex items-center gap-1 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-2.5 py-1.5 text-[13px] font-medium text-brass-700 hover:bg-brass-100/70"
+              className="inline-flex items-center gap-1 rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100 px-2.5 py-1.5 text-[13px] font-medium text-pulse-700 hover:bg-pulse-100/70"
             >
               {savingName ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
               Save
@@ -162,7 +162,7 @@ function ThreadVersionRow({
           <div className="flex items-center gap-1.5">
             <p className="truncate text-sm font-medium text-text-primary">{name}</p>
             {version.pinned && (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
                 <Pin size={10} />
                 Pinned
               </span>
@@ -171,7 +171,7 @@ function ThreadVersionRow({
               type="button"
               onClick={startEditing}
               aria-label={`Rename ${name}`}
-              className="inline-flex shrink-0 items-center justify-center rounded-md p-1 text-text-muted transition-colors hover:bg-canvas hover:text-brass-700"
+              className="inline-flex shrink-0 items-center justify-center rounded-md p-1 text-text-muted transition-colors hover:bg-canvas hover:text-pulse-700"
             >
               <Pencil size={13} />
             </button>
@@ -198,8 +198,8 @@ function ThreadVersionRow({
           title={version.pinned ? "Unpin" : "Pin as your go-to thread"}
           className={`inline-flex items-center justify-center rounded-lg p-2 transition-colors ${
             version.pinned
-              ? "text-brass-700 hover:bg-brass-100"
-              : "text-text-muted hover:bg-canvas hover:text-brass-700"
+              ? "text-pulse-700 hover:bg-pulse-100"
+              : "text-text-muted hover:bg-canvas hover:text-pulse-700"
           }`}
         >
           <Pin size={14} className={version.pinned ? "fill-current" : ""} />
@@ -208,7 +208,7 @@ function ThreadVersionRow({
           type="button"
           onClick={onDelete}
           aria-label={`Delete ${name}`}
-          className="inline-flex items-center justify-center rounded-lg p-2 text-text-muted transition-colors hover:bg-[var(--bb-danger)]/10 hover:text-[var(--bb-danger)]"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-text-muted transition-colors hover:bg-[var(--np-danger)]/10 hover:text-[var(--np-danger)]"
         >
           <Trash2 size={14} />
         </button>
@@ -426,7 +426,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
     <div className="page-container">
       <Link
         href="/offers"
-        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-brass-700"
+        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-pulse-700"
       >
         <ArrowLeft size={15} />
         Offers Library
@@ -435,7 +435,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
       <PageHeader eyebrow="Offer" title={site.title} subtitle={site.tagline ?? undefined} />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-brass-100 px-2.5 py-0.5 text-[13px] font-medium text-brass-700">
+        <span className="rounded-full bg-pulse-100 px-2.5 py-0.5 text-[13px] font-medium text-pulse-700">
           {territory}
         </span>
         <span
@@ -457,7 +457,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
       </div>
 
       {error && (
-        <p className="mb-4 rounded-xl border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-sm text-[var(--bb-danger)]">
+        <p className="mb-4 rounded-xl border border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 px-4 py-3 text-sm text-[var(--np-danger)]">
           {error}
         </p>
       )}
@@ -479,7 +479,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
                 <button
                   type="button"
                   onClick={() => setEditingAffiliate(true)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-2.5 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-2.5 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
                 >
                   <Pencil size={13} />
                   Change
@@ -593,7 +593,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
                         size={14}
                         className="shrink-0 text-text-muted transition-transform group-open:rotate-180"
                       />
-                      <FileText size={14} className="shrink-0 text-brass-700" />
+                      <FileText size={14} className="shrink-0 text-pulse-700" />
                       <span className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">
                         {article.title}
                       </span>
@@ -603,7 +603,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
                           e.preventDefault();
                           void copyArticle(article);
                         }}
-                        className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-brass-100 px-2.5 py-1 text-[13px] font-medium text-text-secondary hover:bg-brass-100/70"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-pulse-100 px-2.5 py-1 text-[13px] font-medium text-text-secondary hover:bg-pulse-100/70"
                       >
                         {copiedArticleId === article.id ? <Check size={12} /> : <ClipboardCopy size={12} />}
                         {copiedArticleId === article.id ? "Copied" : "Copy"}
@@ -634,7 +634,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
           <button
             type="button"
             onClick={() => setDeletingOffer(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--bb-danger)]/30 px-3 py-2 text-[13px] font-medium text-[var(--bb-danger)] transition-colors hover:bg-[var(--bb-danger)]/10"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--np-danger)]/30 px-3 py-2 text-[13px] font-medium text-[var(--np-danger)] transition-colors hover:bg-[var(--np-danger)]/10"
           >
             <Trash2 size={14} />
             Delete offer
@@ -645,7 +645,7 @@ export default function OfferDetailPage({ siteId }: { siteId: string }) {
       <div className="mt-5">
         <Link
           href="/offers"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-brass-700"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-pulse-700"
         >
           <ArrowRight size={15} className="rotate-180" />
           Back to all offers

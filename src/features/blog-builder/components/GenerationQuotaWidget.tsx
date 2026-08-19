@@ -22,7 +22,7 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
       <div
         className={`surface-inset p-4 flex items-center gap-3 ${className}`}
       >
-        <Loader2 className="animate-spin text-brass-700" size={18} />
+        <Loader2 className="animate-spin text-pulse-700" size={18} />
         <span className="text-sm text-text-muted">Loading generations…</span>
       </div>
     );
@@ -33,16 +33,16 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
   if (quota.unlimited) {
     return (
       <div
-        className={`rounded-xl border border-[var(--bb-line-brass)] bg-gradient-to-br from-brass-100 to-page/60 shadow-brass p-4 sm:p-5 flex items-center gap-4 ${className}`}
+        className={`rounded-xl border border-[var(--np-line-pulse)] bg-gradient-to-br from-pulse-100 to-page/60 shadow-pulse p-4 sm:p-5 flex items-center gap-4 ${className}`}
       >
-        <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center bg-brass-100 text-brass-700">
+        <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center bg-pulse-100 text-pulse-700">
           <Sparkles size={22} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-medium uppercase tracking-widest text-text-muted">
             Money-site generations
           </p>
-          <p className="text-xl sm:text-2xl font-medium text-brass-700">Unlimited</p>
+          <p className="text-xl sm:text-2xl font-medium text-pulse-700">Unlimited</p>
           <p className="text-xs text-text-muted leading-relaxed mt-0.5">
             Society Upgrade active · {quota.usedToday} generated today.
           </p>
@@ -58,10 +58,10 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
 
   return (
     <div
-      className={`rounded-xl border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 ${ depleted ? "border-[var(--bb-line-brass)] bg-brass-100/5" : "border-[var(--bb-line-brass)] bg-gradient-to-br from-brass-100 to-page/60" } ${className}`}
+      className={`rounded-xl border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 ${ depleted ? "border-[var(--np-line-pulse)] bg-pulse-100/5" : "border-[var(--np-line-pulse)] bg-gradient-to-br from-pulse-100 to-page/60" } ${className}`}
     >
       <div
-        className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${ depleted ? "bg-brass-100/15 text-brass-700" : "bg-brass-100 text-brass-700" }`}
+        className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${ depleted ? "bg-pulse-100/15 text-pulse-700" : "bg-pulse-100 text-pulse-700" }`}
       >
         <Sparkles size={22} />
       </div>
@@ -72,7 +72,7 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
             Daily money-site generations
           </p>
           <p
-            className={`text-2xl sm:text-3xl font-medium tabular-nums ${ depleted ? "text-brass-700" : "text-brass-700" }`}
+            className={`text-2xl sm:text-3xl font-medium tabular-nums ${ depleted ? "text-pulse-700" : "text-pulse-700" }`}
           >
             {remaining}
             <span className="text-base font-medium text-text-muted"> / {limit}</span>
@@ -81,7 +81,7 @@ export function GenerationQuotaWidget({ className = "" }: { className?: string }
 
         <div className="h-2 rounded-full bg-black/5 overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${ depleted ? "bg-brass-100/70" : "bg-grad-brass" }`}
+            className={`h-full rounded-full transition-all duration-500 ${ depleted ? "bg-pulse-100/70" : "bg-grad-pulse" }`}
             style={{ width: `${pct}%` }}
           />
         </div>

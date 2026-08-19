@@ -1,10 +1,5 @@
-import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import RepliesPage from "@/features/core-workflow/pages/RepliesPage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return (
-    <FeatureGuard feature="core-workflow">
-      <RepliesPage />
-    </FeatureGuard>
-  );
+  redirect("/activate");
 }

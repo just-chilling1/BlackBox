@@ -19,6 +19,9 @@ function filterNav(items: NavItem[]): NavItem[] {
 }
 
 export function getVisibleWorkflowSteps(): NavItem[] {
+  if (isFeatureEnabled("asset-activator") || isFeatureEnabled("money-page")) {
+    return filterNav(workflowSteps);
+  }
   if (isFeatureEnabled("extraction-workflow")) {
     return filterNav(extractionWorkflowSteps);
   }

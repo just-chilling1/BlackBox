@@ -1,8 +1,6 @@
 "use client";
 
-import { getBrandCssVars } from "@/lib/brand-vars";
-
+/** Brand CSS vars are applied on <html> in app/layout.tsx (server) to avoid hydration drift. */
 export function BrandStyleProvider({ children }: { children: React.ReactNode }) {
-  const vars = getBrandCssVars();
-  return <div style={vars as React.CSSProperties}>{children}</div>;
+  return children;
 }

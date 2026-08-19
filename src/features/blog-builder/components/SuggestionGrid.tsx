@@ -50,7 +50,7 @@ export function SuggestionGrid({
           onClick={() => onSelect(s)}
           className={clsx("select-card p-4", selected === s && "is-selected")}
         >
-          <span className={clsx("select-card-label block", selected === s && "font-medium text-brass-700")}>
+          <span className={clsx("select-card-label block", selected === s && "font-medium text-pulse-700")}>
             {s}
           </span>
           {selected === s && (

@@ -74,8 +74,8 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
           <div className="flex items-center gap-3 sm:gap-5 min-w-0">
             {Icon && (
-              <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 border border-[var(--bb-line-brass)] bg-brass-100">
-                <Icon size={24} strokeWidth={1.5} className="text-brass-700" />
+              <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 border border-[var(--np-line-pulse)] bg-pulse-100">
+                <Icon size={24} strokeWidth={1.5} className="text-pulse-700" />
               </div>
             )}
             <div className="flex flex-col gap-0.5">
@@ -90,7 +90,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           {content.ctaLabel && content.ctaUrl && (
             <a
               href={content.ctaUrl}
-              className="bg-grad-brass hover:brightness-105 transition-colors rounded-full h-[42px] px-6 sm:px-7 w-full sm:w-auto text-black font-medium text-[14px] flex items-center justify-center shrink-0"
+              className="bg-grad-pulse hover:brightness-105 transition-colors rounded-full h-[42px] px-6 sm:px-7 w-full sm:w-auto text-black font-medium text-[14px] flex items-center justify-center shrink-0"
             >
               {content.ctaLabel}
             </a>
@@ -123,18 +123,18 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
         href={content.ctaUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-page border border-[var(--bb-line-brass)] hover:border-[var(--bb-line-brass)] transition-all duration-300 group"
+        className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-page border border-[var(--np-line-pulse)] hover:border-[var(--np-line-pulse)] transition-all duration-300 group"
       >
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="brand-font text-[13px] font-medium text-brass-700 leading-tight">
+          <span className="brand-font text-[13px] font-medium text-pulse-700 leading-tight">
             {content.headline}
           </span>
           <span className="text-[13px] text-text-muted font-medium">
             {content.sidebarSubtitle ?? "Claim Now"}
           </span>
         </div>
-        <div className="w-8 h-8 rounded-lg border border-[var(--bb-line-brass)] flex items-center justify-center shrink-0 group-hover:bg-brass-100 transition-colors">
-          <ExternalLink size={14} className="text-brass-700" />
+        <div className="w-8 h-8 rounded-lg border border-[var(--np-line-pulse)] flex items-center justify-center shrink-0 group-hover:bg-pulse-100 transition-colors">
+          <ExternalLink size={14} className="text-pulse-700" />
         </div>
       </a>
     );
@@ -159,14 +159,14 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-brass-100 hover:text-text-heading"
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-text-muted cursor-pointer transition-all duration-200 hover:bg-pulse-100 hover:text-text-heading"
               aria-label="Close"
             >
               ×
             </button>
           )}
           {content.badge && (
-            <span className="text-[13px] font-medium text-brass-700 uppercase tracking-widest">
+            <span className="text-[13px] font-medium text-pulse-700 uppercase tracking-widest">
               {content.badge}
             </span>
           )}
@@ -176,7 +176,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
             <ul className="mt-4 space-y-2">
               {content.bullets.map((b, i) => (
                 <li key={i} className="text-sm text-text-secondary flex gap-2">
-                  <span className="text-brass-700">✓</span> {b}
+                  <span className="text-pulse-700">✓</span> {b}
                 </li>
               ))}
             </ul>
@@ -222,7 +222,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           <button
             type="button"
             onClick={() => window.open(content.ctaUrl, "_blank")}
-            className="text-xs text-brass-700 font-medium mt-2 cursor-pointer transition-colors hover:text-brass-900 hover:underline"
+            className="text-xs text-pulse-700 font-medium mt-2 cursor-pointer transition-colors hover:text-pulse-900 hover:underline"
           >
             {content.ctaLabel}
           </button>
@@ -231,7 +231,7 @@ export function PromoSlotRenderer({ slot, onClose }: PromoSlotRendererProps) {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-text-muted text-xs cursor-pointer transition-all duration-200 hover:bg-brass-100 hover:text-text-heading"
+            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-text-muted text-xs cursor-pointer transition-all duration-200 hover:bg-pulse-100 hover:text-text-heading"
           >
             ×
           </button>

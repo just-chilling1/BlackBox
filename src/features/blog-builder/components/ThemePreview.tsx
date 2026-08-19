@@ -53,7 +53,7 @@ export function ThemePreview({
         ? "text-[13px] font-medium uppercase tracking-widest text-success"
         : "text-[13px] font-medium uppercase tracking-[0.2em] text-success"
       : compact
-        ? "text-[13px] font-medium uppercase tracking-widest text-brass-700"
+        ? "text-[13px] font-medium uppercase tracking-widest text-pulse-700"
         : "page-eyebrow"
     : clsx(
         "text-[13px] font-medium uppercase tracking-widest",

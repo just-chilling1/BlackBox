@@ -10,7 +10,7 @@ Feature implementation details (for you or Cursor): `.cursor/skills/product-feat
 
 ## What this repo is
 
-A white-label Next.js + Supabase app. Auth, onboarding, sidebar, and promo slots are already built. You **pick features**, **rebrand via config files**, and **deploy**.
+A Next.js + Supabase app for NullPing Cash. Auth, onboarding, sidebar, and promo slots are already built. The core flow is Activate Asset → Money Page → Pinterest Traffic → Results.
 
 Do **not** edit Shell/Sidebar unless you have to — change `src/config/` instead.
 

@@ -37,9 +37,9 @@ function SummaryRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-md border border-[var(--bb-line)] bg-[var(--bb-surface-field)] px-3 py-2.5">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brass-100">
-        <Icon size={16} className="text-brass-700" strokeWidth={1.75} />
+    <div className="flex items-center gap-2.5 rounded-md border border-[var(--np-line)] bg-[var(--np-surface-field)] px-3 py-2.5">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-pulse-100">
+        <Icon size={16} className="text-pulse-700" strokeWidth={1.75} />
       </div>
       <div className="min-w-0">
         <p className="text-[13px] font-medium tracking-[0.06em] text-ink-5">{label}</p>
@@ -114,14 +114,14 @@ export function DeployLaunchPanel({
         {error && <p className="alert-error">{error}</p>}
       </div>
 
-      <div className="border-t border-[var(--bb-line)] bg-canvas px-5 py-4 sm:px-6 sm:py-5">
+      <div className="border-t border-[var(--np-line)] bg-canvas px-5 py-4 sm:px-6 sm:py-5">
         <button
           type="button"
           onClick={primaryAction}
           disabled={phase === "idle" && !canResume && quotaBlocked}
           className={clsx(
             "btn-primary w-full",
-            (canResume || phase === "error") && "border border-[var(--bb-line-brass)]"
+            (canResume || phase === "error") && "border border-[var(--np-line-pulse)]"
           )}
         >
           <PrimaryIcon size={20} strokeWidth={1.75} />

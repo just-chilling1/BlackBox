@@ -14,7 +14,7 @@ export function sidebarNavIconClass(isActive: boolean) {
   return clsx(
     "w-5 h-5 shrink-0 transition-colors duration-[160ms]",
     isActive
-      ? "text-brass-300"
+      ? "text-pulse-300"
       : "text-ink-3 group-hover:text-ink-4"
   );
 }

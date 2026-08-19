@@ -22,8 +22,8 @@ function TrainingSectionHeader({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
-        <Icon className="h-5 w-5 text-brass-700" />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100">
+        <Icon className="h-5 w-5 text-pulse-700" />
       </div>
       <div>
         <h2 className="text-lg font-medium text-text-heading">{title}</h2>
@@ -57,13 +57,13 @@ export default function TrainingVideosPage() {
         <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trainingWorkflowSteps.map((step) => (
             <li key={step.step} className="flex gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass-100 text-[13px] font-medium text-brass-700">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pulse-100 text-[13px] font-medium text-pulse-700">
                 {step.step}
               </span>
               <div className="min-w-0">
                 <Link
                   href={step.page}
-                  className="text-sm font-medium text-text-heading transition-colors hover:text-brass-700"
+                  className="text-sm font-medium text-text-heading transition-colors hover:text-pulse-700"
                 >
                   {step.title}
                 </Link>
@@ -90,13 +90,13 @@ export default function TrainingVideosPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="glass-card p-5 sm:p-6">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-brass-700" />
+            <CheckCircle2 className="h-5 w-5 text-pulse-700" />
             <h3 className="text-base font-medium text-text-heading">Launch checklist</h3>
           </div>
           <ul className="mt-4 space-y-3">
             {trainingQuickStartChecklist.map((item) => (
               <li key={item} className="flex gap-2.5 text-sm leading-relaxed text-text-secondary">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brass-700" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-pulse-700" />
                 {item}
               </li>
             ))}
@@ -105,7 +105,7 @@ export default function TrainingVideosPage() {
 
         <section className="glass-card p-5 sm:p-6">
           <div className="flex items-center gap-2">
-            <Lightbulb className="h-5 w-5 text-brass-700" />
+            <Lightbulb className="h-5 w-5 text-pulse-700" />
             <h3 className="text-base font-medium text-text-heading">Pro tips</h3>
           </div>
           <ul className="mt-4 space-y-4">

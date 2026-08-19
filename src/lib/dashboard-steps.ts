@@ -9,7 +9,7 @@ export interface QuickAction {
   description: string;
   icon: LucideIcon;
   buttonText: string;
-  accent: "gold" | "ink" | "brass";
+  accent: "gold" | "ink" | "pulse";
 }
 
 function blogBuilderSteps(): HowItWorksStep[] {
@@ -108,7 +108,40 @@ function defaultSteps(): HowItWorksStep[] {
   ];
 }
 
+function nullPingSteps(): HowItWorksStep[] {
+  return [
+    {
+      number: 1,
+      title: "Activate an asset",
+      description: "Paste a product URL. NullPing builds the money page.",
+      minutes: "~2 min",
+      href: "/activate",
+      icon: Rocket,
+      cta: "Activate Asset",
+    },
+    {
+      number: 2,
+      title: "Publish the page",
+      description: "Preview, then publish. NullPing hosts it for you.",
+      minutes: "~1 min",
+      href: "/activate",
+      icon: Link2,
+      cta: "Open Activator",
+    },
+    {
+      number: 3,
+      title: "Generate Pinterest pins",
+      description: "Download 10 ready-to-post pins that send visitors to your page.",
+      minutes: "~3 min",
+      href: "/results",
+      icon: Megaphone,
+      cta: "See results",
+    },
+  ];
+}
+
 export function getDashboardHowItWorksSteps(): HowItWorksStep[] {
+  if (isFeatureEnabled("asset-activator") || isFeatureEnabled("money-page")) return nullPingSteps();
   if (isFeatureEnabled("blog-builder")) return blogBuilderSteps();
   if (isFeatureEnabled("core-workflow")) return coreWorkflowSteps();
   return defaultSteps();
@@ -135,28 +168,31 @@ function coreWorkflowStepStatuses(progress: number): DashboardStepStatus[] {
 
 /** Maps workflow progress to per-card completed / current / upcoming states. */
 export function getDashboardStepStatuses(progress: number): DashboardStepStatus[] {
+  if (isFeatureEnabled("asset-activator") || isFeatureEnabled("money-page")) {
+    return statusesFromCompleted([false, false, false]);
+  }
   if (isFeatureEnabled("blog-builder")) return blogBuilderStepStatuses(progress);
   if (isFeatureEnabled("core-workflow")) return coreWorkflowStepStatuses(progress);
   return statusesFromCompleted([false, false, false]);
 }
 
 export function getDashboardQuickActions(): QuickAction[] {
-  if (isFeatureEnabled("blog-builder")) {
+  if (isFeatureEnabled("asset-activator")) {
     return [
       {
-        href: "/sales-offer-generator",
-        title: "Sales Offer Generator",
-        description: "Build and publish a niche questionnaire site",
+        href: "/activate",
+        title: "Activate Asset",
+        description: "Paste a product URL and let NullPing build the money page",
         icon: Rocket,
-        buttonText: "Launch Now",
+        buttonText: "Activate now",
         accent: "gold",
       },
       {
-        href: "/promote",
-        title: "X-Power Promotions",
-        description: "Generate social promotion threads for your offer",
+        href: "/results",
+        title: "Your Results",
+        description: "Visitors, affiliate clicks, and live money pages",
         icon: Megaphone,
-        buttonText: "Create Posts",
+        buttonText: "Open results",
         accent: "ink",
       },
       {
@@ -164,8 +200,8 @@ export function getDashboardQuickActions(): QuickAction[] {
         title: "Training Academy",
         description: "Video tutorials and step-by-step guides",
         icon: Brain,
-        buttonText: "Watch Training",
-        accent: "brass",
+        buttonText: "Watch training",
+        accent: "pulse",
       },
     ];
   }
@@ -194,7 +230,7 @@ export function getDashboardQuickActions(): QuickAction[] {
         description: "Pick posts to reply to with your link",
         icon: Radar,
         buttonText: "Find Ads",
-        accent: "brass",
+        accent: "pulse",
       },
     ];
   }
@@ -222,7 +258,7 @@ export function getDashboardQuickActions(): QuickAction[] {
       description: "Unlock advanced tools and pre-made assets",
       icon: Megaphone,
       buttonText: "Explore",
-      accent: "brass",
+      accent: "pulse",
     },
   ];
 }

@@ -77,11 +77,11 @@ export function BottomNav() {
                 href={tab.path}
                 className={clsx(
                   "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
-                  isActive ? "text-brass-700" : "text-ink-5 hover:text-ink"
+                  isActive ? "text-pulse-700" : "text-ink-5 hover:text-ink"
                 )}
               >
                 {isActive ? (
-                  <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-brass-700" />
+                  <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-pulse-700" />
                 ) : null}
                 <Icon className="h-6 w-6" />
                 <span className="text-[13px] font-medium leading-none">{tab.label}</span>
@@ -94,11 +94,11 @@ export function BottomNav() {
             onClick={() => setMoreOpen(true)}
             className={clsx(
               "relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer transition-colors duration-200",
-              moreActive || moreOpen ? "text-brass-700" : "text-ink-5 hover:text-ink"
+              moreActive || moreOpen ? "text-pulse-700" : "text-ink-5 hover:text-ink"
             )}
           >
             {(moreActive || moreOpen) ? (
-              <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-brass" />
+              <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-pulse" />
             ) : null}
             <Menu className="h-6 w-6" />
             <span className="text-[13px] font-medium leading-none">More</span>
@@ -172,7 +172,7 @@ export function BottomNav() {
                 <button
                   type="button"
                   onClick={() => void handleSignOut()}
-                  className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[var(--bb-danger)]/80 active:bg-[var(--bb-danger)]/10"
+                  className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[var(--np-danger)]/80 active:bg-[var(--np-danger)]/10"
                 >
                   <LogOut className="h-5 w-5" />
                   Sign Out

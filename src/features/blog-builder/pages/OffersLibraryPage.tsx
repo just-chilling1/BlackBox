@@ -32,7 +32,7 @@ import type { SiteVaultSummary } from "@/app/api/blog/site/route";
 import type { SavedXThread } from "@/features/publish-kit/lib/x-threads-vault";
 
 const QUICK_ACTION_CLASS =
-  "inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--bb-line-brass)] hover:text-brass-700";
+  "inline-flex items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700";
 
 function CopyUrlAction({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
@@ -78,7 +78,7 @@ function OfferCard({
         href={detailHref}
         className="flex w-full items-start gap-4 p-5 text-left transition-colors hover:bg-canvas"
       >
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brass-100 text-brass-700">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-pulse-100 text-pulse-700">
           <FolderOpen size={22} />
         </div>
         <div className="min-w-0 flex-1">
@@ -87,7 +87,7 @@ function OfferCard({
             <p className="mt-0.5 text-sm text-text-secondary line-clamp-2">{site.tagline}</p>
           )}
           <div className="mt-2 flex flex-wrap gap-2">
-            <span className="rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
+            <span className="rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
               {territory}
             </span>
             <span
@@ -124,7 +124,7 @@ function OfferCard({
       <div className="flex flex-wrap items-center gap-1.5 border-t border-border-dim/70 px-5 py-3">
         <Link
           href={detailHref}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 px-3 py-2 text-[13px] font-medium text-brass-700 transition-colors hover:bg-brass-100/70"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100 px-3 py-2 text-[13px] font-medium text-pulse-700 transition-colors hover:bg-pulse-100/70"
         >
           <Globe size={14} />
           View offer
@@ -144,7 +144,7 @@ function OfferCard({
         <button
           type="button"
           onClick={onDeleteRequest}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-text-muted transition-colors hover:bg-[var(--bb-danger)]/10 hover:text-[var(--bb-danger)]"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-text-muted transition-colors hover:bg-[var(--np-danger)]/10 hover:text-[var(--np-danger)]"
         >
           <Trash2 size={14} />
           Delete
@@ -297,7 +297,7 @@ export default function OffersLibraryPage() {
       />
 
       {deleteError ? (
-        <p className="mb-4 rounded-xl border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-sm text-[var(--bb-danger)]">
+        <p className="mb-4 rounded-xl border border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 px-4 py-3 text-sm text-[var(--np-danger)]">
           {deleteError}
         </p>
       ) : null}
@@ -323,8 +323,8 @@ export default function OffersLibraryPage() {
                 onClick={() => setStatusFilter(status)}
                 className={`rounded-full px-3 py-1.5 text-[13px] font-medium capitalize transition-colors ${
                   statusFilter === status
-                    ? "bg-grad-brass text-black"
-                    : "border border-border-dim bg-white text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+                    ? "bg-grad-pulse text-black"
+                    : "border border-border-dim bg-white text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
                 }`}
               >
                 {status}

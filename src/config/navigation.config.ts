@@ -47,12 +47,9 @@ export const homeNav: NavItem = {
   icon: "LayoutGrid",
 };
 
-/** Core affiliate workflow: search → analysis → radar → replies */
 export const workflowSteps: NavItem[] = [
-  { path: "/search", label: "Step 1: Enter Topic", icon: "Search", feature: "core-workflow", workflowStep: 1 },
-  { path: "/analysis", label: "Step 2: Check Demand", icon: "Brain", feature: "core-workflow", workflowStep: 2, requiresWorkflowStep: 1 },
-  { path: "/radar", label: "Step 3: Find Ads", icon: "Radar", feature: "core-workflow", workflowStep: 3, requiresWorkflowStep: 2 },
-  { path: "/replies", label: "Step 4: Create Replies", icon: "MessageSquare", feature: "core-workflow", workflowStep: 4, requiresWorkflowStep: 3 },
+  { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator", workflowStep: 1 },
+  { path: "/results", label: "Results", icon: "Activity", feature: "results", workflowStep: 2 },
 ];
 
 /** Extraction workflow home (connect → scan dashboard) */
@@ -62,19 +59,17 @@ export const extractionWorkflowSteps: NavItem[] = [
 
 /** Single-page sales offer generator (all wizard steps) */
 export const blogBuilderWorkflowSteps: NavItem[] = [
-  { path: "/sales-offer-generator", label: "Sales Offer Generator", icon: "Rocket", feature: "blog-builder" },
+  { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator" },
 ];
 
-/** Generate tools — sales pages and social promotions */
+/** Generate tools */
 export const blogBuilderGenerateNav: NavItem[] = [
-  { path: "/promote", label: "X-Power Promotions", icon: "Megaphone", feature: "article-publish" },
+  { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator" },
+  { path: "/results", label: "Results", icon: "Activity", feature: "results" },
 ];
 
-/** Saved links and generated offers */
-export const blogBuilderLibrariesNav: NavItem[] = [
-  { path: "/link-vault", label: "Links Library", icon: "Link2", feature: "blog-builder" },
-  { path: "/offers", label: "Offers Library", icon: "FolderOpen", feature: "blog-builder" },
-];
+/** Saved assets */
+export const blogBuilderLibrariesNav: NavItem[] = [];
 
 /** @deprecated Use blogBuilderGenerateNav and blogBuilderLibrariesNav */
 export const blogBuilderCoreNav: NavItem[] = [
@@ -113,13 +108,11 @@ export const upgradeNav: NavItem[] = [
 
 /** Premium section — single source for sidebar, bottom nav, dashboard widget */
 export const premiumNav: NavItem[] = [
-  { path: "/dfy", label: "Done-For-You", icon: "Scan", feature: "premium-dfy" },
-  { path: "/dfy-profit", label: "Done-For-You Profit", icon: "Wallet", feature: "premium-dfy-profit" },
-  { path: "/instant", label: "Instant Income", icon: "Sparkles", feature: "premium-instant" },
-  { path: "/autopilot", label: "Automated Profits", icon: "Rocket", feature: "premium-autopilot" },
-  { path: "/accelerator", label: "Unlimited", icon: "Zap", feature: "premium-accelerator" },
-  { path: "/recurring-wealth", label: "Guaranteed High-Ticket Payouts", icon: "Repeat", feature: "premium-recurring" },
-  { path: "/social-payouts", label: "Instant Income", icon: "Globe", feature: "premium-social" },
+  { path: "/accelerator", label: "Asset Vault", icon: "Zap", feature: "premium-accelerator" },
+  { path: "/dfy-profit", label: "One-Click Asset", icon: "Wallet", feature: "premium-dfy-profit" },
+  { path: "/social-payouts", label: "Pin Multiplier", icon: "Image", feature: "premium-social" },
+  { path: "/autopilot", label: "Pinterest Autopilot", icon: "Rocket", feature: "premium-autopilot" },
+  { path: "/recurring-wealth", label: "Authority Boosters", icon: "Repeat", feature: "premium-recurring" },
   { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
   { path: "/license-rights", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },
 ];
@@ -129,7 +122,8 @@ export const premiumSectionLabel = "Premium Features";
 /** Primary mobile bottom tabs — first 4 visible tabs + "More" */
 export const bottomNavTabs: NavItem[] = [
   homeNav,
-  { path: "/sales-offer-generator", label: "Offer Generator", icon: "Rocket", feature: "blog-builder" },
+  { path: "/activate", label: "Activate", icon: "Zap", feature: "asset-activator" },
+  { path: "/results", label: "Results", icon: "Activity", feature: "results" },
 ];
 
 /** Extra links for mobile "More" sheet — workflow, generate, libraries, and resources are merged in getBottomNavMoreLinks() */

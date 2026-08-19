@@ -22,8 +22,8 @@ export function DashboardVideoTrack() {
     <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
-            <Play className="h-5 w-5 text-brass-700" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100">
+            <Play className="h-5 w-5 text-pulse-700" />
           </div>
           <h2 className="ds-h2">{dashboardContent.startHereTitle}</h2>
         </div>

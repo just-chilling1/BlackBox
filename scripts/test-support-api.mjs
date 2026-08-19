@@ -9,8 +9,8 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-const SUPPORT_EMAIL = "BlackBoxCash@neoai.freshdesk.com";
-const APP_SUPPORT_NAME = "BlackBox Cash";
+const SUPPORT_EMAIL = "NullPingCash@neoai.freshdesk.com";
+const APP_SUPPORT_NAME = "NullPing Cash";
 const RESEND_SENDER =
   process.env.RESEND_FROM_EMAIL || `${APP_SUPPORT_NAME} <support@reliteagency.com>`;
 

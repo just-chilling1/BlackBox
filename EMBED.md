@@ -34,7 +34,7 @@ Put this right before `</body>` on your thank-you page:
 <iframe
   id="bb-specialist-popup"
   src="https://blackboxmemebersarea.com/embed/specialist-popup"
-  title="BlackBox Cash Start-Up Specialist"
+  title="NullPing Cash Start-Up Specialist"
   style="position:fixed;inset:0;width:100%;height:100%;border:0;z-index:999999;display:none;background:transparent"
   allowtransparency="true"
 ></iframe>

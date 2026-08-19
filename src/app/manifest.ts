@@ -4,7 +4,7 @@ import { brand } from "@/config/brand.config";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: brand.productName,
-    short_name: "BlackBox Cash",
+    short_name: "NullPing Cash",
     description: brand.metadata.description,
     start_url: "/dashboard",
     display: "standalone",

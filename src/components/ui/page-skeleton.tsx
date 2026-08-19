@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 
 function Block({ className }: { className?: string }) {
-  return <div className={clsx("animate-pulse rounded-lg bg-brass-100/70", className)} aria-hidden />;
+  return <div className={clsx("animate-pulse rounded-lg bg-pulse-100/70", className)} aria-hidden />;
 }
 
 export function PageSkeleton({ cards = 3, className }: { cards?: number; className?: string }) {

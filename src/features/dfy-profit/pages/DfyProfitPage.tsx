@@ -237,8 +237,8 @@ export default function DfyProfitPage() {
 
   return (
     <PremiumPageLayout
-      title="Done-For-You Profit"
-      subtitle="Paste your affiliate link, pick a niche, and get a live sales page, authority article, and Facebook posts in one run."
+      title="One-Click Asset"
+      subtitle="Paste your affiliate link, pick a niche, and get a live money page plus supporting assets in one run."
       footer={
         <PremiumFooter>
           Powered by {brand.productName}. Kits also appear in your Offers Library.
@@ -281,7 +281,7 @@ export default function DfyProfitPage() {
 
         <fieldset>
           <legend className="mb-3 text-sm font-medium text-text-primary">2. Niche</legend>
-          <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--bb-line-brass)] bg-canvas/60 p-3">
+          <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--np-line-pulse)] bg-canvas/60 p-3">
             {NICHE_OPTIONS.map((option) => {
               const selected = niche === option.value;
               return (
@@ -293,8 +293,8 @@ export default function DfyProfitPage() {
                   className={clsx(
                     "inline-flex items-center gap-1.5 rounded-[999px] border px-4 py-2.5 text-[13px] font-medium transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0",
                     selected
-                      ? "border-[var(--bb-line-brass)] bg-grad-brass text-black shadow-[0_0_18px_rgba(203,161,53,0.24)]"
-                      : "border-border-dim bg-surface text-text-secondary hover:-translate-y-0.5 hover:border-[var(--bb-line-brass)] hover:bg-brass-100/60 hover:text-text-primary hover:shadow-sm"
+                      ? "border-[var(--np-line-pulse)] bg-grad-pulse text-black shadow-[0_0_18px_rgba(203,161,53,0.24)]"
+                      : "border-border-dim bg-surface text-text-secondary hover:-translate-y-0.5 hover:border-[var(--np-line-pulse)] hover:bg-pulse-100/60 hover:text-text-primary hover:shadow-sm"
                   )}
                 >
                   {selected && <Check size={13} />}

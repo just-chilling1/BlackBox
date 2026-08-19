@@ -27,13 +27,13 @@ export function TrainingVideoCard({ video, index, priority = false }: TrainingVi
         <div className="border-b border-border-dim/60 px-4 py-3 sm:px-5">
           <div className="flex items-start gap-3">
             {stepLabel ? (
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass-100 text-[13px] font-medium text-brass-700">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pulse-100 text-[13px] font-medium text-pulse-700">
                 {stepLabel}
               </span>
             ) : null}
             <div className="min-w-0 flex-1">
               {video.badge ? (
-                <span className="mb-1 inline-block text-[13px] font-medium uppercase tracking-widest text-brass-700">
+                <span className="mb-1 inline-block text-[13px] font-medium uppercase tracking-widest text-pulse-700">
                   {video.badge}
                 </span>
               ) : null}

@@ -103,7 +103,7 @@ export function BrandLogo({
         />
       ) : (
         <div
-          className={`${s.box} bg-grad-brass flex items-center justify-center rounded-lg shadow-brass shrink-0`}
+          className={`${s.box} bg-grad-pulse flex items-center justify-center rounded-lg shadow-pulse shrink-0`}
         >
           <Icon size={s.icon} className="text-black" />
         </div>

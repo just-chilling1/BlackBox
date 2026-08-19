@@ -32,14 +32,14 @@ export function SourceCard({
       className={clsx(
         "glass-card group relative flex h-full flex-col overflow-hidden p-0 [content-visibility:auto] [contain-intrinsic-size:auto_210px]",
         isDone
-          ? "border-[var(--bb-line-brass)] bg-grad-tint"
-          : "hover:border-[var(--bb-line-brass)]"
+          ? "border-[var(--np-line-pulse)] bg-grad-tint"
+          : "hover:border-[var(--np-line-pulse)]"
       )}
     >
       <div
         className={clsx(
           "absolute inset-y-0 left-0 w-[3px]",
-          isDone ? "bg-grad-brass" : "bg-transparent group-hover:bg-brass-300"
+          isDone ? "bg-grad-pulse" : "bg-transparent group-hover:bg-pulse-300"
         )}
       />
 
@@ -56,8 +56,8 @@ export function SourceCard({
             className={clsx(
               "flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors",
               isDone
-                ? "border-[var(--bb-line-brass)] bg-grad-brass text-brass-900"
-                : "border-border-dim text-transparent hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+                ? "border-[var(--np-line-pulse)] bg-grad-pulse text-pulse-900"
+                : "border-border-dim text-transparent hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
             )}
           >
             <Check size={13} strokeWidth={2.6} />
@@ -71,12 +71,12 @@ export function SourceCard({
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-text-muted">
             <span className="inline-flex items-center gap-1.5">
-              <Users size={13} className="text-brass-700" />
+              <Users size={13} className="text-pulse-700" />
               <span>{source.traffic}</span>
             </span>
-            <span className="hidden h-1 w-1 rounded-full bg-brass-300 sm:inline-block" />
+            <span className="hidden h-1 w-1 rounded-full bg-pulse-300 sm:inline-block" />
             <span className="inline-flex items-center gap-1.5">
-              <Clock size={13} className="text-brass-700" />
+              <Clock size={13} className="text-pulse-700" />
               <span>{source.time}</span>
             </span>
           </div>

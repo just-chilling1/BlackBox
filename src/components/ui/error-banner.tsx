@@ -10,7 +10,7 @@ export function ErrorBanner({ message, className }: ErrorBannerProps) {
   return (
     <div
       className={clsx(
-        "flex items-start gap-2.5 rounded-xl border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/10 px-4 py-3 text-[15px] text-[var(--bb-danger)]",
+        "flex items-start gap-2.5 rounded-xl border border-[var(--np-danger)]/30 bg-[var(--np-danger)]/10 px-4 py-3 text-[15px] text-[var(--np-danger)]",
         className
       )}
       role="alert"

@@ -20,8 +20,8 @@ export function SupportRefundSection() {
   return (
     <motion.section variants={itemVariants} className="card-base">
       <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100">
-          <FileText className="h-6 w-6 text-brass-700" />
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100">
+          <FileText className="h-6 w-6 text-pulse-700" />
         </div>
         <div>
           <h2 className="ds-h3">{refundPolicy.title}</h2>
@@ -32,7 +32,7 @@ export function SupportRefundSection() {
       <div className="space-y-4">
         {refundPolicy.items.map((item) => (
           <div key={item.title} className="rounded-xl border border-border-dim/80 bg-page/60 p-4">
-            <h3 className="ds-h4 mb-2 text-brass-700">{item.title}</h3>
+            <h3 className="ds-h4 mb-2 text-pulse-700">{item.title}</h3>
             <p className="text-sm leading-relaxed text-text-secondary">{item.body}</p>
           </div>
         ))}

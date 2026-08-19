@@ -19,8 +19,8 @@ function PlatformBadge({ platform }: { platform: string }) {
         <span className={clsx(
             "text-[13px] font-medium uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
             isReddit
-                ? "text-[var(--bb-warning)] border-[var(--bb-warning)]/20 bg-[var(--bb-warning)]/10"
-                : "text-[var(--bb-danger)] border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10"
+                ? "text-[var(--np-warning)] border-[var(--np-warning)]/20 bg-[var(--np-warning)]/10"
+                : "text-[var(--np-danger)] border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10"
         )}>
             {platform}
         </span>
@@ -146,8 +146,8 @@ export default function RepliesPage() {
             <header className="flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center rounded-lg">
-                            <MessageSquare size={20} className="text-brass-700" />
+                        <div className="w-10 h-10 bg-pulse-100 border border-[var(--np-line-pulse)] flex items-center justify-center rounded-lg">
+                            <MessageSquare size={20} className="text-pulse-700" />
                         </div>
                         <div>
                             <h1 className="text-2xl text-text-primary font-medium tracking-tight">Step 4: Create Replies</h1>
@@ -210,14 +210,14 @@ export default function RepliesPage() {
                                 <div className="flex items-center gap-1 shrink-0">
                                     <button
                                         onClick={() => removePost(post.id)}
-                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-[var(--bb-danger)] hover:bg-[var(--bb-danger)]/10 transition-all"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-[var(--np-danger)] hover:bg-[var(--np-danger)]/10 transition-all"
                                         title="Remove ad"
                                     >
                                         <Trash2 size={13} />
                                     </button>
                                     <a
                                         href={post.url} target="_blank" rel="noopener noreferrer"
-                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-brass-700 hover:bg-brass-100 transition-all"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-pulse-700 hover:bg-pulse-100 transition-all"
                                     >
                                         <ExternalLink size={13} />
                                     </a>
@@ -235,9 +235,9 @@ export default function RepliesPage() {
                                     className={clsx(
                                         "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all",
                                         isLoading ? "text-text-muted" :
-                                        isExpanded ? "bg-brass-100 text-brass-700 border border-[var(--bb-line-brass)]" :
-                                        replies.length > 0 ? "bg-brass-100 text-brass-700 hover:bg-brass-100" :
-                                        "bg-surface border border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-brass-700"
+                                        isExpanded ? "bg-pulse-100 text-pulse-700 border border-[var(--np-line-pulse)]" :
+                                        replies.length > 0 ? "bg-pulse-100 text-pulse-700 hover:bg-pulse-100" :
+                                        "bg-surface border border-border-dim text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
                                     )}
                                 >
                                     {isLoading ? (
@@ -258,7 +258,7 @@ export default function RepliesPage() {
                                     <button
                                         onClick={() => handleGenerate(post)}
                                         disabled={isLoading}
-                                        className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                                        className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                                     >
                                         <RefreshCw size={11} />
                                         <span>Regenerate</span>
@@ -287,16 +287,16 @@ export default function RepliesPage() {
                                                         const isCopied = copiedId === uniqueId;
 
                                                         return (
-                                                            <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-[var(--bb-line-brass)] transition-all group">
+                                                            <div key={rIdx} className="flex flex-col surface-nested border-border-dim/20 p-4 hover:border-[var(--np-line-pulse)] transition-all group">
                                                                 <div className="flex items-center justify-between mb-2.5">
-                                                                    <span className="text-[13px] font-medium text-brass-700 uppercase tracking-widest">{labels[rIdx]}</span>
+                                                                    <span className="text-[13px] font-medium text-pulse-700 uppercase tracking-widest">{labels[rIdx]}</span>
                                                                     <button
                                                                         onClick={() => handleCopy(reply, uniqueId)}
                                                                         className={clsx(
                                                                             "flex items-center gap-1 px-2 py-1 rounded text-[13px] font-medium transition-all",
                                                                             isCopied
                                                                                 ? "bg-success text-white"
-                                                                                : "bg-page border border-border-dim text-text-muted hover:bg-grad-brass hover:text-black hover:border-[var(--bb-line-brass)]"
+                                                                                : "bg-page border border-border-dim text-text-muted hover:bg-grad-pulse hover:text-black hover:border-[var(--np-line-pulse)]"
                                                                         )}
                                                                     >
                                                                         {isCopied ? <Check size={10} /> : <Copy size={10} />}
@@ -324,7 +324,7 @@ export default function RepliesPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/radar")}
-                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 3</span>

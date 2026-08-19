@@ -5,7 +5,7 @@ export const supportRoutes = {
 } as const;
 
 export const support = {
-  email: "BlackBoxCash@neoai.freshdesk.com",
+  email: "NullPingCash@neoai.freshdesk.com",
   /** In-app contact form anchor on the support page */
   contactUrl: "/support#contact",
   /** Freshdesk help portal — browse articles and track tickets */

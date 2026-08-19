@@ -240,12 +240,12 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
             <div className="space-y-2 px-4 pb-4 sm:px-5 sm:pb-5">
               {INSTRUCTION_STEPS.map((step) => (
                 <div key={step.number} className="wizard-inset-row">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
-                    <span className="text-[13px] font-medium text-brass-700">{step.number}</span>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100">
+                    <span className="text-[13px] font-medium text-pulse-700">{step.number}</span>
                   </div>
                   <div className="min-w-0 flex-1 pt-0.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <step.icon className="h-3.5 w-3.5 shrink-0 text-brass-700" />
+                      <step.icon className="h-3.5 w-3.5 shrink-0 text-pulse-700" />
                       <span className="text-sm text-text-primary">{step.text}</span>
                     </div>
                     {step.link && (
@@ -253,7 +253,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
                         href={step.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-brass-700 hover:text-brass-900 transition-colors"
+                        className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium text-pulse-700 hover:text-pulse-900 transition-colors"
                       >
                         {step.linkLabel}
                         <ExternalLink className="h-3 w-3" />
@@ -310,7 +310,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               <div className="space-y-2">
                 <label className="wizard-form-label">Link Name</label>
                 <div className="relative">
-                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-pulse-700">
                     <Tag className="h-5 w-5" />
                   </div>
                   <GlassInput
@@ -331,7 +331,7 @@ export default function ArmLinksPage({ embedded, onContinue }: WizardStepProps =
               <div className="space-y-2">
                 <label className="wizard-form-label">Paste Your Affiliate Link</label>
                 <div className="relative">
-                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brass-700">
+                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-pulse-700">
                     <Zap className="h-5 w-5" />
                   </div>
                   <GlassInput

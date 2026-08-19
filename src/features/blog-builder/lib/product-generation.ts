@@ -1,10 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ArmedLink, ThemeConfig } from "../types";
-import { getReadyTemplateFromConfig } from "../themes";
 import { deriveProductName } from "./product-sales-copy";
-import { generateQuestionnaireCopy, type QuestionnaireCopy } from "./questionnaire-copy";
-import { resolveNicheKey } from "./questionnaire-seeds";
-import { buildThemedQuestionnairePage } from "./questionnaire-page-html";
+import { generateMoneyPageCopy } from "@/features/money-page/lib/copy";
+import { buildMoneyPageHtml } from "@/features/money-page/lib/html";
+import type { MoneyPageCopy } from "@/features/money-page/lib/types";
 
 export interface GenerateProductSiteParams {
   supabase: SupabaseClient;
@@ -21,7 +20,7 @@ export interface GenerateProductSiteParams {
 export interface GenerateProductSiteResult {
   productName: string;
   salesPageHtml: string;
-  salesPageJson: QuestionnaireCopy;
+  salesPageJson: MoneyPageCopy;
   site: Record<string, unknown>;
 }
 
@@ -39,40 +38,30 @@ export async function generateProductSite(
     affiliateLabel: affiliate.label,
   });
 
-  const template = getReadyTemplateFromConfig(params.themeConfig);
-
-  const copy = await generateQuestionnaireCopy({
+  const copy = await generateMoneyPageCopy({
     productName,
     niche: params.niche,
-    nicheKey: resolveNicheKey(params.niche),
     description: params.scrapedDescription,
     productContext: params.productContext,
-    affiliateLabel: affiliate.label,
-    copyToneId: template.copyToneId,
-    templateId: template.id,
-    templateName: template.name,
   });
 
-  const salesPageHtml = buildThemedQuestionnairePage({
+  const salesPageHtml = buildMoneyPageHtml({
     siteId: params.siteId,
     productName,
-    niche: params.niche,
     copy,
-    affiliateUrl: affiliate.url.trim(),
-    themeConfig: params.themeConfig,
+    ctaUrl: affiliate.url.trim(),
   });
-
-  const tagline = copy.subtitle.slice(0, 160);
 
   const { data: updatedSite, error } = await params.supabase
     .from("sites")
     .update({
-      title: copy.title,
-      tagline,
+      title: copy.headline,
+      tagline: copy.subheadline.slice(0, 160),
       site_type: "product",
       sales_page_html: salesPageHtml,
       sales_page_json: copy,
       theme_config: params.themeConfig ?? {},
+      product_name: productName,
     })
     .eq("id", params.siteId)
     .eq("user_id", params.userId)

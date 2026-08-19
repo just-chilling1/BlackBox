@@ -63,7 +63,7 @@ async function sendViaResend(
 
   if (!res.ok) {
     const detail = await res.text();
-    console.error("[blackbox-cash] Resend error:", res.status, detail);
+    console.error("[nullping-cash] Resend error:", res.status, detail);
     return false;
   }
 
@@ -99,7 +99,7 @@ async function sendViaFreshdesk(
 
   if (!res.ok) {
     const detail = await res.text();
-    console.error("[blackbox-cash] Freshdesk error:", res.status, detail);
+    console.error("[nullping-cash] Freshdesk error:", res.status, detail);
     return false;
   }
 
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[blackbox-cash] Support error:", error);
+    console.error("[nullping-cash] Support error:", error);
     return NextResponse.json(
       {
         error: "Could not send automatically — opening your email app instead.",

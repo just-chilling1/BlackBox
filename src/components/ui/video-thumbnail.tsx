@@ -35,7 +35,7 @@ export function VideoThumbnail({
       onClick={onPlay}
       aria-label={`Play ${title}`}
       className={clsx(
-        "group relative w-full overflow-hidden rounded-xl border border-border-dim/40 bg-black text-left cursor-pointer transition-all duration-200 hover:border-[var(--bb-line-brass)] hover:shadow-md",
+        "group relative w-full overflow-hidden rounded-xl border border-border-dim/40 bg-black text-left cursor-pointer transition-all duration-200 hover:border-[var(--np-line-pulse)] hover:shadow-md",
         className
       )}
     >
@@ -66,7 +66,7 @@ export function VideoThumbnail({
         ) : null}
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-brass text-white shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-pulse text-white shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
             <Play className="ml-1 h-8 w-8 fill-white sm:h-9 sm:w-9" />
           </span>
         </div>

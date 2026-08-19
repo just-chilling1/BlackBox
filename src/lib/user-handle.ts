@@ -6,12 +6,12 @@ import { getServiceRoleClient } from "@/lib/api-auth";
  * since handles live at the URL root (/{handle}/sites/{slug}).
  */
 const RESERVED_HANDLES = new Set([
-  "academy", "accelerator", "analysis", "api", "arm-links", "asset", "auth",
+  "academy", "accelerator", "activate", "analysis", "api", "arm-links", "asset", "auth",
   "autopilot", "brand-preview", "dashboard", "deploy", "dfy", "dfy-profit",
-  "forgot-password", "instant", "license-rights", "link-vault", "login", "offers", "onboarding",
-  "promote", "protector", "radar", "recurring-wealth", "replies", "reset-password",
+  "forgot-password", "instant", "license-rights", "link-vault", "login", "m", "money-page", "offers", "onboarding",
+  "promote", "protector", "radar", "recurring-wealth", "replies", "reset-password", "results",
   "sales-offer-generator", "scale-training", "search", "signup", "sites",
-  "social-payouts", "support", "territory", "theme", "training", "admin",
+  "social-payouts", "support", "territory", "theme", "traffic", "training", "admin",
   "member", "app", "www",
 ]);
 

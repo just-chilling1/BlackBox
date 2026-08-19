@@ -44,15 +44,15 @@ function TweetBubble({ content, chained, isLast }: { content: string; chained?: 
     <div className="relative flex gap-3">
       {chained && (
         <div className="flex flex-col items-center pt-1">
-          <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-grad-brass ring-2 ring-[var(--bb-line-brass)]" />
-          {!isLast && <div className="mt-1 w-px flex-1 min-h-[12px] bg-gradient-to-b from-brass-300 to-brass-100" />}
+          <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-grad-pulse ring-2 ring-[var(--np-line-pulse)]" />
+          {!isLast && <div className="mt-1 w-px flex-1 min-h-[12px] bg-gradient-to-b from-pulse-300 to-pulse-100" />}
         </div>
       )}
       <div
         className={clsx(
           "min-w-0 flex-1 rounded-2xl border px-4 py-3 text-[15px] leading-relaxed text-text-primary",
           chained
-            ? "border-[var(--bb-line-brass)] bg-gradient-to-br from-white to-brass-100"
+            ? "border-[var(--np-line-pulse)] bg-gradient-to-br from-white to-pulse-100"
             : "border-border-dim/90 bg-white shadow-sm"
         )}
       >
@@ -83,18 +83,18 @@ export function ThreadCard({ index, label, text, imageUrl, defaultOpen = false }
       open={defaultOpen}
       className="group overflow-hidden rounded-2xl border border-border-dim/90 bg-white shadow-sm transition-shadow hover:shadow-md"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-3 bg-gradient-to-r from-white via-white to-brass-100 px-4 py-3.5 transition-colors hover:bg-brass-100/20 [&::-webkit-details-marker]:hidden">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-grad-brass text-[13px] font-medium text-text-on-accent shadow-brass">
+      <summary className="flex cursor-pointer list-none items-center gap-3 bg-gradient-to-r from-white via-white to-pulse-100 px-4 py-3.5 transition-colors hover:bg-pulse-100/20 [&::-webkit-details-marker]:hidden">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-grad-pulse text-[13px] font-medium text-text-on-accent shadow-pulse">
           {index}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-medium text-text-heading">{label}</p>
-            <span className="rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium tabular-nums text-text-secondary">
+            <span className="rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium tabular-nums text-text-secondary">
               {charCount} chars
             </span>
             {imageUrl && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-brass-100 px-2 py-0.5 text-[13px] font-medium text-brass-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-pulse-100 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
                 <ImageIcon size={10} />
                 Image
               </span>
@@ -135,7 +135,7 @@ export function ThreadCard({ index, label, text, imageUrl, defaultOpen = false }
           <button
             type="button"
             onClick={() => void copy("text", text)}
-            className="inline-flex items-center gap-2 rounded-lg bg-grad-brass px-4 py-2 text-[13px] font-medium uppercase tracking-wide text-text-on-accent shadow-brass cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-brass active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-lg bg-grad-pulse px-4 py-2 text-[13px] font-medium uppercase tracking-wide text-text-on-accent shadow-pulse cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-pulse active:scale-[0.98]"
           >
             {copiedKey === "text" ? <Check size={14} /> : <Copy size={14} />}
             {copiedKey === "text" ? "Copied" : "Copy post"}
@@ -144,7 +144,7 @@ export function ThreadCard({ index, label, text, imageUrl, defaultOpen = false }
             <button
               type="button"
               onClick={() => void copy("image", imageUrl)}
-              className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary cursor-pointer transition-all duration-200 hover:border-[var(--bb-line-brass)] hover:bg-canvas hover:text-text-heading active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary cursor-pointer transition-all duration-200 hover:border-[var(--np-line-pulse)] hover:bg-canvas hover:text-text-heading active:scale-[0.98]"
             >
               {copiedKey === "image" ? <Check size={14} /> : <ImageIcon size={14} />}
               {copiedKey === "image" ? "Copied URL" : "Copy image URL"}

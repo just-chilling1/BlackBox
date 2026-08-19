@@ -390,7 +390,7 @@ export default function DeployAssetPage({
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-md border border-[var(--bb-line)] bg-white px-3 py-2 text-[13px] font-medium text-ink-3 transition-colors hover:border-[var(--bb-line-strong)] hover:bg-[var(--bb-surface-field)] hover:text-ink"
+            className="inline-flex items-center gap-2 rounded-md border border-[var(--np-line)] bg-white px-3 py-2 text-[13px] font-medium text-ink-3 transition-colors hover:border-[var(--np-line-strong)] hover:bg-[var(--np-surface-field)] hover:text-ink"
           >
             <ArrowLeft size={16} aria-hidden />
             Back to Template

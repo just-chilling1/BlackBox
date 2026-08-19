@@ -7,6 +7,6 @@ export function isDevAuthBypassEnabled(): boolean {
 }
 
 export const DEV_BYPASS_EMAIL =
-  process.env.DEV_BYPASS_EMAIL ?? "dev-local@blackbox-cash.local";
+  process.env.DEV_BYPASS_EMAIL ?? "dev-local@nullping-cash.local";
 
 export const DEV_BYPASS_PASSWORD = process.env.DEV_BYPASS_PASSWORD ?? "";

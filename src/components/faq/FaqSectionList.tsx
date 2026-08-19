@@ -13,10 +13,10 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left cursor-pointer transition-colors duration-200 hover:bg-brass-100"
+        className="flex w-full items-center justify-between px-4 py-3 text-left cursor-pointer transition-colors duration-200 hover:bg-pulse-100"
       >
         <div className="flex items-center gap-3">
-          <HelpCircle size={15} className="shrink-0 text-brass-700" />
+          <HelpCircle size={15} className="shrink-0 text-pulse-700" />
           <span className="text-sm font-medium text-text-primary">{q}</span>
         </div>
         {open ? (
@@ -56,7 +56,7 @@ export function FaqSectionList({ sections, showCount = true }: FaqSectionListPro
     <div className="flex flex-col gap-3">
       {showCount ? (
         <div className="flex items-center gap-2 px-1">
-          <HelpCircle size={16} className="text-brass-700" />
+          <HelpCircle size={16} className="text-pulse-700" />
           <span className="text-[13px] font-medium uppercase tracking-widest text-text-muted">
             {faqCount} answers
           </span>
@@ -66,7 +66,7 @@ export function FaqSectionList({ sections, showCount = true }: FaqSectionListPro
       <div className="flex flex-col gap-3">
         {sections.map((section) => (
           <div key={section.title} className="flex flex-col gap-2">
-            <h3 className="mb-1 px-1 text-[13px] font-medium uppercase tracking-[0.15em] text-brass-700">
+            <h3 className="mb-1 px-1 text-[13px] font-medium uppercase tracking-[0.15em] text-pulse-700">
               {section.title}
             </h3>
             {section.items.map((item) => (

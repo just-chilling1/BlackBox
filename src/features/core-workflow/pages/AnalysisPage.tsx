@@ -15,7 +15,7 @@ import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/gener
 function Tooltip({ text }: { text: string }) {
     return (
         <div className="group/tip relative inline-flex items-center">
-            <HelpCircle size={12} className="text-text-muted/50 hover:text-brass-700 cursor-help transition-colors" />
+            <HelpCircle size={12} className="text-text-muted/50 hover:text-pulse-700 cursor-help transition-colors" />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1a1a1c] border border-border-dim rounded-lg text-[13px] text-text-secondary leading-snug w-56 opacity-0 pointer-events-none group-hover/tip:opacity-100 group-hover/tip:pointer-events-auto transition-opacity z-50 shadow-xl">
                 {text}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1a1a1c] border-r border-b border-border-dim rotate-45 -mt-1" />
@@ -33,7 +33,7 @@ function LevelBadge({ level }: { level: string }) {
         <div className={clsx(
             "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium uppercase tracking-wider",
             isHigh ? "text-success bg-success/10 border border-success/20" :
-            isActive ? "text-brass-700 bg-brass-100 border border-[var(--bb-line-brass)]" :
+            isActive ? "text-pulse-700 bg-pulse-100 border border-[var(--np-line-pulse)]" :
             "text-text-muted bg-surface border border-border-dim"
         )}>
             {isHigh ? <Flame size={10} /> : isActive ? <Zap size={10} /> : <TrendingDown size={10} />}
@@ -43,7 +43,7 @@ function LevelBadge({ level }: { level: string }) {
 }
 
 function ConfidenceBar({ value }: { value: number }) {
-    const color = value >= 80 ? "bg-success" : value >= 50 ? "bg-grad-brass" : "bg-[var(--bb-warning)]";
+    const color = value >= 80 ? "bg-success" : value >= 50 ? "bg-grad-pulse" : "bg-[var(--np-warning)]";
     return (
         <div className="flex items-center gap-2 w-full min-w-[100px]">
             <div className="flex-1 h-1.5 bg-page rounded-full overflow-hidden border border-border-dim/20">
@@ -163,7 +163,7 @@ export default function AnalysisPage() {
             </span>
             <Tooltip text={tooltip} />
             {sortKey === sKey ? (
-                sortDir === "desc" ? <ChevronDown size={10} className="text-brass-700" /> : <ChevronUp size={10} className="text-brass-700" />
+                sortDir === "desc" ? <ChevronDown size={10} className="text-pulse-700" /> : <ChevronUp size={10} className="text-pulse-700" />
             ) : (
                 <ArrowUpDown size={10} className="text-text-muted/30 group-hover/sort:text-text-muted transition-colors" />
             )}
@@ -198,8 +198,8 @@ export default function AnalysisPage() {
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center rounded-lg">
-                            <Brain size={20} className="text-brass-700" />
+                        <div className="w-10 h-10 bg-pulse-100 border border-[var(--np-line-pulse)] flex items-center justify-center rounded-lg">
+                            <Brain size={20} className="text-pulse-700" />
                         </div>
                         <div>
                             <h1 className="text-xl font-medium tracking-tight text-text-primary sm:text-2xl">Step 2: Check Demand</h1>
@@ -212,7 +212,7 @@ export default function AnalysisPage() {
                 <div className="action-row w-full md:w-auto md:justify-end">
                     <button
                         onClick={() => setShowGuide(!showGuide)}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim px-3 py-2.5 text-[13px] font-medium text-text-muted transition-all hover:border-[var(--bb-line-brass)] hover:text-text-primary sm:w-auto"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim px-3 py-2.5 text-[13px] font-medium text-text-muted transition-all hover:border-[var(--np-line-pulse)] hover:text-text-primary sm:w-auto"
                     >
                         <Info size={13} />
                         <span>{showGuide ? "Hide Guide" : "How to Read This"}</span>
@@ -238,7 +238,7 @@ export default function AnalysisPage() {
                 <div className="flex-1 h-1.5 bg-surface rounded-full overflow-hidden border border-border-dim/20">
                     <motion.div
                         animate={{ width: `${(analyzedCount / variations.length) * 100}%` }}
-                        className="h-full bg-grad-brass rounded-full"
+                        className="h-full bg-grad-pulse rounded-full"
                         transition={{ duration: 0.5 }}
                     />
                 </div>
@@ -266,18 +266,18 @@ export default function AnalysisPage() {
                         <div className="surface-inset border-border-dim/30 p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
-                                    <BarChart3 size={14} className="text-brass-700" />
+                                    <BarChart3 size={14} className="text-pulse-700" />
                                     <span className="text-[13px] font-medium text-text-heading">Demand Level</span>
                                 </div>
                                 <p className="text-[13px] text-text-muted leading-relaxed">
                                     <strong className="text-success">High</strong> = lots of people talking about this. Great for ads.
-                                    <strong className="text-brass-700"> Active</strong> = decent amount of activity. Worth trying.
+                                    <strong className="text-pulse-700"> Active</strong> = decent amount of activity. Worth trying.
                                     <strong className="text-text-muted"> Low</strong> = not much activity. Try a different angle.
                                 </p>
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
-                                    <MessageSquare size={14} className="text-brass-700" />
+                                    <MessageSquare size={14} className="text-pulse-700" />
                                     <span className="text-[13px] font-medium text-text-heading">Ad Count</span>
                                 </div>
                                 <p className="text-[13px] text-text-muted leading-relaxed">
@@ -286,7 +286,7 @@ export default function AnalysisPage() {
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
-                                    <Shield size={14} className="text-brass-700" />
+                                    <Shield size={14} className="text-pulse-700" />
                                     <span className="text-[13px] font-medium text-text-heading">Confidence</span>
                                 </div>
                                 <p className="text-[13px] text-text-muted leading-relaxed">
@@ -295,11 +295,11 @@ export default function AnalysisPage() {
                             </div>
                             <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-2">
-                                    <Info size={14} className="text-brass-700" />
+                                    <Info size={14} className="text-pulse-700" />
                                     <span className="text-[13px] font-medium text-text-heading">What to Do</span>
                                 </div>
                                 <p className="text-[13px] text-text-muted leading-relaxed">
-                                    Click any row to select it. Then press <strong className="text-brass-700">&ldquo;Step 3: Find Ads&rdquo;</strong> to see real ads for that topic and create replies.
+                                    Click any row to select it. Then press <strong className="text-pulse-700">&ldquo;Step 3: Find Ads&rdquo;</strong> to see real ads for that topic and create replies.
                                 </p>
                             </div>
                         </div>
@@ -355,7 +355,7 @@ export default function AnalysisPage() {
                                             <Check size={14} strokeWidth={3} />
                                         </span>
                                     )}
-                                    <span className={clsx("select-row-label truncate", isSelected && "font-medium text-brass-700")}>{v}</span>
+                                    <span className={clsx("select-row-label truncate", isSelected && "font-medium text-pulse-700")}>{v}</span>
                                 </div>
 
                                 {/* Level */}
@@ -428,7 +428,7 @@ export default function AnalysisPage() {
                                             <Check size={14} strokeWidth={3} />
                                         </span>
                                     ) : null}
-                                    <span className={clsx("select-row-label text-sm", isSelected && "font-medium text-brass-700")}>
+                                    <span className={clsx("select-row-label text-sm", isSelected && "font-medium text-pulse-700")}>
                                         {v}
                                     </span>
                                 </div>
@@ -481,7 +481,7 @@ export default function AnalysisPage() {
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <Brain size={16} className="text-brass-700" />
+                            <Brain size={16} className="text-pulse-700" />
                             <span className="text-sm font-medium text-text-heading">Details for &ldquo;{activeChip}&rdquo;</span>
                         </div>
                         <button
@@ -491,7 +491,7 @@ export default function AnalysisPage() {
                                 setAnalysisByVariation(newAnalysis);
                                 fetchAnalysis(activeChip);
                             }}
-                            className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                            className="flex items-center gap-1.5 text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                         >
                             <RefreshCw size={11} />
                             <span>Re-analyze</span>
@@ -511,7 +511,7 @@ export default function AnalysisPage() {
             <div className="flex items-center justify-between pt-4">
                 <button
                     onClick={() => router.push("/search")}
-                    className="text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                    className="text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                 >
                     ← Back to Step 1
                 </button>

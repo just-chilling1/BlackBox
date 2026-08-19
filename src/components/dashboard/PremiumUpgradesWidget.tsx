@@ -32,7 +32,7 @@ export function PremiumUpgradesWidget({
     return (
       <div
         className={clsx(
-          "premium-upgrades-panel min-h-[10rem] animate-pulse rounded-xl bg-brass-100/40",
+          "premium-upgrades-panel min-h-[10rem] animate-pulse rounded-xl bg-pulse-100/40",
           variant === "sidebar" && "premium-upgrades-panel--sidebar min-w-0 w-full",
           className
         )}
@@ -72,7 +72,7 @@ export function PremiumUpgradesWidget({
                   <div
                     className={clsx(
                       "premium-upgrade-icon premium-upgrade-icon--sidebar flex shrink-0 items-center justify-center",
-                      isActive && "bg-brass-100 text-brass-700"
+                      isActive && "bg-pulse-100 text-pulse-700"
                     )}
                   >
                     <Icon size={14} strokeWidth={1.5} />
@@ -92,7 +92,7 @@ export function PremiumUpgradesWidget({
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-brass-700">
+                  <span className="shrink-0 text-pulse-700">
                     {isActive ? (
                       <span className="text-[13px] font-medium">Active</span>
                     ) : (
@@ -114,8 +114,8 @@ export function PremiumUpgradesWidget({
   return (
     <div className={clsx("premium-upgrades-panel premium-upgrades-panel--featured", className)}>
       <div className="mb-4 text-center md:text-left">
-        <p className="flex items-center justify-center gap-2 text-[13px] font-medium uppercase tracking-widest text-brass-700 md:justify-start">
-          <Sparkles className="h-4 w-4 shrink-0 text-brass-700" fill="currentColor" />
+        <p className="flex items-center justify-center gap-2 text-[13px] font-medium uppercase tracking-widest text-pulse-700 md:justify-start">
+          <Sparkles className="h-4 w-4 shrink-0 text-pulse-700" fill="currentColor" />
           Premium Features
         </p>
         <p className="mx-auto mt-1.5 max-w-2xl text-sm leading-relaxed text-text-secondary md:mx-0">
@@ -143,8 +143,8 @@ export function PremiumUpgradesWidget({
                     className={clsx(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all duration-300",
                       isActive
-                        ? "border-[var(--bb-line-brass)] bg-grad-brass text-black shadow-brass"
-                        : "border-[var(--bb-line-brass)] bg-brass-100 text-brass-700 group-hover:border-[var(--bb-line-brass)] group-hover:bg-grad-brass group-hover:text-black group-hover:shadow-brass"
+                        ? "border-[var(--np-line-pulse)] bg-grad-pulse text-black shadow-pulse"
+                        : "border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700 group-hover:border-[var(--np-line-pulse)] group-hover:bg-grad-pulse group-hover:text-black group-hover:shadow-pulse"
                     )}
                   >
                     <Icon size={19} strokeWidth={1.5} />
@@ -165,7 +165,7 @@ export function PremiumUpgradesWidget({
                   </div>
                 </div>
 
-                <span className="inline-flex items-center gap-1 text-[13px] font-medium text-brass-700 transition-colors group-hover:text-brass-700">
+                <span className="inline-flex items-center gap-1 text-[13px] font-medium text-pulse-700 transition-colors group-hover:text-pulse-700">
                   {isActive ? (
                     "Active"
                   ) : (

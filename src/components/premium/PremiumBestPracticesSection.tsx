@@ -23,7 +23,7 @@ export function PremiumBestPracticesSection({
   return (
     <section className="glass-card p-8">
       <div className="mb-6 flex items-start gap-3">
-        <Lightbulb size={22} className="mt-0.5 shrink-0 text-brass-700" />
+        <Lightbulb size={22} className="mt-0.5 shrink-0 text-pulse-700" />
         <div>
           <h2 className="text-xl font-medium text-text-primary">{title}</h2>
           {subtitle && <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>}
@@ -35,7 +35,7 @@ export function PremiumBestPracticesSection({
             key={item.title}
             className="flex gap-4 rounded-2xl border border-border-dim bg-page/60 p-5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700">
               <item.icon size={18} />
             </div>
             <div className="min-w-0">

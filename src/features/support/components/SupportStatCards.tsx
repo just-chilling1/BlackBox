@@ -23,19 +23,19 @@ export function SupportStatCards() {
             className={clsx(
               "flex items-start gap-3 rounded-xl border p-4 text-sm transition-colors",
               isPrimary
-                ? "border-[var(--bb-line-brass)] bg-brass-100 ring-1 ring-brass-100 text-text-primary"
+                ? "border-[var(--np-line-pulse)] bg-pulse-100 ring-1 ring-pulse-100 text-text-primary"
                 : "border-border-dim bg-page/60 text-text-secondary"
             )}
           >
             <div
               className={clsx(
                 "flex shrink-0 items-center justify-center rounded-lg",
-                isPrimary ? "h-10 w-10 bg-brass-100" : "h-9 w-9 bg-brass-100"
+                isPrimary ? "h-10 w-10 bg-pulse-100" : "h-9 w-9 bg-pulse-100"
               )}
             >
               <Icon
                 size={isPrimary ? 20 : 17}
-                className={clsx(isPrimary ? "text-brass-700" : "text-text-muted")}
+                className={clsx(isPrimary ? "text-pulse-700" : "text-text-muted")}
               />
             </div>
             <span className={clsx("min-w-0 leading-snug", isPrimary && "font-medium")}>

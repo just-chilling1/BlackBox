@@ -67,9 +67,9 @@ export default function SearchPage() {
             {/* Header */}
             <div className="flex w-full max-w-xl flex-col items-center gap-10">
             <div className="text-center flex flex-col items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1 bg-brass-100 rounded-full border border-[var(--bb-line-brass)]">
-                    <Zap size={12} className="text-brass-700" />
-                    <span className="text-[13px] font-medium text-brass-700 uppercase tracking-wider">Step 1 of 4</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-pulse-100 rounded-full border border-[var(--np-line-pulse)]">
+                    <Zap size={12} className="text-pulse-700" />
+                    <span className="text-[13px] font-medium text-pulse-700 uppercase tracking-wider">Step 1 of 4</span>
                 </div>
                 <h1 className="text-3xl text-text-primary font-medium tracking-tight">
                     Enter Your Ad Topic
@@ -82,11 +82,11 @@ export default function SearchPage() {
             {/* Search Input */}
             <div className="w-full flex flex-col gap-3">
                 <div className="relative group">
-                    <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-brass-700 transition-colors" />
+                    <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-pulse-700 transition-colors" />
                     <input
                         type="text"
                         placeholder='e.g. "weight loss", "dog food", "acne"'
-                        className="input-base w-full pl-12 pr-5 h-14 text-base rounded-xl border-2 border-border-dim focus:border-brass-700/60"
+                        className="input-base w-full pl-12 pr-5 h-14 text-base rounded-xl border-2 border-border-dim focus:border-pulse-700/60"
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -97,7 +97,7 @@ export default function SearchPage() {
                 <button
                     onClick={() => handleSearch()}
                     disabled={loading || !keyword}
-                    className="btn-primary w-full h-14 text-base rounded-xl shadow-brass font-medium tracking-wide"
+                    className="btn-primary w-full h-14 text-base rounded-xl shadow-pulse font-medium tracking-wide"
                 >
                     {loading ? (
                         <div className="flex items-center gap-3">
@@ -133,10 +133,10 @@ export default function SearchPage() {
                                 key={i}
                                 onClick={() => { setKeyword(h); handleSearch(h); }}
                                 disabled={loading}
-                                className="flex items-center gap-2 px-4 py-2 bg-surface border border-border-dim rounded-lg hover:border-[var(--bb-line-brass)] transition-all group text-sm disabled:opacity-50"
+                                className="flex items-center gap-2 px-4 py-2 bg-surface border border-border-dim rounded-lg hover:border-[var(--np-line-pulse)] transition-all group text-sm disabled:opacity-50"
                             >
                                 <span className="text-text-secondary group-hover:text-text-primary font-medium">{h}</span>
-                                <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 text-brass-700 transition-all" />
+                                <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 text-pulse-700 transition-all" />
                             </button>
                         ))}
                     </div>
@@ -153,8 +153,8 @@ export default function SearchPage() {
                         { step: "3", text: "You copy & earn" },
                     ].map((s) => (
                         <div key={s.step} className="flex items-center gap-2.5">
-                            <div className="w-6 h-6 rounded-full bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center shrink-0">
-                                <span className="text-[13px] font-medium text-brass-700">{s.step}</span>
+                            <div className="w-6 h-6 rounded-full bg-pulse-100 border border-[var(--np-line-pulse)] flex items-center justify-center shrink-0">
+                                <span className="text-[13px] font-medium text-pulse-700">{s.step}</span>
                             </div>
                             <span className="text-[13px] text-text-secondary font-medium">{s.text}</span>
                         </div>

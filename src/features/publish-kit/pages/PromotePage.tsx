@@ -63,7 +63,7 @@ function WhatToExpectPanel() {
       <div className="mt-4 space-y-2">
         {WHAT_TO_EXPECT.map((item, i) => (
           <div key={i} className="wizard-inset-row">
-            <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-brass-700" />
+            <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-pulse-700" />
             <span className="text-sm text-text-primary">{item.text}</span>
           </div>
         ))}
@@ -196,7 +196,7 @@ export default function PromotePage() {
 
       <section className="glass-card space-y-4 p-4 sm:p-5 md:p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brass-100 text-brass-700">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pulse-100 text-pulse-700">
             <Megaphone size={22} />
           </div>
           <div>

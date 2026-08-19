@@ -33,8 +33,8 @@ function OnboardingBrand() {
           )}
         />
       ) : (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-grad-brass shadow-sm">
-          <Icon size={20} className="text-brass-900" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-grad-pulse shadow-sm">
+          <Icon size={20} className="text-pulse-900" />
         </div>
       )}
       {!isWordmarkImage && (
@@ -139,7 +139,7 @@ export function OnboardingFlow() {
                   className={`flex items-start gap-3 text-sm transition-all duration-500 ${ activationStep > i ? "text-ink-2 opacity-100" : "text-ink-6 opacity-50" }`}
                 >
                   <span
-                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[13px] font-medium ${ activationStep > i ? "bg-success text-white" : "bg-brass-100 text-ink-5" }`}
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[13px] font-medium ${ activationStep > i ? "bg-success text-white" : "bg-pulse-100 text-ink-5" }`}
                   >
                     {activationStep > i ? "✓" : i + 1}
                   </span>
@@ -149,10 +149,10 @@ export function OnboardingFlow() {
             </ol>
           </div>
 
-          <p className="mt-4 text-sm font-medium text-brass-700">{cfg.note}</p>
+          <p className="mt-4 text-sm font-medium text-pulse-700">{cfg.note}</p>
 
           {error && (
-            <p className="mt-5 rounded-xl border border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10 px-4 py-3 text-[15px] text-[var(--bb-danger)]">
+            <p className="mt-5 rounded-xl border border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 px-4 py-3 text-[15px] text-[var(--np-danger)]">
               {error}
             </p>
           )}

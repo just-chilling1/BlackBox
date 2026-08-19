@@ -126,8 +126,8 @@ export function SidebarPromos() {
   const slots = getPromosByPlacement("sidebar");
   if (slots.length === 0) return null;
   return (
-    <div className="mx-1 mt-4 space-y-2 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-3">
-      <p className="px-1 text-[13px] font-medium uppercase tracking-widest text-brass-700">
+    <div className="mx-1 mt-4 space-y-2 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 p-3">
+      <p className="px-1 text-[13px] font-medium uppercase tracking-widest text-pulse-700">
         Exclusive Offers
       </p>
       <div className="flex flex-col gap-2">

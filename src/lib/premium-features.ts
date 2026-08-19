@@ -14,12 +14,11 @@ export const PREMIUM_SECTION_LABEL = premiumSectionLabel;
 
 /** One-line descriptions keyed by route — shown in the dashboard Premium Upgrades widget. */
 const PREMIUM_DESCRIPTIONS: Record<string, string> = {
-  "/dfy": "Pre-made keywords, articles, images, and leads ready to use.",
-  "/instant": "Ready-made social posts with images — copy and paste.",
-  "/autopilot": "Curated traffic sources checklist with promotion URL tracking.",
-  "/accelerator": "200 pre-made sales pages + X threads across every niche.",
-  "/recurring-wealth": "100 ready-to-publish authority articles with your link.",
-  "/social-payouts": "Bulk social posts from any offer — copy and paste.",
+  "/accelerator": "200 pre-made money pages — clone one, then generate pins.",
+  "/dfy-profit": "One click: money page plus 10 Pinterest traffic assets.",
+  "/social-payouts": "Extra pin batches beyond the first 10 for a live money page.",
+  "/autopilot": "Curated Pinterest boards and traffic sources for your live page.",
+  "/recurring-wealth": "Supporting authority articles attached to a money page.",
   "/protector": "Account security score and verification trust layer.",
   "/license-rights": "Request reseller license rights — our team activates the edition.",
 };

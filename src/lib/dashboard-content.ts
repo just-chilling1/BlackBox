@@ -23,12 +23,6 @@ export function getDashboardVideos(): DashboardVideo[] {
 }
 
 export function getDashboardSubtitle(): string {
-  if (isFeatureEnabled("blog-builder")) {
-    return "Watch the three videos below in order — then jump into the Sales Offer Generator and start building. The Academy is there whenever you want a deeper walkthrough.";
-  }
-  if (isFeatureEnabled("core-workflow")) {
-    return "Watch the three videos below in order — then enter your first topic and start finding ads. The Academy is there whenever you want a deeper walkthrough.";
-  }
   return dashboardContent.subtitle;
 }
 
@@ -37,6 +31,14 @@ export function getDashboardStartCta(): {
   label: string;
   icon: LucideIcon;
 } {
+  if (isFeatureEnabled("asset-activator")) {
+    return {
+      href: "/activate",
+      label: "Activate your first asset",
+      icon: Rocket,
+    };
+  }
+
   if (isFeatureEnabled("blog-builder")) {
     return {
       href: "/sales-offer-generator",

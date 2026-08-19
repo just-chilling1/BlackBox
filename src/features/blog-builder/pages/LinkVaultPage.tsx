@@ -171,7 +171,7 @@ export default function LinkVaultPage() {
               <div key={`${link.url}-${index}`} className="card-base space-y-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100 text-brass-700">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700">
                       <Link2 size={16} />
                     </div>
                     <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -179,7 +179,7 @@ export default function LinkVaultPage() {
                         {link.label || "Untitled Link"}
                       </p>
                       {networkLabel && (
-                        <span className="shrink-0 rounded-full border border-[var(--bb-line-brass)] bg-brass-100 px-2 py-0.5 text-[11px] font-medium text-brass-700">
+                        <span className="shrink-0 rounded-full border border-[var(--np-line-pulse)] bg-pulse-100 px-2 py-0.5 text-[11px] font-medium text-pulse-700">
                           {networkLabel}
                         </span>
                       )}
@@ -196,7 +196,7 @@ export default function LinkVaultPage() {
                     <button
                       type="button"
                       onClick={() => openEdit(link)}
-                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:bg-brass-100 hover:text-brass-700"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:bg-pulse-100 hover:text-pulse-700"
                     >
                       <Pencil size={14} />
                       Edit
@@ -205,7 +205,7 @@ export default function LinkVaultPage() {
                       type="button"
                       onClick={() => setDeletingLink(link)}
                       aria-label={`Delete ${link.label || "link"}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-text-muted transition-colors hover:bg-[var(--bb-danger)]/10 hover:text-[var(--bb-danger)]"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-text-muted transition-colors hover:bg-[var(--np-danger)]/10 hover:text-[var(--np-danger)]"
                     >
                       <Trash2 size={14} />
                       Delete
@@ -221,7 +221,7 @@ export default function LinkVaultPage() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-fit max-w-full items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-brass-700"
+                  className="flex w-fit max-w-full items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-pulse-700"
                 >
                   <span className="truncate">{link.url}</span>
                   <ExternalLink size={12} className="shrink-0" />
@@ -236,7 +236,7 @@ export default function LinkVaultPage() {
                           key={offer.id}
                           className="inline-flex items-center gap-1.5 rounded-full border border-border-dim bg-white px-2.5 py-1 text-xs text-text-primary"
                         >
-                          <Globe size={11} className="text-brass-700" />
+                          <Globe size={11} className="text-pulse-700" />
                           {offer.title}
                           {offer.status === "live" && (
                             <span className="h-1.5 w-1.5 rounded-full bg-success" aria-label="Live" />

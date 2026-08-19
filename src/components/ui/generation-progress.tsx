@@ -91,14 +91,14 @@ export function GenerationProgress({
   return (
     <div className="flex w-full flex-col gap-4">
       {active ? (
-        <div className="rounded-[var(--bb-r-lg)] border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
+        <div className="rounded-[var(--np-r-lg)] border border-border-dim/40 bg-surface/60 p-3 sm:p-4">
           <div className="mb-2.5 flex items-center gap-3">
-            <Loader2 size={16} className="shrink-0 animate-spin text-brass-700" />
+            <Loader2 size={16} className="shrink-0 animate-spin text-pulse-700" />
             <span className="text-[13px] font-medium text-text-primary sm:text-sm">{label}</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full border border-border-dim/30 bg-page">
             <div
-              className="h-full rounded-full bg-grad-brass transition-all duration-300 ease-out"
+              className="h-full rounded-full bg-grad-pulse transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>

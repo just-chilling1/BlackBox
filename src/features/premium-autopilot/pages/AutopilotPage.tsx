@@ -162,7 +162,7 @@ export default function AutomatedProfitsPage() {
 
   return (
     <PremiumPageLayout
-      title="Automated Profits"
+        title="Pinterest Autopilot"
       subtitle="180 practical traffic sources across 9 niches — choose the market your offer was built for and share it where it is genuinely useful."
       footer={<PremiumFooter />}
     >
@@ -194,10 +194,10 @@ export default function AutomatedProfitsPage() {
         ]}
       />
 
-      <div className="rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-5 flex items-start gap-3">
-        <Lightbulb size={18} className="text-brass-700 shrink-0 mt-0.5" />
+      <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 p-5 flex items-start gap-3">
+        <Lightbulb size={18} className="text-pulse-700 shrink-0 mt-0.5" />
         <div>
-          <span className="text-sm font-medium text-brass-700">Pro Tip: </span>
+          <span className="text-sm font-medium text-pulse-700">Pro Tip: </span>
           <span className="text-sm text-text-secondary">
             Start with a few sources where you can genuinely help the audience.
             Read each community&apos;s rules first, and only share your offer when
@@ -233,8 +233,8 @@ export default function AutomatedProfitsPage() {
               className={clsx(
                 "px-5 py-2.5 rounded-full text-sm font-medium transition-all border",
                 selectedNiche === niche
-                  ? "bg-grad-brass border-[var(--bb-line-brass)] text-black"
-                  : "bg-surface border-border-dim text-text-secondary hover:border-[var(--bb-line-brass)] hover:text-text-primary"
+                  ? "bg-grad-pulse border-[var(--np-line-pulse)] text-black"
+                  : "bg-surface border-border-dim text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-text-primary"
               )}
             >
               {niche}
@@ -253,7 +253,7 @@ export default function AutomatedProfitsPage() {
               </p>
             </div>
             <div className="text-right">
-              <span className="text-2xl font-medium text-brass-700">
+              <span className="text-2xl font-medium text-pulse-700">
                 {progressPercent}%
               </span>
               <p className="text-xs text-text-muted">Complete</p>
@@ -261,7 +261,7 @@ export default function AutomatedProfitsPage() {
           </div>
           <div className="w-full h-2 bg-surface rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-grad-brass rounded-full"
+              className="h-full bg-grad-pulse rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.5 }}

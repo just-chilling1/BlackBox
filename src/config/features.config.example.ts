@@ -16,6 +16,22 @@ export const affiliateWorkflowFeatures: FeatureId[] = [
   "premium-autopilot",
 ];
 
+/** NullPing Cash — activate → money page → Pinterest pins → results */
+export const nullPingFeatures: FeatureId[] = [
+  "training",
+  "asset-activator",
+  "money-page",
+  "traffic-pins",
+  "results",
+  "premium-accelerator",
+  "premium-recurring",
+  "premium-social",
+  "premium-dfy-profit",
+  "premium-autopilot",
+  "protector",
+  "premium-license-rights",
+];
+
 /** Secret Millionaire Society — blog builder + premium stack */
 export const blogBuilderFeatures: FeatureId[] = [
   "training",

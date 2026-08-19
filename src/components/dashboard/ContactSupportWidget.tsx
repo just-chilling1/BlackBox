@@ -11,10 +11,10 @@ import { DashboardSection } from "./DashboardSection";
 type FormState = "idle" | "submitting" | "success" | "error";
 
 const fieldClass =
-  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
+  "w-full min-w-0 rounded-lg border border-border-dim/70 bg-page/80 px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted focus:border-pulse-700 focus:outline-none focus:ring-2 focus:ring-pulse-100 transition-all";
 
 const embeddedFieldClass =
-  "w-full min-w-0 rounded-lg border border-border-dim bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-ink-5 focus:border-brass-700 focus:outline-none focus:ring-2 focus:ring-brass-100 transition-all";
+  "w-full min-w-0 rounded-lg border border-border-dim bg-white px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-ink-5 focus:border-pulse-700 focus:outline-none focus:ring-2 focus:ring-pulse-100 transition-all";
 
 const embeddedLabelClass =
   "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-heading";
@@ -309,7 +309,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       </div>
 
       {formState === "error" && errorMessage ? (
-        <p className="text-sm font-medium text-[var(--bb-danger)]" role="alert">
+        <p className="text-sm font-medium text-[var(--np-danger)]" role="alert">
           {errorMessage}
         </p>
       ) : null}
@@ -360,7 +360,7 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
         <button
           type="button"
           onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-          className="mt-1 block break-all text-left text-sm font-medium text-brass-700 hover:underline"
+          className="mt-1 block break-all text-left text-sm font-medium text-pulse-700 hover:underline"
         >
           {SUPPORT_EMAIL}
         </button>
@@ -379,8 +379,8 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
     return (
       <div className="support-widget-card min-w-0 overflow-hidden rounded-xl p-5">
         <div className="mb-3 flex min-w-0 items-center gap-3">
-          <div className="shrink-0 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-2.5">
-            <Headphones className="h-5 w-5 text-brass-700" />
+          <div className="shrink-0 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 p-2.5">
+            <Headphones className="h-5 w-5 text-pulse-700" />
           </div>
           <h3 className="text-sm font-medium uppercase tracking-widest text-text-heading">Contact Support</h3>
         </div>

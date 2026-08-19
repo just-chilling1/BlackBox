@@ -10,8 +10,8 @@ export default function TrainingFaqPage() {
     <TrainingPageLayout>
       <section className="flex flex-col gap-6">
         <div className="glass-card flex items-center gap-3 p-5">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--bb-line-brass)] bg-brass-100">
-            <HelpCircle size={22} className="text-brass-700" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line-pulse)] bg-pulse-100">
+            <HelpCircle size={22} className="text-pulse-700" />
           </div>
           <div>
             <h2 className="text-lg font-medium text-text-heading">{faqPageCopy.title}</h2>

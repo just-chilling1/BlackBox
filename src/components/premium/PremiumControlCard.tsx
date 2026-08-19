@@ -23,10 +23,10 @@ export function PremiumControlCard({
 }: PremiumControlCardProps) {
   return (
     <section className={clsx("glass-card overflow-hidden p-0", className)}>
-      <div className="border-b border-divider bg-brass-100 p-5 md:p-6">
+      <div className="border-b border-divider bg-pulse-100 p-5 md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brass-100 text-brass-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pulse-100 text-pulse-700">
               <Icon size={24} />
             </div>
             <div>

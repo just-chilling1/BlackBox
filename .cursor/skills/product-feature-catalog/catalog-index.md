@@ -107,6 +107,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 
 | Building… | Enable these CORE features |
 |-----------|------------------------------|
+| NullPing Cash (affiliate money pages + Pinterest) | `asset-activator`, `money-page`, `traffic-pins`, `results`, `training` |
 | Affiliate / reply app (CashTap AI) | `core-workflow`, `dopamine`, `training` |
 | Blog / money site (Secret Millionaire) | `blog-builder`, `training`, `premium-accelerator`, `premium-recurring`, `premium-social` |
 | Digital product (Click Clone Profits) | `product-wizard`, `niche-finder`, `training` |

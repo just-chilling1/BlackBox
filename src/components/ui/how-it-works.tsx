@@ -42,8 +42,8 @@ function StepBadge({
       className={clsx(
         "flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium",
         status === "current"
-          ? "border-2 border-[var(--bb-line-brass)] bg-grad-brass text-text-on-accent shadow-brass"
-          : "border border-border-dim bg-brass-100 text-text-muted"
+          ? "border-2 border-[var(--np-line-pulse)] bg-grad-pulse text-text-on-accent shadow-pulse"
+          : "border border-border-dim bg-pulse-100 text-text-muted"
       )}
     >
       {number}
@@ -82,7 +82,7 @@ export function HowItWorks({
               key={step.number}
               className={clsx(
                 "dashboard-nested-card flex h-full flex-col animate-stagger-item transition-all duration-200",
-                isCurrent && "border-[var(--bb-line-brass)] bg-white ring-2 ring-brass-100 shadow-brass",
+                isCurrent && "border-[var(--np-line-pulse)] bg-white ring-2 ring-pulse-100 shadow-pulse",
                 isUpcoming && "opacity-60 saturate-[0.85]",
                 isCompleted && "border-success/20 bg-success/10"
               )}
@@ -90,11 +90,11 @@ export function HowItWorks({
             >
               <div className="flex items-center gap-2.5">
                 <StepBadge number={step.number} status={status} />
-                <span className="rounded-full bg-grad-brass px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-text-on-accent">
+                <span className="rounded-full bg-grad-pulse px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-text-on-accent">
                   {step.minutes}
                 </span>
                 {showStartHere ? (
-                  <span className="ml-auto rounded-full bg-brass-100 px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-brass-700">
+                  <span className="ml-auto rounded-full bg-pulse-100 px-2.5 py-1 text-[13px] font-medium uppercase tracking-wider text-pulse-700">
                     Start Here
                   </span>
                 ) : null}
@@ -105,7 +105,7 @@ export function HowItWorks({
                   size={18}
                   className={clsx(
                     "shrink-0",
-                    isCurrent ? "text-brass-700" : isCompleted ? "text-success" : "text-text-muted"
+                    isCurrent ? "text-pulse-700" : isCompleted ? "text-success" : "text-text-muted"
                   )}
                 />
                 <h3 className={clsx("ds-h3", isUpcoming && "text-text-secondary")}>{step.title}</h3>
@@ -129,8 +129,8 @@ export function HowItWorks({
         })}
       </div>
 
-      <div className="mt-5 flex gap-3 rounded-xl border border-[var(--bb-line-brass)] bg-brass-100 p-5 sm:p-6">
-        <Info size={18} className="mt-0.5 shrink-0 text-brass-700" aria-hidden />
+      <div className="mt-5 flex gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 p-5 sm:p-6">
+        <Info size={18} className="mt-0.5 shrink-0 text-pulse-700" aria-hidden />
         <p className="text-sm leading-relaxed text-text-secondary">
           Follow the steps above to launch your first offer. If you get stuck, use the Support card in
           the sidebar.{" "}

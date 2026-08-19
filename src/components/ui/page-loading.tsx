@@ -10,7 +10,7 @@ export function PageLoading({ message = "Loading...", className }: PageLoadingPr
   return (
     <div className={clsx("page-container", className)}>
       <div className="page-loading" role="status" aria-live="polite">
-        <Loader2 size={22} className="animate-spin text-brass-700" aria-hidden />
+        <Loader2 size={22} className="animate-spin text-pulse-700" aria-hidden />
         <p>{message}</p>
       </div>
     </div>

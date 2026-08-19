@@ -190,7 +190,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             role="textbox"
             aria-multiline="true"
             aria-label="Article content"
-            className="sms-post-preview sms-editable glass-tile p-4 sm:p-5 min-h-[18rem] max-h-[55vh] overflow-y-auto outline-none focus:ring-2 focus:ring-brass-100 rounded-xl"
+            className="sms-post-preview sms-editable glass-tile p-4 sm:p-5 min-h-[18rem] max-h-[55vh] overflow-y-auto outline-none focus:ring-2 focus:ring-pulse-100 rounded-xl"
           />
           <p className="text-[13px] text-text-muted">
             Tip: click any image to replace it with your own upload.
@@ -207,7 +207,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
       )}
 
       {error && (
-        <p className="text-xs text-[var(--bb-danger)]/90 rounded-lg border border-[var(--bb-danger)]/30 bg-[var(--bb-danger)]/10 p-2">
+        <p className="text-xs text-[var(--np-danger)]/90 rounded-lg border border-[var(--np-danger)]/30 bg-[var(--np-danger)]/10 p-2">
           {error}
         </p>
       )}

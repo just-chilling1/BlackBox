@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
           className="flex flex-col items-center gap-5 py-4"
         >
           <div className="w-16 h-16 bg-success/10 border border-success/20 rounded-full flex items-center justify-center">
-            <CheckCircle2 size={32} className="text-[var(--bb-success)]" />
+            <CheckCircle2 size={32} className="text-[var(--np-success)]" />
           </div>
           <p className="text-[15px] text-ink-3 text-center max-w-xs">
             We sent a password reset link to <strong className="text-ink">{email}</strong>.
@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-[var(--bb-danger)]/10 border border-[var(--bb-danger)]/20 p-4 rounded-sm text-[#A32D2D] text-[15px]"
+              className="bg-[var(--np-danger)]/10 border border-[var(--np-danger)]/20 p-4 rounded-sm text-[#A32D2D] text-[15px]"
             >
               {error}
             </motion.div>
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
       </div>
 
       <div className="flex items-center justify-center gap-1 text-[13px] text-ink-5">
-        <ShieldCheck size={14} className="text-[var(--bb-success)]" />
+        <ShieldCheck size={14} className="text-[var(--np-success)]" />
         <span>256-bit Encrypted</span>
       </div>
     </AuthLayout>

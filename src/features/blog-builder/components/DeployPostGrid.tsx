@@ -45,9 +45,9 @@ function PostHeroImage({ src, alt }: { src: string; alt: string }) {
 }
 
 function slotShellClass(status: PostSlotState["status"]) {
-  if (status === "complete") return "glass-card border-[var(--bb-line-brass)]";
-  if (status === "generating") return "glass-card border-[var(--bb-line-brass)] max-sm:shadow-none sm:shadow-[var(--glow-teal)]";
-  if (status === "error") return "glass-card border-[var(--bb-danger)]/40";
+  if (status === "complete") return "glass-card border-[var(--np-line-pulse)]";
+  if (status === "generating") return "glass-card border-[var(--np-line-pulse)] max-sm:shadow-none sm:shadow-[var(--glow-teal)]";
+  if (status === "error") return "glass-card border-[var(--np-danger)]/40";
   return "glass-tile";
 }
 
@@ -80,7 +80,7 @@ export function DeployPostSlot({ slot, index, isPillar, onViewPost }: DeployPost
               </div>
             ) : (
               <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/5 flex flex-col items-center justify-center gap-2">
-                <Loader2 size={22} className="text-brass-700 animate-spin" />
+                <Loader2 size={22} className="text-pulse-700 animate-spin" />
                 <p className="text-[13px] uppercase tracking-wider text-text-muted">Adding hero image...</p>
               </div>
             )}
@@ -132,11 +132,11 @@ export function DeployPostSlot({ slot, index, isPillar, onViewPost }: DeployPost
                 <p className="text-sm text-text-primary font-medium truncate">{topic.title}</p>
               </div>
               {status === "generating" ? (
-                <Loader2 size={16} className="text-brass-700 animate-spin shrink-0" />
+                <Loader2 size={16} className="text-pulse-700 animate-spin shrink-0" />
               ) : status === "queued" ? (
                 <FileText size={16} className="text-text-muted/50 shrink-0" />
               ) : (
-                <Sparkles size={16} className="text-brass-700 shrink-0" />
+                <Sparkles size={16} className="text-pulse-700 shrink-0" />
               )}
             </div>
 
@@ -156,7 +156,7 @@ export function DeployPostSlot({ slot, index, isPillar, onViewPost }: DeployPost
               </p>
             )}
             {status === "error" && (
-              <p className="text-xs text-[var(--bb-danger)]/90 mt-auto">{slot.error ?? "Generation failed"}</p>
+              <p className="text-xs text-[var(--np-danger)]/90 mt-auto">{slot.error ?? "Generation failed"}</p>
             )}
           </motion.div>
         )}
@@ -178,7 +178,7 @@ export function DeployPostGrid({ slots, onViewPost }: DeployPostGridProps) {
   return (
     <div className="flex min-w-0 max-w-full flex-col gap-4 overflow-x-clip">
       <div className="flex min-w-0 items-center justify-between gap-3">
-        <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
+        <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-pulse-700">
           Content pipeline
         </p>
         <p className="shrink-0 text-xs tabular-nums text-text-muted">

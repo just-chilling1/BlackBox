@@ -90,7 +90,7 @@ export function ConfirmDialog({
             disabled={loading}
             className={
               destructive
-                ? "inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--bb-danger)] bg-[var(--bb-danger)] px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 sm:w-auto"
+                ? "inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--np-danger)] bg-[var(--np-danger)] px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 sm:w-auto"
                 : "btn-primary w-full sm:w-auto disabled:opacity-50"
             }
           >

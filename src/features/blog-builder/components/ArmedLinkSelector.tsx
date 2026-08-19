@@ -116,7 +116,7 @@ export function ArmedLinkSelector({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-brass-700">
+        <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-pulse-700">
           Select links for this deploy
         </p>
         <p className="text-xs text-text-muted tabular-nums">
@@ -156,7 +156,7 @@ export function ArmedLinkSelector({
                     <span className="status-pill-gold text-[13px] py-0.5">Primary CTA</span>
                   )}
                   {isSelected && !isValidAffiliateUrl(link.url) && (
-                    <span className="text-[13px] uppercase tracking-wider text-brass-700">
+                    <span className="text-[13px] uppercase tracking-wider text-pulse-700">
                       Needs valid URL
                     </span>
                   )}
@@ -179,10 +179,10 @@ export function ArmedLinkSelector({
                 value={link.url}
                 onChange={(e) => update(i, "url", e.target.value)}
                 onBlur={() => normalizeAt(i)}
-                className={`input-base w-full ${ urlInvalid ? "border-[var(--bb-line-brass)] focus:border-brass-700" : "" }`}
+                className={`input-base w-full ${ urlInvalid ? "border-[var(--np-line-pulse)] focus:border-pulse-700" : "" }`}
               />
               {urlInvalid && (
-                <p className="text-xs text-brass-700">
+                <p className="text-xs text-pulse-700">
                   URL must start with https:// — we&apos;ll try to fix small typos when you leave the
                   field.
                 </p>
@@ -191,7 +191,7 @@ export function ArmedLinkSelector({
                 <button
                   type="button"
                   onClick={() => remove(i)}
-                  className="text-xs text-[var(--bb-danger)]/80 self-start hover:text-[var(--bb-danger)]"
+                  className="text-xs text-[var(--np-danger)]/80 self-start hover:text-[var(--np-danger)]"
                 >
                   Remove link
                 </button>
@@ -204,7 +204,7 @@ export function ArmedLinkSelector({
       <button
         type="button"
         onClick={add}
-        className="inline-flex items-center gap-2 text-sm text-brass-700 font-medium self-start hover:underline"
+        className="inline-flex items-center gap-2 text-sm text-pulse-700 font-medium self-start hover:underline"
       >
         <Plus size={16} />
         Add another product link

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function Page() {
-  redirect("/sales-offer-generator");
+  redirect("/activate");
 }

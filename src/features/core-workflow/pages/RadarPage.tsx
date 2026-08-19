@@ -17,8 +17,8 @@ function PlatformBadge({ platform }: { platform: string }) {
         <span className={clsx(
             "text-[13px] font-medium uppercase tracking-widest px-2 py-0.5 rounded border inline-flex items-center gap-1",
             isReddit
-                ? "text-[var(--bb-warning)] border-[var(--bb-warning)]/20 bg-[var(--bb-warning)]/10"
-                : "text-[var(--bb-danger)] border-[var(--bb-danger)]/20 bg-[var(--bb-danger)]/10"
+                ? "text-[var(--np-warning)] border-[var(--np-warning)]/20 bg-[var(--np-warning)]/10"
+                : "text-[var(--np-danger)] border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10"
         )}>
             {platform}
         </span>
@@ -64,14 +64,14 @@ function AdCard({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1 text-[13px] text-text-muted hover:text-brass-700 transition-colors"
+                        className="flex items-center gap-1 text-[13px] text-text-muted hover:text-pulse-700 transition-colors"
                     >
                         <ExternalLink size={10} />
                         <span>View original</span>
                     </a>
                     <span className={clsx(
                         "text-[13px] font-medium uppercase tracking-widest",
-                        isSelected ? "text-brass-700" : "text-text-muted"
+                        isSelected ? "text-pulse-700" : "text-text-muted"
                     )}>
                         {isSelected ? "✓ Selected" : "Click to select"}
                     </span>
@@ -154,8 +154,8 @@ export default function RadarPage() {
             {/* Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brass-100 border border-[var(--bb-line-brass)] flex items-center justify-center rounded-lg">
-                        <Radar size={20} className="text-brass-700" />
+                    <div className="w-10 h-10 bg-pulse-100 border border-[var(--np-line-pulse)] flex items-center justify-center rounded-lg">
+                        <Radar size={20} className="text-pulse-700" />
                     </div>
                     <div>
                         <h1 className="text-2xl text-text-primary font-medium tracking-tight">Step 3: Find Ads</h1>
@@ -168,7 +168,7 @@ export default function RadarPage() {
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col items-end px-3 border-r border-border-dim/30">
                         <span className="text-[13px] font-medium text-text-muted uppercase tracking-widest">Selected</span>
-                        <span className="text-lg font-medium text-brass-700 tabular-nums">{selectedAds.length}</span>
+                        <span className="text-lg font-medium text-pulse-700 tabular-nums">{selectedAds.length}</span>
                     </div>
                     <button
                         onClick={() => router.push("/replies")}
@@ -232,14 +232,14 @@ export default function RadarPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border-dim/20">
                 <button
                     onClick={() => router.push("/analysis")}
-                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-brass-700 transition-colors"
+                    className="flex items-center gap-2 text-[13px] font-medium text-text-muted hover:text-pulse-700 transition-colors"
                 >
                     <ArrowLeft size={14} />
                     <span>Back to Step 2</span>
                 </button>
                 {selectedAds.length > 0 && (
                     <p className="text-[13px] text-text-muted">
-                        <strong className="text-brass-700">{selectedAds.length}</strong> ad{selectedAds.length !== 1 ? "s" : ""} ready for replies
+                        <strong className="text-pulse-700">{selectedAds.length}</strong> ad{selectedAds.length !== 1 ? "s" : ""} ready for replies
                     </p>
                 )}
             </div>
