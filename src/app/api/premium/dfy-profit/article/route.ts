@@ -4,6 +4,7 @@ import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import { loadOwnedSite } from "@/features/blog-builder/lib/generation-pipeline";
 import { generateAuthorityArticleForSite } from "@/features/dfy-profit/lib/generate-authority-article";
+import { saveGeneratedAuthorityArticle } from "@/features/premium-recurring/lib/recurring-articles-vault";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -43,8 +44,17 @@ export async function POST(request: Request) {
       productContext,
     });
 
+    const saved = await saveGeneratedAuthorityArticle(
+      supabase,
+      user.id,
+      siteId,
+      result.title,
+      result.html
+    );
+
     return NextResponse.json(
       {
+        id: saved.id,
         title: result.title,
         html: result.html,
         excerpt: result.excerpt,

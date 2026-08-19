@@ -17,8 +17,8 @@ export interface GenerateAuthorityArticleResult {
 }
 
 /**
- * Generate a single copyable authority-tier article for a DFY Profit site.
- * It is intentionally not persisted or published as a public post.
+ * Generate a single authority-tier article for a DFY Profit site.
+ * Saved to the offer library; not published as a public site post.
  */
 export async function generateAuthorityArticleForSite(
   params: GenerateAuthorityArticleParams

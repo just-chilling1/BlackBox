@@ -1,89 +1,57 @@
-[calm] Before you touch Sales Offer Generator, I want to hand you something the training assumes you already have: the map.
+[calm] Before you touch the first tool, I want to hand you something the Academy assumes you already have: the map. In the next ten minutes I'm going to show you exactly how money moves through this whole system, where BlackBox Cash fits, and what every strange word you're about to meet actually means — in plain language, assuming you know nothing, because that's the only honest way to do it. People who watch this see the walkthroughs later and go, "ah, obviously." People who skip it see the same screens and go, "wait, what?" Ten minutes now saves you ten hours of confusion later.
 
-In this video I'm gonna show you exactly how money moves through affiliate marketing, where BlackBox Cash fits, and what every strange word you're about to see actually means — in plain language, assuming you know nothing, because that's the only honest way to do it.
+[confident] Here's the whole business in one sentence: companies sell products online, they pay partners a cut for each buyer those partners send, and you become that partner by sharing a unique web address that proves the buyer came from you. That's it. That's the machine. Picture a mall. Shop owners already made the jackets. Your job is not to become a designer from scratch. Your job is to be the fitting-room attendant — the person who asks a shopper a few honest questions, hands them the jacket that fits, and gets paid a cut when they buy it at the register. Everything else is details about that mall, that fitting room, and how to be the attendant whose recommendation gets trusted. Hold that picture.
 
-People who watch this see the Academy and go "ah, obviously." People who skip it stare at **Pick Your Niche** and wonder why any of it matters. Ten minutes now saves you ten hours of confusion later.
+[thoughtful] Let's walk it for real. Who's paying? The vendor. They made the product. They want customers without hiring a whole marketing team, so they list it in a big online mall of digital goods — courses, software, health programs — with a "promote this" button. You take that button and the mall gives you a unique web address. That's your cashier barcode. When someone buys after using it, the mall knows it was you, and the vendor pays you a cut. You don't hold the card. You don't ship anything. The mall tracks the click, takes payment, and pays the cut. That's why strangers can work with strangers.
 
-[confident] Here's the whole business in one sentence: companies sell products online, they pay partners a commission for each buyer sent their way, and you become that partner by sharing a special tracking link. That's it. That's the machine.
+Why pay a stranger? Because a vendor would rather pay you after a sale than pay a giant ad bill before one. Why would a shopper follow you instead of wandering alone? Because your fitting room does the matching. A short quiz asks what they're struggling with. At the end it recommends one product. Your posts are the hallway into that room. You are not shouting "buy this" at a bus stop. You are helping someone name the problem, then handing them the jacket. Vendors pay for that because it sells more than a cold storefront in the dark.
 
-Easiest way to picture it? A giant bulletin board in a town square. Shop owners pin up notes — "need customers for my fitness program, will pay fifty dollars per sale" — and promoters walk the board, pick notes that match what they talk about, and send people through their door. Everything else is details about the board, the notes, and how to get clicks.
+You do not have to invent demand. People are already shopping. Products are already selling. Money is already moving, whether you show up or not. Your only job at the start is building a clean fitting room and walking people to the door. Hold that thought. It's exactly where BlackBox Cash comes in... and exactly where beginners quit.
 
-[thoughtful] So who's paying whom — and why would strangers trust you?
+[serious] Nobody tells beginners this. The opportunity was never the hard part. The hard part is everything before a stranger sees you. Building a page. Writing quiz questions that don't feel random. Writing a ten-post story that doesn't sound like a midnight ad. Done by hand, that's hours of unpaid labor — and it's where most people stall with a link in a notes app and a page that never launches. That's the weakest link. That's the link BlackBox Cash replaces.
 
-Vendors — often on platforms like **Digistore24** — list products with affiliate programs. They want reach without hiring a full marketing team. You want income without creating your own product from scratch. The platform sits in the middle: it tracks who clicked your link, processes checkout, and pays your **commission** when a sale completes.
+You paste the unique web address that credits you. You pick the topic aisle. You pick a look. You press launch. The software writes the quiz, builds the pages, and puts YOUR address on the final recommendation. Then it writes the hallway: a connected story in ten posts you can copy. You still publish those yourself, on your own accounts. You still pick the product. You still send people. You didn't buy a register that prints money while you nap. You bought the assistant who builds the fitting room and drafts the hallway, so you show up for the part that needs a human: putting it in front of people.
 
-Strangers already searching for solutions — lose weight, make money, learn a skill. Your questionnaire site or social post meets them where they are. Why they'd buy through YOU: because your page or thread made the offer feel relevant right now.
+And when you hit launch, you'll wait a few minutes. Setup, then Build, then Launch. Messages like "writing quiz questions and building pages." That's the unpaid hours, happening without you. [warmly] Oh — and that gold banner under the progress bar? That's Free Training. It's where we show you how to scale this to one thousand... even five thousand dollars a day. Warning: this will be taken down soon. Click it and lock your spot while the build finishes. Then come back. The page will still be writing itself.
 
-You might wonder: "Why wouldn't they just buy from the vendor's main site?" Because your quiz, story, or post did the work of matching them to the offer — you bridged the gap between their problem and the product. That's the service affiliates provide, and vendors pay for it.
+[calm] Next, the local language. Ten words that sound intimidating and mean simple things. No leftover mystery.
 
-Notice what that means: you don't have to invent demand from thin air. Products already sell every day. Your job — the only competition that matters early on — is building a clean offer and putting it in front of the right eyes.
+First: affiliate link. Your unique web address that credits you when someone buys. Think of a cashier barcode on a product. Why you care: no affiliate link, no credit, no payday.
 
-Hold that thought. It's exactly where BlackBox Cash comes in.
+Next: Digistore24. A popular online mall of digital products where you grab those affiliate links. Think of a mall directory with a "promote this" button on each stall. Why you care: easiest starter source for a real affiliate link if you don't have one yet.
 
-[excited] Here's the part nobody tells beginners.
+Next: niche. The topic aisle your quiz and posts stay inside. Think of one grocery aisle, not the whole store. Why you care: if the aisle doesn't match the product, the quiz feels random, and random doesn't get trusted.
 
-The promotion concept isn't the hard part — you either have an audience or you'll build one. The hard part is everything BEFORE traffic: building a credible page, writing a quiz funnel, drafting a ten-post X thread, making five Facebook variants… done by hand, that's hours per offer, and most people quit before they publish once.
+Next: Sales Offer Generator. The four-step wizard that launches the quiz site with your affiliate link on the final page. Think of an instant storefront builder. The steps across the top are Add Your Link, Pick Your Niche, Choose a Template, Launch Your Offer. Why you care: this is the core first win. Everything else sends people here.
 
-That's the link BlackBox Cash replaces.
+Next: questionnaire site. A short quiz page that ends by recommending your offer. Think of the fitting-room attendant asking questions, then handing you a jacket. Why you care: this is the sales page BlackBox Cash actually builds.
 
-You paste your **affiliate link** in Step 1. You pick a **niche** and template. You hit **Launch My Questionnaire Site**. The AI writes quiz questions, assembles pages, and places YOUR link on the final results page — while you watch the progress bar. Then X-Power Promotions turns that offer into a story thread. Social Payouts — if you upgraded — spits out bulk Facebook posts. You didn't buy magic money. You bought the tireless assistant that does the setup everyone else stalls on.
+Next: Links Library. Saved affiliate links with names you'll recognize later. Think of a password manager, but for money links. Why you care: paste once, reuse everywhere.
 
-And every time the software is working for you — building pages, generating threads — you'll see a gold **Free Training** banner on screen. That's not decoration. That's the next level of this exact machine: how to scale to one thousand — even five thousand dollars a day without stacking more grind on your plate. Register while it loads
+Next: Offers Library. Every live offer you launched — every questionnaire site with its shareable address. Think of a filing cabinet for storefronts. Why you care: threads and posts attach here. This is the cabinet you open when you sit down to work.
 
-[warmly] Next — the local language. Eight words that sound intimidating and mean simple things. Sixty seconds each.
+Next: X story thread. Ten connected posts that tell one product story and end in one ask. Think of a comic strip pointing at one door. Why you care: it's the hallway to your fitting room.
 
-**Affiliate link.** Your personal tracking URL for one product. Think of a referral code on a receipt — the store knows you sent the customer. Why you care: no link, no credit, no commission.
+Next: commission. Your cut when a referred buyer purchases. Think of a tip jar that only opens when they pay. Why you care: clicks are not money. The quiz is not money. The buy is money, and the commission is your slice.
 
-**Commission.** Your cut when someone buys through your link. Like a waiter's tip — a slice of the sale the vendor agreed to pay. Why you care: that's the number that hits your account.
+Last: Premium Features. The paid upgrades under that name in the sidebar. Think of power tools in the garage. Why you care: speed and volume after the first offer. You don't need them for tonight's first win.
 
-**Niche.** The topic you speak to — health, finance, fitness, and so on. One aisle in a supermarket you decide to own. Why you care: BlackBox Cash asks you to **Pick Your Niche** so the quiz and copy match the buyers you want.
+[warmly] Now watch every one of those words work in a single loop. Meet Maya. Tuesday morning. She goes to Digistore24, finds a wellness product she can talk about, and copies her affiliate link. She opens Links Library, names it something human — not "link two" — and saves it. Then Sales Offer Generator. She uses that saved affiliate link. She picks Health and Wellness as the niche, because that's the matching aisle. She chooses a template that looks clean on a phone. She clicks Launch Your Offer.
 
-**Digistore24.** A marketplace where vendors list products and affiliates grab links. Like a mall directory with pay-per-sale stores. Why you care: Step 1 in Sales Offer Generator walks you through getting a link there.
+The questionnaire site goes live. Maya opens Offers Library — her storefront, her affiliate link on the final page. She takes her own quiz and confirms the last button is HER affiliate link. Then she generates an X story thread for that offer. Ten posts. One door. She copies them and publishes them herself, a minute or two apart.
 
-**Questionnaire site.** An interactive quiz that ends recommending your offer — built automatically in Step 4. Like a magazine quiz that points to one product at the end. Why you care: that's the hosted page you'll send traffic to.
+Someone reads the thread, clicks, lands on Maya's questionnaire site, finishes the quiz, and buys. Digistore24 records her affiliate link. The vendor pays Maya a commission. That's one loop. She didn't write the quiz or the thread from a blank box. She ran the machine. Premium Features sit in the sidebar for later — Done-For-You Profit, Automated Profits, Unlimited, the rest. Not tonight. Tonight is the fitting room plus the hallway.
 
-**Offer.** Your live questionnaire site plus its settings — stored in **Offers Library** after launch. Your storefront in the app. Why you care: every promotion tool points back to an offer.
+[thoughtful] Three doubts. Let's name them.
 
-**X story thread.** A chain of connected posts on X that tell one story across ten posts. Like ten billboards along the same road leading to one exit. Why you care: X-Power Promotions generates this from your offer in one click.
+Does this vehicle even work? Vendors would not keep paying commissions if referred buyers didn't buy. Digistore24 exists because products already sell there. You're not creating a marketplace. You're putting a fitting room in a mall that's already open.
 
-**Conversion.** When a visitor actually buys. The register ringing. Why you care: commissions only happen after conversion — everything else is practice.
+Can someone like me do it? If you can paste a link, pick an aisle, choose a look, and copy a post... you can run the core loop. The writer-and-designer Saturday is what the Sales Offer Generator and the thread builder now do. The Academy assumes zero. You need one live questionnaire site and a hallway in front of it. Not an audience of thousands.
 
-Two more you'll see in the app: **Links Library** — saved affiliate URLs so you never retype them. **Offers Library** — every questionnaire site you launched, ready for threads and posts. Think of Links Library as your wallet of tracking codes and Offers Library as your shelf of live storefronts.
+Do my circumstances allow it? This runs beside a job and a life. Internet, an affiliate link, launch then post. A first offer can happen in one sitting. Short bursts of posting are enough. The first quiet week while traffic finds you is normal — not a verdict.
 
-[calm] Let's watch it happen once, start to finish. Meet Jordan.
+[serious] Honest math on one sale. Not a highlight reel. A vendor sets a commission — a percentage of the price. That percentage is theirs. It changes by product. I will not invent a dollar amount and pretend that's yours. Here's the shape. Someone buys. They pay the vendor. The mall processes checkout. You receive the commission on your affiliate link. One sale is one cut. Two are two. Ten are ten. No mystery layer. And no version where the page earns while you do nothing — you still paste, launch, copy, and publish. Results depend on your effort, your traffic, and the products you choose. Nothing here is a promise of income. Small units that stack only if you run the loop. That's a real promotion business at the start. Quiet first. Then repetition.
 
-Tuesday morning. Jordan pasted a Digistore24 **affiliate link** into BlackBox Cash and saved it to **Links Library**. Picked **Health & Wellness** as the **niche**, chose a template, and clicked **Launch My Questionnaire Site**. While the bar said "Writing quiz questions and building pages," the **Free Training** banner sat on screen — Jordan registered, then let the build finish.
+[warmly] How to use the training. Finish these Dashboard videos in order. You're on How The Money Flows. Next is Your 5-Minute Tour. Then Academy: Sales Offer Generator — launch while it plays — then X-Power Promotions, then Links and Offers Library. One video, do the thing it teaches, then the next. Premium walkthroughs wait until you have one live offer. Stuck? Support in the sidebar. Usually about two hours. Give them twenty-four to forty-eight on a busy day.
 
-The **offer** went live in **Offers Library**. Jordan opened **X-Power Promotions**, selected that offer, and hit **Generate story thread**. Ten posts appeared — hook, story, proof, call to action — each pointing to the questionnaire site.
-
-Someone on X reads the thread, clicks through, completes the quiz, buys on the final page through Jordan's **affiliate link**. Digistore24 records the **conversion** and pays Jordan's **commission**. Total time Jordan spent writing the funnel from scratch: zero minutes. That's one loop of the machine.
-
-The Academy teaches you to run that loop again and again, a little sharper each time.
-
-[thoughtful] I know three doubts are sitting in the back of your head. Let's name them.
-
-"Does this vehicle really work?" — Affiliate marketing isn't new. Billions in digital sales run through affiliate links every year. Vendors wouldn't pay commissions if it didn't move product. Your edge is speed — BlackBox Cash lets you test offers faster than building everything manually.
-
-"Can I do it?" — You don't need to be a developer. If you can paste a link, pick a niche from nine options, and copy a social thread, you can run the core loop. The software removed the parts that required design skills and copywriting stamina.
-
-"Do my circumstances allow it?" — This is built to run alongside a job or a busy life. You can launch an offer in one sitting and promote in short bursts. You need internet, an affiliate link, and consistency — not eight empty hours a day.
-
-And if you're thinking "I'm not a salesperson" — good. Most affiliates aren't hawking on street corners. They're sharing useful pages and stories online. BlackBox Cash writes the structure; you choose niches you don't hate talking about.
-
-[serious] Honest math on one small sale — not a highlight reel, just one sale.
-
-Say a digital product pays you fifty dollars commission — common on Digistore24-style offers, though yours may differ. One **conversion** = fifty dollars. Ten conversions with the same traffic pattern = five hundred dollars. The math isn't mysterious — it's multiplication.
-
-Results depend entirely on your effort, your offer, and your traffic. Nothing here promises income. But notice: small, understandable numbers stack when you run the loop consistently. That's what a real promotion business looks like at the start.
-
-[warmly] How to use the training from here.
-
-Watch the three Dashboard videos in order — you're on number two now. Then go Academy: start with the Sales Offer Generator walkthrough, then X-Power Promotions, then Links and Offers Library. One video, then do the thing it teaches, then the next. Implementation between modules is the whole method.
-
-Premium tutorials — Accelerator, Recurring Stream, Social Payouts, Protector — are there when you're ready to scale. No rush tonight.
-
-[confident] If you already clicked through to the free training after video one — perfect. If not, do it when you see that banner during your first launch.
-
-Then open **Sales Offer Generator**. Paste your affiliate link. Click **Save to Links Library**. You'll see the link armed and ready — that's your first proof the machine is real.
-
-You now know more about how this works than most people who've been "trying affiliate marketing" for a year. Welcome to the board. Head to video three for the five-minute tour — then let's go get your first offer live.
+[confident] If you already launched a questionnaire site — good. Open Offers Library and look again: a fitting room, your affiliate link on the last page. If you haven't, that's the move. Open Sales Offer Generator. Paste a real affiliate link. Save it to Links Library. Pick a niche. Choose a template. Click Launch My Questionnaire Site. Wait through Setup, Build, Launch. Take your own quiz. Confirm the final button is YOUR link. That is the first win. That's the moment you stop being a buyer of software and start being a person with a live offer. Welcome to the mall. Go build the fitting room.

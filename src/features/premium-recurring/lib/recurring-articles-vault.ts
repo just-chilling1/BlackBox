@@ -4,7 +4,7 @@ import { countRowsBySiteIds } from "@/lib/site-counts";
 export interface SavedRecurringArticle {
   id: string;
   site_id: string;
-  template_id: number;
+  template_id: number | null;
   title: string;
   html: string;
   created_at: string;
@@ -46,6 +46,30 @@ export async function saveRecurringArticle(
       },
       { onConflict: "user_id,site_id,template_id" }
     )
+    .select("id, site_id, template_id, title, html, created_at")
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data as SavedRecurringArticle;
+}
+
+/** Persist a generated (non-template) authority article on an offer. */
+export async function saveGeneratedAuthorityArticle(
+  supabase: SupabaseClient,
+  userId: string,
+  siteId: string,
+  title: string,
+  html: string
+): Promise<SavedRecurringArticle> {
+  const { data, error } = await supabase
+    .from("site_recurring_articles")
+    .insert({
+      user_id: userId,
+      site_id: siteId,
+      template_id: null,
+      title,
+      html,
+    })
     .select("id, site_id, template_id, title, html, created_at")
     .single();
 

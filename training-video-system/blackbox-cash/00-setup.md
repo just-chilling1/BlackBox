@@ -1,8 +1,10 @@
 # BlackBox Cash — Phase 1 Setup
 
-Product slug: `blackbox-cash`  
-Repo mined: `c:\Users\gt\Desktop\test` (branch `main`, ff-only pull clean as of 2026-07-31)  
-Output folder (local): `training-video-system/blackbox-cash/` — canonical path `/Volumes/Transcend/Local Disk/Andrew/training-video-system/blackbox-cash/` not present on this machine.
+**Repo:** `c:\Users\user\Desktop\blackboxcash`  
+**Branch:** `main` @ `957062c` (ff-only pull: already up to date)  
+**Framework:** Next.js (App Router) + Supabase auth  
+**Auth bypass:** `DEV_BYPASS_AUTH=true` in `.env.local` (middleware skips auth + onboarding). *No `.env.local` present at Phase 1 start — live audit blocked until env is configured.*  
+**Funnel HTML:** none provided — money claims mined from in-app banners / dashboard bonus ad / support refund policy.
 
 ---
 
@@ -10,215 +12,234 @@ Output folder (local): `training-video-system/blackbox-cash/` — canonical path
 
 | Field | Value |
 |---|---|
-| **Product name + promise** | **BlackBox Cash** — "Affiliate Sales & Promotions." Tagline from metadata: generate sales offers, promotion threads, and affiliate assets in one workspace. |
-| **Price paid** | Not stored in repo — buyer paid whatever the live checkout charged at purchase. Scripts refer to "what you invested" without inventing a dollar figure. |
-| **Dream customer** | Beginner-to-intermediate side-hustler who wants online income via affiliate marketing — has or can get a Digistore24 (or similar) affiliate link, limited tech/time, motivated by dashboard copy ($1k–$5k/day scale language). |
-| **Point A** | Watching make-money content, maybe bought courses before, never built a repeatable promotion system; overwhelmed by "create a funnel, write posts, build a site." |
-| **Point B** | Hosted sales offer live, affiliate link embedded, X story thread and Facebook post variants ready to copy-paste, libraries storing links and offers for reuse — promoting without rebuilding from scratch each time. |
-| **Vehicle** | Affiliate marketing: promote other people's products (Digistore24 marketplace) and earn commission on sales through your unique link. |
-| **Mechanism** | BlackBox Cash AI-builds niche questionnaire sales sites, arms them with the user's affiliate URL, generates X threads and bulk social posts, and stores everything in Links Library and Offers Library. Premium modules add 200 cloned templates, 100 authority articles, 10X Facebook variants, and security/trust UI. |
-| **Unfair advantage** | Collapses days of copywriting, page building, and thread drafting into guided steps + one-click generation — user only supplies the affiliate link and picks niche/template. |
-| **Core loop** | Paste affiliate link → pick niche → choose template → launch questionnaire site → offer lands in Offers Library → generate X-Power Promotions thread → (optional) Social Payouts / Accelerator / Recurring Stream for scale → reuse Links Library for next offer. |
-| **First win (in-app, Disconnect close)** | Complete Sales Offer Generator Step 1: paste a valid affiliate URL and click **Save to Links Library** — link appears armed for the wizard. Stronger win: finish Step 4 **Launch My Questionnaire Site** and see the live offer in **Offers Library**. |
-| **Proof inventory** | No verified member testimonials in repo. FAQ and product copy only. Scripts use founder-voice proof, not invented user results. |
-| **Guarantee** | **30-Day Guarantee** — full refund within 30 days, no questions asked (support.config.ts). Processing 5–7 business days. |
-| **Effort truth** | User must obtain affiliate links, choose niches, launch offers, and manually post/copy promotion content to X and Facebook. First deploy takes several minutes of AI generation; promotion is ongoing. No price or typical earnings data in repo beyond marketing banners. |
+| **Product name** | BlackBox Cash |
+| **Tagline** | Affiliate Sales & Promotions |
+| **Promise** | Build sales offers (niche questionnaire sites), publish promotions (X threads / social posts), and manage affiliate assets so visitors take a quiz → hit your affiliate offer → you earn commission. |
+| **Price** | Not in repo (no funnel HTML). Do not invent. |
+| **Dream customer** | Beginner affiliate marketer who wants Digistore24 (or similar) commissions without writing sales pages or promotion threads by hand. |
+| **Point A → Point B** | A: “I have (or can get) an affiliate link but no page and no content.” → B: live questionnaire offer + promotion threads/posts sending traffic, with libraries keeping links/offers organized. |
+| **Vehicle** | Affiliate marketing via hosted questionnaire sales pages + social promotion (X / Facebook) + traffic sources. |
+| **Mechanism** | AI builds niche quiz sites with your link on the final page; AI builds 10-post X story threads and FB post variants; premium tools clone pre-made pages/articles or give traffic checklists. |
+| **Unfair advantage** | One-click launch of questionnaire sites + ready-to-copy promotion kits tied to Offers Library — weakest link (writing + design + packaging) automated. |
+| **Core loop** | Save affiliate link → Sales Offer Generator (4 steps) → live offer → promote (X-Power / Instant Income / Unlimited / etc.) → visitor quiz → affiliate click → commission. |
+| **First win** | Launch one live questionnaire site via Sales Offer Generator (`Launch My Questionnaire Site`) and confirm the offer page opens your affiliate link. |
+| **Proof** | No member testimonials in repo. Use founder/system framing only; do not invent results. |
+| **Guarantee** | 30-Day Guarantee (Support refund policy): full refund within 30 days, no questions asked. |
+| **Effort truth** | Member still pastes links, launches, copies posts, and publishes by hand on their own accounts. First quiet week while traffic builds is normal. |
 
 ---
 
-## 1.2 Branding map
+## 1.2 Branding map (old / internal → current UI)
 
-| Old / internal / stale | Current user-facing name |
+| Old / internal / route-only | Current user-facing name |
 |---|---|
-| Site Builder (breadcrumb) | **Sales Offer Generator** (sidebar) |
-| Training (page title in training.config) | **Academy** (sidebar nav) |
-| Recurring Wealth Stream (FAQ wording) | **Recurring Stream** (sidebar) |
-| Wealth Protector (Protector page card title) | **Protector** (sidebar / page title) |
-| blog-builder / article-publish (code ids) | Never spoken — use feature names above |
-| core-workflow steps (Search, Radar, etc.) | **Not enabled** in this build — do not reference |
-| "Multiply Your Results" (disabled global-top promo) | Use live **EarningsBanner** / **DashboardBonusAdCard** copy instead |
-| Skeleton placeholder video titles in training.config | Use **dashboard.config.ts** video track titles |
+| blog-builder / site builder | Sales Offer Generator |
+| Link Vault / `/link-vault` | Links Library |
+| Offer Vault | Offers Library |
+| Promote / Publish Kit | X-Power Promotions |
+| Charge HQ / Home (eyebrow only) | Dashboard (nav) / Home (page eyebrow) |
+| Training (nav was sometimes Training) | Academy (nav) · page title still **Training** |
+| premium-accelerator | Unlimited |
+| premium-recurring | Guaranteed High-Ticket Payouts |
+| premium-social / premium-10x | Instant Income |
+| premium-dfy-profit | Done-For-You Profit |
+| premium-autopilot | Automated Profits |
+| protector | Cyber Protection |
+| premium-license-rights | Reseller & License Rights (nav) · page title **Full Turnkey Reseller & License Rights Edition** |
+| Instant Income (video title “Automated Income”) | Page title **Automated Profits**; video title on page: “How to Use Automated Income” |
+
+Scripts use ONLY the current user-facing column.
 
 ---
 
 ## 1.3 UI inventory (exact labels)
 
-### Sidebar / nav (enabled features only)
-- **Dashboard**
-- **Sales Offer Generator**
-- Generate section label: **Generate**
-  - **X-Power Promotions**
-- Libraries section label: **Libraries**
-  - **Links Library**
-  - **Offers Library**
-- **Academy**
-- Premium section label: **Premium Features**
-  - **Accelerator**
-  - **Recurring Stream**
-  - **Social Payouts**
-  - **Protector**
-- **Support**
-- Exclusive Offers block: **disabled** (`exclusiveOffersEnabled = false`) — do not script sidebar Exclusive Offers for this build.
+### Sidebar (top → bottom)
+- Dashboard
+- **Generate:** Sales Offer Generator · X-Power Promotions
+- **Libraries:** Links Library · Offers Library
+- Academy
+- **Premium Features:** Done-For-You Profit · Automated Profits · Unlimited · Guaranteed High-Ticket Payouts · Instant Income · Cyber Protection · Reseller & License Rights
+- **Exclusive Offers:** Earn $400/Day Testing New Apps · Get Paid To Copy & Paste · Fast Cash Training
+- Support
 
 ### Dashboard (Home)
-- Eyebrow: **Home**
-- Title pattern: **Welcome to BlackBox Cash**, {firstName}
-- Subtitle (blog-builder enabled): watch three videos, then **Sales Offer Generator**; **Academy** for deeper walkthrough.
-- Section: **Start Here**
-- Videos (in order):
-  1. **Watch This First**
-  2. **How The Money Flows**
-  3. **Your 5-Minute Tour**
-- Between videos 1–2 and 2–3: **DashboardBonusAdCard** (free-training upsell)
-- CTAs below video track:
-  - **Get Started Now with Sales Offer Generator**
-  - **Know More from the Academy**
-- Sidebar widgets: **Contact Support**, tips, **Premium Features**
+- Eyebrow: Home · Title: Welcome to BlackBox Cash
+- Subtitle: Watch the three videos below in order — then jump into the Sales Offer Generator and start building. The Academy is there whenever you want a deeper walkthrough.
+- **Start Here** — 3 videos interleaved with bonus ads:
+  1. Watch This First
+  2. *(bonus ad)*
+  3. How The Money Flows
+  4. *(bonus ad)*
+  5. Your 5-Minute Tour
+- CTAs: Get Started Now with Sales Offer Generator · Know More from the Academy
+- Right rail: Contact Support · Tip · Premium Features (“Unlock the tools that drive the biggest results.”)
 
-### Sales Offer Generator wizard
-| Step | Eyebrow | Title | Key buttons |
-|---|---|---|---|
-| 1 | Step 1 / Sales Offer Generator | **Add Your Link** | **Save to Links Library**, continue |
-| 2 | Step 2 | **Pick Your Niche** | niche grid, continue |
-| 3 | Step 3 | **Choose a Template** | template/theme pickers |
-| 4 | Step 4 | **Launch Your Offer** / **Launch Your Questionnaire Site** | **Launch My Questionnaire Site**, **Try Deploy Again**, **Continue Deployment** |
+### Core pages — key buttons
+| Page | Key CTAs |
+|---|---|
+| Sales Offer Generator | Save to Links Library · Continue to Niche · Continue to Template · Continue with {Template} · Launch My Questionnaire Site · Try Deploy Again · Check questionnaire page · Check offer page · Generate Another Site · View offers library |
+| X-Power Promotions | Generate story thread / Generate new story thread · Copy all · Copy post · Suggest for X |
+| Links Library | Create New Link · Create Link · Edit · Delete Link |
+| Offers Library | View offer · Copy URL · Start Sales Offer Generator |
 
-Nine niches: Health & Wellness, Finance & Investing, Fitness & Sports, Digital Marketing, Self-Help & Personal Development, Beauty & Skincare, Education & Learning, Business & Entrepreneurship, Travel & Lifestyle.
+### Niches (9, shared)
+Health & Wellness · Finance & Investing · Fitness & Sports · Digital Marketing · Self-Help & Personal Development · Beauty & Skincare · Education & Learning · Business & Entrepreneurship · Travel & Lifestyle
 
-### X-Power Promotions
-- Eyebrow: **X-Power Promotions**
-- Title: **Generate X story thread**
-- **Select offer**, **Generate story thread** (10-post thread)
-- Empty state: **Start Sales Offer Generator**
+### Templates (SOG)
+Editorial Sage · Conversion Pro · Minimal Clarity
 
-### Libraries
-- **Links Library** — stored affiliate URLs
-- **Offers Library** — generated sales pages; open offer, threads, promote
+### Academy platform tutorials (Training page)
+1. Sales Offer Generator  
+2. X-Power Promotions  
+3. Links & Offers Library  
 
-### Academy
-- Eyebrow: **Academy**
-- Page title: **Training** (header — nav still says Academy)
-- Subtitle: Video tutorials and frequently asked questions
-- Sections: **Platform Tutorials**, **Premium Feature Tutorials**
-
-### Premium pages
-| Route | Title | Subtitle (key phrase) |
-|---|---|---|
-| /accelerator | **Accelerator** | 200 pre-made sales pages + story threads |
-| /recurring-wealth | **Recurring Stream** | 100 long-form authority articles |
-| /social-payouts | **Social Payouts** | 10X bulk social posts |
-| /protector | **Protector** | account security overview |
-
-### Support
-- **Contact Support**, **Send message**
-- Success upsell: **Watch The Free Training >>**
-
-### Loading / generation states (EarningsBanner surfaces)
-
-| Location | Trigger | Progress copy (examples) |
-|---|---|---|
-| Sales Offer Generator Step 4 | Deploy | Phases: **Setup** / **Build** / **Launch** — "Writing quiz questions and building pages…", "Publishing your site to the web…" + prominent **EarningsBanner** |
-| X-Power Promotions | Thread generation | **GenerationProgress** label + prominent **EarningsBanner** |
-| Accelerator | Clone template | **GenerationProgress** + banner |
-| Social Payouts | Bulk generate | **GenerationProgress** + banner |
-| Recurring Stream | Save/preview actions | Loader states (no banner on all actions — banner on heavy generation if shown) |
+Premium Feature Tutorials listed on page: Unlimited · Guaranteed High-Ticket Payouts · Instant Income · Cyber Protection  
+*(DFY Profit, Automated Profits, Reseller still need Academy slots in config — scripts still required per upgrade.)*
 
 ---
 
-## 1.4 Free training — every offer surface
+## 1.4 Free-training offer surfaces
 
-| Surface | Verbatim copy (headline / CTA) | Destination | Where it appears |
-|---|---|---|---|
-| **DashboardBonusAdCard** | Body mentions "$1,000, $3,000, or even $5,000" and "wake up to an extra $1,000–$5,000 every single day." Highlight: "Ready to break free from financial stress…" CTA: **Yes! Show Me How To Earn $1,000–$5,000 A Day** | `trainingContent.externalTrainingUrl` (currently `https://example.com/training` — replace before launch) | Dashboard **between** dashboard videos 1–2 and 2–3 (NOT directly under video thumbnail) |
-| **EarningsBanner** (prominent) | Badge: **Free Training**. Headline: "Wake Up With An Extra **$1,000–$5,000** In Your Bank Account Tomorrow". Sub: "scale to $1,000–$5,000 every single day — without doing any extra work." CTA: **Watch The Free Training >>**. Warning: **Warning: This Will Be Taken Down Soon** | Same `externalTrainingUrl` | AI generation loaders (DeploySiteLoader, GenerationProgress) |
-| **EarningsBanner** (compact) | "Multiply Your Earnings To **$1,000 – $5,000** A Day". CTA: **Click Here To Learn How** | Same URL | Compact banner variant |
-| **Contact Support success** | "free training" / "$1,000–$5,000" / "scale to $1k–$5k per day". CTA: **Watch The Free Training >>**. Warning: "This may be taken down soon" | Same URL | After successful support message |
-| **Exclusive Offers** (disabled) | Would show Fast Cash Training etc. | — | **Not visible** in current build |
+| # | Component | Verbatim copy (key) | Destination | Where |
+|---|---|---|---|---|
+| A | DashboardBonusAdCard | Badge **Free member training** · CTA **Yes! Show Me How To Earn $1,000–$5,000 A Day** · urgency **Limited access — register while it's still available** | `https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea` | Home, between videos (×2) |
+| B | EarningsBanner prominent (GenerationTrainingAd) | Badge **Free Training** · headline **Wake Up With An Extra $1,000–$5,000 In Your Bank Account Tomorrow** · CTA **Watch The Free Training >>** · **Warning: This Will Be Taken Down Soon** | same perpetualincome URL | Under progress during SOG deploy, X-Power generate, Unlimited clone, Instant Income generate, DFY Profit generate, Recurring preview/save |
+| C | EarningsBanner compact | **Multiply Your Earnings To $1,000 – $5,000 A Day** · **Click Here To Learn How** | same | non-prominent uses |
+| D | Exclusive Offers → Fast Cash Training | title **Fast Cash Training** · subtitle Claim Now | Explodely URL (different offer — do NOT treat as same webinar as A/B) | Sidebar Exclusive Offers |
+| E | Contact Support success | free training upsell + **Watch The Free Training >>** | perpetualincome | After support send |
+| F | Video overlay withdraw ad | Account Verified / Withdraw Now | perpetualincome | After video play |
 
-**One-line spoken pitch (current banner language):**  
-"Register for the free training on scaling to one thousand — even five thousand dollars a day while your offer is building — spots are limited and the page comes down soon."
-
-**Scarcity on screen:** "Warning: This Will Be Taken Down Soon" / "This may be taken down soon"
-
-**Video 01 CTA placement:** Member finishes **Watch This First**, scrolls to the **bonus card directly below** (before **How The Money Flows**), clicks **Yes! Show Me How To Earn $1,000–$5,000 A Day**.
+**Spoken pitch (match CURRENT banner language):** scale / wake up to one thousand — even five thousand dollars a day.  
+**Scarcity:** “Warning: This Will Be Taken Down Soon” / “Limited access — register while it's still available”.  
+**Video 01 CTA path:** scroll the Home **Start Here** column to the gold **Free member training** card → click **Yes! Show Me How To Earn $1,000–$5,000 A Day**. Do NOT say “banner below this video” as if it were unique under video 1 only — ads sit between the three videos. Do NOT invent a yellow “Step 2: Bonus training” button (not in this build).
 
 ---
 
 ## 1.5 Free-training mention map
 
-| Video | File | Moment | Target |
-|---|---|---|---|
-| 01 Buyer's Remorse | 01-buyers-remorse.md | Beat 10 micro-action | Dashboard bonus card after video 1 |
-| 02 Disconnect | 02-disconnect.md | Software / generation beat | EarningsBanner during AI build |
-| 03 Quick Overview | 03-quick-overview.md | Close | Brief pointer to dashboard bonus card |
-| 04 Sales Offer Generator | 04-sales-offer-generator.md | Step 4 deploy loading | EarningsBanner prominent |
-| 05 X-Power Promotions | 05-x-power-promotions.md | Thread generation | GenerationProgress + banner |
-| 06 Libraries | 06-links-offers-library.md | After first offer saved | Pause before next action — dashboard training path |
-| 07 Accelerator | 07-accelerator.md | Clone generating | GenerationProgress |
-| 08 Recurring Stream | 08-recurring-stream.md | Article save/generate wait | Loading pause |
-| 09 Social Payouts | 09-social-payouts.md | Bulk generate | GenerationProgress |
-| 10 Protector | 10-protector.md | Post–security overview pause | Dashboard bonus / free training as scale step |
+Mindset videos, libraries, Automated Profits, Instant Income best-practices, Cyber Protection, and Reseller: **NONE** (no generation wait).
+
+| Video | Moment | Notes |
+|---|---|---|
+| 01 Buyer's Remorse | Dashboard gold Free member training card | Track A mapped CTA |
+| 02 Disconnect | Weave once when describing SOG build / progress banner | Fluid notice of Free Training banner |
+| 03 Quick Overview | Once — gold Free member training card on Home | Max one |
+| 04 SOG mindset | **NONE** | Belief / effort only |
+| 05 Sales Offer Generator | During Launch / Setup·Build·Launch wait | Banner under progress |
+| 06–09 X-Power / Libraries (mindset + libraries how-to) | **NONE** except 07 | 07: Generate story thread wait |
+| 10 DFY mindset | **NONE** | |
+| 11 Done-For-You Profit | During Generate kit wait | Yes |
+| 12–14 Automated Profits (all three) | **NONE** | Checklist only |
+| 15 Unlimited mindset | **NONE** | |
+| 16 Unlimited | During clone wait | Yes |
+| 17 High-Ticket mindset | **NONE** | |
+| 18 Guaranteed High-Ticket Payouts | During preview/save wait | Yes |
+| 19 Instant Income mindset | **NONE** | |
+| 20 Instant Income best practices | **NONE** | Static cards |
+| 21 Instant Income how-to | During Generate posts wait | Yes |
+| 22–25 Cyber / Reseller | **NONE** | Static / form. **25 is the final Academy video** |
 
 ---
 
-## 1.6 Video roster
+## 1.6 Video roster (Academy: mindset → how-to per tool)
 
-| # | Track | File | Public title | Feature(s) | Target length |
+**Consumption order:** Dashboard 01→02→03, then Academy in file order. Each tool starts with a **mindset** video (why it matters, mental blocks, honest effort) then the how-to / examples.
+
+| # | Track | File | Feature(s) | Target | Ad? |
 |---|---|---|---|---|---|
-| 1 | Dashboard | 01-buyers-remorse.md | Watch This First | — | 10+ min (≥1,600 words) |
-| 2 | Dashboard | 02-disconnect.md | How The Money Flows | — | 10+ min (≥1,600 words) |
-| 3 | Dashboard | 03-quick-overview.md | Your 5-Minute Tour | whole app | 3–5 min |
-| 4 | Academy | 04-sales-offer-generator.md | Sales Offer Generator | blog-builder wizard | 5+ min (≥900 words) |
-| 5 | Academy | 05-x-power-promotions.md | X-Power Promotions | article-publish / promote | 5+ min |
-| 6 | Academy | 06-links-offers-library.md | Links & Offers Library | vault | 5+ min |
-| 7 | Academy | 07-accelerator.md | Accelerator | premium-accelerator | 5+ min |
-| 8 | Academy | 08-recurring-stream.md | Recurring Stream | premium-recurring | 5+ min |
-| 9 | Academy | 09-social-payouts.md | Social Payouts | premium-social | 5+ min |
-| 10 | Academy | 10-protector.md | Protector | protector | 5+ min |
-
-**Consumption order:** Dashboard 1 → 2 → 3 → Academy 4 → 5 → 6 → premium 7–10 in any order after first live offer.
+| 1 | Dashboard | `01-buyers-remorse.md` | — | 10+ min / ≥1600w | Home gold card |
+| 2 | Dashboard | `02-disconnect.md` | — | 10+ min / ≥1600w | Once (SOG wait frame) |
+| 3 | Dashboard | `03-quick-overview.md` | whole app shallow | 3–5 min | Once max |
+| 4 | Academy | `04-sog-mindset.md` | Sales Offer Generator mindset | ≥900w | **No** |
+| 5 | Academy | `05-sales-offer-generator.md` | SOG how-to + example | ≥900w | Yes |
+| 6 | Academy | `06-x-power-mindset.md` | X-Power mindset | ≥900w | **No** |
+| 7 | Academy | `07-x-power-promotions.md` | X-Power how-to + example | ≥900w | Yes |
+| 8 | Academy | `08-libraries-mindset.md` | Libraries mindset | ≥900w | **No** |
+| 9 | Academy | `09-links-offers-library.md` | Links + Offers how-to | ≥900w | **No** |
+| 10 | Academy | `10-dfy-mindset.md` | DFY Profit mindset (1st premium) | ≥900w | **No** |
+| 11 | Academy | `11-done-for-you-profit.md` | DFY how-to + example | ≥900w | Yes |
+| 12 | Academy | `12-automated-profits-mindset.md` | Autopilot mindset (2nd premium) | ≥900w | **No** |
+| 13 | Academy | `13-automated-profits.md` | How it works + quick example | ≥900w | **No** |
+| 14 | Academy | `14-automated-profits-examples.md` | 3 different examples | ≥900w | **No** |
+| 15 | Academy | `15-unlimited-mindset.md` | Unlimited mindset (3rd premium) | ≥900w | **No** |
+| 16 | Academy | `16-unlimited.md` | Unlimited how-to + example | ≥900w | Yes |
+| 17 | Academy | `17-high-ticket-mindset.md` | High-Ticket mindset (4th premium) | ≥900w | **No** |
+| 18 | Academy | `18-guaranteed-high-ticket-payouts.md` | How-to + example | ≥900w | Yes |
+| 19 | Academy | `19-instant-income-mindset.md` | Instant Income mindset (5th) | ≥900w | **No** |
+| 20 | Academy | `20-instant-income-best-practices.md` | Facebook posting best practices | ≥900w | **No** |
+| 21 | Academy | `21-instant-income.md` | How-to + example | ≥900w | Yes |
+| 22 | Academy | `22-cyber-protection-mindset.md` | Cyber mindset (6th premium) | ≥900w | **No** |
+| 23 | Academy | `23-cyber-protection.md` | How to read the page | ≥900w | **No** |
+| 24 | Academy | `24-reseller-mindset.md` | Reseller mindset (7th premium) | ≥900w | **No** |
+| 25 | Academy | `25-reseller-license-rights.md` | How-to (final Academy) | ≥900w | **No** |
 
 ---
 
-## Jargon Ledger (top 10 — for Disconnect Beat 5)
+## 1.7 Jargon Ledger (top terms for Disconnect)
 
-| Term | Plain definition | Analogy | Why you care |
+| Term | Plain def (≤15w) | Analogy | Why you care |
 |---|---|---|---|
-| **Affiliate link** | Your personal tracking URL for a product you promote. | A cashier code on your referral card. | You only get paid when sales use YOUR link. |
-| **Commission** | Money the vendor pays you per sale. | Waiter's tip — percentage of the bill. | This IS your income from each conversion. |
-| **Niche** | The topic audience you speak to. | One aisle in a supermarket you specialize in. | Better match = more clicks and sales. |
-| **Digistore24** | Marketplace where vendors list products and affiliates grab links. | A mall directory with pay-per-sale stores. | Where most users source links in Step 1 instructions. |
-| **Questionnaire site** | Interactive quiz funnel that ends on your offer. | A short magazine quiz that recommends one product. | BlackBox Cash builds this in Step 4. |
-| **Offer** | Your hosted sales/quiz page plus its settings. | A storefront you can send traffic to. | Lives in Offers Library after launch. |
-| **X story thread** | Chain of connected posts on X telling one story. | Ten billboard panels along one road. | Drives traffic from social to your offer URL. |
-| **Conversion** | When a visitor buys through your funnel. | Someone paying at the register. | Commissions only happen after conversion. |
-| **Links Library** | Saved affiliate URLs for reuse. | Contact list for your money links. | Stop re-pasting the same URL every time. |
-| **Offers Library** | Vault of every site you launched. | Filing cabinet of live storefronts. | Hub for promote, threads, and premium tools. |
+| Affiliate link | Your unique URL that credits you when someone buys. | Your cashier barcode on a product. | No link = no commission credit. |
+| Digistore24 | Popular marketplace where you get affiliate links for products. | A big mall of digital products. | Easiest starter source for a real link. |
+| Niche | The topic aisle your quiz and posts stay inside. | A grocery aisle, not the whole store. | Match niche to product or the quiz feels random. |
+| Questionnaire / quiz site | Short quiz page that ends by recommending your offer. | A fitting-room attendant asking questions then handing you a jacket. | This is the sales page BlackBox Cash builds. |
+| Sales Offer Generator | Four-step wizard that launches that quiz site with your link. | Instant storefront builder. | Core first win. |
+| Offers Library | Folder of every live offer you launched. | Filing cabinet for storefronts. | Threads, posts, articles attach here. |
+| Links Library | Saved affiliate URLs with names. | Password manager, but for money links. | Paste once, reuse everywhere. |
+| X story thread | Ten connected posts that tell one product story. | A comic strip ending in one ask. | Top-of-funnel traffic engine. |
+| Commission | Your cut when a referred buyer purchases. | Tip jar that opens when they pay. | How you get paid. |
+| Premium Features | Paid upgrades under that sidebar section. | Power tools in the garage. | Speed and volume after first offer. |
 
 ---
 
-## Money Map
+## 1.8 Money Map
 
-1. Vendors list digital products on **Digistore24** (or similar) with public affiliate programs.
-2. Buyer discovers product through YOUR content (quiz site, X thread, Facebook post) and clicks **your affiliate link**.
-3. Platform tracks the click, checkout, and holds the sale.
-4. Vendor delivers product; platform pays you **commission** (typical range varies by offer — often 50–75% on digital goods; confirm per product).
-5. **Weakest link for beginners:** building credible pages + promotion copy fast enough to test traffic — BlackBox Cash automates page build, quiz copy, X threads, and bulk social variants.
-6. **Timeline:** first live offer in one session if user already has a link; income depends on traffic and offer — not guaranteed by software alone.
+1. Vendor sells a product (often Digistore24).  
+2. You get an **affiliate link**.  
+3. You launch a **questionnaire site** (Sales Offer Generator) with that link on the final page.  
+4. You send people to the site via **X threads**, Facebook posts, traffic sources, etc.  
+5. Visitor completes the quiz → sees the offer → clicks → buys.  
+6. Platform pays you a **commission**.
 
----
+**Weakest link (what beginners quit on):** writing the sales page + writing promotion posts.  
+**What BlackBox Cash changes:** automates page + thread/post kits; libraries keep assets reusable.
 
-## First Win (Disconnect Beat 10)
-
-**Action:** Open **Sales Offer Generator**, paste affiliate URL, click **Save to Links Library**, confirm link shows armed — then continue to **Launch My Questionnaire Site** when ready.
-
-**Buyer's Remorse Beat 10 (override):** Free training CTA on dashboard bonus card — not the in-app wizard.
+**Honest math frame (no invented earnings):** one sale → vendor pays affiliate commission % (product-dependent) → you keep that cut. Scale = more visitors through more offers/posts. Banner numbers ($1,000–$5,000/day) may be spoken only as the **on-screen free-training pitch**, not as a typical member result.
 
 ---
 
-## Owner inputs before audio production
+## 1.9 Loading states (free-training eligible)
 
-1. Replace `trainingContent.externalTrainingUrl` with live webinar/registration URL.
-2. Add Vimeo IDs to `dashboard.config.ts` / `training.config.ts` videos.
-3. Confirm checkout price and any sales-page proof for script updates.
-4. Enable/configure Exclusive Offers if client wants sidebar CTAs in a future build.
+| Surface | Wait UI | Banner? |
+|---|---|---|
+| SOG Step 4 deploy | Setup / Build / Launch | Yes |
+| X-Power generate | Generating 10-post thread + 3 niche images… | Yes |
+| Unlimited clone | Cloning pre-made sales page… | Yes |
+| Instant Income | Generating 10 scroll-stopping Facebook post variants… | Yes |
+| DFY Profit | Building sales page → X thread → article → FB posts | Yes |
+| Guaranteed High-Ticket | Loading/saving article preview | Yes |
+| Libraries / Autopilot / Protector / License | — | No |
+
+### On-screen numbers that scripts must honor
+- X-Power: **5** generations/day · **10**-post thread · images on posts **1, 4, 7**
+- Instant Income best practices: **70/30** rule · **1–2 weeks** · space posts **1–2 minutes** · under **25–50 groups/day** · Tue–Thu **8–10 AM** / lunch **12–1 PM**
+- Unlimited: **200** templates · **10**-post threads
+- Guaranteed High-Ticket: **100** articles · **1,000+** words · Cross-platform: **3–5** tags · **2–3** Quora answers · **one article per week**
+- Automated Profits: **180** sources · **20** per niche · **9** niches
+- Site quota: currently **unlimited** (do not invent daily site caps)
+- Support: ~**2 hours**, allow **24–48** on busy days
+- Cyber Protection: Security Score **100%** · Encryption **AES-256** · Uptime **99.9%**
+
+---
+
+## Live audit status
+
+- [x] Dev server + `DEV_BYPASS_AUTH` (temp for audit; removed after)
+- [x] Playwright pass on every sidebar route (labels + Home video order + bonus ads ×2)
+- [x] Geometry fix applied: Dashboard **Premium Features** quick-links sit on the **right** rail (under Contact Support / Tip), not the left — scripts 07–10 corrected
+- [x] Empty states verified: `/promote` → `No offers to promote yet`; `/social-payouts` → `No offers yet` (Select offer / Generate posts appear only after an offer exists — scripts already cover this)
+- [x] Instant Income best-practice numbers live: 70/30, 25–50 groups, Tue–Thu windows
+- [x] Audit script deleted; no code patches used
+
+**Audit date:** 2026-08-18 · Base `http://localhost:3000`

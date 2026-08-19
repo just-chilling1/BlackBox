@@ -12,8 +12,8 @@ One-click affiliate promo kit. User enters an affiliate link and picks a niche; 
 3. A copy-ready authority article, previewed inside the app
 4. Exactly 3 Facebook posts promoting the sales page, with visuals on two variants
 
-Sales pages reuse `sites`; Facebook posts and X threads are saved to their existing
-offer tables. The authority article is intentionally not published online.
+Sales pages reuse `sites`; Facebook posts, X threads, and the authority article
+are saved to the offer library. The article is not published as a public site post.
 
 ## User flow
 
@@ -33,7 +33,7 @@ Stages run sequentially from the client so each AI call stays under the 120s rou
 | Route | Purpose |
 |-------|---------|
 | `POST /api/premium/dfy-profit/start` | Scrape offer, create live site, random template, generate sales page |
-| `POST /api/premium/dfy-profit/article` | Copyable, in-app authority article |
+| `POST /api/premium/dfy-profit/article` | Copyable authority article, saved to the offer library |
 | `POST /api/premium/dfy-profit/posts` | 3 Facebook posts via publish-kit; two include saved image URLs |
 | `POST /api/premium/dfy-profit/x-thread` | 10-post X story thread with three saved image URLs |
 
