@@ -1,7 +1,11 @@
 import { NICHE_OPTIONS } from "@/features/blog-builder/types";
-import type { NicheKey } from "@/features/blog-builder/lib/questionnaire-seeds";
+import {
+  buildSeededQuestionnaireCopy,
+  type NicheKey,
+} from "@/features/blog-builder/lib/questionnaire-seeds";
 import {
   READY_TEMPLATES,
+  readyTemplateAccent,
   readyTemplateToConfig,
   type ReadyTemplate,
 } from "@/features/blog-builder/themes/ready-templates";
@@ -88,6 +92,30 @@ export function acceleratorTemplateKey(catalogId: number): string {
 
 export function getAcceleratorCatalogEntry(id: number): AcceleratorCatalogEntry | undefined {
   return buildAcceleratorCatalog().find((e) => e.id === id);
+}
+
+/** Display fields for Asset Vault gallery cards (no AI, catalog-derived). */
+export function getAcceleratorCardMeta(entry: AcceleratorCatalogEntry): {
+  accent: string;
+  hook: string;
+  toneLabel: string;
+} {
+  const copy = buildSeededQuestionnaireCopy({
+    niche: entry.nicheLabel,
+    nicheKey: entry.nicheKey,
+    productName: entry.productName,
+    copyToneId: entry.template.copyToneId,
+  });
+  const hook =
+    (typeof copy.subtitle === "string" && copy.subtitle.trim()) ||
+    (typeof copy.promoHeadline === "string" && copy.promoHeadline.trim()) ||
+    entry.template.tagline;
+
+  return {
+    accent: readyTemplateAccent(entry.template),
+    hook: hook.slice(0, 160),
+    toneLabel: entry.template.toneLabel,
+  };
 }
 
 export const ACCELERATOR_NICHES = NICHE_OPTIONS.map((n) => n.label);

@@ -16,10 +16,7 @@ import {
 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { PageLoading } from "@/components/ui/page-loading";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
-import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
@@ -119,31 +116,33 @@ export default function ProtectorPage() {
   }
 
   return (
-    <PremiumPageLayout
+    <PremiumWorkflowShell
       title="Cyber Protection"
-      subtitle="Your account security overview — membership verification, encryption status, and activity monitoring in real time."
-      footer={<PremiumFooter>Cyber Protection — powered by {brand.productName}.</PremiumFooter>}
+      subtitle="Your account security overview — membership verification, encryption status, and activity monitoring."
+      training={{
+        vimeoId: "1215579801",
+        title: "Cyber Protection Training",
+        description:
+          "Watch what Cyber Protection monitors for you — account verification, encryption, and session security — and how to read your security overview.",
+        iframeTitle: "Cyber Protection training video",
+      }}
     >
-      <PremiumVideoTutorial
-        vimeoId="1215579801"
-        title="Cyber Protection Training"
-        description="Watch what Cyber Protection monitors for you — account verification, encryption, and session security — and how to read your security overview."
-        iframeTitle="Cyber Protection training video"
-      />
-
-      <PremiumControlCard
-        icon={ShieldCheck}
-        title="Cyber Protection"
-        description="Your account security overview. Everything is monitored in real time."
-        badge={
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-4 py-3 sm:px-5">
-            <div className="h-3 w-3 animate-pulse rounded-full bg-success/100 shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
+      <GlassPanel className="space-y-5 p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-text-primary">Security overview</p>
+            <p className="mt-1 text-xs text-text-muted">
+              Everything is monitored in real time.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-4 py-3">
+            <div className="h-3 w-3 animate-pulse rounded-full bg-success shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
             <span className="text-sm font-medium uppercase tracking-wider text-success">
               All Systems Secure
             </span>
           </div>
-        }
-      >
+        </div>
+
         <div className="stat-grid">
           {[
             { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-success" },
@@ -157,7 +156,7 @@ export default function ProtectorPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <GlassPanel intensity="low" className="p-5 hover:border-success/20 transition-colors">
+              <div className="rounded-[var(--np-r-lg)] border border-[var(--np-line)] bg-[var(--np-surface-field)] p-5 transition-colors hover:border-success/20">
                 <div className="mb-3 flex items-center gap-3">
                   <stat.icon className={cn("h-5 w-5", stat.color)} />
                   <span className="text-[13px] font-medium uppercase tracking-wider text-text-muted">
@@ -165,94 +164,96 @@ export default function ProtectorPage() {
                   </span>
                 </div>
                 <div className="text-2xl font-medium text-text-heading">{stat.value}</div>
-              </GlassPanel>
+              </div>
             </motion.div>
           ))}
         </div>
-      </PremiumControlCard>
+      </GlassPanel>
 
-      <div className="glass-card space-y-5 p-4 sm:p-5 md:p-6">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="space-y-4 lg:col-span-2">
-            <h2 className="text-lg font-medium text-text-heading mb-1">Security Checks</h2>
-            <div className="space-y-3">
-              {securityChecks.map((check, i) => (
-                <motion.div
-                  key={check.label}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + i * 0.06 }}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="space-y-4 lg:col-span-2">
+          <h2 className="text-lg font-medium text-text-heading">Security Checks</h2>
+          <div className="space-y-3">
+            {securityChecks.map((check, i) => (
+              <motion.div
+                key={check.label}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.06 }}
+              >
+                <GlassPanel
+                  intensity="low"
+                  className="p-4 transition-all duration-300 hover:border-success/20"
                 >
-                  <GlassPanel
-                    intensity="low"
-                    className="p-4 hover:border-success/20 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-success/10 border border-success/20 flex items-center justify-center shrink-0">
-                        <check.icon className="w-5 h-5 text-success" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-text-primary">{check.label}</h3>
-                        <p className="text-xs text-text-muted">{check.description}</p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <CheckCircle className="w-4 h-4 text-success" />
-                        <span className="text-[13px] font-medium text-success uppercase tracking-wider">
-                          Verified
-                        </span>
-                      </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-success/20 bg-success/10">
+                      <check.icon className="h-5 w-5 text-success" />
                     </div>
-                  </GlassPanel>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <GlassPanel intensity="low" className="p-5 border-success/20">
-              <h3 className="text-sm font-medium text-text-heading mb-4">Account Info</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between py-2 border-b border-divider">
-                  <span className="text-xs text-text-muted">Email</span>
-                  <span className="text-xs text-text-primary font-medium truncate ml-4">{userEmail}</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-divider">
-                  <span className="text-xs text-text-muted">Membership</span>
-                  <span className="text-xs text-success font-medium">Active</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-divider">
-                  <span className="text-xs text-text-muted">2FA</span>
-                  <span className="text-xs text-success font-medium">Enabled</span>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-xs text-text-muted">Last Login</span>
-                  <span className="text-xs text-text-primary font-medium">{formatLastLogin(lastSignIn)}</span>
-                </div>
-              </div>
-            </GlassPanel>
-
-            <GlassPanel intensity="low" className="p-5">
-              <h3 className="text-sm font-medium text-text-heading mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                {activity.map((item) => (
-                  <div key={item.event} className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-canvas border border-border-dim flex items-center justify-center shrink-0 mt-0.5">
-                      <item.icon className="w-3.5 h-3.5 text-text-muted" />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-medium text-text-primary">{check.label}</h3>
+                      <p className="text-xs text-text-muted">{check.description}</p>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-text-primary font-medium">{item.event}</p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3 text-text-muted" />
-                        <span className="text-[13px] text-text-muted">{item.time}</span>
-                      </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <span className="text-[13px] font-medium uppercase tracking-wider text-success">
+                        Verified
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </GlassPanel>
+                </GlassPanel>
+              </motion.div>
+            ))}
           </div>
         </div>
+
+        <div className="space-y-4">
+          <GlassPanel intensity="low" className="border-success/20 p-5">
+            <h3 className="mb-4 text-sm font-medium text-text-heading">Account Info</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
+                <span className="text-xs text-text-muted">Email</span>
+                <span className="ml-4 truncate text-xs font-medium text-text-primary">
+                  {userEmail}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
+                <span className="text-xs text-text-muted">Membership</span>
+                <span className="text-xs font-medium text-success">Active</span>
+              </div>
+              <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
+                <span className="text-xs text-text-muted">2FA</span>
+                <span className="text-xs font-medium text-success">Enabled</span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-xs text-text-muted">Last Login</span>
+                <span className="text-xs font-medium text-text-primary">
+                  {formatLastLogin(lastSignIn)}
+                </span>
+              </div>
+            </div>
+          </GlassPanel>
+
+          <GlassPanel intensity="low" className="p-5">
+            <h3 className="mb-4 text-sm font-medium text-text-heading">Recent Activity</h3>
+            <div className="space-y-3">
+              {activity.map((item) => (
+                <div key={item.event} className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line)] bg-[var(--np-surface-field)]">
+                    <item.icon className="h-3.5 w-3.5 text-text-muted" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-text-primary">{item.event}</p>
+                    <div className="mt-0.5 flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-text-muted" />
+                      <span className="text-[13px] text-text-muted">{item.time}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassPanel>
+        </div>
       </div>
-    </PremiumPageLayout>
+    </PremiumWorkflowShell>
   );
 }

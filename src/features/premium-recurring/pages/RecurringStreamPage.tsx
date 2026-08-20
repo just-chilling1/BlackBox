@@ -20,11 +20,10 @@ import {
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { cachedClientFetch } from "@/lib/client-fetch-cache";
-import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
-import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
 import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
@@ -321,73 +320,44 @@ export default function RecurringStreamPage() {
 
   if (initialLoading && articles.length === 0) {
     return (
-      <div className="page-container">
-        <PageHeader
-          eyebrow="Premium"
-          title="Authority Boosters"
-          subtitle={`${seededCount || 100} long-form authority articles — pick an offer, preview with your link, and publish across platforms.`}
-        />
+      <PremiumWorkflowShell
+        title="Authority Boosters"
+        subtitle={`${seededCount || 100} long-form authority articles — pick an offer, preview with your link, and publish across platforms.`}
+      >
         <PageSkeleton cards={2} />
-      </div>
+      </PremiumWorkflowShell>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="page-container"
+    <PremiumWorkflowShell
+      title="Authority Boosters"
+      subtitle={`${seededCount} of 100 long-form authority articles — pick an offer, preview with your link, and publish across platforms.`}
+      training={{
+        vimeoId: "1215568587",
+        title: "Authority Boosters Training",
+        description:
+          "Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog.",
+        iframeTitle: "Authority Boosters training video",
+      }}
+      tip={
+        <>
+          Tip: Preview with your offer selected so CTAs include your link, then copy or save to the
+          offer.
+        </>
+      }
     >
-      <PageHeader
-        eyebrow="Premium"
-        title="Guaranteed High-Ticket Payouts"
-        subtitle={`${seededCount} of 100 long-form authority articles (1,000+ words each) — pick an offer, preview with your link, and publish across platforms.`}
-      />
-
-      <div className="mb-4">
-        <PremiumVideoTutorial
-          vimeoId="1215568587"
-          title="Guaranteed High-Ticket Payouts Training"
-          description="Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog."
-          iframeTitle="Guaranteed High-Ticket Payouts training video"
-        />
-      </div>
-
-      <div className="mb-4">
-        <PremiumStepsSection
-          steps={[
-            {
-              num: "1",
-              title: "Pick an offer",
-              desc: "Choose which sales page the articles should promote — your link is placed inside automatically.",
-            },
-            {
-              num: "2",
-              title: "Preview an article",
-              desc: "Browse 100 long-form authority articles by niche and preview any template with your link inside.",
-            },
-            {
-              num: "3",
-              title: "Publish anywhere",
-              desc: "Copy the article to Medium, LinkedIn, or your blog. Saved articles stay linked to your offer.",
-            },
-          ]}
-        />
-      </div>
-
-      <section className="glass-card overflow-hidden p-0">
-        <div className="border-b border-divider bg-pulse-100 p-6 md:p-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pulse-100 text-pulse-700">
-                <Repeat size={24} />
-              </div>
-              <div>
-                <p className="font-medium text-text-primary">100 Authority Articles</p>
-                <p className="text-sm text-text-secondary">
-                  SEO-ready articles with intro, sections, FAQs, and CTAs — preview first, then use a template to save it to your offer.
-                </p>
-              </div>
+      <GlassPanel className="overflow-hidden p-0">
+        <div className="border-b border-[var(--np-line)] bg-pulse-100/10 p-5 sm:p-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/20 text-pulse-700">
+              <Repeat size={22} />
+            </div>
+            <div>
+              <p className="font-medium text-text-primary">100 Authority Articles</p>
+              <p className="text-sm text-text-secondary">
+                SEO-ready guides with CTAs — preview first, then save to your offer.
+              </p>
             </div>
           </div>
         </div>
@@ -399,8 +369,8 @@ export default function RecurringStreamPage() {
               <p className="text-sm text-text-secondary">
                 Create an offer first, then personalize and save authority articles to it.
               </p>
-              <Link href="/sales-offer-generator" className="btn-primary mt-4 inline-flex">
-                Create an offer
+              <Link href="/activate" className="btn-primary mt-4 inline-flex">
+                Activate an asset
               </Link>
             </div>
           ) : (
@@ -448,12 +418,7 @@ export default function RecurringStreamPage() {
                 key={n}
                 type="button"
                 onClick={() => setNiche(n)}
-                className={clsx(
-                  "rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors",
-                  niche === n
-                    ? "bg-grad-pulse text-black"
-                    : "bg-pulse-100 text-text-secondary hover:bg-pulse-100/70"
-                )}
+                className={clsx("select-chip-pill", niche === n && "is-selected")}
               >
                 {n}
               </button>
@@ -470,7 +435,7 @@ export default function RecurringStreamPage() {
             </p>
           )}
         </div>
-      </section>
+      </GlassPanel>
 
       <CrossPlatformGuide />
 
@@ -698,8 +663,9 @@ export default function RecurringStreamPage() {
       </div>
 
       <p className="text-xs text-text-muted">
-        Powered by {brand.productName}. Use a template to save articles to your offer — view them anytime in Offers Library.
+        Powered by {brand.productName}. Use a template to save articles to your offer — view them
+        anytime in Offers Library.
       </p>
-    </motion.div>
+    </PremiumWorkflowShell>
   );
 }

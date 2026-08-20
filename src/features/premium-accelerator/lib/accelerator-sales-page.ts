@@ -17,10 +17,12 @@ export function parseAcceleratorQuestionnaireCopy(raw: unknown): QuestionnaireCo
 
 export function resolveAcceleratorQuestionnaireCopy(
   entry: AcceleratorCatalogEntry,
-  template: Pick<BlogSite, "sales_page_json">
+  template?: Pick<BlogSite, "sales_page_json"> | null
 ): QuestionnaireCopy {
-  const stored = parseAcceleratorQuestionnaireCopy(template.sales_page_json);
-  if (stored) return stored;
+  if (template) {
+    const stored = parseAcceleratorQuestionnaireCopy(template.sales_page_json);
+    if (stored) return stored;
+  }
 
   const templateDef = entry.template;
   return buildSeededQuestionnaireCopy({

@@ -1,16 +1,13 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Check, Loader2, Sparkles, Wallet } from "lucide-react";
+import { Check, Loader2, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
-import { brand } from "@/config/brand.config";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
-import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { GenerationProgress } from "@/components/ui/generation-progress";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { isValidAffiliateUrl } from "@/features/blog-builder/lib/affiliate-url";
 import { NICHE_OPTIONS } from "@/features/blog-builder/types";
 import {
@@ -236,40 +233,25 @@ export default function DfyProfitPage() {
   };
 
   return (
-    <PremiumPageLayout
+    <PremiumWorkflowShell
       title="One-Click Asset"
       subtitle="Paste your affiliate link, pick a niche, and get a live money page plus supporting assets in one run."
-      footer={
-        <PremiumFooter>
-          Powered by {brand.productName}. Kits also appear in your Offers Library.
-        </PremiumFooter>
+      tip={
+        <>
+          Tip: Kits land in your Offers Library — sales page, article, Facebook posts, and an X
+          thread.
+        </>
       }
     >
-      <PremiumStepsSection
-        steps={[
-          {
-            num: "1",
-            title: "Add your link",
-            desc: "Paste an affiliate URL or pick one from your Links Library.",
-          },
-          {
-            num: "2",
-            title: "Pick a niche",
-            desc: "Choose the niche so copy, layout tone, and posts stay on-brand.",
-          },
-          {
-            num: "3",
-            title: "Generate your kit",
-            desc: "We build a random-template sales page, an authority article, and Facebook posts.",
-          },
-        ]}
-      />
+      <GlassPanel className="space-y-5 p-5 sm:p-6">
+        <div>
+          <p className="text-sm font-medium text-text-primary">Generate your kit</p>
+          <p className="mt-1 text-xs text-text-muted">
+            One click creates a hosted sales page, authority article, Facebook posts, and an X story
+            thread.
+          </p>
+        </div>
 
-      <PremiumControlCard
-        icon={Wallet}
-        title="Generate your kit"
-        description="One click creates a hosted sales page, copy-ready authority article, Facebook posts, and an X story thread."
-      >
         <div className="space-y-2">
           <span className="block text-sm font-medium text-text-primary">Affiliate link</span>
           <AffiliateLinkField
@@ -280,8 +262,8 @@ export default function DfyProfitPage() {
         </div>
 
         <fieldset>
-          <legend className="mb-3 text-sm font-medium text-text-primary">2. Niche</legend>
-          <div className="flex flex-wrap gap-2 rounded-2xl border border-[var(--np-line-pulse)] bg-canvas/60 p-3">
+          <legend className="mb-3 text-sm font-medium text-text-primary">Niche</legend>
+          <div className="flex flex-wrap gap-2">
             {NICHE_OPTIONS.map((option) => {
               const selected = niche === option.value;
               return (
@@ -290,14 +272,9 @@ export default function DfyProfitPage() {
                   type="button"
                   disabled={generating}
                   onClick={() => setNiche(option.value)}
-                  className={clsx(
-                    "inline-flex items-center gap-1.5 rounded-[999px] border px-4 py-2.5 text-[13px] font-medium transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0",
-                    selected
-                      ? "border-[var(--np-line-pulse)] bg-grad-pulse text-black shadow-[0_0_18px_rgba(203,161,53,0.24)]"
-                      : "border-border-dim bg-surface text-text-secondary hover:-translate-y-0.5 hover:border-[var(--np-line-pulse)] hover:bg-pulse-100/60 hover:text-text-primary hover:shadow-sm"
-                  )}
+                  className={clsx("select-chip-pill", selected && "is-selected")}
                 >
-                  {selected && <Check size={13} />}
+                  {selected ? <Check size={13} className="mr-1 inline" /> : null}
                   {option.label}
                 </button>
               );
@@ -305,7 +282,7 @@ export default function DfyProfitPage() {
           </div>
         </fieldset>
 
-        {error && <PremiumErrorAlert message={error} />}
+        {error ? <PremiumErrorAlert message={error} /> : null}
 
         <button
           type="button"
@@ -316,7 +293,7 @@ export default function DfyProfitPage() {
           {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
           {generating ? "Generating…" : sales ? "Generate another kit" : "Generate kit"}
         </button>
-      </PremiumControlCard>
+      </GlassPanel>
 
       <GenerationProgress
         active={generating}
@@ -345,6 +322,6 @@ export default function DfyProfitPage() {
         onRetryPosts={() => void handleRetryPosts()}
         onRetryThread={() => void handleRetryThread()}
       />
-    </PremiumPageLayout>
+    </PremiumWorkflowShell>
   );
 }
