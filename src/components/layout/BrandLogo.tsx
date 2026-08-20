@@ -74,7 +74,7 @@ export function BrandLogo({
     useImage && compact && brand.logo.iconSrcFallback
       ? brand.logo.iconSrcFallback
       : brand.logo.srcFallback;
-  const [imageSrc, setImageSrc] = useState(fallbackSrc ?? primarySrc);
+  const [imageSrc, setImageSrc] = useState<string>(primarySrc ?? fallbackSrc ?? "");
 
   useEffect(() => {
     if (!useImage) return;
