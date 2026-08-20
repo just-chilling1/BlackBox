@@ -286,6 +286,19 @@ html[data-sidebar="collapsed"] {
     box-shadow: var(--np-shadow-hover);
   }
 
+  .vault-asset-card {
+    background: var(--np-surface);
+    border: 1px solid var(--np-line);
+    border-radius: var(--np-r-lg);
+    box-shadow: var(--np-shadow-card);
+    transition: border-color var(--np-dur) var(--np-ease), box-shadow var(--np-dur) var(--np-ease);
+  }
+
+  .vault-asset-card:hover {
+    border-color: var(--np-line-pulse);
+    box-shadow: var(--np-shadow-hover);
+  }
+
   .glass-panel {
     background: var(--np-surface);
     border: 1px solid var(--np-line);

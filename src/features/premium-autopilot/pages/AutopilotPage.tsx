@@ -2,13 +2,11 @@
 
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Lightbulb } from "lucide-react";
+import { Filter, Lightbulb } from "lucide-react";
 import { clsx } from "clsx";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
-import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { SourceCard } from "@/features/premium-autopilot/components/SourceCard";
 import { SourceInstructionsOverlay } from "@/features/premium-autopilot/components/SourceInstructionsOverlay";
 import {
@@ -161,151 +159,108 @@ export default function AutomatedProfitsPage() {
     SOURCES.find((source) => source.id === expandedId) ?? null;
 
   return (
-    <PremiumPageLayout
-        title="Pinterest Autopilot"
-      subtitle="180 practical traffic sources across 9 niches — choose the market your offer was built for and share it where it is genuinely useful."
-      footer={<PremiumFooter />}
+    <PremiumWorkflowShell
+      title="Pinterest Autopilot"
+      subtitle="180 practical traffic sources across 9 niches — share your offer where it genuinely helps."
+      training={{
+        vimeoId: "1171734563",
+        title: "How to Use Automated Income",
+        description:
+          "Watch this quick tutorial to learn how to share your offer responsibly across relevant traffic sources.",
+        iframeTitle: "Automated Profits Tutorial",
+      }}
+      tip={
+        <>
+          Tip: Start with a few sources where you can help the audience. Read each community&apos;s
+          rules first.
+        </>
+      }
     >
-      <PremiumVideoTutorial
-        vimeoId="1171734563"
-        iframeTitle="Automated Profits Tutorial"
-        title="How to Use Automated Income"
-        description="Watch this quick tutorial to learn how to share your offer responsibly across relevant traffic sources."
-      />
-
-      <PremiumStepsSection
-        title="How This Works (Super Simple!)"
-        steps={[
-          {
-            num: "1",
-            title: "Pick Your Niche",
-            desc: "Choose the niche your offer was built for and get 20 practical traffic sources tailored to that market.",
-          },
-          {
-            num: "2",
-            title: "Share Your Offer",
-            desc: "Follow the platform rules and use the step-by-step guidance to share your offer where it directly helps the conversation.",
-          },
-          {
-            num: "3",
-            title: "Build Consistent Visibility",
-            desc: "Return to the sources that work for you, contribute useful answers, and track the places you have completed.",
-          },
-        ]}
-      />
-
-      <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 p-5 flex items-start gap-3">
-        <Lightbulb size={18} className="text-pulse-700 shrink-0 mt-0.5" />
-        <div>
-          <span className="text-sm font-medium text-pulse-700">Pro Tip: </span>
-          <span className="text-sm text-text-secondary">
-            Start with a few sources where you can genuinely help the audience.
-            Read each community&apos;s rules first, and only share your offer when
-            it directly supports your answer.
-          </span>
+      <GlassPanel className="space-y-4 p-5 sm:p-6">
+        <div className="flex items-start gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/10 px-4 py-3">
+          <Lightbulb size={16} className="mt-0.5 shrink-0 text-pulse-700" />
+          <p className="text-sm text-text-secondary">
+            Enter the page you want to promote — we insert it into source descriptions below. Progress
+            syncs to your account.
+          </p>
         </div>
-      </div>
 
-      <section className="flex flex-col gap-8">
-        <div className="glass-card p-8 flex flex-col gap-4">
-          <h3 className="text-lg font-medium text-text-primary">
-            Enter Your Page URL:
-          </h3>
+        <div>
+          <h3 className="mb-2 text-sm font-medium text-text-primary">Your page URL</h3>
           <AffiliateLinkField
             value={pageUrl}
             onChange={setPageUrl}
             inputId="autopilot-promotion-url"
             placeholder="https://your-page-url.com"
           />
-          <p className="text-xs text-text-muted">
-            This is the page you want to promote. We&apos;ll automatically insert
-            it in all the submission descriptions below. Your URL and progress
-            sync to your account.
-          </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter size={14} className="shrink-0 text-text-muted" />
           {NICHES.map((niche) => (
             <button
               key={niche}
               type="button"
               onClick={() => void handleNicheChange(niche)}
-              className={clsx(
-                "px-5 py-2.5 rounded-full text-sm font-medium transition-all border",
-                selectedNiche === niche
-                  ? "bg-grad-pulse border-[var(--np-line-pulse)] text-black"
-                  : "bg-surface border-border-dim text-text-secondary hover:border-[var(--np-line-pulse)] hover:text-text-primary"
-              )}
+              className={clsx("select-chip-pill", selectedNiche === niche && "is-selected")}
             >
               {niche}
             </button>
           ))}
         </div>
 
-        <div className="glass-card p-6 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-medium text-text-primary">
-                Your Progress:
-              </h3>
-              <p className="text-sm text-text-secondary">
-                {completedCount} of {filteredSources.length} sources completed
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-2xl font-medium text-pulse-700">
-                {progressPercent}%
-              </span>
-              <p className="text-xs text-text-muted">Complete</p>
-            </div>
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] px-4 py-3">
+          <div>
+            <p className="text-sm font-medium text-text-primary">Progress</p>
+            <p className="text-xs text-text-muted">
+              {completedCount} of {filteredSources.length} sources completed
+            </p>
           </div>
-          <div className="w-full h-2 bg-surface rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-grad-pulse rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.5 }}
-            />
+          <div className="text-right">
+            <span className="text-2xl font-medium text-pulse-700">{progressPercent}%</span>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-          {visibleSources.map((source, idx) => (
-            <SourceCard
-              key={source.id}
-              source={source}
-              isDone={completed.has(source.id)}
-              index={idx}
-              onView={() => setExpandedId(source.id)}
-              onToggleComplete={() => void toggleCompleted(source.id)}
-            />
-          ))}
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--np-surface-field)]">
+          <motion.div
+            className="h-full rounded-full bg-grad-pulse"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.5 }}
+          />
         </div>
+      </GlassPanel>
 
-        {hasMore && (
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() =>
-                setVisibleCount((n) =>
-                  Math.min(n + PAGE_SIZE, filteredSources.length)
-                )
-              }
-              className="btn-secondary px-6 py-3 text-sm"
-            >
-              Show more sources (
-              {filteredSources.length - visibleCount} remaining)
-            </button>
-          </div>
-        )}
-      </section>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+        {visibleSources.map((source, idx) => (
+          <SourceCard
+            key={source.id}
+            source={source}
+            isDone={completed.has(source.id)}
+            index={idx}
+            onView={() => setExpandedId(source.id)}
+            onToggleComplete={() => void toggleCompleted(source.id)}
+          />
+        ))}
+      </div>
+
+      {hasMore ? (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() =>
+              setVisibleCount((n) => Math.min(n + PAGE_SIZE, filteredSources.length))
+            }
+            className="btn-secondary px-6 py-3 text-sm"
+          >
+            Show more sources ({filteredSources.length - visibleCount} remaining)
+          </button>
+        </div>
+      ) : null}
 
       <SourceInstructionsOverlay
         source={selectedSource}
         isDone={selectedSource ? completed.has(selectedSource.id) : false}
-        copied={
-          selectedSource != null && copiedDescId === selectedSource.id
-        }
+        copied={selectedSource != null && copiedDescId === selectedSource.id}
         onClose={() => setExpandedId(null)}
         onToggleComplete={() => {
           if (selectedSource) void toggleCompleted(selectedSource.id);
@@ -320,6 +275,6 @@ export default function AutomatedProfitsPage() {
         }}
         renderCopy={(template) => renderSourceCopy(template, pageUrl)}
       />
-    </PremiumPageLayout>
+    </PremiumWorkflowShell>
   );
 }

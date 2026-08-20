@@ -3,13 +3,11 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Award,
   BookOpen,
   Check,
   CheckCircle2,
   Clock,
   Copy,
-  FileText,
   LayoutTemplate,
   Loader2,
   Lock,
@@ -17,12 +15,9 @@ import {
   Palette,
   Scale,
   Send,
-  Sparkles,
   Tag,
 } from "lucide-react";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
@@ -281,39 +276,17 @@ export default function LicenseRightsPage() {
   ];
 
   return (
-    <PremiumPageLayout
-      title="Full Turnkey Reseller & License Rights Edition"
-      subtitle={`Request activation from our support desk. Your ticket is filed as "${REQUEST_SUBJECT}" and the team unlocks this edition on your account.`}
-      footer={<PremiumFooter />}
+    <PremiumWorkflowShell
+      title="Reseller & License Rights"
+      subtitle={`Request activation from support. Your ticket is filed as "${REQUEST_SUBJECT}" and the team unlocks this edition on your account.`}
+      tip={
+        <>
+          Tip: Sell {brand.productName} under your own brand after activation — submit one request
+          below.
+        </>
+      }
+      actions={ready ? statusBadge : undefined}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-[var(--np-line-pulse)] bg-linear-to-br from-pulse-100 via-pulse-100/80 to-page p-5 sm:p-6"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-grad-pulse text-black shadow-sm">
-              <Award size={22} aria-hidden />
-            </div>
-            <div className="space-y-1">
-              <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
-                <Sparkles size={15} className="text-pulse-700" aria-hidden />
-                Premium reseller edition
-              </p>
-              <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-                Sell {brand.productName} under your own brand with turnkey assets. Submit one
-                request below — our team handles activation manually.
-              </p>
-            </div>
-          </div>
-          <div className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--np-line-pulse)] bg-page/80 px-3 py-1.5 text-xs font-medium text-pulse-700 sm:self-center">
-            <Tag size={13} aria-hidden />
-            Subject: {REQUEST_SUBJECT}
-          </div>
-        </div>
-      </motion.div>
-
       <div className="stat-grid md:grid-cols-3">
         {overviewStats.map((stat, index) => (
           <motion.div
@@ -337,12 +310,14 @@ export default function LicenseRightsPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
         <div className="xl:col-span-7">
-          <PremiumControlCard
-            icon={FileText}
-            title="Request activation"
-            description={`We send your message to support with the title "${REQUEST_SUBJECT}".`}
-            badge={ready ? statusBadge : undefined}
-          >
+          <GlassPanel className="space-y-4 p-5 sm:p-6">
+            <div>
+              <p className="text-sm font-medium text-text-primary">Request activation</p>
+              <p className="mt-1 text-xs text-text-muted">
+                We send your message to support with the title &quot;{REQUEST_SUBJECT}&quot;.
+              </p>
+            </div>
+
             {!ready ? (
               <FormSkeleton />
             ) : pending ? (
@@ -390,7 +365,7 @@ export default function LicenseRightsPage() {
                   <PremiumErrorAlert message={errorMessage} />
                 ) : null}
 
-                <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/70 px-4 py-3">
+                <div className="rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/10 px-4 py-3">
                   <p className="text-xs leading-relaxed text-text-secondary">
                     <span className="font-medium text-text-primary">What happens next:</span> Support
                     receives your ticket, verifies your purchase, and replies when the reseller
@@ -433,7 +408,7 @@ export default function LicenseRightsPage() {
                       <button
                         type="button"
                         onClick={() => void handleCopyEmail()}
-                        className="inline-flex items-center gap-1 rounded-md border border-border-dim bg-page px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-text-secondary transition-colors hover:border-pulse-700 hover:text-pulse-700"
+                        className="inline-flex items-center gap-1 rounded-md border border-[var(--np-line)] bg-[var(--np-surface-field)] px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-text-secondary transition-colors hover:border-pulse-700 hover:text-pulse-700"
                       >
                         {copiedEmail ? (
                           <>
@@ -452,13 +427,13 @@ export default function LicenseRightsPage() {
                 </div>
               </form>
             )}
-          </PremiumControlCard>
+          </GlassPanel>
         </div>
 
         <div className="xl:col-span-5">
-          <section className="glass-card h-full p-5 sm:p-6">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100 text-pulse-700">
+          <GlassPanel className="h-full space-y-4 p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/20 text-pulse-700">
                 <Lock size={18} aria-hidden />
               </div>
               <div>
@@ -473,9 +448,9 @@ export default function LicenseRightsPage() {
                 <EditionContentCard key={item.id} item={item} index={index} />
               ))}
             </div>
-          </section>
+          </GlassPanel>
         </div>
       </div>
-    </PremiumPageLayout>
+    </PremiumWorkflowShell>
   );
 }

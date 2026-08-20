@@ -7,7 +7,11 @@ import {
   buildAcceleratorSalesPageHtml,
   resolveAcceleratorQuestionnaireCopy,
 } from "./accelerator-sales-page";
-import { ACCELERATOR_LINK_PLACEHOLDER, substituteThreadLinkPlaceholder } from "./x-thread-seeds";
+import {
+  ACCELERATOR_LINK_PLACEHOLDER,
+  buildStaticAcceleratorXThreadSeedRows,
+  substituteThreadLinkPlaceholder,
+} from "./x-thread-seeds";
 
 export interface AcceleratorThreadPreview {
   text: string;
@@ -27,7 +31,7 @@ export interface AcceleratorTemplatePreview {
   offerPageUrl: string;
 }
 
-/** Load seeded accelerator template content for member preview (no clone). */
+/** Load accelerator template content for member preview (seeded DB or catalog fallback). */
 export async function loadAcceleratorTemplatePreview(params: {
   db: SupabaseClient;
   catalogId: number;
@@ -49,44 +53,61 @@ export async function loadAcceleratorTemplatePreview(params: {
   const template = (templateRows ?? [])[0] as
     | Pick<BlogSite, "id" | "title" | "tagline" | "sales_page_html" | "sales_page_json" | "theme_config">
     | undefined;
-  if (!template?.sales_page_html) {
-    throw new Error("This template has not been seeded yet.");
-  }
-
-  const { data: templateThreads } = await db
-    .from("site_x_threads")
-    .select("text, angle, image_url")
-    .eq("site_id", template.id)
-    .order("created_at", { ascending: true });
 
   const affiliate = affiliateUrl?.trim() || ACCELERATOR_LINK_PLACEHOLDER;
-  const copy = resolveAcceleratorQuestionnaireCopy(entry, template);
   const offerPageUrl = buildOfferPageUrl(appUrl, ACCELERATOR_PREVIEW_OFFER_SLUG);
+  const copy = resolveAcceleratorQuestionnaireCopy(entry, template ?? null);
+  const themeConfig = template?.theme_config ?? entry.themeConfig;
+  const siteId = template?.id ?? `preview-${catalogId}`;
+
+  const salesPageHtml = buildAcceleratorSalesPageHtml({
+    siteId,
+    entry,
+    copy,
+    affiliateUrl: affiliate,
+    themeConfig,
+    previewMode: true,
+  });
+
+  let threads: AcceleratorThreadPreview[] = [];
+
+  if (template?.id) {
+    const { data: templateThreads } = await db
+      .from("site_x_threads")
+      .select("text, angle, image_url")
+      .eq("site_id", template.id)
+      .order("created_at", { ascending: true });
+
+    if (templateThreads && templateThreads.length > 0) {
+      threads = templateThreads.map((row) => ({
+        text: substituteThreadLinkPlaceholder((row as { text: string }).text, offerPageUrl),
+        angle: (row as { angle: string | null }).angle,
+        image_url: (row as { image_url: string | null }).image_url,
+      }));
+    }
+  }
+
+  if (threads.length === 0) {
+    threads = buildStaticAcceleratorXThreadSeedRows(
+      entry.productName,
+      entry.nicheLabel,
+      entry.nicheKey
+    ).map((row) => ({
+      text: substituteThreadLinkPlaceholder(row.text, offerPageUrl),
+      angle: row.angle,
+      image_url: null,
+    }));
+  }
 
   return {
     catalogId,
     niche: entry.nicheLabel,
     productName: entry.productName,
     templateName: entry.template.name,
-    title: template.title,
-    tagline: template.tagline ?? null,
-    salesPageHtml: buildAcceleratorSalesPageHtml({
-      siteId: template.id,
-      entry,
-      copy,
-      affiliateUrl: affiliate,
-      themeConfig: template.theme_config,
-      previewMode: true,
-    }),
+    title: template?.title ?? copy.title,
+    tagline: template?.tagline ?? copy.subtitle ?? null,
+    salesPageHtml,
     offerPageUrl,
-    threads: (templateThreads ?? []).map((row) => ({
-      text: substituteThreadText((row as { text: string }).text, offerPageUrl),
-      angle: (row as { angle: string | null }).angle,
-      image_url: (row as { image_url: string | null }).image_url,
-    })),
+    threads,
   };
-}
-
-function substituteThreadText(text: string, offerPageUrl: string): string {
-  return substituteThreadLinkPlaceholder(text, offerPageUrl);
 }

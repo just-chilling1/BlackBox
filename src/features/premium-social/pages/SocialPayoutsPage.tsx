@@ -3,7 +3,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  Megaphone,
   Copy,
   Check,
   ChevronDown,
@@ -19,16 +18,12 @@ import {
   Timer,
 } from "lucide-react";
 import { clsx } from "clsx";
-import { brand } from "@/config/brand.config";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
-import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
-import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
-import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
-import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
-import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { PremiumBestPracticesSection } from "@/components/premium/PremiumBestPracticesSection";
 import { formatThreadVersionDate } from "@/features/publish-kit/lib/thread-batches";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
@@ -335,72 +330,67 @@ export default function SocialPayoutsPage() {
 
   if (loading) {
     return (
-      <PremiumPageLayout
+      <PremiumWorkflowShell
         title="Pin Multiplier"
-        subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
-        animate={false}
+        subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants, then copy and paste."
       >
         <PageSkeleton cards={2} />
-      </PremiumPageLayout>
+      </PremiumWorkflowShell>
     );
   }
 
   return (
-    <PremiumPageLayout
+    <PremiumWorkflowShell
       title="Pin Multiplier"
       subtitle="Bulk social posts — pick an offer, generate 10+ Facebook variants with different hooks and angles, then copy and paste."
-      footer={
-        <PremiumFooter>
-          Powered by {brand.productName}. Instant Income uses the bulk post engine.
-        </PremiumFooter>
+      training={{
+        vimeoId: "1215574185",
+        title: "Instant Income Training",
+        description:
+          "Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post.",
+        iframeTitle: "Instant Income training video",
+      }}
+      tip={
+        <>
+          Tip: Use a different variant per group — identical text across groups is a spam fingerprint.
+        </>
       }
     >
-      <PremiumVideoTutorial
-        vimeoId="1215574185"
-        title="Instant Income Training"
-        description="Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post."
-        iframeTitle="Instant Income training video"
-      />
-
-      <PremiumStepsSection
-        steps={[
-          {
-            num: "1",
-            title: "Select an offer",
-            desc: "Pick any sales page from your Offers Library — its link gets baked into every post automatically.",
-          },
-          {
-            num: "2",
-            title: "Generate post variants",
-            desc: "One click creates 10+ Facebook posts with different hooks and angles so you never sound repetitive.",
-          },
-          {
-            num: "3",
-            title: "Copy and post",
-            desc: "Copy your favorites and paste them into groups and pages. Every generation is saved as its own set.",
-          },
-        ]}
-      />
-
-      <PremiumBestPracticesSection
-        title="Facebook Posting Best Practices"
-        subtitle="Follow these and your posts keep reaching people instead of getting flagged."
-        items={FACEBOOK_BEST_PRACTICES}
-      />
+      <details className="group rounded-[var(--np-r-lg)] border border-[var(--np-line)] bg-[var(--np-surface)]">
+        <summary className="cursor-pointer list-none px-5 py-3 text-sm font-medium text-text-primary marker:content-none [&::-webkit-details-marker]:hidden">
+          Facebook posting best practices
+          <span className="ml-2 text-xs font-normal text-text-muted group-open:hidden">
+            (show)
+          </span>
+          <span className="ml-2 hidden text-xs font-normal text-text-muted group-open:inline">
+            (hide)
+          </span>
+        </summary>
+        <div className="border-t border-[var(--np-line)] px-2 pb-2 pt-1">
+          <PremiumBestPracticesSection
+            title="Keep posts reaching people"
+            subtitle="Follow these and your posts stay welcome instead of getting flagged."
+            items={FACEBOOK_BEST_PRACTICES}
+          />
+        </div>
+      </details>
 
       {offers.length === 0 ? (
         <EmptyState
           icon={FolderOpen}
           title="No offers yet"
           description="Create an offer first, then generate social posts for it."
-          action={{ label: "Create an offer", href: "/sales-offer-generator" }}
+          action={{ label: "Create an offer", href: "/activate" }}
         />
       ) : (
-        <PremiumControlCard
-          icon={Megaphone}
-          title="Bulk post generator"
-          description="One offer → many scroll-stopping posts with your link baked in."
-        >
+        <GlassPanel className="space-y-5 p-5 sm:p-6">
+          <div>
+            <p className="text-sm font-medium text-text-primary">Bulk post generator</p>
+            <p className="mt-1 text-xs text-text-muted">
+              One offer → many scroll-stopping posts with your link baked in.
+            </p>
+          </div>
+
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-text-primary">Select offer</span>
             <select
@@ -439,7 +429,7 @@ export default function SocialPayoutsPage() {
             </p>
           )}
 
-          {error && <PremiumErrorAlert message={error} />}
+          {error ? <PremiumErrorAlert message={error} /> : null}
 
           <div className="space-y-2">
             <button
@@ -455,13 +445,13 @@ export default function SocialPayoutsPage() {
                   ? "Generate new posts"
                   : "Generate posts"}
             </button>
-            {hasExistingPosts && !generating && (
+            {hasExistingPosts && !generating ? (
               <p className="text-xs text-text-muted">
                 Each generation is saved as a new post set — your older sets stay below.
               </p>
-            )}
+            ) : null}
           </div>
-        </PremiumControlCard>
+        </GlassPanel>
       )}
 
       <GenerationProgress
@@ -469,7 +459,7 @@ export default function SocialPayoutsPage() {
         label="Generating 10 scroll-stopping Facebook post variants..."
       />
 
-      {selectedSiteId && (loadingPosts || generations.length > 0) && (
+      {selectedSiteId && (loadingPosts || generations.length > 0) ? (
         <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-3">
           <h2 className="text-lg font-medium text-text-primary">
             {loadingPosts && generations.length === 0
@@ -478,7 +468,7 @@ export default function SocialPayoutsPage() {
           </h2>
 
           {loadingPosts && generations.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-xl border border-divider bg-canvas px-4 py-6 text-sm text-text-muted">
+            <div className="flex items-center gap-2 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)] px-4 py-6 text-sm text-text-muted">
               <Loader2 size={16} className="animate-spin" />
               Loading saved posts…
             </div>
@@ -500,7 +490,7 @@ export default function SocialPayoutsPage() {
             ))
           )}
         </section>
-      )}
-    </PremiumPageLayout>
+      ) : null}
+    </PremiumWorkflowShell>
   );
 }

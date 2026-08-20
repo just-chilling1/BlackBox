@@ -4,6 +4,7 @@ import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
 import {
   buildAcceleratorCatalog,
+  getAcceleratorCardMeta,
   ACCELERATOR_TARGET_COUNT,
 } from "@/features/premium-accelerator/lib/catalog";
 import { getAcceleratorSeedStatus } from "@/features/premium-accelerator/lib/seed-status";
@@ -31,7 +32,6 @@ export async function GET(request: Request) {
   let seedStatusError: string | null = null;
 
   try {
-    // Prefer user-scoped client so RLS applies; service role only if needed for seed status.
     const admin = getServiceRoleClient();
     const db = admin ?? supabase;
     const status = await getAcceleratorSeedStatus(db);
@@ -42,13 +42,19 @@ export async function GET(request: Request) {
     seedStatusError = e instanceof Error ? e.message : "Failed to read seed status";
   }
 
-  const templates = catalog.map((entry) => ({
-    id: entry.id,
-    niche: entry.nicheLabel,
-    productName: entry.productName,
-    templateName: entry.template.name,
-    seeded: seededKeys.has(`accelerator-${entry.id}`),
-  }));
+  const templates = catalog.map((entry) => {
+    const meta = getAcceleratorCardMeta(entry);
+    return {
+      id: entry.id,
+      niche: entry.nicheLabel,
+      productName: entry.productName,
+      templateName: entry.template.name,
+      seeded: seededKeys.has(`accelerator-${entry.id}`),
+      accent: meta.accent,
+      hook: meta.hook,
+      toneLabel: meta.toneLabel,
+    };
+  });
 
   return NextResponse.json(
     {
