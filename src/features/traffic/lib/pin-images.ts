@@ -99,9 +99,11 @@ export async function resolvePinBackgroundImages(params: {
   const results: (string | null)[] = [];
   const preferred = [
     ...new Set(
-      (params.preferredImages ?? []).filter(
-        (u): u is string => Boolean(u?.trim()) && /^https?:\/\//i.test(u.trim()) && !/picsum\.photos/i.test(u)
-      )
+      (params.preferredImages ?? []).filter((u): u is string => {
+        if (typeof u !== "string") return false;
+        const trimmed = u.trim();
+        return trimmed.length > 0 && /^https?:\/\//i.test(trimmed) && !/picsum\.photos/i.test(trimmed);
+      })
     ),
   ];
   const stockQueries = productStockQueries(params.productName, params.hobby);
