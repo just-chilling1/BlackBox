@@ -1,6 +1,7 @@
 "use client";
 
 import { clsx } from "clsx";
+import { useEffect, useState } from "react";
 import { getNavIcon } from "@/lib/nav-icons";
 import { brand } from "@/config/brand.config";
 
@@ -68,7 +69,27 @@ export function BrandLogo({
   const Icon = getNavIcon(brand.logo.icon);
   const useImage = brand.logo.type === "image";
   const isWordmarkImage = useImage && brand.logo.wordmark;
-  const imageSrc = useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
+  const primarySrc = useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
+  const fallbackSrc =
+    useImage && compact && brand.logo.iconSrcFallback
+      ? brand.logo.iconSrcFallback
+      : brand.logo.srcFallback;
+  const [imageSrc, setImageSrc] = useState(fallbackSrc ?? primarySrc);
+
+  useEffect(() => {
+    if (!useImage) return;
+    const preferred = primarySrc;
+    const fallback = fallbackSrc;
+    if (!preferred || !fallback || preferred === fallback) {
+      setImageSrc(preferred);
+      return;
+    }
+
+    const probe = new Image();
+    probe.onload = () => setImageSrc(preferred);
+    probe.onerror = () => setImageSrc(fallback);
+    probe.src = preferred;
+  }, [useImage, primarySrc, fallbackSrc]);
 
   return (
     <div
@@ -100,6 +121,9 @@ export function BrandLogo({
           }
           loading="eager"
           decoding="async"
+          onError={() => {
+            if (fallbackSrc && imageSrc !== fallbackSrc) setImageSrc(fallbackSrc);
+          }}
         />
       ) : (
         <div

@@ -1,5 +1,14 @@
 import type { NextConfig } from "next";
 import path from "path";
+import { execFileSync } from "child_process";
+
+try {
+  execFileSync(process.execPath, [path.join(__dirname, "scripts", "copy-logos-now.mjs")], {
+    stdio: "ignore",
+  });
+} catch {
+  // Logo install is best-effort; SVG fallbacks are committed in public/.
+}
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["geoip-country"],

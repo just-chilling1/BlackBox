@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "install:logos": "node scripts/copy-logos-now.mjs",
+    "predev": "node scripts/copy-logos-now.mjs",
+    "prebuild": "node scripts/copy-logos-now.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

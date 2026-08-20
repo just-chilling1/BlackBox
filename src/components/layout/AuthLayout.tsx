@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { brand } from "@/config/brand.config";
 import { BrandLogo } from "./BrandLogo";
 import { FloatingSupportButton } from "@/components/support/FloatingSupportButton";
 
@@ -13,8 +12,7 @@ interface AuthLayoutProps {
 export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
   return (
     <div
-      className="min-h-[100dvh] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden"
-      style={{ backgroundColor: brand.colors.authPage }}
+      className="auth-page-bg min-h-[100dvh] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}

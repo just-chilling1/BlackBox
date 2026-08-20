@@ -133,16 +133,18 @@ export async function GET() {
   const assets = siteList.map((site) => {
     const stats = exactMap[site.id] ?? { visits: 0, clicks: 0, pins: 0 };
     const ctr = stats.visits > 0 ? (stats.clicks / stats.visits) * 100 : 0;
+    const live = site.status === "live";
     return {
       id: site.id,
       product: site.product_name || site.title,
-      status: site.status === "live" ? "ACTIVE" : "DRAFT",
+      status: live ? "ACTIVE" : "DRAFT",
       traffic: stats.visits,
       affiliateClicks: stats.clicks,
       pins: stats.pins,
       ctr,
       href: `/money-page/${site.id}`,
-      publicPath: site.status === "live" ? sitePublicPath(site) : null,
+      publicPath: site.slug ? sitePublicPath(site) : null,
+      viewHref: live && site.slug ? sitePublicPath(site) : `/api/assets/${site.id}/preview`,
     };
   });
 

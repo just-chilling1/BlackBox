@@ -173,13 +173,31 @@ export async function POST(request: Request) {
   const priorPinImages = Object.values(
     (copyJson as { pinImages?: Record<string, string> } | null)?.pinImages ?? {}
   );
+
+  // Existing pin backgrounds on this asset — never reuse across batches.
+  const { data: existingPinRows } = await supabase
+    .from("site_pins")
+    .select("source_image_url")
+    .eq("site_id", siteId)
+    .eq("user_id", user.id);
+  const existingSourceImages = (existingPinRows ?? [])
+    .map((row) => (row as { source_image_url?: string | null }).source_image_url)
+    .filter((url): url is string => Boolean(url?.trim()));
+
   const backgrounds = await resolvePinBackgroundImages({
     pins: copies,
     productName,
     hobby: site.hobby,
     scrapeUrl,
     scrapeUrls,
-    preferredImages: [heroImage, ...priorPinImages],
+    // Hero only on the first-ever batch (not extra / regenerate refill slots).
+    preferredImages: extraBatch || regenerate ? [] : [heroImage],
+    excludeImages: [
+      // Always keep the money-page hero unique unless it's assigned as preferred above.
+      ...(extraBatch || regenerate ? [heroImage] : []),
+      ...priorPinImages,
+      ...existingSourceImages,
+    ],
     userId: user.id,
     supabase,
   });

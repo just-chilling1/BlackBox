@@ -136,6 +136,7 @@ export function pinRenderBackgroundCandidates(params: {
  *
  * Always prefer stock after the first preferred slot so every pin does not re-scrape
  * the same affiliate og:image (often stored under a different persisted URL than the hero).
+ * Every returned URL is unique within the batch (and vs preferred/prior images).
  */
 export async function resolvePinBackgroundImages(params: {
   pins: PinCopy[];
@@ -144,25 +145,67 @@ export async function resolvePinBackgroundImages(params: {
   scrapeUrl?: string | null;
   scrapeUrls?: string[];
   preferredImages?: (string | null | undefined)[];
+  /** Already-used backgrounds (prior batches) — never reuse these. */
+  excludeImages?: (string | null | undefined)[];
   userId: string;
   supabase: SupabaseClient;
 }): Promise<(string | null)[]> {
   const pool = new SiteImagePool();
   const results: (string | null)[] = [];
-  const preferred = [
-    ...new Set(
-      (params.preferredImages ?? []).filter((u): u is string => {
-        if (typeof u !== "string") return false;
-        const trimmed = u.trim();
-        return trimmed.length > 0 && /^https?:\/\//i.test(trimmed) && !/picsum\.photos/i.test(trimmed);
-      })
-    ),
-  ];
-  // Only the first preferred photo seeds pin 0 — reusing the full list made regenerations
-  // lock every pin to the same product hero when prior pinImages all pointed at it.
-  const preferredForPins = preferred.slice(0, 1);
+  const usedKeys = new Set<string>();
+
+  const collectHttpUrls = (list: (string | null | undefined)[] | undefined) =>
+    [
+      ...new Set(
+        (list ?? []).filter((u): u is string => {
+          if (typeof u !== "string") return false;
+          const trimmed = u.trim();
+          return trimmed.length > 0 && /^https?:\/\//i.test(trimmed) && !/picsum\.photos/i.test(trimmed);
+        })
+      ),
+    ];
+
+  const preferred = collectHttpUrls(params.preferredImages);
+  const excluded = collectHttpUrls(params.excludeImages);
+
+  const markUsed = (...urls: (string | null | undefined)[]) => {
+    for (const url of urls) {
+      if (!url?.trim()) continue;
+      usedKeys.add(normalizeImageUrl(url));
+      pool.seed([{ url, stockId: normalizeImageUrl(url) }]);
+    }
+  };
+
+  const isUsed = (url: string | null | undefined) =>
+    Boolean(url?.trim() && usedKeys.has(normalizeImageUrl(url)));
+
+  const heroForFirstPin = preferred[0] ?? null;
+
+  // Exclude prior/extra-batch images and preferred aliases — but leave the first-pin
+  // hero free so it can be claimed exactly once.
+  markUsed(...excluded, ...preferred.slice(1));
+  if (heroForFirstPin) {
+    // Still exclude hero aliases from stock/scrape for pins 1+ by seeding the pool
+    // without blocking the explicit pin-0 claim below.
+    pool.seed([{ url: heroForFirstPin, stockId: normalizeImageUrl(heroForFirstPin) }]);
+  }
+
   const stockQueries = productStockQueries(params.productName, params.hobby);
   const productTokens = productSearchTokens(params.productName);
+
+  const pickUnusedFallback = (pinIdx: number, headlineLen: number): string | null => {
+    for (let attempt = 0; attempt < 12; attempt++) {
+      const candidate = productPhotoFallbackUrl(
+        params.productName,
+        pinIdx * 17 + productTokens.length + headlineLen + attempt * 97
+      );
+      if (candidate && !isUsed(candidate)) return candidate;
+    }
+    const ai = params.productName.trim()
+      ? pollinationsProductUrl(params.productName, pinIdx * 50 + headlineLen + usedKeys.size)
+      : null;
+    return ai && !isUsed(ai) ? ai : null;
+  };
 
   for (let i = 0; i < params.pins.length; i++) {
     const pin = params.pins[i];
@@ -174,15 +217,14 @@ export async function resolvePinBackgroundImages(params: {
     let chosen: string | null = null;
 
     // 1) At most one known product photo (money-page hero) on the first pin.
-    if (i < preferredForPins.length) {
-      chosen = preferredForPins[i];
+    if (i === 0 && heroForFirstPin && !isUsed(heroForFirstPin)) {
+      chosen = heroForFirstPin;
     }
 
     // 2) Product-name Pixabay first (horizontal), scrape only as fallback.
     if (!chosen) {
       const queryList =
         stockQueries.length > 0 ? stockQueries : [params.productName.trim()].filter(Boolean);
-      // Rotate query by pin index so boxing/etc. don't all hit the same popular photo.
       const rotated = [
         ...queryList.slice(i % queryList.length),
         ...queryList.slice(0, i % queryList.length),
@@ -198,32 +240,36 @@ export async function resolvePinBackgroundImages(params: {
               "no text overlay",
             ].join(". "),
             hobby: params.hobby?.trim() || undefined,
-            // Only allow scrape after stock fails, and only for early pins — otherwise
-            // every pin re-pulls the same affiliate hero under a CDN URL the pool
-            // does not recognize as the persisted hero.
-            scrapeUrl: q === rotated.length - 1 ? params.scrapeUrl?.trim() || undefined : undefined,
-            scrapeUrls: q === rotated.length - 1 ? params.scrapeUrls : undefined,
+            // Avoid scrape for later pins — affiliate og:image is almost always the same hero.
+            scrapeUrl:
+              i === 0 && q === rotated.length - 1
+                ? params.scrapeUrl?.trim() || undefined
+                : undefined,
+            scrapeUrls:
+              i === 0 && q === rotated.length - 1 ? params.scrapeUrls : undefined,
             scrapeKeywords: keywords.length ? keywords : productTokens,
             pickOffset: i * 3 + q,
-            seedBoost: i * 11 + q * 3 + keywords.length + (pin.headline?.length ?? 0),
+            seedBoost: i * 11 + q * 3 + keywords.length + (pin.headline?.length ?? 0) + usedKeys.size,
             customQuery: rotated[q],
             orientation: "horizontal",
             preferStock: true,
             allowPicsumFallback: false,
           });
-          if (resolved.url) chosen = resolved.url;
+          if (resolved.url && !isUsed(resolved.url)) {
+            chosen = resolved.url;
+          }
         } catch {
           // try next query
         }
       }
     }
 
-    // 3) Product-tagged stock photo (no API key required) — unique per pin index.
-    if (!chosen) {
-      chosen = productPhotoFallbackUrl(params.productName, i * 17 + productTokens.length);
+    // 3) Product-tagged / AI fallback — must be unused.
+    if (!chosen || isUsed(chosen)) {
+      chosen = pickUnusedFallback(i, pin.headline?.length ?? 0);
     }
 
-    if (!chosen) {
+    if (!chosen || isUsed(chosen)) {
       results.push(null);
       continue;
     }
@@ -234,16 +280,45 @@ export async function resolvePinBackgroundImages(params: {
         userId: params.userId,
         supabase: params.supabase,
       });
-      const finalUrl = persisted ?? chosen;
+      let finalUrl = persisted ?? chosen;
+
+      // Persisted CDN path might collide with an earlier pin — force a fresh fallback.
+      if (isUsed(finalUrl) && normalizeImageUrl(finalUrl) !== normalizeImageUrl(chosen)) {
+        const retry = pickUnusedFallback(i, (pin.headline?.length ?? 0) + 13);
+        if (!retry) {
+          results.push(null);
+          continue;
+        }
+        chosen = retry;
+        const persistedRetry = await persistExternalImage({
+          url: retry,
+          userId: params.userId,
+          supabase: params.supabase,
+        });
+        finalUrl = persistedRetry ?? retry;
+        if (isUsed(finalUrl)) {
+          results.push(null);
+          continue;
+        }
+      } else if (isUsed(finalUrl)) {
+        results.push(null);
+        continue;
+      }
+
       results.push(finalUrl);
-      // Track both original and persisted URLs so scrape/CDN aliases stay excluded.
-      pool.seed([
-        { url: chosen, stockId: normalizeImageUrl(chosen) },
-        { url: finalUrl, stockId: normalizeImageUrl(finalUrl) },
-      ]);
+      markUsed(chosen, finalUrl);
     } catch {
+      if (isUsed(chosen)) {
+        results.push(null);
+        continue;
+      }
       results.push(chosen);
-      pool.seed([{ url: chosen, stockId: normalizeImageUrl(chosen) }]);
+      markUsed(chosen);
+    }
+
+    // If pin 0 skipped the hero, still burn it so later pins never reuse it.
+    if (i === 0 && heroForFirstPin && !isUsed(heroForFirstPin)) {
+      markUsed(heroForFirstPin);
     }
   }
 

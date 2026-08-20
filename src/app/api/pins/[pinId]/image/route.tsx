@@ -175,7 +175,7 @@ export async function GET(
               left: 0,
               width: "100%",
               height: "100%",
-              background: "linear-gradient(135deg, #0F2E2A 0%, #080C12 55%, #1e293b 100%)",
+              background: "linear-gradient(135deg, #0A1020 0%, #050508 55%, #121832 100%)",
             }}
           />
         )}
@@ -202,7 +202,7 @@ export async function GET(
             padding: "48px 56px",
           }}
         >
-          <div style={{ fontSize: 22, color: "#2DD4BF", marginBottom: 16, letterSpacing: 2 }}>
+          <div style={{ fontSize: 22, color: "#00F0FF", marginBottom: 16, letterSpacing: 2 }}>
             NULLPING CASH
           </div>
           <div style={{ fontSize: 48, lineHeight: 1.12, fontWeight: 700, maxWidth: 920 }}>

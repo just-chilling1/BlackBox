@@ -5,7 +5,7 @@ import { brand } from "@/config/brand.config";
 
 /** Brand signal — single-color glow palette */
 const GOLD = brand.colors.primary;
-const GOLD_RGB = "45, 212, 191";
+const GOLD_RGB = "0, 240, 255";
 
 interface Particle {
   x: number;

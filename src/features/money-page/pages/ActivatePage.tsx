@@ -3,7 +3,19 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  FileText,
+  Link2,
+  Loader2,
+  Package,
+  Pin,
+  Rocket,
+  Search,
+  Sparkles,
+} from "lucide-react";
+import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
@@ -19,6 +31,24 @@ const STAGES = [
   "Adding monetization links",
   "Preparing traffic sources",
   "Finalizing asset",
+] as const;
+
+const HOW_IT_WORKS = [
+  {
+    icon: Search,
+    title: "We research",
+    body: "Scrape the product and map who buys it.",
+  },
+  {
+    icon: FileText,
+    title: "We write",
+    body: "Build a full review money page ready to publish.",
+  },
+  {
+    icon: Rocket,
+    title: "You traffic",
+    body: "Generate Pinterest pins and send buyers in.",
+  },
 ] as const;
 
 function ActivateStageList({ stageIndex }: { stageIndex: number }) {
@@ -151,37 +181,126 @@ export default function ActivateAssetPage() {
   }
 
   if (phase === "ready") {
+    const assetLabel = productName.trim() || productUrl.trim() || "Your product";
+
     return (
       <WorkflowPage width="full">
         <WorkflowStepsBar current="money-page" assetId={assetId} />
         <PageHeader
           eyebrow="Step 2"
           title="Your asset is ready"
-          subtitle="NullPing built a money page for this product. Preview it, publish when you're happy, then generate Pinterest traffic."
+          subtitle={`${brand.productName} built a money page for this product. Preview it, publish when you're happy, then generate Pinterest traffic.`}
         />
-        <GlassPanel className="space-y-5 p-6 sm:p-8">
-          <div className="success-banner">
-            <CheckCircle2 size={18} />
-            Activation complete
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button type="button" className="btn-primary" onClick={() => router.push(`/money-page/${assetId}`)}>
-              View my asset
-            </button>
-            <button type="button" className="btn-secondary" onClick={() => router.push(`/traffic/${assetId}`)}>
-              Generate traffic
-            </button>
-          </div>
-        </GlassPanel>
+
+        <div className="activate-ready-layout">
+          <GlassPanel className="activate-ready-panel">
+            <div className="activate-ready-hero">
+              <span className="activate-ready-badge" aria-hidden>
+                <CheckCircle2 size={22} strokeWidth={2.25} />
+              </span>
+              <div className="activate-ready-hero-copy">
+                <p className="activate-ready-kicker">
+                  <Sparkles size={14} strokeWidth={1.75} aria-hidden />
+                  Activation complete
+                </p>
+                <h2 className="activate-ready-title">Money page unlocked</h2>
+                <p className="activate-ready-summary">
+                  <span className="activate-ready-product">{assetLabel}</span>
+                  {" "}is live in your workspace. Review the page, tweak anything you want, then move on to traffic.
+                </p>
+              </div>
+            </div>
+
+            <ol className="activate-ready-steps" aria-label="Next steps">
+              <li className="activate-ready-step is-current">
+                <span className="activate-ready-step-num" aria-hidden>
+                  1
+                </span>
+                <div className="activate-ready-step-copy">
+                  <p className="activate-ready-step-title">
+                    <FileText size={15} strokeWidth={1.75} aria-hidden />
+                    Preview your money page
+                  </p>
+                  <p className="activate-ready-step-body">
+                    Check headlines, review copy, and publish when it looks right.
+                  </p>
+                </div>
+              </li>
+              <li className="activate-ready-step">
+                <span className="activate-ready-step-num" aria-hidden>
+                  2
+                </span>
+                <div className="activate-ready-step-copy">
+                  <p className="activate-ready-step-title">
+                    <Pin size={15} strokeWidth={1.75} aria-hidden />
+                    Generate Pinterest traffic
+                  </p>
+                  <p className="activate-ready-step-body">
+                    Create pins that send buyers straight to your money page.
+                  </p>
+                </div>
+              </li>
+              <li className="activate-ready-step">
+                <span className="activate-ready-step-num" aria-hidden>
+                  3
+                </span>
+                <div className="activate-ready-step-copy">
+                  <p className="activate-ready-step-title">
+                    <Rocket size={15} strokeWidth={1.75} aria-hidden />
+                    Track results
+                  </p>
+                  <p className="activate-ready-step-body">
+                    Watch clicks and conversions as your asset starts working.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <div className="activate-ready-actions">
+              <button
+                type="button"
+                className="btn-primary activate-ready-primary"
+                onClick={() => router.push(`/money-page/${assetId}`)}
+              >
+                View my asset
+                <ArrowRight size={16} strokeWidth={2.25} />
+              </button>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => router.push(`/traffic/${assetId}`)}
+              >
+                Generate traffic
+              </button>
+            </div>
+          </GlassPanel>
+
+          <aside className="activate-ready-aside" aria-label="Quick tips">
+            <div className="activate-aside-card">
+              <p className="activate-aside-eyebrow">Recommended</p>
+              <p className="activate-ready-aside-lead">
+                Open the money page first. Small edits now make traffic convert better later.
+              </p>
+              <ul className="activate-aside-list">
+                <li>Confirm the product name &amp; offer</li>
+                <li>Check the CTA / affiliate link</li>
+                <li>Publish, then generate pins</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
       </WorkflowPage>
     );
   }
 
   if (phase === "activating") {
     return (
-      <WorkflowPage width="full">
+      <WorkflowPage width="wide">
         <WorkflowStepsBar current="activate" />
-        <PageHeader title="Activating your asset..." subtitle="Sit tight — NullPing is doing the work." />
+        <PageHeader
+          title="Activating your asset…"
+          subtitle={`Sit tight — ${brand.productName} is doing the work.`}
+        />
         <GlassPanel className="activate-progress-panel space-y-5 p-6 sm:p-8">
           <AiLoadingBar label={currentLabel} progress={progressPct} active eta="Working…" />
           <ActivateStageList stageIndex={stageIndex} />
@@ -196,55 +315,123 @@ export default function ActivateAssetPage() {
       <PageHeader
         eyebrow="Step 1"
         title="What do you want to promote?"
-        subtitle="Paste a product URL or type the name. NullPing handles the rest — no prompts, no SEO settings."
+        subtitle={`Paste a product URL or type the name. ${brand.productName} handles the rest — no prompts, no SEO settings.`}
       />
-      <GlassPanel className="space-y-6 p-6 sm:p-8 lg:p-10">
-        <div className="flex items-start gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/40 p-4 sm:p-5">
-          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-pulse-500" />
-          <p className="text-sm leading-relaxed text-ink-2 sm:text-[15px]">
-            NullPing will scrape the product, write a full review page, and prepare it for publishing.
-          </p>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-          <label className="block">
-            <span className="field-label">Paste product URL</span>
-            <input
-              className="input-base w-full"
-              value={productUrl}
-              onChange={(e) => setProductUrl(e.target.value)}
-              placeholder="https://"
-            />
-          </label>
-          <label className="block">
-            <span className="field-label">Enter product name</span>
-            <input
-              className="input-base w-full"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="Best sleep supplement"
-            />
-          </label>
-        </div>
-        <div className="or-divider lg:hidden">or</div>
-        <p className="hidden text-center text-[13px] font-medium uppercase tracking-[0.14em] text-ink-5 lg:block">
-          Use a URL, a product name, or both
-        </p>
-        <label className="block max-w-3xl">
-          <span className="field-label">Affiliate link (optional)</span>
-          <input
-            className="input-base w-full"
-            value={affiliateUrl}
-            onChange={(e) => setAffiliateUrl(e.target.value)}
-            placeholder="Your affiliate URL"
-          />
-        </label>
-        {error ? <div className="alert-banner">{error}</div> : null}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <button type="button" className="btn-primary sm:min-w-[14rem]" onClick={() => void activate()}>
-            Activate asset
-          </button>
-        </div>
-      </GlassPanel>
+
+      <div className="activate-layout">
+        <GlassPanel className="activate-form-panel">
+          <div className="activate-how">
+            {HOW_IT_WORKS.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.title} className="activate-how-step">
+                  <span className="activate-how-index" aria-hidden>
+                    {index + 1}
+                  </span>
+                  <div className="activate-how-copy">
+                    <p className="activate-how-title">
+                      <Icon size={14} strokeWidth={1.75} className="activate-how-inline-icon" aria-hidden />
+                      {step.title}
+                    </p>
+                    <p className="activate-how-body">{step.body}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="activate-form-body">
+            <section className="activate-field-block">
+              <div className="activate-field-heading">
+                <Package size={16} strokeWidth={1.75} className="text-pulse-500" aria-hidden />
+                <div>
+                  <h2 className="activate-field-title">Product details</h2>
+                  <p className="activate-field-hint">Provide a URL, a name, or both.</p>
+                </div>
+              </div>
+
+              <label className="activate-field">
+                <span className="field-label">Product URL</span>
+                <input
+                  className="input-base w-full"
+                  value={productUrl}
+                  onChange={(e) => setProductUrl(e.target.value)}
+                  placeholder="https://example.com/product"
+                  autoComplete="url"
+                  inputMode="url"
+                />
+              </label>
+
+              <div className="or-divider" role="separator">
+                or
+              </div>
+
+              <label className="activate-field">
+                <span className="field-label">Product name</span>
+                <input
+                  className="input-base w-full"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                  placeholder="Best sleep supplement"
+                  autoComplete="off"
+                />
+              </label>
+            </section>
+
+            <div className="form-section-divider" aria-hidden />
+
+            <section className="activate-field-block activate-field-block--optional">
+              <div className="activate-field-heading">
+                <Link2 size={16} strokeWidth={1.75} className="text-ink-4" aria-hidden />
+                <div>
+                  <h2 className="activate-field-title">
+                    Affiliate link <span className="activate-optional-badge">Optional</span>
+                  </h2>
+                  <p className="activate-field-hint">
+                    We’ll wire this into the money page CTA when you have one.
+                  </p>
+                </div>
+              </div>
+
+              <label className="activate-field">
+                <span className="sr-only">Affiliate link</span>
+                <input
+                  className="input-base w-full"
+                  value={affiliateUrl}
+                  onChange={(e) => setAffiliateUrl(e.target.value)}
+                  placeholder="https://your-affiliate-link.com"
+                  autoComplete="url"
+                  inputMode="url"
+                />
+              </label>
+            </section>
+
+            {error ? <div className="alert-banner">{error}</div> : null}
+
+            <div className="activate-form-footer">
+              <p className="activate-form-footer-note">
+                Usually takes under a minute. You can edit everything after.
+              </p>
+              <button type="button" className="btn-primary activate-submit" onClick={() => void activate()}>
+                Activate asset
+                <ArrowRight size={16} strokeWidth={2.25} />
+              </button>
+            </div>
+          </div>
+        </GlassPanel>
+
+        <aside className="activate-aside" aria-label="What you get">
+          <div className="activate-aside-card">
+            <p className="activate-aside-eyebrow">What you get</p>
+            <ul className="activate-aside-list">
+              <li>Full product review money page</li>
+              <li>Buyer-focused headlines &amp; structure</li>
+              <li>Monetization CTA ready to publish</li>
+              <li>Traffic workflow unlocked next</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
     </WorkflowPage>
   );
 }

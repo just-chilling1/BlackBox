@@ -28,12 +28,13 @@ export const metadata: Metadata = {
   description: brand.metadata.description,
   icons: {
     icon: [
+      { url: "/logo-icon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon.png", type: "image/png", sizes: "32x32" },
       { url: "/logo-icon.png", type: "image/png", sizes: "192x192" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-    shortcut: "/favicon.ico",
+    shortcut: "/logo-icon.svg",
   },
   appleWebApp: {
     capable: true,

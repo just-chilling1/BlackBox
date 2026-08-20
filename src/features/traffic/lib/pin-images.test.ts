@@ -48,4 +48,12 @@ describe("productPhotoFallbackUrl", () => {
     assert.ok(b);
     assert.notEqual(a, b);
   });
+
+  it("produces distinct locks across a typical pin batch", () => {
+    const urls = Array.from({ length: 8 }, (_, i) =>
+      productPhotoFallbackUrl("boxing gloves", i * 17 + i * 97)
+    );
+    const unique = new Set(urls);
+    assert.equal(unique.size, urls.length);
+  });
 });
