@@ -108,10 +108,7 @@ export function PremiumFeatureNavList({
               >
                 <span className="premium-sidebar-icon-chip">
                   <Icon
-                    className={clsx(
-                      "text-pulse-500",
-                      mobile ? "h-4 w-4" : "h-[18px] w-[18px]"
-                    )}
+                    className={mobile ? "h-4 w-4" : "h-[18px] w-[18px]"}
                     strokeWidth={1.75}
                   />
                 </span>

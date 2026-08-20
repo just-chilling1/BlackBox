@@ -1378,16 +1378,32 @@ html[data-sidebar="collapsed"] {
 
   .premium-sidebar-item {
     position: relative;
-    border: 1px solid var(--np-line);
+    border: 1px solid color-mix(in srgb, var(--np-line) 90%, transparent);
     border-radius: var(--np-r-md);
     min-height: 44px;
     color: var(--np-ink-2);
-    background: rgba(20, 28, 37, 0.85);
+    background: color-mix(in srgb, var(--np-surface) 55%, transparent);
     transition:
       background-color var(--np-dur) var(--np-ease),
       border-color var(--np-dur) var(--np-ease),
       box-shadow var(--np-dur) var(--np-ease),
       color var(--np-dur) var(--np-ease);
+  }
+
+  .premium-sidebar-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2.5px;
+    height: 0;
+    border-radius: 999px;
+    background: var(--np-grad-pulse);
+    transform: translateY(-50%);
+    opacity: 0;
+    transition:
+      height var(--np-dur) var(--np-ease),
+      opacity var(--np-dur) var(--np-ease);
   }
 
   .premium-sidebar-icon-chip {
@@ -1398,8 +1414,8 @@ html[data-sidebar="collapsed"] {
     height: 2rem;
     flex-shrink: 0;
     border-radius: var(--np-r-md);
-    background: var(--np-pulse-200);
-    border: 1px solid var(--np-line-pulse);
+    background: var(--np-pulse-100);
+    border: 1px solid color-mix(in srgb, var(--np-line-pulse) 70%, transparent);
     transition:
       background-color var(--np-dur) var(--np-ease),
       border-color var(--np-dur) var(--np-ease),
@@ -1407,37 +1423,43 @@ html[data-sidebar="collapsed"] {
   }
 
   .premium-sidebar-item svg {
-    color: var(--np-pulse-700);
+    color: var(--np-pulse-500);
   }
 
   .premium-sidebar-item:hover:not(.is-active) {
-    background: var(--np-surface);
-    border-color: var(--np-line-pulse);
-    box-shadow: var(--np-shadow-hover);
-    color: var(--np-ink);
+    background: color-mix(in srgb, var(--np-surface) 88%, transparent);
+    border-color: color-mix(in srgb, var(--np-line-pulse) 55%, transparent);
+    color: var(--np-ink-strong);
   }
 
   .premium-sidebar-item:hover:not(.is-active) .premium-sidebar-icon-chip {
-    background: var(--np-grad-pulse);
-    border-color: transparent;
-    box-shadow: var(--np-shadow-pulse);
+    background: var(--np-pulse-200);
+    border-color: var(--np-line-pulse);
+  }
+
+  .premium-sidebar-item:hover:not(.is-active) svg {
+    color: var(--np-pulse-700);
   }
 
   .premium-sidebar-item.is-active {
-    background: var(--np-surface);
-    color: var(--np-ink);
-    border-color: var(--np-line-pulse);
-    box-shadow: var(--np-shadow-hover);
+    background: color-mix(in srgb, var(--np-signal-100) 90%, var(--np-surface));
+    color: var(--np-ink-strong);
+    border-color: color-mix(in srgb, var(--np-line-pulse) 65%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--np-pulse-500) 10%, transparent);
+  }
+
+  .premium-sidebar-item.is-active::before {
+    height: 58%;
+    opacity: 1;
   }
 
   .premium-sidebar-item.is-active .premium-sidebar-icon-chip {
-    background: var(--np-grad-pulse);
-    border-color: transparent;
-    box-shadow: var(--np-shadow-pulse);
+    background: var(--np-pulse-200);
+    border-color: var(--np-line-pulse);
   }
 
   .premium-sidebar-item.is-active svg {
-    color: var(--np-pulse-900);
+    color: var(--np-pulse-700);
   }
 
   .sidebar-sign-out {

@@ -1,12 +1,13 @@
 import { clsx } from "clsx";
 import type { ReactNode } from "react";
 
-type WorkflowWidth = "narrow" | "default" | "wide";
+type WorkflowWidth = "narrow" | "default" | "wide" | "full";
 
 const widthClass: Record<WorkflowWidth, string> = {
   narrow: "max-w-xl",
   default: "max-w-4xl",
-  wide: "max-w-5xl",
+  wide: "max-w-6xl",
+  full: "max-w-7xl",
 };
 
 export function WorkflowPage({

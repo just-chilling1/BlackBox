@@ -152,14 +152,14 @@ export default function ActivateAssetPage() {
 
   if (phase === "ready") {
     return (
-      <WorkflowPage width="default">
+      <WorkflowPage width="full">
         <WorkflowStepsBar current="money-page" assetId={assetId} />
         <PageHeader
           eyebrow="Step 2"
           title="Your asset is ready"
           subtitle="NullPing built a money page for this product. Preview it, publish when you're happy, then generate Pinterest traffic."
         />
-        <GlassPanel className="space-y-5 p-6 sm:p-7">
+        <GlassPanel className="space-y-5 p-6 sm:p-8">
           <div className="success-banner">
             <CheckCircle2 size={18} />
             Activation complete
@@ -179,10 +179,10 @@ export default function ActivateAssetPage() {
 
   if (phase === "activating") {
     return (
-      <WorkflowPage width="narrow">
+      <WorkflowPage width="full">
         <WorkflowStepsBar current="activate" />
         <PageHeader title="Activating your asset..." subtitle="Sit tight — NullPing is doing the work." />
-        <GlassPanel className="activate-progress-panel space-y-5 p-6 sm:p-7">
+        <GlassPanel className="activate-progress-panel space-y-5 p-6 sm:p-8">
           <AiLoadingBar label={currentLabel} progress={progressPct} active eta="Working…" />
           <ActivateStageList stageIndex={stageIndex} />
         </GlassPanel>
@@ -191,40 +191,45 @@ export default function ActivateAssetPage() {
   }
 
   return (
-    <WorkflowPage width="narrow">
+    <WorkflowPage width="full">
       <WorkflowStepsBar current="activate" />
       <PageHeader
         eyebrow="Step 1"
         title="What do you want to promote?"
         subtitle="Paste a product URL or type the name. NullPing handles the rest — no prompts, no SEO settings."
       />
-      <GlassPanel className="space-y-5 p-6 sm:p-7">
-        <div className="flex items-start gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/40 p-4">
+      <GlassPanel className="space-y-6 p-6 sm:p-8 lg:p-10">
+        <div className="flex items-start gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/40 p-4 sm:p-5">
           <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-pulse-500" />
-          <p className="text-sm leading-relaxed text-ink-2">
+          <p className="text-sm leading-relaxed text-ink-2 sm:text-[15px]">
             NullPing will scrape the product, write a full review page, and prepare it for publishing.
           </p>
         </div>
-        <label className="block">
-          <span className="field-label">Paste product URL</span>
-          <input
-            className="input-base w-full"
-            value={productUrl}
-            onChange={(e) => setProductUrl(e.target.value)}
-            placeholder="https://"
-          />
-        </label>
-        <div className="or-divider">or</div>
-        <label className="block">
-          <span className="field-label">Enter product name</span>
-          <input
-            className="input-base w-full"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            placeholder="Best sleep supplement"
-          />
-        </label>
-        <label className="block">
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+          <label className="block">
+            <span className="field-label">Paste product URL</span>
+            <input
+              className="input-base w-full"
+              value={productUrl}
+              onChange={(e) => setProductUrl(e.target.value)}
+              placeholder="https://"
+            />
+          </label>
+          <label className="block">
+            <span className="field-label">Enter product name</span>
+            <input
+              className="input-base w-full"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              placeholder="Best sleep supplement"
+            />
+          </label>
+        </div>
+        <div className="or-divider lg:hidden">or</div>
+        <p className="hidden text-center text-[13px] font-medium uppercase tracking-[0.14em] text-ink-5 lg:block">
+          Use a URL, a product name, or both
+        </p>
+        <label className="block max-w-3xl">
           <span className="field-label">Affiliate link (optional)</span>
           <input
             className="input-base w-full"
@@ -234,9 +239,11 @@ export default function ActivateAssetPage() {
           />
         </label>
         {error ? <div className="alert-banner">{error}</div> : null}
-        <button type="button" className="btn-primary w-full" onClick={() => void activate()}>
-          Activate asset
-        </button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <button type="button" className="btn-primary sm:min-w-[14rem]" onClick={() => void activate()}>
+            Activate asset
+          </button>
+        </div>
       </GlassPanel>
     </WorkflowPage>
   );
