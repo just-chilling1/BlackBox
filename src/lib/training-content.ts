@@ -43,6 +43,13 @@ export function getTrainingStartCta(): {
   label: string;
   icon: LucideIcon;
 } {
+  if (isFeatureEnabled("asset-activator")) {
+    return {
+      href: trainingCta.href,
+      label: trainingCta.buttonLabel,
+      icon: Rocket,
+    };
+  }
   if (isFeatureEnabled("blog-builder")) {
     return {
       href: "/sales-offer-generator",

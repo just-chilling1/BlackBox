@@ -1767,21 +1767,32 @@ html[data-sidebar="collapsed"] {
     border: 1px solid var(--np-line);
     background: var(--np-surface-field);
     color: var(--np-ink);
+    --theme-accent: var(--np-pulse-500);
     transition:
       border-color 160ms ease,
       background-color 160ms ease,
-      box-shadow 160ms ease;
+      box-shadow 160ms ease,
+      transform 120ms ease;
   }
 
   .money-theme-card:hover:not(:disabled):not(.is-selected) {
-    border-color: var(--np-ink-5);
-    background: color-mix(in srgb, var(--np-surface-field) 70%, var(--np-ink-6));
+    border-color: color-mix(in srgb, var(--theme-accent) 32%, var(--np-line));
+    background: color-mix(in srgb, var(--np-surface-field) 90%, var(--theme-accent));
+  }
+
+  .money-theme-card:active:not(:disabled) {
+    transform: scale(0.985);
   }
 
   .money-theme-card.is-selected {
-    border-color: var(--np-pulse-500);
-    background: color-mix(in srgb, var(--np-surface-field) 82%, #042f3a);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--np-pulse-500) 45%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 58%, var(--np-line));
+    background: color-mix(in srgb, var(--np-surface-field) 84%, var(--theme-accent));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-accent) 28%, transparent);
+  }
+
+  .money-theme-card:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 55%, white);
+    outline-offset: 2px;
   }
 
   .money-theme-card:disabled {
@@ -1791,24 +1802,32 @@ html[data-sidebar="collapsed"] {
 
   .money-theme-swatch {
     position: relative;
+    display: inline-flex;
     flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
     border-radius: 999px;
-    border: 2px solid rgba(230, 237, 243, 0.35);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
     transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
   }
 
   .money-theme-card:hover:not(:disabled) .money-theme-swatch {
-    transform: scale(1.06);
+    transform: scale(1.05);
   }
 
   .money-theme-swatch.is-selected {
-    border-color: var(--np-pulse-500);
+    border-color: rgba(255, 255, 255, 0.92);
     box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--np-pulse-500) 28%, transparent),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+      0 0 0 3px color-mix(in srgb, var(--theme-accent) 30%, transparent),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .money-theme-swatch-check {
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
   }
 
   .money-theme-copy {
@@ -2010,35 +2029,49 @@ html[data-sidebar="collapsed"] {
     @apply p-0 overflow-hidden;
   }
 
-  /* Dashboard bonus ad â€” distinct from standard cards and btn-primary */
+  /* Dashboard bonus ad — offer surface, distinct from standard cards */
   .dashboard-bonus-ad {
     position: relative;
     overflow: hidden;
     border-radius: var(--np-r-lg);
-    border: 2px solid var(--np-line-pulse);
-    background: var(--np-grad-tint);
+    border: 1px solid var(--np-line-offer);
+    background: var(--np-grad-offer);
     box-shadow:
       var(--np-shadow-card),
-      0 0 0 1px rgba(240, 212, 138, 0.12);
+      inset 0 1px 0 rgba(110, 231, 183, 0.08);
+  }
+
+  .dashboard-bonus-ad::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 8%,
+      rgba(110, 231, 183, 0.35) 50%,
+      transparent 92%
+    );
   }
 
   .dashboard-bonus-ad-shimmer {
     pointer-events: none;
     position: absolute;
     inset: 0;
-    opacity: 0.5;
+    opacity: 0.45;
     background: linear-gradient(
       115deg,
       transparent 0%,
       transparent 46%,
-      rgba(240, 212, 138, 0.04) 49.5%,
-      rgba(201, 151, 31, 0.06) 50%,
-      rgba(240, 212, 138, 0.04) 50.5%,
+      rgba(110, 231, 183, 0.05) 49.5%,
+      rgba(52, 211, 153, 0.08) 50%,
+      rgba(110, 231, 183, 0.05) 50.5%,
       transparent 54%,
       transparent 100%
     );
-    background-size: 300% 100%;
-    animation: dashboard-ad-shimmer 20s ease-in-out infinite;
+    background-size: 280% 100%;
+    animation: dashboard-ad-shimmer 22s ease-in-out infinite;
   }
 
   .dashboard-bonus-ad-inner {
@@ -2053,64 +2086,82 @@ html[data-sidebar="collapsed"] {
 
   @media (min-width: 640px) {
     .dashboard-bonus-ad-inner {
-      padding: 2rem 2rem 2.25rem;
+      padding: 2.125rem 2.25rem 2.375rem;
     }
   }
 
   .dashboard-bonus-ad-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    margin-bottom: 1rem;
-    padding: 0.375rem 0.875rem;
+    gap: 0.4rem;
+    margin-bottom: 1.125rem;
+    padding: 0.4rem 0.95rem;
     border-radius: var(--np-r-pill);
-    background: var(--np-grad-ink);
-    color: #fffdf8;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    border: 1px solid rgba(110, 231, 183, 0.22);
+    background: rgba(8, 12, 18, 0.72);
+    color: var(--np-ink-strong);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     box-shadow: var(--np-shadow-raised);
+  }
+
+  .dashboard-bonus-ad-badge-icon {
+    color: var(--np-success);
+    flex-shrink: 0;
   }
 
   .dashboard-bonus-ad-copy {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.05rem;
     max-width: 42rem;
     margin-inline: auto;
     font-size: 15px;
-    line-height: 1.65;
+    line-height: 1.7;
     color: var(--np-ink-2);
   }
 
   .dashboard-bonus-ad-amount {
-    font-weight: 500;
-    font-size: 1.12em;
+    font-weight: 600;
+    font-size: 1.1em;
     line-height: 1.4;
-    color: var(--np-pulse-700);
+    color: var(--np-success);
+    letter-spacing: -0.01em;
+  }
+
+  .dashboard-bonus-ad-emphasis {
+    font-weight: 600;
+    color: var(--np-ink-strong);
   }
 
   .dashboard-bonus-ad-flame {
-    color: #7a1e28;
+    color: #fb7185;
+    filter: drop-shadow(0 0 6px rgba(251, 113, 133, 0.35));
   }
 
   .dashboard-bonus-ad-highlight {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.625rem;
-    margin-top: 0.25rem;
+    gap: 0.75rem;
+    margin-top: 0.35rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--np-r-md);
+    border: 1px solid rgba(110, 231, 183, 0.14);
+    background: rgba(8, 12, 18, 0.28);
     font-family: var(--font-brand);
-    font-size: 19px;
-    line-height: 1.35;
-    font-weight: 400;
-    color: var(--np-ink);
+    font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--np-ink-strong);
     text-wrap: balance;
   }
 
   .dashboard-bonus-ad-closing {
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--np-ink-2);
     text-wrap: balance;
   }
@@ -2119,9 +2170,9 @@ html[data-sidebar="collapsed"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.85rem;
     width: 100%;
-    margin-top: 1.5rem;
+    margin-top: 1.625rem;
   }
 
   .dashboard-bonus-ad-cta {
@@ -2131,42 +2182,67 @@ html[data-sidebar="collapsed"] {
     justify-content: center;
     width: 100%;
     max-width: 36rem;
-    min-height: 3.75rem;
-    padding: 0 2rem;
+    min-height: 3.65rem;
+    padding: 0.85rem 1.75rem;
     border-radius: var(--np-r-pill);
-    border: 2px solid rgba(240, 212, 138, 0.45);
-    background: var(--np-grad-ink);
-    color: #fffdf8;
+    border: 1px solid rgba(110, 231, 183, 0.38);
+    background: linear-gradient(165deg, #141c24 0%, #080c12 100%);
+    color: var(--np-ink-strong);
     font-size: 15px;
-    font-weight: 500;
-    line-height: 1.25;
+    font-weight: 600;
+    line-height: 1.3;
     text-align: center;
     text-wrap: balance;
     box-shadow:
-      var(--np-shadow-raised),
-      0 0 0 1px rgba(26, 25, 22, 0.2),
-      0 0 24px -6px rgba(201, 151, 31, 0.55);
+      0 1px 0 rgba(110, 231, 183, 0.12) inset,
+      0 10px 28px -16px rgba(5, 150, 105, 0.55),
+      var(--np-shadow-raised);
     overflow: hidden;
-    animation: dashboard-ad-cta-glow 2.8s ease-in-out infinite;
     transition:
       border-color var(--np-dur) var(--np-ease),
       box-shadow var(--np-dur) var(--np-ease),
-      filter var(--np-dur) var(--np-ease),
-      transform 220ms var(--np-ease);
+      background-color var(--np-dur) var(--np-ease),
+      transform var(--np-dur) var(--np-ease);
   }
 
   .dashboard-bonus-ad-cta:hover {
-    border-color: rgba(240, 212, 138, 0.65);
-    filter: brightness(1.06);
-    transform: scale(1.04);
+    border-color: rgba(110, 231, 183, 0.62);
+    transform: translateY(-1px);
     box-shadow:
-      var(--np-shadow-raised),
-      0 0 0 1px rgba(240, 212, 138, 0.25),
-      0 0 32px -4px rgba(201, 151, 31, 0.7);
+      0 1px 0 rgba(110, 231, 183, 0.18) inset,
+      0 14px 32px -14px rgba(52, 211, 153, 0.45),
+      var(--np-shadow-raised);
+  }
+
+  .dashboard-bonus-ad-cta:hover .dashboard-bonus-ad-cta-arrow {
+    transform: translateX(3px);
   }
 
   .dashboard-bonus-ad-cta:active {
-    transform: scale(1.02);
+    transform: translateY(0);
+    box-shadow:
+      0 1px 0 rgba(110, 231, 183, 0.1) inset,
+      0 6px 18px -12px rgba(5, 150, 105, 0.4),
+      var(--np-shadow-raised);
+  }
+
+  .dashboard-bonus-ad-cta:focus-visible {
+    outline: 2px solid rgba(110, 231, 183, 0.55);
+    outline-offset: 3px;
+  }
+
+  .dashboard-bonus-ad-cta-label {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+  }
+
+  .dashboard-bonus-ad-cta-arrow {
+    color: var(--np-success);
+    transition: transform var(--np-dur) var(--np-ease);
   }
 
   .dashboard-bonus-ad-cta-shine {
@@ -2175,22 +2251,22 @@ html[data-sidebar="collapsed"] {
     background: linear-gradient(
       105deg,
       transparent 0%,
-      transparent 38%,
-      rgba(240, 212, 138, 0.22) 46%,
-      rgba(255, 253, 248, 0.35) 50%,
-      rgba(240, 212, 138, 0.22) 54%,
-      transparent 62%,
+      transparent 40%,
+      rgba(110, 231, 183, 0.12) 48%,
+      rgba(241, 245, 249, 0.16) 50%,
+      rgba(110, 231, 183, 0.12) 52%,
+      transparent 60%,
       transparent 100%
     );
     background-size: 220% 100%;
-    animation: dashboard-ad-cta-shine 3.2s ease-in-out infinite;
+    animation: dashboard-ad-cta-shine 4.5s ease-in-out infinite;
   }
 
   .dashboard-bonus-ad-urgency {
     font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.03em;
-    color: var(--np-danger);
+    letter-spacing: 0.02em;
+    color: #fda4af;
     text-wrap: balance;
   }
 
@@ -2209,22 +2285,6 @@ html[data-sidebar="collapsed"] {
     }
     100% {
       background-position: -200% 0;
-    }
-  }
-
-  @keyframes dashboard-ad-cta-glow {
-    0%,
-    100% {
-      box-shadow:
-        var(--np-shadow-raised),
-        0 0 0 1px rgba(26, 25, 22, 0.2),
-        0 0 20px -8px rgba(201, 151, 31, 0.45);
-    }
-    50% {
-      box-shadow:
-        var(--np-shadow-raised),
-        0 0 0 1px rgba(240, 212, 138, 0.22),
-        0 0 36px -4px rgba(201, 151, 31, 0.75);
     }
   }
 
@@ -3017,7 +3077,6 @@ html[data-sidebar="collapsed"] {
   .premium-nav-sparkle-badge,
   .premium-nav-sparkle,
   .dashboard-bonus-ad-shimmer,
-  .dashboard-bonus-ad-cta,
   .dashboard-bonus-ad-cta-shine {
     animation: none !important;
   }

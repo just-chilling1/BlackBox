@@ -3,31 +3,37 @@
  * Add Vimeo IDs in training.config.ts (platform) and below (premium) when videos are uploaded.
  */
 
+import { brand } from "./brand.config";
 import { faqSections } from "./faq.config";
+
+const productName = brand.productName;
 
 export const trainingWorkflowSteps = [
   {
     step: 1,
-    title: "Sales Offer Generator",
-    page: "/sales-offer-generator",
-    description: "Paste your affiliate link, pick a niche and template, then launch your questionnaire site.",
-    tips: ["Save links to Links Library on Step 1 so you never re-paste the same URL."],
+    title: "Activate Asset",
+    page: "/activate",
+    description:
+      "Paste a product URL or enter a product name. NullPing scrapes the offer and builds your money page.",
+    tips: ["Add your affiliate link at activate time so CTAs are ready when you publish."],
     examples: [] as string[],
   },
   {
     step: 2,
-    title: "X-Power Promotions",
-    page: "/promote",
-    description: "Select a live offer and generate a ten-post X story thread that drives traffic to your quiz.",
-    tips: ["You need at least one live offer before threads can attach."],
+    title: "Publish Money Page",
+    page: "/activate",
+    description:
+      "Preview the page, choose a theme, tweak copy if needed, then publish your live shareable link.",
+    tips: ["Publish before generating pins — traffic should land on a live money page."],
     examples: [] as string[],
   },
   {
     step: 3,
-    title: "Links & Offers Library",
-    page: "/offers",
-    description: "Reuse saved URLs and open any live offer to promote, thread, or scale with premium tools.",
-    tips: ["Start every promotion session from Offers Library — not old browser tabs."],
+    title: "Traffic & Results",
+    page: "/results",
+    description:
+      "Generate Pinterest pins aimed at your money page, post them, then check Results for real visits and clicks.",
+    tips: ["Results only update after real traffic — give pins time to get impressions."],
     examples: [] as string[],
   },
 ] as const;
@@ -36,50 +42,50 @@ export const trainingFaqSections = faqSections;
 
 export const trainingProTips = [
   {
-    title: "Launch before you optimize",
-    text: "Your first offer does not need a perfect template — pick the cleanest mobile layout and publish tonight.",
+    title: "Publish before you polish",
+    text: "Your first money page does not need perfect copy. Activate, publish, and send traffic — refine themes and wording after you see Results.",
   },
   {
-    title: "One hub for promotion",
-    text: "After launch, always open Offers Library to view your site, generate threads, or attach premium tools.",
+    title: "Pins need a live destination",
+    text: "Always publish the money page first, then generate Pinterest pins so every pin points at a working URL.",
   },
   {
-    title: "Name your links clearly",
-    text: 'In Links Library use labels like "Keto supplement — Digistore" instead of "link2" so scaling stays organized.',
+    title: "Use your affiliate link",
+    text: "Add your affiliate URL on activate or in the money page editor so CTA buttons can credit you when someone buys.",
   },
 ] as const;
 
 export const trainingQuickStartChecklist = [
   "Watch the three Start Here videos on your Dashboard",
-  "Complete Sales Offer Generator and publish one live offer",
-  "Generate an X story thread from X-Power Promotions",
-  "Save your best affiliate URLs in Links Library for reuse",
+  "Activate your first asset and publish the money page",
+  "Generate Pinterest pins and post them to drive traffic",
+  "Open Results to confirm real visits and affiliate clicks",
 ] as const;
 
-/** Premium walkthrough slots — add Vimeo id when client provides video */
+/** Premium walkthrough slots — titles match NullPing Cash premium nav labels */
 export const trainingPremiumVideos = [
   {
     id: "1215530104",
-    badge: "Unlimited",
-    title: "Unlimited",
+    badge: "Asset Vault",
+    title: "Asset Vault",
     description:
-      "Clone from two hundred pre-made sales pages and ten-post X threads — swap in your affiliate link in minutes.",
+      "Clone from two hundred pre-made sales pages and story threads — swap in your affiliate link in minutes.",
     duration: "5+ min",
   },
   {
     id: "1215568587",
-    badge: "Guaranteed High-Ticket Payouts",
-    title: "Guaranteed High-Ticket Payouts",
+    badge: "Authority Boosters",
+    title: "Authority Boosters",
     description:
-      "Attach long-form authority articles to any offer, preview with your link baked in, and publish for recurring traffic.",
+      "Use ready-to-publish authority articles with your affiliate link woven in for blogs, Medium, LinkedIn, and more.",
     duration: "5+ min",
   },
   {
     id: "1215574185",
-    badge: "Instant Income",
-    title: "Instant Income",
+    badge: "Pin Multiplier",
+    title: "Pin Multiplier",
     description:
-      "Generate ten-plus Facebook post variants from one offer — different hooks and angles, ready to copy and paste.",
+      "Bulk-generate social post variants from one offer — different hooks and angles, ready to copy and share.",
     duration: "5+ min",
   },
   {
@@ -95,9 +101,9 @@ export const trainingPremiumVideos = [
 export const trainingContentReady = true;
 
 export const trainingCta = {
-  headline: "Ready to launch your first offer?",
+  headline: `Ready to activate your first ${productName} asset?`,
   subcopy:
-    "The Academy gives you the click-by-click detail — the Sales Offer Generator is where you put it into action. Paste a link and publish tonight.",
-  buttonLabel: "Get Started with Sales Offer Generator",
-  href: "/sales-offer-generator",
+    "The Academy covers every step — Activate Asset is where you put it into action. Paste a product URL and let NullPing build your money page tonight.",
+  buttonLabel: "Activate your first asset",
+  href: "/activate",
 } as const;

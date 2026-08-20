@@ -60,7 +60,9 @@ export function SupportFaqCardHeader() {
       </div>
       <div>
         <h2 className="ds-h3">Frequently Asked Questions</h2>
-        <p className="mt-1 text-sm text-text-muted">Common queries and system documentation</p>
+        <p className="mt-1 text-sm text-text-muted">
+          Quick answers about money pages, Pinterest traffic, and your account
+        </p>
       </div>
     </div>
   );

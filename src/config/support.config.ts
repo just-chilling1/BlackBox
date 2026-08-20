@@ -1,18 +1,22 @@
+import { brand } from "./brand.config";
+
 export const supportRoutes = {
   contact: "/support",
   /** @deprecated FAQ lives on the main support page */
   faq: "/support#faq",
 } as const;
 
+const SUPPORT_EMAIL = "NullPingCash@neoai.freshdesk.com";
+
 export const support = {
-  email: "NullPingCash@neoai.freshdesk.com",
+  email: SUPPORT_EMAIL,
   /** In-app contact form anchor on the support page */
   contactUrl: "/support#contact",
   /** Freshdesk help portal — browse articles and track tickets */
   helpCenterUrl: "https://neoaifreshdesk.freshdesk.com",
   headline: "Need Help?",
   pageTitle: "Support",
-  pageSubtitle: "Documentation and assistance resources",
+  pageSubtitle: `Help with ${brand.productName} — money pages, Pinterest traffic, premium tools, and your account`,
   subcopy: "Our support team is here for you 24/7",
   ctaLabel: "Contact Support",
   floatingWidget: {
@@ -28,7 +32,7 @@ export const support = {
   ],
   refundPolicy: {
     title: "Refund Policy",
-    subtitle: "Satisfaction guarantee terms",
+    subtitle: `Satisfaction guarantee for ${brand.productName}`,
     items: [
       {
         title: "30-Day Guarantee",
@@ -36,7 +40,7 @@ export const support = {
       },
       {
         title: "Request Procedure",
-        body: "Email our support team with your account email and purchase date. We will confirm receipt and begin processing.",
+        body: `Email our support team at ${SUPPORT_EMAIL} with your account email and purchase date. We will confirm receipt and begin processing.`,
       },
       {
         title: "Processing Timeline",

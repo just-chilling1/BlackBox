@@ -88,7 +88,7 @@ export function buildMoneyPageHtml(params: {
       --accent-fill: rgba(${css.accentRgb}, 0.28);
       --accent-border: rgba(${css.accentRgb}, 0.15);
       --cta-panel-end: ${css.ctaPanelEnd};
-      --success: #059669;
+      --success: ${css.accentMid};
       --danger: #dc2626;
       --radius: 18px;
       --shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.28);
@@ -192,6 +192,7 @@ export function buildMoneyPageHtml(params: {
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 18px 34px -14px rgba(${css.accentRgb}, 0.9); }
+    .btn:active { transform: translateY(0); box-shadow: 0 10px 22px -14px rgba(${css.accentRgb}, 0.72); }
     section {
       margin: 44px 0;
       padding-top: 8px;
@@ -232,12 +233,23 @@ export function buildMoneyPageHtml(params: {
       padding: 20px 20px 18px;
     }
     .benefit-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 36px;
       height: 36px;
       border-radius: 12px;
       margin-bottom: 14px;
-      background: linear-gradient(135deg, var(--accent-mid-soft), var(--accent-fill));
-      border: 1px solid var(--accent-border);
+      background: linear-gradient(135deg, var(--accent-mid), var(--accent));
+      border: 1px solid rgba(${css.accentRgb}, 0.22);
+      box-shadow: 0 8px 18px -12px rgba(${css.accentRgb}, 0.55);
+    }
+    .benefit-icon::after {
+      content: "✓";
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
     }
     .benefit-card h3 {
       margin: 0 0 8px;
@@ -290,7 +302,7 @@ export function buildMoneyPageHtml(params: {
       padding-left: 1.1rem;
       color: var(--muted);
     }
-    .split-card--pros { border-color: rgba(5, 150, 105, 0.18); }
+    .split-card--pros { border-color: rgba(${css.accentRgb}, 0.22); }
     .split-card--cons { border-color: rgba(220, 38, 38, 0.14); }
     .faq-item {
       padding: 0;
@@ -307,6 +319,9 @@ export function buildMoneyPageHtml(params: {
       padding: 16px 18px;
       font-weight: 600;
       color: var(--ink);
+    }
+    summary:hover::after {
+      border-color: var(--accent-mid);
     }
     summary::-webkit-details-marker { display: none; }
     summary::after {

@@ -24,7 +24,7 @@ function formatParagraph(text: string) {
     return (
       <>
         The best part?{" "}
-        <span className="font-medium text-ink">
+        <span className="dashboard-bonus-ad-emphasis">
           {text.slice(bestPartPrefix.length)}
         </span>
       </>
@@ -43,7 +43,7 @@ export function DashboardBonusAdCard() {
 
       <div className="dashboard-bonus-ad-inner">
         <p className="dashboard-bonus-ad-badge">
-          <Sparkles className="h-3.5 w-3.5 text-pulse-300" strokeWidth={1.75} aria-hidden />
+          <Sparkles className="dashboard-bonus-ad-badge-icon h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           Free member training
         </p>
 
@@ -53,9 +53,9 @@ export function DashboardBonusAdCard() {
           ))}
 
           <p className="dashboard-bonus-ad-highlight">
-            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={1.75} aria-hidden />
+            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={2} aria-hidden />
             <span>{ad.highlight}</span>
-            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={1.75} aria-hidden />
+            <Flame className="dashboard-bonus-ad-flame h-5 w-5 shrink-0" strokeWidth={2} aria-hidden />
           </p>
 
           <p className="dashboard-bonus-ad-closing">{emphasizeAmounts(ad.closing)}</p>
@@ -69,9 +69,9 @@ export function DashboardBonusAdCard() {
             className="dashboard-bonus-ad-cta"
           >
             <span className="dashboard-bonus-ad-cta-shine" aria-hidden />
-            <span className="relative z-[1] inline-flex items-center justify-center gap-2.5">
+            <span className="dashboard-bonus-ad-cta-label">
               {ad.ctaLabel}
-              <ArrowRight className="h-5 w-5 shrink-0" strokeWidth={2} />
+              <ArrowRight className="dashboard-bonus-ad-cta-arrow h-5 w-5 shrink-0" strokeWidth={2.25} aria-hidden />
             </span>
           </Link>
           <p className="dashboard-bonus-ad-urgency">Limited access — register while it&apos;s still available</p>

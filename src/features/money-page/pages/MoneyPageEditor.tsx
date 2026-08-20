@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
+import { Check, CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
@@ -231,13 +231,16 @@ export default function MoneyPageEditor() {
                 aria-checked={selected}
                 disabled={busy === "theme" || busy === "regen"}
                 className={`money-theme-card ${selected ? "is-selected" : ""}`}
+                style={{ "--theme-accent": theme.swatch } as React.CSSProperties}
                 onClick={() => void changeTheme(theme.id)}
               >
                 <span
                   className={`money-theme-swatch ${selected ? "is-selected" : ""}`}
                   style={{ background: theme.swatch }}
                   aria-hidden
-                />
+                >
+                  {selected ? <Check size={14} strokeWidth={3} className="money-theme-swatch-check" /> : null}
+                </span>
                 <span className="money-theme-copy">
                   <span className="money-theme-label">{theme.label}</span>
                   <span className="money-theme-desc">{theme.description}</span>

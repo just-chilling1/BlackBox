@@ -43,7 +43,7 @@ export default function TrainingVideosPage() {
         <TrainingSectionHeader
           icon={Play}
           title="Platform Tutorials"
-          subtitle="Core workflow — watch in order after Dashboard intro videos"
+          subtitle="Core NullPing Cash workflow — watch in order after Dashboard intro videos"
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:grid-cols-3 xl:gap-8">
           {platformVideos.map((video, index) => (
@@ -78,7 +78,7 @@ export default function TrainingVideosPage() {
         <TrainingSectionHeader
           icon={Star}
           title="Premium Feature Tutorials"
-          subtitle="Scale after your first live offer — watch in any order"
+          subtitle="Scale after your first live money page — watch in any order"
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
           {premiumVideos.map((video) => (
