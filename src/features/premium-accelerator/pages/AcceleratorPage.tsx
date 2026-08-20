@@ -23,7 +23,6 @@ import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
-import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
@@ -318,7 +317,6 @@ export default function AcceleratorPage() {
         title="Asset Vault Training"
         description="Watch how to browse the 200 pre-made sales pages, clone one with your affiliate link, and grab its ready-made story thread — all in under two minutes."
         iframeTitle="Unlimited training video"
-        thumbnailSrc={getAcademyPremiumThumbnail(0) ?? undefined}
       />
 
       <PremiumStepsSection

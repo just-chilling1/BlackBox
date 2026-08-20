@@ -9,20 +9,11 @@ export const DASHBOARD_VIDEO_THUMBNAILS = [
   "/thumbnails/dashboard-03-five-minute-tour.webp",
 ] as const;
 
-/** Academy platform tutorials — index 0–2 */
-export const ACADEMY_PLATFORM_THUMBNAILS = [
-  "/thumbnails/academy-04-sales-offer-generator.webp",
-  "/thumbnails/academy-05-x-power-promotions.webp",
-  "/thumbnails/academy-06-links-offers-library.webp",
-] as const;
+/** Academy platform tutorials — no custom posters (play placeholder only) */
+export const ACADEMY_PLATFORM_THUMBNAILS = [] as const;
 
-/** Academy premium tutorials — index 0–3 */
-export const ACADEMY_PREMIUM_THUMBNAILS = [
-  "/thumbnails/academy-07-accelerator.webp",
-  "/thumbnails/academy-08-recurring-stream.webp",
-  "/thumbnails/academy-09-social-payouts.webp",
-  "/thumbnails/academy-10-protector.webp",
-] as const;
+/** Academy premium tutorials — no custom posters (play placeholder only) */
+export const ACADEMY_PREMIUM_THUMBNAILS = [] as const;
 
 const VIMEO_ID_REGEX = /vimeo\.com\/(?:video\/)?(\d+)/;
 

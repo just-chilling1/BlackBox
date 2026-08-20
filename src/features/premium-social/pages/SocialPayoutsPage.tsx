@@ -30,7 +30,6 @@ import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
 import { PremiumBestPracticesSection } from "@/components/premium/PremiumBestPracticesSection";
-import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { formatThreadVersionDate } from "@/features/publish-kit/lib/thread-batches";
 import { getSiteTerritory } from "@/features/blog-builder/lib/site-territory";
 import { getAppUrl } from "@/lib/brand-vars";
@@ -361,7 +360,6 @@ export default function SocialPayoutsPage() {
         title="Instant Income Training"
         description="Watch how to turn one offer into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post."
         iframeTitle="Instant Income training video"
-        thumbnailSrc={getAcademyPremiumThumbnail(2) ?? undefined}
       />
 
       <PremiumStepsSection

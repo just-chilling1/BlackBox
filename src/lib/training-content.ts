@@ -9,10 +9,6 @@ import {
   trainingWorkflowSteps,
 } from "@/config/training-content.config";
 import { isFeatureEnabled } from "@/config/features.config";
-import {
-  getAcademyPlatformThumbnail,
-  getAcademyPremiumThumbnail,
-} from "@/lib/video-thumbnails";
 import { vimeoPlayerUrl } from "@/lib/dashboard-content";
 
 export type AcademyVideo = {
@@ -25,16 +21,16 @@ export type AcademyVideo = {
 };
 
 export function getPlatformTutorialVideos(): AcademyVideo[] {
-  return trainingContent.videos.map((video, index) => ({
+  return trainingContent.videos.map((video) => ({
     ...video,
-    thumbnailSrc: getAcademyPlatformThumbnail(index),
+    thumbnailSrc: null,
   }));
 }
 
 export function getPremiumTutorialVideos(): AcademyVideo[] {
-  return trainingPremiumVideos.map((video, index) => ({
+  return trainingPremiumVideos.map((video) => ({
     ...video,
-    thumbnailSrc: getAcademyPremiumThumbnail(index),
+    thumbnailSrc: null,
   }));
 }
 

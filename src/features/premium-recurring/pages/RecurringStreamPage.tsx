@@ -24,7 +24,6 @@ import { PageHeader } from "@/components/ui/page-header";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
-import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
 import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
@@ -351,7 +350,6 @@ export default function RecurringStreamPage() {
           title="Guaranteed High-Ticket Payouts Training"
           description="Watch how to pick an authority article template, preview it with your offer link inside, and publish it on Medium, LinkedIn, or your own blog."
           iframeTitle="Guaranteed High-Ticket Payouts training video"
-          thumbnailSrc={getAcademyPremiumThumbnail(1) ?? undefined}
         />
       </div>
 

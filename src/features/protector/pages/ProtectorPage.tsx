@@ -20,7 +20,6 @@ import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
 import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumFooter } from "@/components/premium/PremiumFooter";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
-import { getAcademyPremiumThumbnail } from "@/lib/video-thumbnails";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
@@ -130,7 +129,6 @@ export default function ProtectorPage() {
         title="Cyber Protection Training"
         description="Watch what Cyber Protection monitors for you — account verification, encryption, and session security — and how to read your security overview."
         iframeTitle="Cyber Protection training video"
-        thumbnailSrc={getAcademyPremiumThumbnail(3) ?? undefined}
       />
 
       <PremiumControlCard
