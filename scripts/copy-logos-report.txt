@@ -1,0 +1,6 @@
+C:\Users\gt\Desktop\blackbox\public\logo.png 79502 bytes
+C:\Users\gt\Desktop\blackbox\public\logo-icon.png 113493 bytes
+C:\Users\gt\Desktop\blackbox\brand-assets\logo.png 79502 bytes
+C:\Users\gt\Desktop\blackbox\brand-assets\logo-icon.png 113493 bytes
+C:\Users\gt\Desktop\blackbox\public\favicon.png 113493 bytes
+C:\Users\gt\Desktop\blackbox\public\apple-touch-icon.png 113493 bytes

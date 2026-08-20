@@ -80,7 +80,11 @@ export function BrandLogo({
     if (!useImage) return;
     const preferred = primarySrc;
     const fallback = fallbackSrc;
-    if (!preferred || !fallback || preferred === fallback) {
+    if (!preferred) {
+      setImageSrc(fallback ?? "");
+      return;
+    }
+    if (!fallback) {
       setImageSrc(preferred);
       return;
     }

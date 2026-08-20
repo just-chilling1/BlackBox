@@ -68,7 +68,6 @@ export function PremiumWorkflowShell({
           title={training.title}
           description={training.description}
           iframeTitle={training.iframeTitle ?? training.title}
-          thumbnailSrc={training.thumbnailSrc}
         />
       ) : null}
 
