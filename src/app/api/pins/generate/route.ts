@@ -17,8 +17,8 @@ function withPinImageUrls<T extends { id: string; image_url?: string | null }>(p
   return pins.map((pin) => ({
     ...pin,
     image_url: pin.image_url?.startsWith("http")
-      ? `/api/pins/${pin.id}/image?v=6`
-      : pin.image_url || `/api/pins/${pin.id}/image?v=6`,
+      ? `/api/pins/${pin.id}/image?v=7`
+      : pin.image_url || `/api/pins/${pin.id}/image?v=7`,
   }));
 }
 
@@ -193,7 +193,8 @@ export async function POST(request: Request) {
     title: pin.title,
     description: pin.description,
     keywords: pin.keywords,
-    source_image_url: backgrounds[idx] || heroImage || null,
+    // Do not coalesce every pin to heroImage — that made all boxing pins identical.
+    source_image_url: backgrounds[idx] || (idx === 0 ? heroImage : null) || null,
   }));
 
   let { data: inserted, error } = await supabase.from("site_pins").insert(rows).select("*");
@@ -220,7 +221,7 @@ export async function POST(request: Request) {
       source_image_url:
         (row as { source_image_url?: string | null }).source_image_url ||
         backgrounds[idx] ||
-        heroImage ||
+        (idx === 0 ? heroImage : null) ||
         null,
     }))
   );
@@ -241,9 +242,11 @@ export async function POST(request: Request) {
 
   // Persist backgrounds on the money page JSON so pin images work even before
   // source_image_url is migrated onto site_pins.
-  const pinImages: Record<string, string> = {
-    ...((copyJson as { pinImages?: Record<string, string> } | null)?.pinImages ?? {}),
-  };
+  const pinImages: Record<string, string> = regenerate
+    ? {}
+    : {
+        ...((copyJson as { pinImages?: Record<string, string> } | null)?.pinImages ?? {}),
+      };
   for (const row of withImages) {
     const src = (row as { source_image_url?: string | null }).source_image_url;
     if (src) pinImages[row.id] = src;

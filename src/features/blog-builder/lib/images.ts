@@ -430,7 +430,8 @@ async function resolveScrapedImage(
 async function fetchScrapedImageUrl(
   scrapeUrl: string,
   scrapeKeywords?: string[],
-  pickOffset = 0
+  pickOffset = 0,
+  excludeUrls: string[] = []
 ): Promise<string | null> {
   if (scrapeKeywords && scrapeKeywords.length > 0) {
     const ranked = await scrapeRelevantImagesFromUrl(scrapeUrl, {
@@ -439,6 +440,7 @@ async function fetchScrapedImageUrl(
     });
     for (let i = 0; i < ranked.length; i++) {
       const candidate = ranked[(pickOffset + i) % ranked.length];
+      if (isExcludedUrl(candidate, excludeUrls)) continue;
       const buffer = await fetchImageBuffer(candidate, SCRAPE_IMAGE_TIMEOUT_MS, scrapeUrl);
       if (buffer && buffer.length >= 800) {
         console.info("[images] scraped relevant page image", scrapeUrl.slice(0, 64));
@@ -448,7 +450,8 @@ async function fetchScrapedImageUrl(
   }
 
   const scraped = await resolveScrapedImage(scrapeUrl);
-  return scraped?.url ?? null;
+  if (scraped?.url && !isExcludedUrl(scraped.url, excludeUrls)) return scraped.url;
+  return null;
 }
 
 async function fetchScrapedImageBuffer(scrapeUrl: string): Promise<Buffer | null> {
@@ -720,9 +723,7 @@ async function resolveScrapedImageUrl(
   offset: number,
   exclude: string[]
 ): Promise<string | null> {
-  const scraped = await fetchScrapedImageUrl(scrapeUrl, scrapeKeywords, offset);
-  if (scraped && !isExcludedUrl(scraped, exclude)) return scraped;
-  return null;
+  return fetchScrapedImageUrl(scrapeUrl, scrapeKeywords, offset, exclude);
 }
 
 export async function resolveFastImageUrl(params: {

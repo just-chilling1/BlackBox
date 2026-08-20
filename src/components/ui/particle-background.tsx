@@ -3,9 +3,9 @@
 import { useEffect, useRef } from "react";
 import { brand } from "@/config/brand.config";
 
-/** Brand gold — single-color glow palette */
+/** Brand signal — single-color glow palette */
 const GOLD = brand.colors.primary;
-const GOLD_RGB = "238, 179, 16";
+const GOLD_RGB = "45, 212, 191";
 
 interface Particle {
   x: number;

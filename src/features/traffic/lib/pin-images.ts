@@ -60,14 +60,17 @@ function productStockQueries(productName: string, hobby?: string | null): string
 
   const combat = /box|glove|mma|martial|kick|sparr|punch/i.test(`${productName} ${hobby || ""}`);
   if (combat) {
-    if (/glove/i.test(productName)) queries.push("boxing gloves");
-    else queries.push("boxing training");
+    if (/glove/i.test(productName)) {
+      queries.push("boxing gloves", "mma gloves", "red boxing glove", "sparring gloves");
+    } else {
+      queries.push("boxing training", "punching bag", "boxing ring");
+    }
   }
 
   const fitness = /fitness|gym|sport|workout/i.test(hobby || "");
   if (fitness && !combat) queries.push(`${tokens[0]} fitness`);
 
-  return [...new Set(queries.filter(Boolean))].slice(0, 4);
+  return [...new Set(queries.filter(Boolean))].slice(0, 6);
 }
 
 /**
@@ -81,9 +84,58 @@ export function productPhotoFallbackUrl(productName: string, seed = 0): string |
   return `https://loremflickr.com/1200/675/${encodeURIComponent(tags.join(","))}/all?lock=${lock}`;
 }
 
+function pollinationsProductUrl(
+  productName: string,
+  pinIdx: number,
+  width = 1200,
+  height = 675
+): string {
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(
+    `photorealistic product photo of ${productName}, clean studio lighting, no text, no watermark`
+  )}?width=${width}&height=${height}&nologo=true&seed=${pinIdx * 31 + 7}`;
+}
+
+/**
+ * Ordered background candidates for the pin OG image renderer.
+ * Per-pin unique fallbacks must come before the shared money-page hero,
+ * otherwise every pin collapses to the same photo when source_image_url is missing.
+ */
+export function pinRenderBackgroundCandidates(params: {
+  sourceImageUrl?: string | null;
+  pinImageUrl?: string | null;
+  heroImage?: string | null;
+  productName: string;
+  pinIdx: number;
+  headline: string;
+  width?: number;
+  height?: number;
+}): string[] {
+  const width = params.width ?? 1200;
+  const height = params.height ?? 675;
+  const uniqueFallback = productPhotoFallbackUrl(
+    params.productName,
+    params.pinIdx * 17 + params.headline.length
+  );
+  const aiFallback = params.productName.trim()
+    ? pollinationsProductUrl(params.productName, params.pinIdx, width, height)
+    : null;
+
+  return [
+    params.sourceImageUrl,
+    params.pinImageUrl,
+    uniqueFallback,
+    aiFallback,
+    // Shared money-page hero is last — never the default for every pin.
+    params.heroImage,
+  ].filter((u): u is string => Boolean(u?.trim()));
+}
+
 /**
  * Resolve unique Pinterest pin backgrounds:
- * preferred scraped/hero → affiliate scrape → Pixabay → product-tagged photos.
+ * one preferred hero (pin 0) → Pixabay product stock (varied) → scrape fallback → tagged photos.
+ *
+ * Always prefer stock after the first preferred slot so every pin does not re-scrape
+ * the same affiliate og:image (often stored under a different persisted URL than the hero).
  */
 export async function resolvePinBackgroundImages(params: {
   pins: PinCopy[];
@@ -106,6 +158,9 @@ export async function resolvePinBackgroundImages(params: {
       })
     ),
   ];
+  // Only the first preferred photo seeds pin 0 — reusing the full list made regenerations
+  // lock every pin to the same product hero when prior pinImages all pointed at it.
+  const preferredForPins = preferred.slice(0, 1);
   const stockQueries = productStockQueries(params.productName, params.hobby);
   const productTokens = productSearchTokens(params.productName);
 
@@ -118,16 +173,21 @@ export async function resolvePinBackgroundImages(params: {
 
     let chosen: string | null = null;
 
-    // 1) Seed early pins with known product photos (hero / scraped).
-    if (i < preferred.length) {
-      chosen = preferred[i];
+    // 1) At most one known product photo (money-page hero) on the first pin.
+    if (i < preferredForPins.length) {
+      chosen = preferredForPins[i];
     }
 
-    // 2) Scrape + product-name Pixabay (horizontal for landscape cards).
+    // 2) Product-name Pixabay first (horizontal), scrape only as fallback.
     if (!chosen) {
       const queryList =
         stockQueries.length > 0 ? stockQueries : [params.productName.trim()].filter(Boolean);
-      for (let q = 0; q < queryList.length && !chosen; q++) {
+      // Rotate query by pin index so boxing/etc. don't all hit the same popular photo.
+      const rotated = [
+        ...queryList.slice(i % queryList.length),
+        ...queryList.slice(0, i % queryList.length),
+      ];
+      for (let q = 0; q < rotated.length && !chosen; q++) {
         try {
           const resolved = await pool.resolveUnique({
             title: pin.headline || pin.title || params.productName,
@@ -138,14 +198,17 @@ export async function resolvePinBackgroundImages(params: {
               "no text overlay",
             ].join(". "),
             hobby: params.hobby?.trim() || undefined,
-            scrapeUrl: params.scrapeUrl?.trim() || undefined,
-            scrapeUrls: params.scrapeUrls,
+            // Only allow scrape after stock fails, and only for early pins — otherwise
+            // every pin re-pulls the same affiliate hero under a CDN URL the pool
+            // does not recognize as the persisted hero.
+            scrapeUrl: q === rotated.length - 1 ? params.scrapeUrl?.trim() || undefined : undefined,
+            scrapeUrls: q === rotated.length - 1 ? params.scrapeUrls : undefined,
             scrapeKeywords: keywords.length ? keywords : productTokens,
-            pickOffset: i + q,
-            seedBoost: i * 11 + q * 3 + keywords.length,
-            customQuery: queryList[q],
+            pickOffset: i * 3 + q,
+            seedBoost: i * 11 + q * 3 + keywords.length + (pin.headline?.length ?? 0),
+            customQuery: rotated[q],
             orientation: "horizontal",
-            preferStock: q > 0 || !params.scrapeUrl,
+            preferStock: true,
             allowPicsumFallback: false,
           });
           if (resolved.url) chosen = resolved.url;
@@ -155,14 +218,9 @@ export async function resolvePinBackgroundImages(params: {
       }
     }
 
-    // 3) Product-tagged stock photo (no API key required).
+    // 3) Product-tagged stock photo (no API key required) — unique per pin index.
     if (!chosen) {
       chosen = productPhotoFallbackUrl(params.productName, i * 17 + productTokens.length);
-    }
-
-    // 4) Reuse a preferred product photo rather than leaving the pin blank.
-    if (!chosen && preferred.length > 0) {
-      chosen = preferred[i % preferred.length];
     }
 
     if (!chosen) {
@@ -178,7 +236,11 @@ export async function resolvePinBackgroundImages(params: {
       });
       const finalUrl = persisted ?? chosen;
       results.push(finalUrl);
-      pool.seed([{ url: finalUrl, stockId: normalizeImageUrl(finalUrl) }]);
+      // Track both original and persisted URLs so scrape/CDN aliases stay excluded.
+      pool.seed([
+        { url: chosen, stockId: normalizeImageUrl(chosen) },
+        { url: finalUrl, stockId: normalizeImageUrl(finalUrl) },
+      ]);
     } catch {
       results.push(chosen);
       pool.seed([{ url: chosen, stockId: normalizeImageUrl(chosen) }]);

@@ -17,7 +17,7 @@ export function getBrandCssVars(): Record<string, string> {
     "--brand-primary": brand.colors.primary,
     "--brand-primary-readable": brand.colors.secondary,
     "--brand-secondary": brand.colors.secondary,
-    "--brand-tint": "#0C1A20",
+    "--brand-tint": "#0A1F1C",
     "--promo-accent": brand.colors.promoAccent,
     "--promo-cta": brand.colors.promoCta,
     "--text-heading": brand.colors.textHeading,

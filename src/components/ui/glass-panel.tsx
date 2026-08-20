@@ -21,11 +21,9 @@ export function GlassPanel({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className={cn(
-        "glass-panel rounded-2xl relative overflow-hidden",
-        "border-border-dim shadow-sm",
-        intensity === "low" && "backdrop-blur-sm",
-        intensity === "medium" && "backdrop-blur-md",
-        intensity === "high" && "backdrop-blur-xl"
+        "glass-panel rounded-[var(--np-r-lg)] relative overflow-hidden",
+        "border-border-dim shadow-card",
+        intensity === "high" && "ring-1 ring-[color:var(--np-line-pulse)]"
       )}
     >
       <div className="absolute inset-0 bg-linear-to-br from-pulse-100/40 to-transparent pointer-events-none" />

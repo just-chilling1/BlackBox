@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/brand.config";
 import { getBrandCssVars } from "@/lib/brand-vars";
@@ -9,10 +9,10 @@ import { AppProviders } from "@/components/layout/AppProviders";
 
 const brandStyle = getBrandCssVars();
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plus-jakarta",
   display: "swap",
 });
 
@@ -58,7 +58,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable}`}
+      className={`${plusJakarta.variable} ${spaceGrotesk.variable}`}
       style={{ ...brandStyle, colorScheme: "dark" }}
     >
       <head>

@@ -22,6 +22,6 @@ export function sidebarNavIconClass(isActive: boolean) {
 export function sidebarNavLabelClass(isActive: boolean) {
   return clsx(
     "sidebar-nav-label text-[15px] min-w-0 truncate font-normal leading-[1.4]",
-    isActive ? "text-[#FFFDF8]" : "text-ink"
+    isActive ? "text-ink-strong" : "text-ink"
   );
 }

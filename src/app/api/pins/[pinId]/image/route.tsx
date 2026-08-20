@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getServiceRoleClient } from "@/lib/api-auth";
 import { readFile } from "fs/promises";
 import path from "path";
-import { productPhotoFallbackUrl } from "@/features/traffic/lib/pin-images";
+import { pinRenderBackgroundCandidates } from "@/features/traffic/lib/pin-images";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -120,17 +120,16 @@ export async function GET(
   const download = new URL(request.url).searchParams.get("download") === "1";
   const pinIdx = typeof (pin as { idx?: number }).idx === "number" ? (pin as { idx: number }).idx : 0;
 
-  const candidateUrls = [
-    (pin as { source_image_url?: string | null }).source_image_url,
-    copy.pinImages?.[pin.id],
-    copy.heroImage,
-    productPhotoFallbackUrl(product, pinIdx * 17 + headline.length),
-    product
-      ? `https://image.pollinations.ai/prompt/${encodeURIComponent(
-          `photorealistic product photo of ${product}, clean studio lighting, no text, no watermark`
-        )}?width=${PIN_WIDTH}&height=${PIN_HEIGHT}&nologo=true&seed=${pinIdx * 31 + 7}`
-      : null,
-  ].filter((u): u is string => Boolean(u?.trim()));
+  const candidateUrls = pinRenderBackgroundCandidates({
+    sourceImageUrl: (pin as { source_image_url?: string | null }).source_image_url,
+    pinImageUrl: copy.pinImages?.[pin.id],
+    heroImage: copy.heroImage,
+    productName: product,
+    pinIdx,
+    headline,
+    width: PIN_WIDTH,
+    height: PIN_HEIGHT,
+  });
 
   let backgroundDataUrl: string | null = null;
   for (const candidate of candidateUrls) {
@@ -176,7 +175,7 @@ export async function GET(
               left: 0,
               width: "100%",
               height: "100%",
-              background: "linear-gradient(135deg, #102630 0%, #070B0F 55%, #1e293b 100%)",
+              background: "linear-gradient(135deg, #0F2E2A 0%, #080C12 55%, #1e293b 100%)",
             }}
           />
         )}
@@ -203,7 +202,7 @@ export async function GET(
             padding: "48px 56px",
           }}
         >
-          <div style={{ fontSize: 22, color: "#22D3EE", marginBottom: 16, letterSpacing: 2 }}>
+          <div style={{ fontSize: 22, color: "#2DD4BF", marginBottom: 16, letterSpacing: 2 }}>
             NULLPING CASH
           </div>
           <div style={{ fontSize: 48, lineHeight: 1.12, fontWeight: 700, maxWidth: 920 }}>

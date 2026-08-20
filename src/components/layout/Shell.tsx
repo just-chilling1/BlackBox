@@ -30,7 +30,7 @@ const SpecialistWelcomePopupHost = dynamic(
 );
 
 /** Route prefixes that render without the app shell (public hosted pages). */
-const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/article/", "/review/"];
+const PUBLIC_SHELL_BYPASS_PREFIXES = ["/sites/", "/s/", "/m/", "/article/", "/review/"];
 
 /** Clean member URLs: /{handle}/sites/{slug} — must not render inside the logged-in shell. */
 function isMemberPublicSitePath(pathname: string): boolean {
