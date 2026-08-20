@@ -83,6 +83,11 @@ export const blogBuilderResourceNav: NavItem[] = blogBuilderCoreNav;
 export const blogBuilderGenerateSectionLabel = "Generate";
 export const blogBuilderLibrariesSectionLabel = "Libraries";
 
+/** Primary sidebar section labels (NullPing layout) */
+export const homeSectionLabel = "Home";
+export const generateSectionLabel = "Generate";
+export const trainingSectionLabel = "Training";
+
 /** Footer support link — rendered above account in the sidebar */
 export const supportNav: NavItem = {
   path: "/support",

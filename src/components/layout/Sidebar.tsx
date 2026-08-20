@@ -27,7 +27,7 @@ import { isFeatureEnabled } from "@/config/features.config";
 import { useWorkflowNav } from "@/context/WorkflowNavContext";
 import { BlogBuilderNav } from "@/features/blog-builder/components/BlogBuilderNav";
 import { storageKeys } from "@/lib/storage-keys";
-import { homeNav, supportNav, type NavItem } from "@/config/navigation.config";
+import { homeNav, supportNav, homeSectionLabel, generateSectionLabel, trainingSectionLabel, type NavItem } from "@/config/navigation.config";
 import { getExclusiveOffers } from "@/config/offers.config";
 import { supabase } from "@/lib/supabase";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
@@ -36,6 +36,7 @@ import {
   sidebarNavIconClass,
   sidebarNavItemClass,
   sidebarNavLabelClass,
+  sidebarSectionLabelClass,
 } from "./sidebar-nav-styles";
 
 interface SidebarContentProps {
@@ -83,6 +84,9 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
   const handleNavClick = () => onMobileClose?.();
 
+  const renderSectionLabel = (label: string) =>
+    collapsed ? null : <p className={sidebarSectionLabelClass}>{label}</p>;
+
   const renderNavLink = (item: NavItem) => {
     const isActive = isNavPathActive(pathname, item.path);
     const Icon = getNavIcon(item.icon);
@@ -93,14 +97,15 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         <div
           key={item.path}
           className={clsx(
-            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg opacity-40 cursor-not-allowed",
+            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed",
             collapsed && "justify-center px-2"
           )}
           title="Complete the previous step first"
+          aria-disabled="true"
         >
-          <Lock size={18} className="text-text-muted shrink-0" />
+          <Lock size={18} className="text-ink-4 shrink-0" />
           {!collapsed && (
-            <span className="brand-font text-sm font-medium text-text-muted leading-snug truncate">
+            <span className="brand-font text-sm font-medium text-ink-4 leading-snug truncate">
               {item.label}
             </span>
           )}
@@ -123,6 +128,11 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       </WarmNavLink>
     );
   };
+
+  const trainingItems = [...coreResourceNav, ...resourceNav];
+  const showGenerateFromBlog =
+    blogEnabled &&
+    !workflowSteps.some((step) => step.path === "/activate" || step.path === "/results");
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--sidebar-border)] bg-[var(--sidebar-bg)]">
@@ -155,14 +165,23 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       </div>
 
       <div className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain">
-        <nav
-          aria-label="Main navigation"
-          className="py-3 px-[14px]"
-        >
+        <nav aria-label="Main navigation" className="px-[14px] py-3">
           <div className="space-y-1.5">
-            {showHomeNav ? renderNavLink(homeNav) : null}
-            {workflowSteps.map((step) => renderNavLink(step))}
-            {blogEnabled ? (
+            {showHomeNav ? (
+              <>
+                {renderSectionLabel(homeSectionLabel)}
+                {renderNavLink(homeNav)}
+              </>
+            ) : null}
+
+            {workflowSteps.length > 0 ? (
+              <>
+                {renderSectionLabel(generateSectionLabel)}
+                {workflowSteps.map((step) => renderNavLink(step))}
+              </>
+            ) : null}
+
+            {showGenerateFromBlog ? (
               <BlogBuilderNav
                 pathname={pathname}
                 onNavClick={handleNavClick}
@@ -179,8 +198,13 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
                 sections={["libraries"]}
               />
             ) : null}
-            {coreResourceNav.map((step) => renderNavLink(step))}
-            {resourceNav.map((step) => renderNavLink(step))}
+
+            {trainingItems.length > 0 ? (
+              <>
+                {renderSectionLabel(trainingSectionLabel)}
+                {trainingItems.map((step) => renderNavLink(step))}
+              </>
+            ) : null}
           </div>
 
           {PREMIUM_FEATURES.length > 0 ? (
@@ -202,7 +226,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             {!collapsed && (
               <div className="min-w-0 flex-1">
                 <div className="brand-font truncate text-[15px] text-ink">{displayName}</div>
-                <div className="text-[13px] text-ink-5">Active Member</div>
+                <div className="text-[13px] text-ink-4">Active Member</div>
               </div>
             )}
             <button

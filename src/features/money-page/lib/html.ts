@@ -183,7 +183,7 @@ export function buildMoneyPageHtml(params: {
       min-height: 52px;
       padding: 0 26px;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       color: #fff;
       text-decoration: none;
       font-weight: 700;

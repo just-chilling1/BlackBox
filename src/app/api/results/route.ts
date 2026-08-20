@@ -5,19 +5,83 @@ import { sitePublicPath } from "@/lib/app-url";
 
 export const dynamic = "force-dynamic";
 
+function schemaMissing(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  const code = error.code || "";
+  const message = error.message || "";
+  return (
+    code === "42P01" ||
+    code === "PGRST205" ||
+    code === "42703" ||
+    /schema cache|does not exist|Could not find the/i.test(message)
+  );
+}
+
+type SiteRow = {
+  id: string;
+  title: string;
+  product_name?: string | null;
+  slug: string;
+  status: string | null;
+  owner_handle?: string | null;
+  created_at?: string;
+};
+
+async function loadUserSites(
+  supabase: Awaited<ReturnType<typeof getApiUser>>["supabase"],
+  userId: string
+): Promise<{ sites: SiteRow[]; error: string | null }> {
+  const full = await supabase
+    .from("sites")
+    .select("id, title, product_name, slug, status, owner_handle, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (!full.error) {
+    return { sites: (full.data ?? []) as SiteRow[], error: null };
+  }
+
+  if (schemaMissing(full.error)) {
+    const withoutHandle = await supabase
+      .from("sites")
+      .select("id, title, product_name, slug, status, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (!withoutHandle.error) {
+      return { sites: (withoutHandle.data ?? []) as SiteRow[], error: null };
+    }
+
+    if (schemaMissing(withoutHandle.error)) {
+      const minimal = await supabase
+        .from("sites")
+        .select("id, title, slug, status, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (!minimal.error) {
+        return { sites: (minimal.data ?? []) as SiteRow[], error: null };
+      }
+      return { sites: [], error: minimal.error.message };
+    }
+
+    return { sites: [], error: withoutHandle.error.message };
+  }
+
+  return { sites: [], error: full.error.message };
+}
+
 export async function GET() {
   const guard = featureApiGuard("results");
   if (guard) return guard;
   const { supabase, user } = await getApiUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: sites } = await supabase
-    .from("sites")
-    .select("id, title, product_name, slug, status, owner_handle, created_at")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  const { sites: siteList, error: sitesError } = await loadUserSites(supabase, user.id);
+  if (sitesError) {
+    return NextResponse.json({ error: sitesError }, { status: 500 });
+  }
 
-  const siteList = sites ?? [];
   const siteIds = siteList.map((s) => s.id);
 
   const empty = {
@@ -31,26 +95,29 @@ export async function GET() {
 
   if (siteIds.length === 0) return NextResponse.json(empty);
 
-  const [{ data: pins }, { data: visits }, { data: clicks }] = await Promise.all([
-    supabase.from("site_pins").select("id, site_id").eq("user_id", user.id).in("site_id", siteIds),
-    supabase.from("page_visits").select("id, site_id, source, created_at").in("site_id", siteIds).order("created_at", { ascending: false }).limit(40),
-    supabase.from("affiliate_clicks").select("id, site_id, created_at").in("site_id", siteIds).order("created_at", { ascending: false }).limit(40),
-  ]);
+  const [{ data: pins, error: pinsError }, { data: visits, error: visitsError }, { data: clicks, error: clicksError }] =
+    await Promise.all([
+      supabase.from("site_pins").select("id, site_id").eq("user_id", user.id).in("site_id", siteIds),
+      supabase
+        .from("page_visits")
+        .select("id, site_id, source, created_at")
+        .in("site_id", siteIds)
+        .order("created_at", { ascending: false })
+        .limit(40),
+      supabase
+        .from("affiliate_clicks")
+        .select("id, site_id, created_at")
+        .in("site_id", siteIds)
+        .order("created_at", { ascending: false })
+        .limit(40),
+    ]);
 
-  const pinCountBySite: Record<string, number> = {};
-  for (const pin of pins ?? []) {
-    pinCountBySite[pin.site_id] = (pinCountBySite[pin.site_id] ?? 0) + 1;
-  }
-  const visitCountBySite: Record<string, number> = {};
-  for (const visit of visits ?? []) {
-    visitCountBySite[visit.site_id] = (visitCountBySite[visit.site_id] ?? 0) + 1;
-  }
-  const clickCountBySite: Record<string, number> = {};
-  for (const click of clicks ?? []) {
-    clickCountBySite[click.site_id] = (clickCountBySite[click.site_id] ?? 0) + 1;
-  }
+  const metricsWarning =
+    [pinsError, visitsError, clicksError]
+      .map((err) => err?.message)
+      .filter(Boolean)
+      .join(" · ") || null;
 
-  // Counts above are truncated by limit. Fetch exact counts per site in parallel.
   const exact = await Promise.all(
     siteIds.map(async (id) => {
       const [v, c, p] = await Promise.all([
@@ -82,13 +149,14 @@ export async function GET() {
   const activity = [
     ...(visits ?? []).map((row) => ({
       at: row.created_at,
-      text: row.source === "pinterest"
-        ? `Pinterest visitor reached ${siteList.find((s) => s.id === row.site_id)?.product_name || "your asset"}.`
-        : `Visitor reached ${siteList.find((s) => s.id === row.site_id)?.product_name || "your asset"}.`,
+      text:
+        row.source === "pinterest"
+          ? `Pinterest visitor reached ${siteList.find((s) => s.id === row.site_id)?.product_name || siteList.find((s) => s.id === row.site_id)?.title || "your asset"}.`
+          : `Visitor reached ${siteList.find((s) => s.id === row.site_id)?.product_name || siteList.find((s) => s.id === row.site_id)?.title || "your asset"}.`,
     })),
     ...(clicks ?? []).map((row) => ({
       at: row.created_at,
-      text: `Affiliate link clicked on ${siteList.find((s) => s.id === row.site_id)?.product_name || "your asset"}.`,
+      text: `Affiliate link clicked on ${siteList.find((s) => s.id === row.site_id)?.product_name || siteList.find((s) => s.id === row.site_id)?.title || "your asset"}.`,
     })),
   ]
     .sort((a, b) => +new Date(b.at) - +new Date(a.at))
@@ -101,5 +169,6 @@ export async function GET() {
     affiliateClicks: exact.reduce((sum, row) => sum + row.clicks, 0),
     assets,
     activity,
+    ...(metricsWarning ? { warning: metricsWarning } : {}),
   });
 }

@@ -224,7 +224,7 @@ export default function ActivateAssetPage() {
 
               )}
 
-              <span className={completedStages[i] || i === stageIndex ? "text-ink" : "text-ink-5"}>{label}</span>
+              <span className={completedStages[i] || i === stageIndex ? "text-ink" : "text-ink-4"}>{label}</span>
 
             </div>
 

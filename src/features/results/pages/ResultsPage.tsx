@@ -21,35 +21,21 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 
 interface ResultsPayload {
-
   moneyPagesLive: number;
-
   trafficAssetsCreated: number;
-
   visitorsGenerated: number;
-
   affiliateClicks: number;
-
+  warning?: string;
   assets: {
-
     id: string;
-
     product: string;
-
     status: string;
-
     traffic: number;
-
     affiliateClicks: number;
-
     ctr: number;
-
     href: string;
-
   }[];
-
   activity: { at: string; text: string }[];
-
 }
 
 
@@ -91,11 +77,13 @@ export default function ResultsPage() {
       .then((r) => r.json())
 
       .then((payload) => {
-
         if (payload.error) setError(payload.error);
-
-        else setData(payload);
-
+        else {
+          setData(payload);
+          if (typeof payload.warning === "string" && payload.warning) {
+            setError(payload.warning);
+          }
+        }
       })
 
       .catch(() => setError("Could not load results"))

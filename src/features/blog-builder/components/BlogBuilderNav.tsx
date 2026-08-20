@@ -56,14 +56,15 @@ export function BlogBuilderNav({
         <div
           key={item.path}
           className={clsx(
-            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg opacity-40 cursor-not-allowed",
+            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed",
             collapsed && "justify-center px-2"
           )}
           title="Complete the previous step first"
+          aria-disabled="true"
         >
-          <Lock size={18} className="text-text-muted shrink-0" />
+          <Lock size={18} className="text-ink-4 shrink-0" />
           {!collapsed && (
-            <span className="brand-font text-sm font-medium text-text-muted leading-snug truncate">
+            <span className="brand-font text-sm font-medium text-ink-4 leading-snug truncate">
               {item.label}
             </span>
           )}

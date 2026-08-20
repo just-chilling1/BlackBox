@@ -25,6 +25,12 @@ function pinImageSrc(url: string) {
   return `${base}&v=6`;
 }
 
+function pinDownloadHref(url: string | null) {
+  if (!url) return "#";
+  const withVersion = pinImageSrc(url);
+  return `${withVersion}${withVersion.includes("?") ? "&" : "?"}download=1`;
+}
+
 export default function TrafficPage() {
   const { assetId } = useParams<{ assetId: string }>();
   const router = useRouter();
@@ -38,20 +44,25 @@ export default function TrafficPage() {
   async function load() {
     setLoading(true);
     setError("");
-    const [pinRes, siteRes] = await Promise.all([
-      fetch(`/api/pins/generate?siteId=${assetId}`),
-      fetch(`/api/assets/${assetId}`),
-    ]);
-    const pinData = await pinRes.json().catch(() => ({}));
-    const siteData = await siteRes.json().catch(() => ({}));
-    setPins(pinData.pins ?? []);
-    if (siteData.site?.slug) setSlug(siteData.site.slug);
-    if (!pinRes.ok && typeof pinData.error === "string") {
-      setError(pinData.error);
-    } else if (!siteRes.ok && typeof siteData.error === "string") {
-      setError(siteData.error);
+    try {
+      const [pinRes, siteRes] = await Promise.all([
+        fetch(`/api/pins/generate?siteId=${assetId}`),
+        fetch(`/api/assets/${assetId}`),
+      ]);
+      const pinData = await pinRes.json().catch(() => ({}));
+      const siteData = await siteRes.json().catch(() => ({}));
+      setPins(pinData.pins ?? []);
+      if (siteData.site?.slug) setSlug(siteData.site.slug);
+      if (!pinRes.ok && typeof pinData.error === "string") {
+        setError(pinData.error);
+      } else if (!siteRes.ok && typeof siteData.error === "string") {
+        setError(siteData.error);
+      }
+    } catch {
+      setError("Could not load traffic assets");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -61,18 +72,23 @@ export default function TrafficPage() {
   async function generate() {
     setBusy(true);
     setError("");
-    const res = await fetch("/api/pins/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteId: assetId, regenerate: pins.length > 0 }),
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (!res.ok) {
-      setError(data.error || "Could not generate pins");
-      return;
+    try {
+      const res = await fetch("/api/pins/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteId: assetId, regenerate: pins.length > 0 }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Could not generate pins");
+        return;
+      }
+      setPins(data.pins ?? []);
+    } catch {
+      setError("Could not generate pins");
+    } finally {
+      setBusy(false);
     }
-    setPins(data.pins ?? []);
   }
 
   function destination(pinId: string) {
@@ -186,7 +202,7 @@ export default function TrafficPage() {
                 </div>
 
                 <div className="pin-card-actions">
-                  <a className="btn-compact" href={`${pin.image_url}?download=1`}>
+                  <a className="btn-compact" href={pinDownloadHref(pin.image_url)}>
                     Download image
                   </a>
                   <button type="button" className="btn-compact" onClick={() => void copy(`t${pin.id}`, pin.title)}>

@@ -52,47 +52,53 @@ export default function MoneyPageEditor() {
 
   async function load() {
     setLoading(true);
-    const res = await fetch(`/api/assets/${assetId}`);
-    const data = await res.json();
-    if (!res.ok) {
-      setLoading(false);
-      setError(data.error || "Could not load asset");
-      return;
-    }
-    setSite(data.site);
-    const pageCopy = isMoneyPageCopy(data.site.sales_page_json) ? data.site.sales_page_json : null;
-    if (pageCopy) setCopy(pageCopy);
-    applyThemeFromPayload(data);
-    const links = Array.isArray(data.site.armed_links) ? data.site.armed_links : [];
-    const link = links[0]?.url || data.site.product_url || "";
-    setAffiliateUrl(link);
-
-    // Rebuild stored HTML when FAQ arrow styles are missing (template updates).
-    const html = typeof data.site.sales_page_html === "string" ? data.site.sales_page_html : "";
-    if (pageCopy && !html.includes("summary::after")) {
-      const config = data.site.theme_config;
-      const fromConfig =
-        config && typeof config === "object"
-          ? (config as Record<string, unknown>).moneyColorTheme
-          : null;
-      const theme = isMoneyPageColorThemeId(data.colorTheme)
-        ? data.colorTheme
-        : isMoneyPageColorThemeId(fromConfig)
-          ? fromConfig
-          : "ocean";
-      const rebuild = await fetch(`/api/assets/${assetId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ copy: pageCopy, affiliateUrl: link, colorTheme: theme }),
-      });
-      const rebuilt = await rebuild.json().catch(() => null);
-      if (rebuild.ok && rebuilt?.site) {
-        setSite(rebuilt.site);
-        applyThemeFromPayload(rebuilt);
+    setError("");
+    try {
+      const res = await fetch(`/api/assets/${assetId}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Could not load asset");
+        return;
       }
-    }
+      setSite(data.site);
+      const pageCopy = isMoneyPageCopy(data.site.sales_page_json) ? data.site.sales_page_json : null;
+      if (pageCopy) setCopy(pageCopy);
+      applyThemeFromPayload(data);
+      const links = Array.isArray(data.site.armed_links) ? data.site.armed_links : [];
+      const link = links[0]?.url || data.site.product_url || "";
+      setAffiliateUrl(link);
 
-    setLoading(false);
+      // Rebuild stored HTML when FAQ arrow styles are missing (template updates).
+      const html = typeof data.site.sales_page_html === "string" ? data.site.sales_page_html : "";
+      if (pageCopy && !html.includes("summary::after")) {
+        const config = data.site.theme_config;
+        const fromConfig =
+          config && typeof config === "object"
+            ? (config as Record<string, unknown>).moneyColorTheme
+            : null;
+        const theme = isMoneyPageColorThemeId(data.colorTheme)
+          ? data.colorTheme
+          : isMoneyPageColorThemeId(fromConfig)
+            ? fromConfig
+            : "ocean";
+        const rebuild = await fetch(`/api/assets/${assetId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ copy: pageCopy, affiliateUrl: link, colorTheme: theme }),
+        });
+        const rebuilt = await rebuild.json().catch(() => null);
+        if (rebuild.ok && rebuilt?.site) {
+          setSite(rebuilt.site);
+          applyThemeFromPayload(rebuilt);
+        } else if (!rebuild.ok) {
+          setError(rebuilt?.error || "Could not refresh the live preview");
+        }
+      }
+    } catch {
+      setError("Could not load asset");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -103,26 +109,35 @@ export default function MoneyPageEditor() {
     setBusy(nextTheme ? "theme" : "save");
     setError("");
     const theme = nextTheme ?? colorTheme;
-    const res = await fetch(`/api/assets/${assetId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ copy, affiliateUrl, colorTheme: theme }),
-    });
-    const data = await res.json();
-    setBusy("");
-    if (!res.ok) {
-      setError(data.error || "Save failed");
-      return;
+    try {
+      const res = await fetch(`/api/assets/${assetId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ copy, affiliateUrl, colorTheme: theme }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Save failed");
+        return false;
+      }
+      setSite(data.site);
+      applyThemeFromPayload(data);
+      if (!nextTheme) setEditing(false);
+      return true;
+    } catch {
+      setError("Save failed");
+      return false;
+    } finally {
+      setBusy("");
     }
-    setSite(data.site);
-    applyThemeFromPayload(data);
-    if (!nextTheme) setEditing(false);
   }
 
   async function changeTheme(themeId: MoneyPageColorThemeId) {
     if (themeId === colorTheme || busy) return;
+    const previous = colorTheme;
     setColorTheme(themeId);
-    await save(themeId);
+    const ok = await save(themeId);
+    if (!ok) setColorTheme(previous);
   }
 
   async function regenerate() {
