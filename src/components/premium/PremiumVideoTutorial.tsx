@@ -6,13 +6,11 @@ import { VideoOverlay } from "@/components/ui/video-overlay";
 import { vimeoPlayerUrl } from "@/lib/dashboard-content";
 
 interface PremiumVideoTutorialProps {
-  /** Leave empty to show a branded "coming soon" placeholder with the thumbnail. */
+  /** Leave empty to show a branded "coming soon" placeholder. */
   vimeoId?: string;
   title: string;
   description: string;
   iframeTitle: string;
-  /** Poster shown before the member clicks play (and while no video is uploaded). */
-  thumbnailSrc?: string;
 }
 
 export function PremiumVideoTutorial({
@@ -20,7 +18,6 @@ export function PremiumVideoTutorial({
   title,
   description,
   iframeTitle,
-  thumbnailSrc,
 }: PremiumVideoTutorialProps) {
   const [open, setOpen] = useState(false);
   const hasVideo = Boolean(vimeoId);
@@ -42,18 +39,7 @@ export function PremiumVideoTutorial({
                 aria-label={hasVideo ? `Play ${iframeTitle}` : `${iframeTitle} — coming soon`}
                 className="absolute inset-0 block w-full cursor-pointer text-left disabled:cursor-default"
               >
-                {thumbnailSrc ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={thumbnailSrc}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
-                )}
+                <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
                 <div className="video-thumb-scrim absolute inset-0" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                   <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grad-pulse text-white opacity-90 shadow-[0_8px_32px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:scale-105">

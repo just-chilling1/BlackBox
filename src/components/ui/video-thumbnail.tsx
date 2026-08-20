@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Play } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
-import { resolveVideoThumbnail } from "@/lib/video-thumbnails";
 
 interface VideoThumbnailProps {
   videoId?: string;
@@ -17,18 +15,11 @@ interface VideoThumbnailProps {
 }
 
 export function VideoThumbnail({
-  videoId = "",
   title,
   onPlay,
   caption,
   className,
-  eager = false,
-  thumbnailSrc,
 }: VideoThumbnailProps) {
-  const [imgError, setImgError] = useState(false);
-  const thumbPath = resolveVideoThumbnail(videoId, thumbnailSrc);
-  const showImage = thumbPath && !imgError;
-
   return (
     <button
       type="button"
@@ -40,18 +31,7 @@ export function VideoThumbnail({
       )}
     >
       <div className="relative aspect-video w-full">
-        {showImage ? (
-          <img
-            src={thumbPath}
-            alt=""
-            loading={eager ? "eager" : "lazy"}
-            decoding="async"
-            onError={() => setImgError(true)}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
-        )}
+        <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
 
         <div className="video-thumb-scrim absolute inset-0" />
 

@@ -97,15 +97,15 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         <div
           key={item.path}
           className={clsx(
-            "sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed",
+            "sidebar-nav-item is-locked flex items-center gap-3 px-3 py-2.5 cursor-not-allowed",
             collapsed && "justify-center px-2"
           )}
           title="Complete the previous step first"
           aria-disabled="true"
         >
-          <Lock size={18} className="text-ink-4 shrink-0" />
+          <Lock size={16} className="text-ink-5 shrink-0" strokeWidth={1.75} />
           {!collapsed && (
-            <span className="brand-font text-sm font-medium text-ink-4 leading-snug truncate">
+            <span className="sidebar-nav-label text-ink-5">
               {item.label}
             </span>
           )}
@@ -122,7 +122,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         className="block group"
       >
         <div className={sidebarNavItemClass(isActive, collapsed)}>
-          <Icon className={sidebarNavIconClass(isActive)} size={20} />
+          <Icon className={sidebarNavIconClass(isActive)} size={18} strokeWidth={1.75} />
           {!collapsed && <span className={sidebarNavLabelClass(isActive)}>{item.label}</span>}
         </div>
       </WarmNavLink>
@@ -135,14 +135,14 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
     !workflowSteps.some((step) => step.path === "/activate" || step.path === "/results");
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--sidebar-border)] bg-[var(--sidebar-bg)]">
-      <div className={clsx("shrink-0 border-b border-[var(--sidebar-border)]", collapsed ? "p-3" : "px-[14px] py-4")}>
+    <div className="sidebar-panel flex h-full min-h-0 w-full flex-col overflow-hidden">
+      <div className={clsx("sidebar-header shrink-0", collapsed ? "p-3" : "px-3.5 py-3.5")}>
         <div className={clsx("flex w-full items-center", collapsed ? "flex-col gap-3" : "gap-2")}>
           <Link
             href="/dashboard"
             onClick={handleNavClick}
             className={clsx(
-              "transition-opacity hover:opacity-90",
+              "rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--np-pulse-500)]",
               collapsed ? "flex w-full justify-center" : "min-w-0 flex-1"
             )}
             title={brand.productName}
@@ -154,19 +154,16 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
             onClick={onToggle}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             suppressHydrationWarning
-            className={clsx(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border-dim text-ink-3 transition-colors hover:bg-pulse-100 hover:text-ink",
-              !collapsed && "ml-auto"
-            )}
+            className={clsx("sidebar-collapse-btn", !collapsed && "ml-auto")}
           >
-            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            {collapsed ? <PanelLeftOpen size={15} strokeWidth={1.75} /> : <PanelLeftClose size={15} strokeWidth={1.75} />}
           </button>
         </div>
       </div>
 
       <div className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain">
-        <nav aria-label="Main navigation" className="px-[14px] py-3">
-          <div className="space-y-1.5">
+        <nav aria-label="Main navigation" className="px-3 py-3">
+          <div className="space-y-1">
             {showHomeNav ? (
               <>
                 {renderSectionLabel(homeSectionLabel)}
@@ -215,29 +212,31 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         </nav>
       </div>
 
-      <div className="shrink-0 space-y-2 border-t border-[var(--sidebar-border)] p-2 md:p-4">
+      <div className={clsx("sidebar-footer shrink-0 space-y-2 p-3", collapsed && "px-2")}>
         {renderNavLink(supportNav)}
 
-        <div className={clsx("p-3", collapsed && "px-2")}>
-          <div className={clsx("flex items-center gap-3", collapsed && "flex-col")}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-grad-pulse text-[15px] font-medium text-pulse-900 shadow-pulse">
-              {userInitials}
-            </div>
-            {!collapsed && (
-              <div className="min-w-0 flex-1">
-                <div className="brand-font truncate text-[15px] text-ink">{displayName}</div>
-                <div className="text-[13px] text-ink-4">Active Member</div>
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={() => void handleLogout()}
-              className="sidebar-sign-out rounded-lg p-2"
-              title="Sign Out"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+        <div className={clsx("sidebar-user-card", collapsed && "flex-col justify-center gap-2 px-1.5 py-2")}>
+          <div className="sidebar-user-avatar" aria-hidden>
+            {userInitials}
           </div>
+          {!collapsed && (
+            <div className="sidebar-user-meta">
+              <div className="sidebar-user-name">{displayName}</div>
+              <div className="sidebar-user-status">
+                <span className="sidebar-user-status-dot" aria-hidden />
+                Active Member
+              </div>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            className="sidebar-sign-out"
+            title="Sign Out"
+            aria-label="Sign Out"
+          >
+            <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} />
+          </button>
         </div>
       </div>
     </div>
@@ -274,7 +273,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 z-50 hidden h-dvh border-r border-[var(--sidebar-border)] bg-[var(--sidebar-shell-bg)] shadow-sm transition-[width] duration-300 lg:flex"
+      className="sidebar-shell fixed left-0 top-0 z-50 hidden h-dvh transition-[width] duration-300 lg:flex"
       style={{ width: "var(--sidebar-w)" }}
     >
       <SidebarContent collapsed={collapsed} onToggle={toggleCollapse} />

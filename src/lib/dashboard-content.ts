@@ -4,8 +4,6 @@ import { dashboardContent } from "@/config/dashboard.config";
 import { trainingContent } from "@/config/training.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps } from "@/lib/dashboard-steps";
-import { getDashboardVideoThumbnail } from "@/lib/video-thumbnails";
-
 export type DashboardVideo = {
   id: string;
   title: string;
@@ -18,7 +16,7 @@ export function getDashboardVideos(): DashboardVideo[] {
   return dashboardContent.videos.map((video, index) => ({
     ...video,
     id: video.id || trainingContent.videos[index]?.id || "",
-    thumbnailSrc: getDashboardVideoThumbnail(index),
+    thumbnailSrc: null,
   }));
 }
 

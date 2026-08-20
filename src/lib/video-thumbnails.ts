@@ -1,46 +1,33 @@
-export const VIDEO_THUMBNAILS: Record<string, string> = {
-  /** Map Vimeo IDs to custom poster paths once videos are uploaded */
-};
+export const VIDEO_THUMBNAILS: Record<string, string> = {};
 
-/** Dashboard video track — index 0–2 */
-export const DASHBOARD_VIDEO_THUMBNAILS = [
-  "/thumbnails/dashboard-01-watch-this-first.webp",
-  "/thumbnails/dashboard-02-how-the-money-flows.webp",
-  "/thumbnails/dashboard-03-five-minute-tour.webp",
-] as const;
-
-/** Academy platform tutorials — no custom posters (play placeholder only) */
+/** Dashboard / academy posters disabled — play placeholder only */
+export const DASHBOARD_VIDEO_THUMBNAILS = [] as const;
 export const ACADEMY_PLATFORM_THUMBNAILS = [] as const;
-
-/** Academy premium tutorials — no custom posters (play placeholder only) */
 export const ACADEMY_PREMIUM_THUMBNAILS = [] as const;
 
 const VIMEO_ID_REGEX = /vimeo\.com\/(?:video\/)?(\d+)/;
 
-export function getVideoThumbnailById(id: string): string | null {
-  return VIDEO_THUMBNAILS[id] ?? null;
+export function getVideoThumbnailById(_id: string): string | null {
+  return null;
 }
 
-export function getDashboardVideoThumbnail(index: number): string | null {
-  return DASHBOARD_VIDEO_THUMBNAILS[index] ?? null;
+export function getDashboardVideoThumbnail(_index: number): string | null {
+  return null;
 }
 
-export function getAcademyPlatformThumbnail(index: number): string | null {
-  return ACADEMY_PLATFORM_THUMBNAILS[index] ?? null;
+export function getAcademyPlatformThumbnail(_index: number): string | null {
+  return null;
 }
 
-export function getAcademyPremiumThumbnail(index: number): string | null {
-  return ACADEMY_PREMIUM_THUMBNAILS[index] ?? null;
+export function getAcademyPremiumThumbnail(_index: number): string | null {
+  return null;
 }
 
 export function resolveVideoThumbnail(
-  videoId: string,
-  fallbackSrc?: string | null
+  _videoId: string,
+  _fallbackSrc?: string | null
 ): string | null {
-  if (videoId) {
-    return getVideoThumbnailById(videoId) ?? fallbackSrc ?? null;
-  }
-  return fallbackSrc ?? null;
+  return null;
 }
 
 export function toEmbedUrl(videoUrl: string, autoplay = true): string {
