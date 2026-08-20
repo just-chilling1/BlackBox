@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { generateMoneyPageForSite } from "@/features/money-page/lib/generate";
+import { generateMoneyPageForSite, moneyPageThemeFromSite } from "@/features/money-page/lib/generate";
 import { buildMoneyPageHtml } from "@/features/money-page/lib/html";
 import { isMoneyPageCopy } from "@/features/money-page/lib/types";
 import { inferNiche } from "@/features/money-page/lib/niche";
 import { normalizeAffiliateUrl } from "@/features/blog-builder/lib/affiliate-url";
 import { detectLinkNetwork } from "@/features/blog-builder/lib/affiliate-url";
 import type { ArmedLink } from "@/features/blog-builder/types";
+import {
+  isMoneyPageColorThemeId,
+  withMoneyPageThemeConfig,
+} from "@/features/money-page/lib/themes";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -43,7 +47,7 @@ export async function GET(
   const { assetId } = await context.params;
   const site = await loadSite(supabase, user.id, assetId);
   if (!site) return NextResponse.json({ error: "Asset not found" }, { status: 404 });
-  return NextResponse.json({ site });
+  return NextResponse.json({ site, ...moneyPageThemeFromSite(site) });
 }
 
 export async function PATCH(
@@ -68,12 +72,22 @@ export async function PATCH(
     armedLinks = [{ label: site.product_name || site.title, url, network: detectLinkNetwork(url) }];
   }
 
+  const current = moneyPageThemeFromSite(site);
+  const colorTheme = isMoneyPageColorThemeId(body.colorTheme) ? body.colorTheme : current.colorTheme;
+  const variationId = current.variationId;
+  const themeConfig = withMoneyPageThemeConfig(site.theme_config, {
+    moneyColorTheme: colorTheme,
+    moneyVariation: variationId,
+  });
+
   const ctaUrl = armedLinks[0]?.url || site.product_url || "";
   const html = buildMoneyPageHtml({
     siteId: site.id,
     productName: site.product_name || site.title,
     copy,
     ctaUrl,
+    colorTheme,
+    variationId,
   });
 
   const { data, error } = await supabase
@@ -84,6 +98,7 @@ export async function PATCH(
       armed_links: armedLinks,
       title: copy.headline.slice(0, 180),
       tagline: copy.subheadline.slice(0, 160),
+      theme_config: themeConfig,
     })
     .eq("id", site.id)
     .eq("user_id", user.id)
@@ -91,7 +106,7 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ site: data });
+  return NextResponse.json({ site: data, colorTheme, variationId });
 }
 
 export async function POST(
@@ -125,6 +140,9 @@ export async function POST(
   if (!ctaUrl) return NextResponse.json({ error: "Add an affiliate or product link first." }, { status: 400 });
 
   const productName = site.product_name || site.title;
+  const current = moneyPageThemeFromSite(site);
+  const colorTheme = isMoneyPageColorThemeId(body.colorTheme) ? body.colorTheme : current.colorTheme;
+
   await generateMoneyPageForSite({
     supabase,
     userId: user.id,
@@ -132,8 +150,15 @@ export async function POST(
     productName,
     niche: inferNiche(productName, site.hobby || ""),
     ctaUrl,
+    colorTheme,
+    excludeVariationId: current.variationId,
+    existingThemeConfig: site.theme_config,
   });
 
   const updated = await loadSite(supabase, user.id, assetId);
-  return NextResponse.json({ site: updated, regenerated: true });
+  return NextResponse.json({
+    site: updated,
+    regenerated: true,
+    ...moneyPageThemeFromSite(updated ?? site),
+  });
 }

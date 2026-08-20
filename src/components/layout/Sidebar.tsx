@@ -157,9 +157,9 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
       <div className="sidebar-scroll flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain">
         <nav
           aria-label="Main navigation"
-          className="py-2 px-[14px]"
+          className="py-3 px-[14px]"
         >
-          <div className="space-y-0.5">
+          <div className="space-y-1.5">
             {showHomeNav ? renderNavLink(homeNav) : null}
             {workflowSteps.map((step) => renderNavLink(step))}
             {blogEnabled ? (

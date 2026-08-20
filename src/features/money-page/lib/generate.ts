@@ -10,6 +10,17 @@ import { generateMoneyPageCopy, fallbackMoneyPageCopy } from "./copy";
 import { buildMoneyPageHtml } from "./html";
 import { inferNiche } from "./niche";
 import type { MoneyPageCopy } from "./types";
+import {
+  DEFAULT_MONEY_PAGE_COLOR_THEME,
+  resolveMoneyPageColorThemeId,
+  withMoneyPageThemeConfig,
+  type MoneyPageColorThemeId,
+} from "./themes";
+import {
+  pickNextMoneyPageVariation,
+  resolveMoneyPageVariationId,
+  type MoneyPageVariationId,
+} from "./variations";
 
 export interface ActivateInput {
   productUrl?: string;
@@ -31,12 +42,19 @@ export async function generateMoneyPageForSite(params: {
   productContext?: string;
   heroImage?: string;
   ctaUrl: string;
-}): Promise<{ copy: MoneyPageCopy; html: string }> {
-  const copy = await generateMoneyPageCopy({
+  colorTheme?: MoneyPageColorThemeId | null;
+  variationId?: MoneyPageVariationId | null;
+  excludeVariationId?: MoneyPageVariationId | null;
+  existingThemeConfig?: unknown;
+}): Promise<{ copy: MoneyPageCopy; html: string; colorTheme: MoneyPageColorThemeId; variationId: MoneyPageVariationId }> {
+  const colorTheme = params.colorTheme ?? DEFAULT_MONEY_PAGE_COLOR_THEME;
+  const { copy, variationId } = await generateMoneyPageCopy({
     productName: params.productName,
     niche: params.niche,
     description: params.description,
     productContext: params.productContext,
+    variationId: params.variationId,
+    excludeVariationId: params.excludeVariationId,
   });
   if (params.heroImage) copy.heroImage = params.heroImage;
   const html = buildMoneyPageHtml({
@@ -44,6 +62,12 @@ export async function generateMoneyPageForSite(params: {
     productName: params.productName,
     copy,
     ctaUrl: params.ctaUrl,
+    colorTheme,
+    variationId,
+  });
+  const themeConfig = withMoneyPageThemeConfig(params.existingThemeConfig, {
+    moneyColorTheme: colorTheme,
+    moneyVariation: variationId,
   });
   const { error } = await params.supabase
     .from("sites")
@@ -53,11 +77,12 @@ export async function generateMoneyPageForSite(params: {
       site_type: "product",
       sales_page_html: html,
       sales_page_json: copy,
+      theme_config: themeConfig,
     })
     .eq("id", params.siteId)
     .eq("user_id", params.userId);
   if (error) throw new Error(error.message);
-  return { copy, html };
+  return { copy, html, colorTheme, variationId };
 }
 
 export async function activateAsset(params: {
@@ -118,6 +143,14 @@ export async function activateAsset(params: {
   for (let n = 2; taken.has(slug); n++) slug = `${baseSlug}-${n}`;
 
   const ownerHandle = await getOrCreateUserHandle(params.supabase, params.user);
+  const initialVariation = pickNextMoneyPageVariation(null);
+  const initialThemeConfig = withMoneyPageThemeConfig(
+    {},
+    {
+      moneyColorTheme: DEFAULT_MONEY_PAGE_COLOR_THEME,
+      moneyVariation: initialVariation,
+    }
+  );
   const baseRow: Record<string, unknown> = {
     user_id: params.user.id,
     hobby: niche,
@@ -126,7 +159,7 @@ export async function activateAsset(params: {
     tagline: scrapedDescription.slice(0, 160) || `Review of ${productName}`,
     slug,
     theme: "editorial",
-    theme_config: {},
+    theme_config: initialThemeConfig,
     armed_links: armedLinks,
     status: "draft",
     site_type: "product",
@@ -161,6 +194,9 @@ export async function activateAsset(params: {
       productContext,
       heroImage,
       ctaUrl,
+      colorTheme: DEFAULT_MONEY_PAGE_COLOR_THEME,
+      variationId: initialVariation,
+      existingThemeConfig: initialThemeConfig,
     });
     return { site: { ...created, product_name: productName }, copy };
   }
@@ -176,21 +212,38 @@ export async function activateAsset(params: {
       productContext,
       heroImage,
       ctaUrl,
+      colorTheme: DEFAULT_MONEY_PAGE_COLOR_THEME,
+      variationId: initialVariation,
+      existingThemeConfig: initialThemeConfig,
     });
     return { site, copy };
   } catch {
-    const copy = fallbackMoneyPageCopy(productName, scrapedDescription);
+    const copy = fallbackMoneyPageCopy(productName, scrapedDescription, initialVariation);
     if (heroImage) copy.heroImage = heroImage;
     const html = buildMoneyPageHtml({
       siteId: site.id,
       productName,
       copy,
       ctaUrl,
+      colorTheme: DEFAULT_MONEY_PAGE_COLOR_THEME,
+      variationId: initialVariation,
     });
     await params.supabase
       .from("sites")
-      .update({ sales_page_html: html, sales_page_json: copy, title: copy.headline })
+      .update({
+        sales_page_html: html,
+        sales_page_json: copy,
+        title: copy.headline,
+        theme_config: initialThemeConfig,
+      })
       .eq("id", site.id);
     return { site, copy };
   }
+}
+
+export function moneyPageThemeFromSite(site: { theme_config?: unknown }) {
+  return {
+    colorTheme: resolveMoneyPageColorThemeId(site.theme_config),
+    variationId: resolveMoneyPageVariationId(site.theme_config),
+  };
 }

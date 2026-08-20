@@ -158,7 +158,7 @@ export default function ActivateAssetPage() {
 
         />
 
-        <GlassPanel className="space-y-5 p-6">
+        <GlassPanel className="space-y-5 p-6 sm:p-7">
 
           <div className="success-banner">
 
@@ -204,7 +204,7 @@ export default function ActivateAssetPage() {
 
         <PageHeader title="Activating your asset..." subtitle="Sit tight — NullPing is doing the work." />
 
-        <GlassPanel className="space-y-3 p-6">
+        <GlassPanel className="space-y-4 p-6 sm:p-7">
 
           {STAGES.map((label, i) => (
 
@@ -256,7 +256,7 @@ export default function ActivateAssetPage() {
 
       />
 
-      <GlassPanel className="space-y-5 p-6">
+      <GlassPanel className="space-y-5 p-6 sm:p-7">
 
         <div className="flex items-start gap-3 rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/40 p-4">
 

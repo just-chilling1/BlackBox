@@ -2,9 +2,13 @@ import { ImageResponse } from "next/og";
 import { getServiceRoleClient } from "@/lib/api-auth";
 import { readFile } from "fs/promises";
 import path from "path";
+import { productPhotoFallbackUrl } from "@/features/traffic/lib/pin-images";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const PIN_WIDTH = 1200;
+const PIN_HEIGHT = 675;
 
 async function loadFont(): Promise<ArrayBuffer | undefined> {
   const file = path.join(process.cwd(), "public", "fonts", "Inter-Bold.ttf");
@@ -20,23 +24,83 @@ async function loadFont(): Promise<ArrayBuffer | undefined> {
   }
 }
 
+function sniffMime(bytes: Uint8Array): string {
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (
+    bytes.length >= 8 &&
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
+    return "image/png";
+  }
+  if (bytes.length >= 4 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) {
+    return "image/gif";
+  }
+  if (
+    bytes.length >= 12 &&
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "image/webp";
+  }
+  return "image/jpeg";
+}
+
+/** Fetch photo server-side and embed as data URI so Satori always has pixels. */
+async function toDataImageUrl(url: string): Promise<string | null> {
+  if (!url || !/^https?:\/\//i.test(url)) return null;
+  if (url.startsWith("data:image/")) return url;
+  try {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(12_000),
+      headers: { "User-Agent": "NullPingPinImage/1.0", Accept: "image/*,*/*" },
+      redirect: "follow",
+    });
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.byteLength < 64) return null;
+    const mime = sniffMime(buf);
+    return `data:${mime};base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(
   request: Request,
   context: { params: Promise<{ pinId: string }> }
 ) {
   const { pinId } = await context.params;
-  // Service role: pin images are public download URLs; owner-only RLS would 404 them.
   const supabase = getServiceRoleClient();
   if (!supabase) {
     return new Response("Server misconfigured", { status: 503 });
   }
 
-  const { data: pin } = await supabase
+  let pinQuery = await supabase
     .from("site_pins")
-    .select("id, headline, title, site_id")
+    .select("id, headline, title, site_id, source_image_url, idx")
     .eq("id", pinId)
     .maybeSingle();
 
+  if (pinQuery.error) {
+    pinQuery = await supabase
+      .from("site_pins")
+      .select("id, headline, title, site_id")
+      .eq("id", pinId)
+      .maybeSingle();
+  }
+
+  const pin = pinQuery.data;
   if (!pin) {
     return new Response("Not found", { status: 404 });
   }
@@ -47,13 +111,34 @@ export async function GET(
     .eq("id", pin.site_id)
     .maybeSingle();
 
-  const copy = (site?.sales_page_json ?? {}) as { heroImage?: string };
+  const copy = (site?.sales_page_json ?? {}) as {
+    heroImage?: string;
+    pinImages?: Record<string, string>;
+  };
   const headline = pin.headline || pin.title || "Read the review";
   const product = site?.product_name || site?.title || "";
   const download = new URL(request.url).searchParams.get("download") === "1";
+  const pinIdx = typeof (pin as { idx?: number }).idx === "number" ? (pin as { idx: number }).idx : 0;
 
-  let fontData: ArrayBuffer | undefined;
-  fontData = await loadFont();
+  const candidateUrls = [
+    (pin as { source_image_url?: string | null }).source_image_url,
+    copy.pinImages?.[pin.id],
+    copy.heroImage,
+    productPhotoFallbackUrl(product, pinIdx * 17 + headline.length),
+    product
+      ? `https://image.pollinations.ai/prompt/${encodeURIComponent(
+          `photorealistic product photo of ${product}, clean studio lighting, no text, no watermark`
+        )}?width=${PIN_WIDTH}&height=${PIN_HEIGHT}&nologo=true&seed=${pinIdx * 31 + 7}`
+      : null,
+  ].filter((u): u is string => Boolean(u?.trim()));
+
+  let backgroundDataUrl: string | null = null;
+  for (const candidate of candidateUrls) {
+    backgroundDataUrl = await toDataImageUrl(candidate);
+    if (backgroundDataUrl) break;
+  }
+
+  const fontData = await loadFont();
 
   const image = new ImageResponse(
     (
@@ -62,32 +147,77 @@ export async function GET(
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-          background: copy.heroImage
-            ? `linear-gradient(180deg, rgba(7,11,15,0.15) 0%, rgba(7,11,15,0.82) 70%), url(${copy.heroImage})`
-            : "linear-gradient(165deg, #102630 0%, #070B0F 55%, #04202B 100%)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          position: "relative",
+          overflow: "hidden",
           color: "#E6EDF3",
-          padding: "72px 64px",
           fontFamily: "Inter",
         }}
       >
-        <div style={{ fontSize: 28, color: "#22D3EE", marginBottom: 24, letterSpacing: 2 }}>
-          NULLPING CASH
+        {backgroundDataUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+          <img
+            src={backgroundDataUrl}
+            width={PIN_WIDTH}
+            height={PIN_HEIGHT}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(135deg, #102630 0%, #070B0F 55%, #1e293b 100%)",
+            }}
+          />
+        )}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: backgroundDataUrl
+              ? "linear-gradient(90deg, rgba(7,11,15,0.82) 0%, rgba(7,11,15,0.35) 55%, rgba(7,11,15,0.15) 100%)"
+              : "transparent",
+          }}
+        />
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            width: "100%",
+            height: "100%",
+            padding: "48px 56px",
+          }}
+        >
+          <div style={{ fontSize: 22, color: "#22D3EE", marginBottom: 16, letterSpacing: 2 }}>
+            NULLPING CASH
+          </div>
+          <div style={{ fontSize: 48, lineHeight: 1.12, fontWeight: 700, maxWidth: 920 }}>
+            {headline}
+          </div>
+          {product ? (
+            <div style={{ marginTop: 18, fontSize: 24, color: "#A7B4C2" }}>{product}</div>
+          ) : null}
         </div>
-        <div style={{ fontSize: 64, lineHeight: 1.1, fontWeight: 700, maxWidth: 880 }}>
-          {headline}
-        </div>
-        {product ? (
-          <div style={{ marginTop: 28, fontSize: 28, color: "#A7B4C2" }}>{product}</div>
-        ) : null}
       </div>
     ),
     {
-      width: 1000,
-      height: 1500,
+      width: PIN_WIDTH,
+      height: PIN_HEIGHT,
       fonts: fontData
         ? [{ name: "Inter", data: fontData, weight: 700, style: "normal" }]
         : undefined,

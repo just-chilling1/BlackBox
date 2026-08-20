@@ -25,12 +25,12 @@ export function GlassPanel({
         "border-border-dim shadow-sm",
         intensity === "low" && "backdrop-blur-sm",
         intensity === "medium" && "backdrop-blur-md",
-        intensity === "high" && "backdrop-blur-xl",
-        className
+        intensity === "high" && "backdrop-blur-xl"
       )}
     >
       <div className="absolute inset-0 bg-linear-to-br from-pulse-100/40 to-transparent pointer-events-none" />
-      <div className={cn("relative z-10 h-full min-h-0", contentClassName)}>{children}</div>
+      {/* Layout/spacing classes must live here so children receive gap/padding. */}
+      <div className={cn("relative z-10 min-h-0", className, contentClassName)}>{children}</div>
     </motion.div>
   );
 }

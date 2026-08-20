@@ -58,6 +58,8 @@ export const HOBBY_VISUAL_QUERIES: Record<string, string> = {
   "Dating / Relationships": "happy couple relationship together",
   "AI Writing Tools": "writer laptop content creation desk",
   "AI Platform": "artificial intelligence technology computer office",
+  "boxing & combat sports": "boxing gloves sparring training",
+  "health & fitness": "fitness workout gym training",
 };
 
 function tokenizeForQuery(text: string): string[] {
@@ -182,7 +184,11 @@ export async function fetchPixabayImage(
         return ratio > 0.75 && ratio < 1.33;
       });
       if (squareish.length > 0) hits = squareish;
-    } else {
+    } else if (options?.orientation === "vertical") {
+      // Keep portrait hits when vertical was requested (do not filter to landscape).
+      const vertical = hits.filter((h) => (h.imageHeight ?? 0) >= (h.imageWidth ?? 1));
+      if (vertical.length > 0) hits = vertical;
+    } else if (options?.orientation === "horizontal") {
       hits = hits.filter((h) => (h.imageWidth ?? 0) >= (h.imageHeight ?? 1));
     }
     if (hits.length === 0) return null;
@@ -738,6 +744,11 @@ export async function resolveFastImageUrl(params: {
   preferSquare?: boolean;
   /** Story/lifestyle posts: stock first. Product/proof posts: scrape first (default). */
   preferStock?: boolean;
+  /**
+   * When false, skip the random Picsum placeholder (use for product/commerce pins
+   * so unrelated city/forest photos never become the background).
+   */
+  allowPicsumFallback?: boolean;
 }): Promise<ResolvedImage> {
   const alt = `${params.title} — ${params.subject}`;
   const offset = params.pickOffset ?? 0;
@@ -784,6 +795,10 @@ export async function resolveFastImageUrl(params: {
   const fallback = stockFirst ? await tryScrape() : await tryStock();
   if (fallback) {
     return { url: fallback, alt, stockId: normalizeImageUrl(fallback) };
+  }
+
+  if (params.allowPicsumFallback === false) {
+    return { url: "", alt, stockId: "" };
   }
 
   const picsum = picsumFallbackUrl(params.title, offset + (params.seedBoost ?? 0));

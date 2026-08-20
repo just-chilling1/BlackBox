@@ -260,7 +260,7 @@ export default function ResultsPage() {
 
 
 
-      <GlassPanel className="space-y-4 p-6">
+      <GlassPanel className="space-y-5 p-6 sm:p-7">
 
         <div className="flex items-center gap-2">
 

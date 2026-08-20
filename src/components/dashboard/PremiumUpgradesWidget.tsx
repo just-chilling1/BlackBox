@@ -123,7 +123,7 @@ export function PremiumUpgradesWidget({
         </p>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
         {PREMIUM_FEATURES.map((feature) => {
           const isActive = isNavPathActive(pathname, feature.href);
           const Icon = feature.icon;

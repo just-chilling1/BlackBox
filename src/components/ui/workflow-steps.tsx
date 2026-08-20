@@ -49,9 +49,12 @@ export function WorkflowStepsBar({
             </>
           );
 
+          // Results is always reachable (no asset id required).
+          const canNavigate = Boolean(href) && (!upcoming || step.id === "results");
+
           return (
             <li key={step.id} className={clsx("workflow-step", active && "workflow-step--active")}>
-              {href && !upcoming ? (
+              {canNavigate && href ? (
                 <Link href={href} className="workflow-step-link">
                   {content}
                 </Link>

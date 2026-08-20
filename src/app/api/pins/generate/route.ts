@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
 import { generatePinCopy } from "@/features/traffic/lib/pin-rules";
+import { resolvePinBackgroundImages } from "@/features/traffic/lib/pin-images";
 import {
   getThreadGenerationQuota,
   recordThreadGeneration,
 } from "@/features/publish-kit/lib/thread-generation-quota";
 import { isFeatureEnabled } from "@/config/features.config";
+import type { ArmedLink } from "@/features/blog-builder/types";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -14,8 +16,21 @@ export const maxDuration = 120;
 function withPinImageUrls<T extends { id: string; image_url?: string | null }>(pins: T[]) {
   return pins.map((pin) => ({
     ...pin,
-    image_url: pin.image_url || `/api/pins/${pin.id}/image?v=2`,
+    image_url: pin.image_url?.startsWith("http")
+      ? `/api/pins/${pin.id}/image?v=6`
+      : pin.image_url || `/api/pins/${pin.id}/image?v=6`,
   }));
+}
+
+function scrapeTargetsFromSite(site: {
+  product_url?: string | null;
+  armed_links?: ArmedLink[] | null;
+  sales_page_json?: { heroImage?: string } | null;
+}) {
+  const links = Array.isArray(site.armed_links) ? site.armed_links : [];
+  const primary = site.product_url || links[0]?.url || "";
+  const extras = links.map((l) => l.url).filter((url) => url && url !== primary);
+  return { scrapeUrl: primary || null, scrapeUrls: extras };
 }
 
 function schemaMissingMessage(error: { code?: string; message?: string } | null): string | null {
@@ -72,10 +87,11 @@ export async function POST(request: Request) {
   if (!siteId) return NextResponse.json({ error: "siteId is required" }, { status: 400 });
 
   const extraBatch = Boolean(body.extraBatch) && isFeatureEnabled("premium-social");
+  const regenerate = Boolean(body.regenerate);
 
   let siteQuery = await supabase
     .from("sites")
-    .select("id, title, product_name, hobby, sales_page_json")
+    .select("id, title, product_name, product_url, hobby, sales_page_json, armed_links")
     .eq("id", siteId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -84,7 +100,7 @@ export async function POST(request: Request) {
   if (siteQuery.error && schemaMissingMessage(siteQuery.error)) {
     siteQuery = await supabase
       .from("sites")
-      .select("id, title, hobby, sales_page_json")
+      .select("id, title, hobby, sales_page_json, armed_links, product_url")
       .eq("id", siteId)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -102,8 +118,10 @@ export async function POST(request: Request) {
     id: string;
     title: string;
     product_name?: string | null;
+    product_url?: string | null;
     hobby?: string | null;
-    sales_page_json?: unknown;
+    sales_page_json?: { headline?: string; subheadline?: string; heroImage?: string } | null;
+    armed_links?: ArmedLink[] | null;
   } | null;
   if (!site) return NextResponse.json({ error: "Asset not found" }, { status: 404 });
 
@@ -121,13 +139,18 @@ export async function POST(request: Request) {
       );
     }
     if ((count ?? 0) > 0) {
-      const { data: existing } = await supabase
-        .from("site_pins")
-        .select("*")
-        .eq("site_id", siteId)
-        .eq("user_id", user.id)
-        .order("idx", { ascending: true });
-      return NextResponse.json({ pins: withPinImageUrls(existing ?? []), alreadyGenerated: true });
+      if (!regenerate && !extraBatch) {
+        const { data: existing } = await supabase
+          .from("site_pins")
+          .select("*")
+          .eq("site_id", siteId)
+          .eq("user_id", user.id)
+          .order("idx", { ascending: true });
+        return NextResponse.json({ pins: withPinImageUrls(existing ?? []), alreadyGenerated: true });
+      }
+      if (regenerate) {
+        await supabase.from("site_pins").delete().eq("site_id", siteId).eq("user_id", user.id);
+      }
     }
   }
 
@@ -140,10 +163,26 @@ export async function POST(request: Request) {
   }
 
   const productName = site.product_name || site.title;
-  const copyJson = site.sales_page_json as { headline?: string; subheadline?: string } | null;
+  const copyJson = site.sales_page_json;
   const context = [copyJson?.headline, copyJson?.subheadline, site.hobby].filter(Boolean).join("\n");
   const copies = await generatePinCopy(productName, context);
   const batchId = crypto.randomUUID();
+  const { scrapeUrl, scrapeUrls } = scrapeTargetsFromSite(site);
+
+  const heroImage = copyJson?.heroImage || null;
+  const priorPinImages = Object.values(
+    (copyJson as { pinImages?: Record<string, string> } | null)?.pinImages ?? {}
+  );
+  const backgrounds = await resolvePinBackgroundImages({
+    pins: copies,
+    productName,
+    hobby: site.hobby,
+    scrapeUrl,
+    scrapeUrls,
+    preferredImages: [heroImage, ...priorPinImages],
+    userId: user.id,
+    supabase,
+  });
 
   const rows = copies.map((pin, idx) => ({
     user_id: user.id,
@@ -154,9 +193,19 @@ export async function POST(request: Request) {
     title: pin.title,
     description: pin.description,
     keywords: pin.keywords,
+    source_image_url: backgrounds[idx] || heroImage || null,
   }));
 
-  const { data: inserted, error } = await supabase.from("site_pins").insert(rows).select("*");
+  let { data: inserted, error } = await supabase.from("site_pins").insert(rows).select("*");
+
+  // Older DBs without source_image_url — insert without it, then patch hero onto sales page usage.
+  if (error && schemaMissingMessage(error)) {
+    const legacyRows = rows.map(({ source_image_url: _s, ...rest }) => rest);
+    const second = await supabase.from("site_pins").insert(legacyRows).select("*");
+    inserted = second.data;
+    error = second.error;
+  }
+
   if (error) {
     const schemaMsg = schemaMissingMessage(error);
     return NextResponse.json(
@@ -165,13 +214,52 @@ export async function POST(request: Request) {
     );
   }
 
-  const withImages = withPinImageUrls(inserted ?? []);
+  const withImages = withPinImageUrls(
+    (inserted ?? []).map((row, idx) => ({
+      ...row,
+      source_image_url:
+        (row as { source_image_url?: string | null }).source_image_url ||
+        backgrounds[idx] ||
+        heroImage ||
+        null,
+    }))
+  );
 
   await Promise.all(
     withImages.map((row) =>
-      supabase.from("site_pins").update({ image_url: `/api/pins/${row.id}/image` }).eq("id", row.id)
+      supabase
+        .from("site_pins")
+        .update({
+          image_url: `/api/pins/${row.id}/image`,
+          ...((row as { source_image_url?: string | null }).source_image_url
+            ? { source_image_url: (row as { source_image_url?: string | null }).source_image_url }
+            : {}),
+        })
+        .eq("id", row.id)
     )
   );
+
+  // Persist backgrounds on the money page JSON so pin images work even before
+  // source_image_url is migrated onto site_pins.
+  const pinImages: Record<string, string> = {
+    ...((copyJson as { pinImages?: Record<string, string> } | null)?.pinImages ?? {}),
+  };
+  for (const row of withImages) {
+    const src = (row as { source_image_url?: string | null }).source_image_url;
+    if (src) pinImages[row.id] = src;
+  }
+  if (Object.keys(pinImages).length > 0) {
+    await supabase
+      .from("sites")
+      .update({
+        sales_page_json: {
+          ...(copyJson && typeof copyJson === "object" ? copyJson : {}),
+          pinImages,
+        },
+      })
+      .eq("id", siteId)
+      .eq("user_id", user.id);
+  }
 
   await recordThreadGeneration(supabase, user.id, siteId);
   const quotaAfter = await getThreadGenerationQuota(supabase, user.id);

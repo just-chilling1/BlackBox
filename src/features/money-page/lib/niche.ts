@@ -2,7 +2,8 @@ export function inferNiche(productName: string, context = ""): string {
   const text = `${productName} ${context}`.toLowerCase();
   const rules: [RegExp, string][] = [
     [/sleep|insomnia|melatonin|mattress/, "sleep"],
-    [/weight|keto|diet|fat loss|fitness/, "health & fitness"],
+    [/box(ing)?|glove|mma|martial|kickbox|sparring|punch/, "boxing & combat sports"],
+    [/gym|workout|weight|keto|diet|fat loss|fitness|sport/, "health & fitness"],
     [/skincare|skin|serum|wrinkle|beauty/, "beauty"],
     [/money|invest|crypto|wealth|income/, "make money"],
     [/ai |chatgpt|software|saas|app/, "software"],

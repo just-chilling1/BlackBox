@@ -32,7 +32,7 @@ export function ExclusiveOffersNavSection({
         <Gift className="exclusive-offers-nav-section-icon" strokeWidth={1.75} aria-hidden />
         Exclusive Offers
       </p>
-      <div className={mobile ? "space-y-2" : "space-y-1.5"}>
+      <div className={mobile ? "space-y-2.5" : "space-y-2"}>
         {offers.map((offer, index) => (
           <motion.a
             key={offer.href + offer.title}

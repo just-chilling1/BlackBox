@@ -16,8 +16,12 @@ create table if not exists public.site_pins (
   description text not null default '',
   keywords text[] not null default '{}',
   image_url text,
+  source_image_url text,
   created_at timestamptz not null default now()
 );
+
+alter table if exists public.site_pins
+  add column if not exists source_image_url text;
 
 create index if not exists site_pins_user_id_idx on public.site_pins (user_id);
 create index if not exists site_pins_site_id_idx on public.site_pins (site_id);

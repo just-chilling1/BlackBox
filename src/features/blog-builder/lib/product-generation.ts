@@ -38,7 +38,7 @@ export async function generateProductSite(
     affiliateLabel: affiliate.label,
   });
 
-  const copy = await generateMoneyPageCopy({
+  const { copy, variationId } = await generateMoneyPageCopy({
     productName,
     niche: params.niche,
     description: params.scrapedDescription,
@@ -50,6 +50,7 @@ export async function generateProductSite(
     productName,
     copy,
     ctaUrl: affiliate.url.trim(),
+    variationId,
   });
 
   const { data: updatedSite, error } = await params.supabase
@@ -60,7 +61,10 @@ export async function generateProductSite(
       site_type: "product",
       sales_page_html: salesPageHtml,
       sales_page_json: copy,
-      theme_config: params.themeConfig ?? {},
+      theme_config: {
+        ...(params.themeConfig ?? {}),
+        moneyVariation: variationId,
+      },
       product_name: productName,
     })
     .eq("id", params.siteId)

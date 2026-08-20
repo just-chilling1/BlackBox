@@ -25,7 +25,7 @@ function sectionClassName(
   return clsx(
     "premium-nav-section",
     highlighted && "premium-nav-section--highlighted",
-    mobile ? "p-2.5" : collapsed ? "mt-4 p-1.5" : "mt-6 p-2.5",
+    mobile ? "p-2.5" : collapsed ? "mt-4 p-2" : "mt-6 p-3",
     className
   );
 }
@@ -93,7 +93,7 @@ export function PremiumFeatureNavList({
         </p>
       )}
 
-      <ul className={clsx("relative z-[1]", mobile ? "space-y-1.5" : "space-y-1")}>
+      <ul className={clsx("relative z-[1]", mobile ? "space-y-2" : "space-y-1.5")}>
         {PREMIUM_FEATURES.map((item) => {
           const isActive = isNavPathActive(pathname, item.href);
           const Icon = item.icon;

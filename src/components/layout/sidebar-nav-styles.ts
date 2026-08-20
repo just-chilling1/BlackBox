@@ -5,7 +5,7 @@ export const sidebarSectionLabelClass = "sidebar-section-label";
 export function sidebarNavItemClass(isActive: boolean, collapsed: boolean) {
   return clsx(
     "sidebar-nav-item group flex items-center gap-3 pl-[14px] pr-3 py-3 rounded-md border border-transparent transition-[background-color,border-color,box-shadow,color] duration-[160ms]",
-    collapsed && "justify-center px-2 pl-2",
+    collapsed && "justify-center px-2.5 pl-2.5 py-3.5",
     isActive && "is-active"
   );
 }
