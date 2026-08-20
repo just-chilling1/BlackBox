@@ -345,10 +345,17 @@ export function buildMoneyPageHtml(params: {
       margin: 0 0 12px;
       font-size: clamp(1.6rem, 3vw, 2.2rem);
     }
-    .cta-panel p {
-      margin: 0 0 20px;
-      color: rgba(248, 250, 252, 0.82);
+    .cta-panel p,
+    .cta-panel .prose p {
+      margin: 0 0 1rem;
+      color: rgba(248, 250, 252, 0.88);
       max-width: 52ch;
+    }
+    .cta-panel .prose p:last-child {
+      margin-bottom: 20px;
+    }
+    .cta-panel > p:last-of-type {
+      margin-bottom: 0;
     }
     footer {
       margin-top: 28px;

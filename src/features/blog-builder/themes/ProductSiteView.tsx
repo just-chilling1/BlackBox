@@ -6,23 +6,51 @@ interface ProductSiteViewProps {
   html: string;
 }
 
-/** Fixes contrast on pages generated before styles were scoped to .product-sales-page-root */
+/** Fixes contrast on pages generated before styles were scoped to .product-sales-page-root.
+ * Money pages use --ink/--card/--cta-panel-end; legacy questionnaire templates use --text.
+ * Never paint every <section> with --bg — that flattens .cta-panel into a light card with ghost text.
+ */
 const LEGACY_CONTRAST_FIXES = `
 .product-sales-page-root {
-  color: var(--text);
+  color: var(--text, var(--ink, inherit));
   background: var(--bg);
   min-height: 100vh;
 }
-.product-sales-page-root section {
+.product-sales-page-root section:not(.cta-panel) {
   background: var(--bg);
-  color: var(--text);
+  color: var(--text, var(--ink, inherit));
 }
 .product-sales-page-root section.alt {
-  background: var(--surface);
+  background: var(--surface, var(--bg-soft, var(--bg)));
 }
 .product-sales-page-root .title,
 .product-sales-page-root h2 {
-  color: var(--text) !important;
+  color: var(--text, var(--ink)) !important;
+}
+.product-sales-page-root .cta-panel {
+  background: linear-gradient(135deg, #0f172a 0%, var(--cta-panel-end, #1e293b) 100%) !important;
+  color: #f8fafc !important;
+}
+.product-sales-page-root .cta-panel h2 {
+  color: #ffffff !important;
+}
+.product-sales-page-root .cta-panel .prose p,
+.product-sales-page-root .cta-panel p {
+  color: rgba(248, 250, 252, 0.88) !important;
+}
+.product-sales-page-root .faq-item {
+  background: var(--card, #ffffff) !important;
+  color: var(--ink, #0f172a);
+}
+.product-sales-page-root .faq-item summary {
+  color: var(--ink, #0f172a) !important;
+}
+.product-sales-page-root .faq-body p {
+  color: var(--muted, #475569) !important;
+}
+.product-sales-page-root footer {
+  color: var(--soft, #64748b) !important;
+  background: transparent !important;
 }
 .product-sales-page-root .label {
   color: var(--label, color-mix(in srgb, var(--accent) 35%, white)) !important;
@@ -34,7 +62,7 @@ const LEGACY_CONTRAST_FIXES = `
 .product-sales-page-root .problem-item,
 .product-sales-page-root .numbered-item,
 .product-sales-page-root .card-bento {
-  color: var(--card-text, var(--text));
+  color: var(--card-text, var(--text, var(--ink)));
 }
 .product-sales-page-root .content-item span:last-child,
 .product-sales-page-root .faq-q,
