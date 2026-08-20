@@ -6,9 +6,39 @@ import {
   MONEY_PAGE_VARIATIONS,
   type MoneyPageVariationId,
 } from "@/features/money-page/lib/variations";
-import { productPhotoFallbackUrl } from "@/features/traffic/lib/pin-images";
 
 export const ACCELERATOR_TARGET_COUNT = 200;
+
+const HERO_TAG_STOP = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "for",
+  "to",
+  "of",
+  "in",
+  "on",
+  "with",
+  "your",
+  "review",
+  "product",
+  "featured",
+]);
+
+/** Client-safe hero fallback — must not import pin-images (pulls node:dns into the bundle). */
+function vaultHeroFallbackUrl(productName: string, seed = 0): string | null {
+  const tags = productName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !HERO_TAG_STOP.has(w) && !/^\d+$/.test(w))
+    .slice(0, 3);
+  if (tags.length === 0) return null;
+  const lock = Math.abs(seed) % 10_000;
+  return `https://loremflickr.com/1200/675/${encodeURIComponent(tags.join(","))}/all?lock=${lock}`;
+}
 
 /** Niches aligned with `inferNiche()` in money-page. */
 export const VAULT_NICHES = [
@@ -284,7 +314,7 @@ export function buildAcceleratorCatalog(): VaultCatalogEntry[] {
         const colorTheme = themes[(id - 1) % themes.length];
         const variationId = variations[(id - 1) % variations.length];
         const heroImage =
-          productPhotoFallbackUrl(product.name, id * 17 + niche.length) ||
+          vaultHeroFallbackUrl(product.name, id * 17 + niche.length) ||
           `https://loremflickr.com/1200/675/${encodeURIComponent(niche.split(" ")[0])}/all?lock=${id}`;
 
         entries.push({
