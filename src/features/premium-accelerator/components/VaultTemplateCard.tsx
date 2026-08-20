@@ -5,9 +5,10 @@ import {
   Copy,
   ExternalLink,
   Eye,
-  FolderOpen,
   Loader2,
   ArrowRight,
+  Pencil,
+  Image,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -20,6 +21,9 @@ export interface VaultTemplateRow {
   accent: string;
   hook: string;
   toneLabel: string;
+  themeLabel?: string;
+  colorTheme?: string;
+  variationId?: string;
 }
 
 interface VaultTemplateCardProps {
@@ -27,6 +31,7 @@ interface VaultTemplateCardProps {
   cloningId: number | null;
   viewingId: number | null;
   clonedSiteUrl: string | null;
+  clonedAssetId: string | null;
   hasAffiliateLink: boolean;
   onView: (id: number) => void;
   onClone: (id: number) => void;
@@ -37,13 +42,14 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
   cloningId,
   viewingId,
   clonedSiteUrl,
+  clonedAssetId,
   hasAffiliateLink,
   onView,
   onClone,
 }: VaultTemplateCardProps) {
   const isCloning = cloningId === template.id;
   const isViewing = viewingId === template.id;
-  const isCloned = Boolean(clonedSiteUrl);
+  const isCloned = Boolean(clonedSiteUrl && clonedAssetId);
   const accent = template.accent || "#14B8A6";
 
   return (
@@ -66,9 +72,9 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
           <span className="rounded-md bg-black/35 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-white backdrop-blur-sm">
             {template.niche}
           </span>
-          {template.seeded ? (
-            <span className="rounded-md bg-[var(--np-success)]/25 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
-              Live copy
+          {template.themeLabel ? (
+            <span className="rounded-md bg-black/25 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+              {template.themeLabel}
             </span>
           ) : null}
         </div>
@@ -76,15 +82,12 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="min-w-0">
-          <p className="text-[12px] font-medium text-pulse-700">{template.templateName}</p>
+          <p className="text-[12px] font-medium text-pulse-700">{template.toneLabel}</p>
           <h3 className="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-text-primary">
             {template.productName}
           </h3>
           <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted">
             {template.hook}
-          </p>
-          <p className="mt-2 text-[11px] uppercase tracking-wide text-text-muted/80">
-            {template.toneLabel}
           </p>
         </div>
 
@@ -96,17 +99,26 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
               rel="noopener noreferrer"
               className="btn-primary inline-flex items-center justify-center gap-2 text-sm"
             >
-              Open sales page
+              Open money page
               <ExternalLink size={14} />
             </Link>
-            <Link
-              href="/offers"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
-            >
-              <FolderOpen size={14} />
-              Offers Library
-              <ArrowRight size={14} />
-            </Link>
+            <div className="grid grid-cols-2 gap-2">
+              <Link
+                href={`/money-page/${clonedAssetId}`}
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
+              >
+                <Pencil size={14} />
+                Edit
+              </Link>
+              <Link
+                href={`/traffic/${clonedAssetId}`}
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
+              >
+                <Image size={14} />
+                Get pins
+                <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="mt-auto flex flex-col gap-2">
@@ -134,7 +146,7 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
               ) : (
                 <Copy size={14} />
               )}
-              Use page
+              Use this page
             </button>
           </div>
         )}

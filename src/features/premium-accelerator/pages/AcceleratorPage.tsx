@@ -20,12 +20,14 @@ import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
-import { TemplatePreviewOverlay } from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
+import {
+  TemplatePreviewOverlay,
+  type VaultTemplatePreview,
+} from "@/features/premium-accelerator/components/TemplatePreviewOverlay";
 import {
   VaultTemplateCard,
   type VaultTemplateRow,
 } from "@/features/premium-accelerator/components/VaultTemplateCard";
-import type { AcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
 
 const PAGE_SIZE = 24;
 const AFFILIATE_STORAGE_KEY = `${brand.storagePrefix}_accelerator_affiliate`;
@@ -33,7 +35,6 @@ const AFFILIATE_STORAGE_KEY = `${brand.storagePrefix}_accelerator_affiliate`;
 export default function AcceleratorPage() {
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState<VaultTemplateRow[]>([]);
-  const [seededCount, setSeededCount] = useState(0);
   const [total, setTotal] = useState(200);
   const [niche, setNiche] = useState("All");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -42,12 +43,14 @@ export default function AcceleratorPage() {
   const [viewingId, setViewingId] = useState<number | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewCatalogId, setPreviewCatalogId] = useState<number | null>(null);
-  const [previewData, setPreviewData] = useState<AcceleratorTemplatePreview | null>(null);
+  const [previewData, setPreviewData] = useState<VaultTemplatePreview | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState("");
-  const [cloneResult, setCloneResult] = useState<{ catalogId: number; siteUrl: string } | null>(
-    null
-  );
+  const [cloneResult, setCloneResult] = useState<{
+    catalogId: number;
+    siteUrl: string;
+    assetId: string;
+  } | null>(null);
   const [error, setError] = useState("");
   const [showTraining, setShowTraining] = useState(false);
 
@@ -78,11 +81,7 @@ export default function AcceleratorPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to load templates");
       setTemplates(data.templates ?? []);
-      setSeededCount(data.seededCount ?? 0);
       setTotal(data.total ?? 200);
-      if (data.seedStatusError) {
-        setError(data.seedStatusError);
-      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load");
     } finally {
@@ -120,19 +119,20 @@ export default function AcceleratorPage() {
       setError("");
       setCloneResult(null);
       try {
-        const res = await fetch("/api/premium/accelerator/clone", {
+        const res = await fetch("/api/premium/accelerator/install", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ catalogId, affiliateUrl: affiliateLink.trim() }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Clone failed");
-        setCloneResult({ catalogId, siteUrl: data.siteUrl });
+        if (!res.ok) throw new Error(data.error || "Install failed");
+        const assetId = (data.assetId as string) || (data.site?.id as string);
+        setCloneResult({ catalogId, siteUrl: data.siteUrl, assetId });
         setPreviewOpen(false);
         setPreviewCatalogId(null);
         setPreviewData(null);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Clone failed");
+        setError(e instanceof Error ? e.message : "Install failed");
       } finally {
         setCloningId(null);
       }
@@ -159,7 +159,7 @@ export default function AcceleratorPage() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load preview");
-        setPreviewData(data as AcceleratorTemplatePreview);
+        setPreviewData(data as VaultTemplatePreview);
       } catch (e) {
         setPreviewError(e instanceof Error ? e.message : "Failed to load preview");
       } finally {
@@ -188,7 +188,7 @@ export default function AcceleratorPage() {
         <PageHeader
           eyebrow="Premium"
           title="Asset Vault"
-          subtitle="200 pre-generated sales pages ready to clone with your affiliate link."
+          subtitle="200 ready-made money pages — add your link, then generate Pinterest pins."
         />
         <PageSkeleton cards={6} />
       </WorkflowPage>
@@ -200,7 +200,7 @@ export default function AcceleratorPage() {
       <PageHeader
         eyebrow="Premium"
         title="Asset Vault"
-        subtitle={`${total} ready-made sales pages across every niche — preview any page, then clone it with your link.`}
+        subtitle={`${total} ready-made money pages across every niche — preview any page, install it with your link, then get pins.`}
         actions={
           <button
             type="button"
@@ -218,7 +218,7 @@ export default function AcceleratorPage() {
         <PremiumVideoTutorial
           vimeoId="1215530104"
           title="Asset Vault Training"
-          description="Browse pre-made sales pages, clone one with your affiliate link, and grab the ready-made story thread."
+          description="Browse ready-made money pages, install one with your affiliate link, then generate Pinterest pins on the Traffic step."
           iframeTitle="Asset Vault training video"
         />
       ) : null}
@@ -228,14 +228,10 @@ export default function AcceleratorPage() {
           <div>
             <p className="text-sm font-medium text-text-primary">Your affiliate link</p>
             <p className="mt-1 text-xs text-text-muted">
-              Required to use a page. CTAs wire to this link when you clone.
+              Required to use a page. CTAs wire to this link when you install.
             </p>
           </div>
-          <p className="text-xs text-text-muted">
-            {seededCount > 0
-              ? `${seededCount} live server copies · all ${total} browsable`
-              : `All ${total} pages generated from catalog`}
-          </p>
+          <p className="text-xs text-text-muted">All {total} pages ready to install</p>
         </div>
 
         <div>
@@ -274,13 +270,13 @@ export default function AcceleratorPage() {
       </GlassPanel>
 
       <p className="text-sm text-text-muted">
-        Tip: Preview a page first, then hit <span className="text-text-primary">Use page</span> to
-        add it to your Offers Library with your link.
+        Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
+        to add it to your account with your link — then generate pins on Traffic.
       </p>
 
       <GenerationProgress
         active={cloningId !== null}
-        label="Cloning sales page with your affiliate link..."
+        label="Installing money page with your affiliate link..."
       />
 
       <div
@@ -294,6 +290,7 @@ export default function AcceleratorPage() {
             cloningId={cloningId}
             viewingId={viewingId}
             clonedSiteUrl={cloneResult?.catalogId === t.id ? cloneResult.siteUrl : null}
+            clonedAssetId={cloneResult?.catalogId === t.id ? cloneResult.assetId : null}
             hasAffiliateLink={hasAffiliateLink}
             onView={handleView}
             onClone={handleClone}

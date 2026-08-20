@@ -81,7 +81,7 @@ export const faqSections: FaqSection[] = [
     items: [
       {
         q: "What is Asset Vault?",
-        a: "Asset Vault gives you access to 200 pre-made sales pages and story threads across popular niches. Add your affiliate link, pick a template, and clone a ready asset instantly.",
+        a: "Asset Vault gives you access to 200 ready-made money pages across popular niches. Add your affiliate link, pick a page, install it instantly, then generate Pinterest pins on the Traffic step.",
       },
       {
         q: "What is One-Click Asset?",

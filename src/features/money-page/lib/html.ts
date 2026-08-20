@@ -34,11 +34,15 @@ export function buildMoneyPageHtml(params: {
   ctaUrl: string;
   colorTheme?: MoneyPageColorThemeId | string | null;
   variationId?: MoneyPageVariationId | string | null;
+  /** When set (e.g. vault preview), CTAs use this href instead of the track-click URL. */
+  ctaHrefOverride?: string | null;
 }): string {
   const { siteId, productName, copy, ctaUrl } = params;
   const theme = getMoneyPageColorTheme(params.colorTheme);
   const variation = getMoneyPageVariation(params.variationId);
-  const ctaHref = moneyPageTrackHref(siteId, ctaUrl);
+  const ctaHref = params.ctaHrefOverride?.trim()
+    ? params.ctaHrefOverride.trim()
+    : moneyPageTrackHref(siteId, ctaUrl);
   const cta = escapeHtml(copy.ctaLabel || variation.ctaLabels[0]);
   const hero = copy.heroImage
     ? `<img class="hero-img" src="${escapeHtml(copy.heroImage)}" alt="${escapeHtml(productName)}" loading="lazy" />`
@@ -465,6 +469,7 @@ export function rebuildMoneyPageHtml(params: {
   ctaUrl: string;
   colorTheme?: MoneyPageColorThemeId | string | null;
   variationId?: MoneyPageVariationId | string | null;
+  ctaHrefOverride?: string | null;
 }): string {
   return buildMoneyPageHtml(params);
 }

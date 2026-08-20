@@ -3,20 +3,28 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
-import { Copy, Eye, Loader2, MessageSquare, X } from "lucide-react";
-import { ProductSiteView } from "@/features/blog-builder/themes/ProductSiteView";
-import { ThreadCard } from "@/features/publish-kit/components/ThreadCard";
-import { ThreadListSection } from "@/features/publish-kit/components/ThreadListSection";
-import type { AcceleratorTemplatePreview } from "@/features/premium-accelerator/lib/load-template-preview";
+import { Copy, Eye, Image, Loader2, X } from "lucide-react";
+import type { PinCopy } from "@/features/traffic/lib/pin-rules";
 
-type PreviewTab = "sales-page" | "thread";
+export interface VaultTemplatePreview {
+  catalogId: number;
+  niche: string;
+  productName: string;
+  templateName: string;
+  title: string;
+  tagline: string | null;
+  salesPageHtml: string;
+  pins: PinCopy[];
+}
+
+type PreviewTab = "money-page" | "pins";
 
 interface TemplatePreviewOverlayProps {
   open: boolean;
   onClose: () => void;
   loading: boolean;
   error: string;
-  preview: AcceleratorTemplatePreview | null;
+  preview: VaultTemplatePreview | null;
   productName?: string;
   hasAffiliateLink: boolean;
   isCloning: boolean;
@@ -35,7 +43,7 @@ export function TemplatePreviewOverlay({
   onUseTemplate,
 }: TemplatePreviewOverlayProps) {
   const [mounted, setMounted] = useState(false);
-  const [tab, setTab] = useState<PreviewTab>("sales-page");
+  const [tab, setTab] = useState<PreviewTab>("money-page");
 
   useEffect(() => {
     setMounted(true);
@@ -50,7 +58,7 @@ export function TemplatePreviewOverlay({
 
   useEffect(() => {
     if (!open) return;
-    setTab("sales-page");
+    setTab("money-page");
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -62,7 +70,7 @@ export function TemplatePreviewOverlay({
   if (!mounted || !open) return null;
 
   const title = preview?.productName ?? productName ?? "Template preview";
-  const threadCount = preview?.threads.length ?? 0;
+  const pinCount = preview?.pins.length ?? 0;
 
   return createPortal(
     <div className="fixed inset-0 z-[120] flex items-end justify-center sm:items-center sm:p-4">
@@ -110,32 +118,32 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 gap-1 border-b border-[var(--np-line)] bg-[var(--np-surface-sub)]/80 px-4 py-2 sm:px-5">
           <button
             type="button"
-            onClick={() => setTab("sales-page")}
+            onClick={() => setTab("money-page")}
             className={clsx(
               "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-              tab === "sales-page"
+              tab === "money-page"
                 ? "border border-[var(--np-line-pulse)] bg-[var(--np-surface-tint)] text-text-primary"
                 : "text-text-muted hover:text-text-primary"
             )}
           >
             <Eye size={14} />
-            Sales page
+            Money page
           </button>
           <button
             type="button"
-            onClick={() => setTab("thread")}
+            onClick={() => setTab("pins")}
             className={clsx(
               "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-              tab === "thread"
+              tab === "pins"
                 ? "border border-[var(--np-line-pulse)] bg-[var(--np-surface-tint)] text-text-primary"
                 : "text-text-muted hover:text-text-primary"
             )}
           >
-            <MessageSquare size={14} />
-            X thread
-            {threadCount > 0 ? (
+            <Image size={14} />
+            Pinterest pins
+            {pinCount > 0 ? (
               <span className="rounded-full border border-[var(--np-line-pulse)] bg-pulse-100/10 px-2 py-0.5 text-[13px] font-medium text-pulse-700">
-                {threadCount}
+                {pinCount}
               </span>
             ) : null}
           </button>
@@ -145,7 +153,7 @@ export function TemplatePreviewOverlay({
           {loading ? (
             <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-text-muted">
               <Loader2 size={28} className="animate-spin text-pulse-700" />
-              <p className="text-sm">Loading sales page preview…</p>
+              <p className="text-sm">Loading money page preview…</p>
             </div>
           ) : null}
 
@@ -155,30 +163,54 @@ export function TemplatePreviewOverlay({
             </div>
           ) : null}
 
-          {!loading && !error && preview && tab === "sales-page" ? (
-            <div className="accelerator-preview-sales-page bg-white">
-              <ProductSiteView html={preview.salesPageHtml} />
+          {!loading && !error && preview && tab === "money-page" ? (
+            <div className="preview-frame m-0 rounded-none border-0">
+              <iframe
+                title="Money page preview"
+                className="h-[min(70dvh,40rem)] min-h-[420px] w-full bg-white"
+                sandbox="allow-same-origin"
+                srcDoc={preview.salesPageHtml}
+              />
             </div>
           ) : null}
 
-          {!loading && !error && preview && tab === "thread" ? (
-            <div className="space-y-4 p-4 sm:p-5">
-              {preview.threads.length > 0 ? (
-                <ThreadListSection title="Story thread" count={preview.threads.length}>
-                  {preview.threads.map((thread, i) => (
-                    <ThreadCard
+          {!loading && !error && preview && tab === "pins" ? (
+            <div className="space-y-3 p-4 sm:p-5">
+              <p className="text-xs text-text-muted">
+                These are draft pin headlines. After you use this page, generate real pins with images
+                on the Traffic step.
+              </p>
+              {preview.pins.length > 0 ? (
+                <ul className="space-y-3">
+                  {preview.pins.map((pin, i) => (
+                    <li
                       key={i}
-                      index={i + 1}
-                      label={`Post ${i + 1} · ${thread.angle || "Post"}`}
-                      text={thread.text}
-                      imageUrl={thread.image_url}
-                      defaultOpen={i === 0}
-                    />
+                      className="rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)] p-4"
+                    >
+                      <p className="text-[11px] font-medium uppercase tracking-wider text-pulse-700">
+                        Pin {i + 1}
+                      </p>
+                      <h3 className="mt-1 text-sm font-semibold text-text-primary">{pin.headline}</h3>
+                      <p className="mt-1 text-xs text-text-muted">{pin.title}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-text-muted">{pin.description}</p>
+                      {pin.keywords.length > 0 ? (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {pin.keywords.map((kw) => (
+                            <span
+                              key={kw}
+                              className="rounded-md border border-[var(--np-line)] px-2 py-0.5 text-[11px] text-text-muted"
+                            >
+                              {kw}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </li>
                   ))}
-                </ThreadListSection>
+                </ul>
               ) : (
                 <p className="rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)] px-4 py-8 text-center text-sm text-text-muted">
-                  No X thread posts for this page yet.
+                  No pin drafts for this page yet.
                 </p>
               )}
             </div>
@@ -188,8 +220,8 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[var(--np-line)] bg-[var(--np-surface-sub)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
           <p className="text-xs text-text-muted">
             {hasAffiliateLink
-              ? "Sales page CTAs use your affiliate link. Thread post 10 links to your offer page."
-              : "Add your affiliate link above to wire the sales page CTA."}
+              ? "Money page CTAs use your affiliate link. Generate real pins after install."
+              : "Add your affiliate link above to wire the money page CTA."}
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={onClose} className="btn-secondary px-4 py-2 text-sm">
@@ -202,7 +234,7 @@ export function TemplatePreviewOverlay({
               className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-40"
             >
               {isCloning ? <Loader2 size={14} className="animate-spin" /> : <Copy size={14} />}
-              Use page
+              Use this page
             </button>
           </div>
         </div>
