@@ -420,6 +420,33 @@ function buildCta(territory: string): string {
 `.trim();
 }
 
+function buildProductSpotlightSection(params: {
+  productName: string;
+  territory: string;
+  productContext?: string;
+}): string {
+  const { productName, territory, productContext } = params;
+  const t = territory.toLowerCase();
+  const contextSnippet = productContext?.trim()
+    ? `<p>${productContext.trim().slice(0, 600)}${productContext.trim().length > 600 ? "…" : ""}</p>`
+    : `<p>Within ${t}, ${productName} is a practical starting point for buyers who want structure without hype. It fits readers who prefer a clear overview before they compare alternatives.</p>`;
+
+  return `
+<h2 id="featured-product">Featured Option: ${productName}</h2>
+<p>If you are researching ${t}, one product worth evaluating early is <strong>${productName}</strong>. This section explains how it fits the framework above — not as a hard sell, but as a concrete example of what to look for.</p>
+${contextSnippet}
+<h3>Why ${productName} stands out for ${territory}</h3>
+<ul>
+<li>Clear positioning for buyers who want a structured path in ${t}</li>
+<li>Practical onboarding that matches how most beginners actually learn</li>
+<li>Transparent fit — useful when you want one focused option instead of ten scattered tabs</li>
+</ul>
+<h3>Who should look at ${productName} first</h3>
+<p>Consider <a href="#offer">${productName} — full breakdown and next steps</a> if you are new to ${t}, want a single reference point, or need a realistic plan you can execute in your first 30 days.</p>
+<p>If you already have an advanced workflow and only need niche-specific tweaks, skim the evaluation checklist above first — then decide whether ${productName} adds enough new structure to be worth your time.</p>
+`.trim();
+}
+
 function padToMinWordCount(html: string, territory: string, keyword: string, minWords: number): string {
   let result = html;
   const extras = [
@@ -442,13 +469,17 @@ export function buildRecurringStreamArticleContent(params: {
   territory: string;
   hobby: string;
   angle?: ArticleAngle;
+  productName?: string;
+  productContext?: string;
 }): GeneratedArticleContent {
   const territory = params.territory.trim() || params.hobby.trim() || "this niche";
   const angle = params.angle ?? "pillar-guide";
   const title = params.topic.trim().slice(0, 120);
   const keyword = primaryKeyword(title, territory);
+  const productName = params.productName?.trim();
 
   const sectionTitles = [
+    ...(productName ? [`Featured Option: ${productName}`] : []),
     angle === "best-picks" ? `Best ${territory} Picks by Use Case` : `The Complete ${territory} Overview`,
     `How to Evaluate ${territory} Options`,
     `Practical ${territory} Examples`,
@@ -463,6 +494,13 @@ export function buildRecurringStreamArticleContent(params: {
 
   const intro = buildIntroduction({ title, territory, angle, keyword });
   const featured = featuredImageHtml(territory, title);
+  const productSection = productName
+    ? buildProductSpotlightSection({
+        productName,
+        territory,
+        productContext: params.productContext,
+      })
+    : "";
   const toc = buildTableOfContents(sectionTitles);
   const main = buildMainSections({ territory, angle, keyword });
   const internalLinks = buildInternalLinksSection(territory);
@@ -471,7 +509,9 @@ export function buildRecurringStreamArticleContent(params: {
   const conclusion = buildConclusion(territory, keyword);
   const cta = buildCta(territory);
 
-  let body = [intro, featured, toc, main, internalLinks, externalLinks, faq, conclusion, cta].join("\n\n");
+  let body = [intro, featured, productSection, toc, main, internalLinks, externalLinks, faq, conclusion, cta]
+    .filter(Boolean)
+    .join("\n\n");
   body = padToMinWordCount(body, territory, keyword, 1200);
 
   const html = `<article class="${RECURRING_ARTICLE_BODY_CLASS}">\n${body}\n</article>`;

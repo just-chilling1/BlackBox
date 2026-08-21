@@ -1,3 +1,5 @@
+import { cleanProductLabel } from "@/features/traffic/lib/product-label";
+
 /** Distinct hook angles — one per post in a 10X batch. */
 export const FACEBOOK_POST_ANGLES = [
   {
@@ -170,4 +172,33 @@ export function parseFacebookPostStrings(
     .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
     .map((p) => ({ text: normalizeLinkPlaceholder(p) }))
     .slice(0, maxCount);
+}
+
+/** Template posts when RapidAPI quota is unavailable — mirrors pin/money-page fallbacks. */
+export function fallbackFacebookPosts(params: {
+  productName: string;
+  territory: string;
+  postCount?: number;
+}): ParsedFacebookPost[] {
+  const name = cleanProductLabel(params.productName) || params.productName || "this resource";
+  const territory = params.territory.trim() || "this niche";
+  const count = Math.min(params.postCount ?? FACEBOOK_POST_COUNT, FACEBOOK_POST_ANGLES.length);
+
+  const templates = [
+    `A few weeks ago I kept hitting the same wall with ${territory}. A friend sent me ${name} and I finally had a clear starting point instead of random tips.\n\nIf you're stuck in the same loop, this breakdown might help: [LINK]`,
+    `Anyone else feel like ${territory} advice online is either too vague or way too salesy? ${name} was one of the few pages that felt practical without the hype.\n\nWorth a quick read: [LINK]`,
+    `I almost scrolled past ${name} — then noticed it answered the exact question I'd been asking about ${territory}.\n\nCurious? Here's the page I bookmarked: [LINK]`,
+    `Three people in my circle quietly switched how they handle ${territory} this year. The common thread? They all started with ${name} before buying anything else.\n\nSee what they're looking at: [LINK]`,
+    `Before: guessing, second-guessing, and wasting money on ${territory}. After: a simple checklist from ${name} that actually matched my situation.\n\nBefore/after details here: [LINK]`,
+    `Real talk — are you still piecing together ${territory} advice from random posts? ${name} pulled the important parts into one place for me.\n\nAnswer for yourself here: [LINK]`,
+    `One thing that helped my ${territory} routine: stop chasing ten tactics and read one solid overview first. ${name} is the overview I keep sending people.\n\nQuick tip + full breakdown: [LINK]`,
+    `Hot take: most ${territory} "hacks" skip the basics. ${name} starts where beginners should start — then you decide if it's for you.\n\nRead the no-hype version: [LINK]`,
+    `3 signs you might need a better ${territory} plan:\n1) You're overwhelmed by conflicting advice\n2) You keep restarting every month\n3) You haven't read a straight breakdown like ${name}\n\nStart here: [LINK]`,
+    `Texting a friend about ${name}: good if you want a calm, honest look at ${territory}. Skip it if you want overnight miracles.\n\nI'm still glad I read it — see for yourself: [LINK]`,
+  ];
+
+  return templates.slice(0, count).map((text, i) => ({
+    text: normalizeLinkPlaceholder(text),
+    angle: FACEBOOK_POST_ANGLES[i]?.label,
+  }));
 }

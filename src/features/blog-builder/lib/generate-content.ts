@@ -17,6 +17,7 @@ export async function generateBlogPostContent(params: {
   angle?: ArticleAngle;
   affiliateContext?: string;
   productContext?: string;
+  productName?: string;
   trendContext?: string;
   contentTier?: ContentTier;
 }): Promise<GeneratedPostContent> {
@@ -39,6 +40,7 @@ export async function generateBlogPostContent(params: {
     angle,
     affiliateContext: params.affiliateContext,
     productContext: params.productContext,
+    productName: params.productName,
     trendContext: params.trendContext,
     contentTier: tier,
   });

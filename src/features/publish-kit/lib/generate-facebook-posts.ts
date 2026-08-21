@@ -5,6 +5,7 @@ import {
   buildFacebookPostSystemPrompt,
   buildFacebookPostUserPrompt,
   FACEBOOK_POST_COUNT,
+  fallbackFacebookPosts,
   parseFacebookPostResponse,
   parseFacebookPostStrings,
 } from "@/features/publish-kit/lib/facebook-post-rules";
@@ -47,26 +48,46 @@ export async function generateFacebookPostsForOffer(
     scrapedProductContext,
   });
 
-  const system = buildFacebookPostSystemPrompt();
-  const userPrompt = buildFacebookPostUserPrompt({
-    fullContext: context.fullContext,
-    postCount,
-  });
+  const productName =
+    site.product_name?.trim() ||
+    context.affiliateLabel?.trim() ||
+    site.title?.trim() ||
+    "this offer";
 
-  const raw = await generateWithGPT(system, userPrompt, {
-    temperature: 0.82,
-    maxRetries: params.maxRetries ?? 4,
-    timeoutMs: params.timeoutMs ?? 120_000,
-  });
+  let posts: { text: string }[] = [];
 
-  const parsed = extractJsonFromText(raw);
-  let posts = parseFacebookPostResponse(parsed, postCount);
+  try {
+    const system = buildFacebookPostSystemPrompt();
+    const userPrompt = buildFacebookPostUserPrompt({
+      fullContext: context.fullContext,
+      postCount,
+    });
 
-  if (posts.length === 0 && parsed && typeof parsed === "object" && "posts" in parsed) {
-    const fallbackPosts = (parsed as { posts?: unknown }).posts;
-    if (Array.isArray(fallbackPosts)) {
-      posts = parseFacebookPostStrings(fallbackPosts, postCount);
+    const raw = await generateWithGPT(system, userPrompt, {
+      temperature: 0.82,
+      maxRetries: params.maxRetries ?? 4,
+      timeoutMs: params.timeoutMs ?? 120_000,
+    });
+
+    const parsed = extractJsonFromText(raw);
+    posts = parseFacebookPostResponse(parsed, postCount);
+
+    if (posts.length === 0 && parsed && typeof parsed === "object" && "posts" in parsed) {
+      const fallbackPosts = (parsed as { posts?: unknown }).posts;
+      if (Array.isArray(fallbackPosts)) {
+        posts = parseFacebookPostStrings(fallbackPosts, postCount);
+      }
     }
+  } catch {
+    /* RapidAPI quota/outage — use local templates like pins and money pages. */
+  }
+
+  if (posts.length === 0) {
+    posts = fallbackFacebookPosts({
+      productName,
+      territory: context.territory,
+      postCount,
+    });
   }
 
   if (posts.length === 0) {

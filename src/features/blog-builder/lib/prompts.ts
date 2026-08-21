@@ -79,6 +79,7 @@ export function buildArticleUserPrompt(params: {
   angle: ArticleAngle;
   affiliateContext?: string;
   productContext?: string;
+  productName?: string;
   trendContext?: string;
   contentTier?: ContentTier;
 }): string {
@@ -124,6 +125,13 @@ export function buildArticleUserPrompt(params: {
       "",
       "Affiliate offer page context (real product details scraped from the offer — use for accuracy, weave in naturally, do not copy verbatim or fabricate beyond it):",
       params.productContext.trim()
+    );
+  }
+
+  if (params.productName?.trim()) {
+    parts.push(
+      "",
+      `PRODUCT TO FEATURE (name it in the title, introduction, a dedicated section, and the single #offer link): ${params.productName.trim()}`
     );
   }
 

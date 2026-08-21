@@ -78,6 +78,10 @@ function htmlToPlainText(html: string): string {
     .trim();
 }
 
+function countArticleWords(html: string): number {
+  return html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+}
+
 export function DfyResultPanel({
   sales,
   pins,
@@ -178,7 +182,7 @@ export function DfyResultPanel({
               <p className="text-sm font-medium text-text-primary">Pinterest pins</p>
               <p className="mt-1 text-sm text-text-secondary">
                 {pins.length > 0
-                  ? `${pins.length} ready-to-post pins — download or copy the text below.`
+                  ? `${pins.length} ready-to-post pins — right-click or long-press each image to save.`
                   : pinsError ||
                     (isGeneratingPins
                       ? "Generating 3 Pinterest pins with images…"
@@ -216,7 +220,7 @@ export function DfyResultPanel({
                   key={pin.id}
                   className="flex w-[min(100%,300px)] shrink-0 flex-col gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)]"
                 >
-                  <div className="relative overflow-hidden rounded-t-xl bg-[var(--np-surface-field)]">
+                  <div className="relative overflow-hidden rounded-xl bg-[var(--np-surface-field)]">
                     {src ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -234,19 +238,6 @@ export function DfyResultPanel({
                     <span className="absolute left-2 top-2 rounded-md bg-black/55 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
                       Pin {index + 1}
                     </span>
-                  </div>
-                  <div className="space-y-2 px-3 pb-3">
-                    <p className="line-clamp-4 text-xs font-semibold leading-snug text-text-primary">
-                      {pin.headline}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => void copyText(pin.id, `${pin.title}\n\n${pin.description}`)}
-                      className="inline-flex items-center gap-1.5 text-[11px] font-medium text-pulse-700 hover:underline"
-                    >
-                      {copiedId === pin.id ? <Check size={11} /> : <Copy size={11} />}
-                      {copiedId === pin.id ? "Copied" : "Copy copy"}
-                    </button>
                   </div>
                 </li>
               );
@@ -299,9 +290,10 @@ export function DfyResultPanel({
         {article ? (
           <div className="space-y-3">
             <p className="text-sm font-semibold text-text-primary">{article.title}</p>
-            {article.excerpt ? (
-              <p className="text-sm leading-relaxed text-text-secondary">{article.excerpt}</p>
-            ) : null}
+            <p className="text-sm leading-relaxed text-text-secondary">
+              {countArticleWords(article.html).toLocaleString()} words — full niche guide with your
+              product featured. Copy HTML for a site editor, or plain text for Medium and LinkedIn.
+            </p>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"

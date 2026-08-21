@@ -23,18 +23,31 @@ export interface GenerateAuthorityArticleResult {
 export async function generateAuthorityArticleForSite(
   params: GenerateAuthorityArticleParams
 ): Promise<GenerateAuthorityArticleResult> {
-  const { site, productName, nicheLabel, productContext = "" } = params;
-  const territory = productName.trim() || nicheLabel.trim();
-  const hobby = nicheLabel.trim() || territory;
-  const topic = buildClusterTopics(territory, hobby)[0];
+  const { site, productContext = "" } = params;
+  const territory =
+    params.nicheLabel.trim() ||
+    site.hobby?.trim() ||
+    site.territory?.trim() ||
+    "this niche";
+  const productName =
+    params.productName.trim() ||
+    site.product_name?.trim() ||
+    site.title?.trim() ||
+    "this product";
+  const topic = buildClusterTopics(territory, territory)[0];
+  const articleTopic =
+    productName.toLowerCase() !== territory.toLowerCase()
+      ? `${territory}: ${productName} — Complete Buyer's Guide`
+      : topic.title;
   const armedLinks = (site.armed_links ?? []) as ArmedLink[];
   const content = await generateBlogPostContent({
-    topic: topic.title,
+    topic: articleTopic,
     territory,
-    hobby,
+    hobby: territory,
     angle: topic.angle ?? "pillar-guide",
     affiliateContext: armedLinks.map((l) => `${l.label}: ${l.url}`).join("\n"),
     productContext,
+    productName,
     contentTier: "authority",
   });
 
