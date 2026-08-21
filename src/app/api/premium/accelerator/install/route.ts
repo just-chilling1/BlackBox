@@ -8,10 +8,7 @@ import { installVaultAsset } from "@/features/premium-accelerator/lib/install-va
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-/**
- * Legacy clone endpoint — installs a vault money page.
- * Prefer POST /api/premium/accelerator/install.
- */
+/** Install a vault money page with the member's affiliate link. */
 export async function POST(request: Request) {
   const guard = featureApiGuard("premium-accelerator");
   if (guard) return guard;
@@ -51,12 +48,13 @@ export async function POST(request: Request) {
         assetId: result.site.id,
         site: result.site,
         siteUrl: sitePublicPath(result.site),
+        /** @deprecated alias for older clients */
         threadsCopied: 0,
       },
       { headers: NO_STORE_HEADERS }
     );
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Clone failed";
+    const msg = e instanceof Error ? e.message : "Install failed";
     const status = msg.includes("not found") ? 404 : 500;
     return NextResponse.json({ error: msg }, { status, headers: NO_STORE_HEADERS });
   }

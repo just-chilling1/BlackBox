@@ -69,7 +69,7 @@ export const trainingPremiumVideos = [
     badge: "Asset Vault",
     title: "Asset Vault",
     description:
-      "Clone from two hundred pre-made sales pages and story threads — swap in your affiliate link in minutes.",
+      "Install from two hundred ready-made money pages — swap in your affiliate link, then generate Pinterest pins.",
     duration: "5+ min",
   },
   {

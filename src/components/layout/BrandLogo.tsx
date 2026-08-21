@@ -16,12 +16,12 @@ interface BrandLogoProps {
 
 const SIZES = {
   sm: {
-    box: "w-[38px] h-[38px]",
-    icon: 18,
-    imgHeight: "h-[38px] w-[38px]",
-    wordmarkHeight: "h-[38px] sm:h-10",
+    box: "w-[44px] h-[44px]",
+    icon: 20,
+    imgHeight: "h-[44px] w-[44px]",
+    wordmarkHeight: "h-11 sm:h-12",
     wordmarkWidth: "",
-    img: 38,
+    img: 44,
     title: "text-[19px]",
     tagline: "text-[13px]",
   },
@@ -36,12 +36,12 @@ const SIZES = {
     tagline: "text-[13px]",
   },
   sidebar: {
-    box: "w-[44px] h-[44px]",
+    box: "w-[48px] h-[48px]",
     icon: 22,
-    imgHeight: "h-[44px] w-[44px]",
+    imgHeight: "h-[48px] w-[48px]",
     wordmarkHeight: "",
     wordmarkWidth: "sidebar-brand-wordmark",
-    img: 44,
+    img: 48,
     title: "text-[19px] leading-tight",
     tagline: "text-[13px]",
   },
@@ -75,7 +75,7 @@ export function BrandLogo({
     useImage && compact && brand.logo.iconSrcFallback
       ? brand.logo.iconSrcFallback
       : brand.logo.srcFallback;
-  const [imageSrc, setImageSrc] = useState<string>(fallbackSrc ?? primarySrc);
+  const [imageSrc, setImageSrc] = useState<string>(primarySrc ?? fallbackSrc ?? "");
 
   useEffect(() => {
     if (!useImage) return;

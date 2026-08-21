@@ -10,7 +10,7 @@ git add src/components/layout/BrandLogo.tsx
 git add -A
 git reset HEAD -- .env .env.local 2>nul
 
-git commit -m "Fix BrandLogo imageSrc TypeScript type for Vercel build."
+git commit -m "Resolve merge conflicts and ship support, money-page, and BrandLogo fixes."
 if errorlevel 1 (
   echo No new commit needed - checking if already pushed...
 )

@@ -34,12 +34,19 @@ export function buildMoneyPageHtml(params: {
   ctaUrl: string;
   colorTheme?: MoneyPageColorThemeId | string | null;
   variationId?: MoneyPageVariationId | string | null;
+  /** When set (e.g. vault preview), CTAs use this href instead of the track-click URL. */
+  ctaHrefOverride?: string | null;
 }): string {
   const { siteId, productName, copy, ctaUrl } = params;
   const theme = getMoneyPageColorTheme(params.colorTheme);
   const variation = getMoneyPageVariation(params.variationId);
-  const showCta = Boolean(ctaUrl?.trim());
-  const ctaHref = showCta ? moneyPageTrackHref(siteId, ctaUrl.trim()) : "";
+  const overrideHref = params.ctaHrefOverride?.trim();
+  const showCta = Boolean(overrideHref || ctaUrl?.trim());
+  const ctaHref = overrideHref
+    ? overrideHref
+    : ctaUrl?.trim()
+      ? moneyPageTrackHref(siteId, ctaUrl.trim())
+      : "";
   const cta = escapeHtml(copy.ctaLabel || variation.ctaLabels[0]);
   const ctaButton = showCta
     ? `<p><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></p>`
@@ -472,6 +479,7 @@ export function rebuildMoneyPageHtml(params: {
   ctaUrl: string;
   colorTheme?: MoneyPageColorThemeId | string | null;
   variationId?: MoneyPageVariationId | string | null;
+  ctaHrefOverride?: string | null;
 }): string {
   return buildMoneyPageHtml(params);
 }
