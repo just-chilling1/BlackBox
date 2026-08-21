@@ -108,6 +108,36 @@ export function buildSubmissionDescription(opts: {
   const link = "{LINK}";
 
   const templates: Record<SourceType, readonly [string, string, string]> = {
+    "Idea Pin": [
+      `Idea Pin follow-up for ${name}: ${offerAngle}. Full page: ${link}`,
+      `More detail than fits in one pin — ${offerAngle} for ${name}: ${link}`,
+      `Swipe-through recap from ${name}: ${offerAngle}. Open here: ${link}`,
+    ],
+    "Standard Pin": [
+      `${name} pin: ${offerAngle}. Visit: ${link}`,
+      `Saved this ${name} resource — ${offerAngle} with next steps: ${link}`,
+      `Pin description for ${name}: ${offerAngle}. Link: ${link}`,
+    ],
+    Board: [
+      `Board resource for ${name}: ${offerAngle}. Page: ${link}`,
+      `Pinned to ${name}: ${offerAngle} with the full walkthrough at ${link}`,
+      `${name} board pin — ${offerAngle}. Details: ${link}`,
+    ],
+    Search: [
+      `Keyword landing for ${name}: ${offerAngle}. Open: ${link}`,
+      `Search-friendly summary for ${name}: ${offerAngle} — ${link}`,
+      `${name} SEO pin: ${offerAngle}. Full page: ${link}`,
+    ],
+    Profile: [
+      `Profile link for ${name}: ${offerAngle}. Visit: ${link}`,
+      `Website field for ${name} — ${offerAngle}: ${link}`,
+      `${name} bio resource: ${offerAngle}. Page: ${link}`,
+    ],
+    Checklist: [
+      `${name} checklist step: ${offerAngle}. Open: ${link}`,
+      `Weekly Pinterest task for ${name}: ${offerAngle} — ${link}`,
+      `Mark complete after reviewing ${offerAngle} for ${name}: ${link}`,
+    ],
     Forum: [
       `For anyone on ${name} still looking for a next step: I put together ${offerAngle} here: ${link}`,
       `I keep ${offerAngle} for ${name} members who want extra reading — skip it if it is not a fit: ${link}`,
@@ -150,6 +180,18 @@ export function buildSubmissionDescription(opts: {
 
 function defaultFocus(type: SourceType, community: string) {
   switch (type) {
+    case "Idea Pin":
+      return `your ${community} Idea Pin drafts`;
+    case "Standard Pin":
+      return `your ${community} standard pin batch`;
+    case "Board":
+      return `your public ${community} board`;
+    case "Search":
+      return `Pinterest search terms for ${community}`;
+    case "Profile":
+      return `your Pinterest profile settings`;
+    case "Checklist":
+      return `this week's ${community} posting checklist`;
     case "Forum":
       return `the most active ${community} boards`;
     case "Social":
