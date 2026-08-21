@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
-import { buildOfferPageUrl, getServerAppUrl } from "@/lib/app-url";
+import { buildOfferPageUrl, getServerAppUrl, sitePublicPath } from "@/lib/app-url";
 import { getOrCreateUserHandle } from "@/lib/user-handle";
 import {
   detectLinkNetwork,
