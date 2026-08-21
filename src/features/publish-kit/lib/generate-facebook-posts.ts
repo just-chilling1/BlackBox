@@ -1,5 +1,6 @@
 import { generateWithGPT, extractJsonFromText } from "@/features/blog-builder/lib/ai";
 import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
+import { deriveProductName } from "@/features/blog-builder/lib/product-sales-copy";
 import { buildSitePromoteContext } from "@/features/publish-kit/lib/site-context";
 import {
   buildFacebookPostSystemPrompt,
@@ -48,11 +49,12 @@ export async function generateFacebookPostsForOffer(
     scrapedProductContext,
   });
 
-  const productName =
-    site.product_name?.trim() ||
-    context.affiliateLabel?.trim() ||
-    site.title?.trim() ||
-    "this offer";
+  const productName = deriveProductName({
+    niche: context.territory,
+    scrapedTitle: site.product_name?.trim(),
+    moneyPageHeadline: site.title?.trim(),
+    affiliateLabel: context.affiliateLabel?.trim(),
+  });
 
   let posts: { text: string }[] = [];
 

@@ -1,4 +1,5 @@
 import { generateStructuredJSON, extractJsonFromText, generateWithGPT } from "./ai";
+import { cleanProductLabel } from "@/features/traffic/lib/product-label";
 import type { TemplateStructureId } from "../themes/ready-templates";
 
 export interface ProductSalesCopy {
@@ -262,11 +263,138 @@ Position this as a valuable product recommendation page — not a fake ebook. Fo
 export function deriveProductName(input: {
   niche: string;
   scrapedTitle?: string;
+  scrapedH1?: string;
+  scrapedBrand?: string;
+  scrapedDescription?: string;
   affiliateLabel?: string;
+  moneyPageHeadline?: string;
 }): string {
-  const scraped = input.scrapedTitle?.trim();
-  if (scraped && scraped.length > 3 && scraped.length < 120) return scraped;
-  const label = input.affiliateLabel?.trim();
-  if (label && label.length > 3) return label;
-  return `The Complete ${input.niche} Solution`;
+  const niche = input.niche.trim() || "this niche";
+
+  const candidates = [
+    input.scrapedTitle,
+    input.scrapedH1,
+    input.scrapedBrand,
+    input.scrapedDescription?.split(/[.!?]/)[0]?.slice(0, 100),
+    input.moneyPageHeadline,
+    input.affiliateLabel,
+  ];
+
+  for (const raw of candidates) {
+    const name = pickDisplayProductName(raw);
+    if (name) return name;
+  }
+
+  return `The Complete ${niche} Solution`;
+}
+
+/** Niche-based default title used when no trustworthy product name is available. */
+export function isNicheFallbackProductName(name: string, niche: string): boolean {
+  const trimmed = name.trim();
+  if (!trimmed) return true;
+  const escaped = niche.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^The Complete ${escaped} Solution$`, "i").test(trimmed);
+}
+
+const GENERIC_PRODUCT_NAMES = new Set([
+  "google",
+  "facebook",
+  "youtube",
+  "amazon",
+  "instagram",
+  "twitter",
+  "linkedin",
+  "microsoft",
+  "apple",
+  "yahoo",
+  "bing",
+  "pinterest",
+  "tiktok",
+  "reddit",
+  "wikipedia",
+  "login",
+  "signin",
+  "signup",
+  "welcome",
+  "home",
+  "checkout",
+  "cart",
+  "error",
+  "redirect",
+  "loading",
+  "untitled",
+  "index",
+  "default",
+  "clickbank",
+  "digistore",
+  "hoplink",
+  "offer",
+  "product",
+  "website",
+  "page",
+]);
+
+const GENERIC_AFFILIATE_LABELS = new Set([
+  "promotional offer",
+  "affiliate link",
+  "click here",
+  "buy now",
+  "learn more",
+  "get started",
+  "official site",
+  "special offer",
+]);
+
+function titleCaseWords(value: string): string {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function isJunkProductName(raw: string): boolean {
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed.length < 3 || trimmed.length > 120) return true;
+  if (/^https?:\/\//i.test(trimmed)) return true;
+  if (/^(login|sign in|sign up|welcome|home page|checkout|404|error|redirect|please wait)/i.test(trimmed)) {
+    return true;
+  }
+
+  const lower = trimmed.toLowerCase();
+  if (GENERIC_AFFILIATE_LABELS.has(lower)) return true;
+
+  const tokens = lower.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return true;
+  if (tokens.length === 1 && GENERIC_PRODUCT_NAMES.has(tokens[0])) return true;
+  if (tokens.every((token) => GENERIC_PRODUCT_NAMES.has(token))) return true;
+
+  const cleaned = cleanProductLabel(trimmed).toLowerCase();
+  if (!cleaned || cleaned.length < 3) return true;
+  const cleanedTokens = cleaned.split(/\s+/).filter(Boolean);
+  if (cleanedTokens.length === 1 && GENERIC_PRODUCT_NAMES.has(cleanedTokens[0])) return true;
+
+  return false;
+}
+
+function pickDisplayProductName(raw: string | undefined | null): string {
+  const trimmed = raw?.trim();
+  if (!trimmed || isJunkProductName(trimmed)) return "";
+
+  if (/[?]|worth it|should you|before you buy|honest review/i.test(trimmed)) {
+    const extracted = cleanProductLabel(trimmed);
+    if (extracted && !isJunkProductName(extracted)) {
+      return titleCaseWords(extracted);
+    }
+    return "";
+  }
+
+  const primary = trimmed.split(/\s*[|–—-]\s*/)[0]?.trim() || trimmed;
+  if (isJunkProductName(primary)) return "";
+
+  if (/^[a-z0-9\s]+$/i.test(primary) && primary === primary.toLowerCase()) {
+    return titleCaseWords(primary);
+  }
+
+  return primary.slice(0, 80);
 }

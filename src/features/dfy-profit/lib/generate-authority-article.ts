@@ -2,6 +2,10 @@ import { weaveAffiliateLinks } from "@/features/blog-builder/lib/affiliate";
 import { generateBlogPostContent } from "@/features/blog-builder/lib/generate-content";
 import { buildClusterTopics } from "@/features/blog-builder/lib/templates";
 import type { ArmedLink, BlogSite } from "@/features/blog-builder/types";
+import {
+  deriveProductName,
+  isNicheFallbackProductName,
+} from "@/features/blog-builder/lib/product-sales-copy";
 
 export interface GenerateAuthorityArticleParams {
   site: BlogSite;
@@ -29,14 +33,17 @@ export async function generateAuthorityArticleForSite(
     site.hobby?.trim() ||
     site.territory?.trim() ||
     "this niche";
-  const productName =
-    params.productName.trim() ||
-    site.product_name?.trim() ||
-    site.title?.trim() ||
-    "this product";
+  const productName = deriveProductName({
+    niche: territory,
+    scrapedTitle: params.productName?.trim() || site.product_name?.trim(),
+    scrapedH1: undefined,
+    moneyPageHeadline: site.title?.trim(),
+    affiliateLabel: undefined,
+  });
   const topic = buildClusterTopics(territory, territory)[0];
-  const articleTopic =
-    productName.toLowerCase() !== territory.toLowerCase()
+  const articleTopic = isNicheFallbackProductName(productName, territory)
+    ? `${territory}: Complete Buyer's Guide`
+    : productName.toLowerCase() !== territory.toLowerCase()
       ? `${territory}: ${productName} — Complete Buyer's Guide`
       : topic.title;
   const armedLinks = (site.armed_links ?? []) as ArmedLink[];

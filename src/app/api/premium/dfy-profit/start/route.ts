@@ -81,12 +81,16 @@ export async function POST(request: Request) {
   let productContext = "";
   let scrapedTitle: string | undefined;
   let scrapedDescription: string | undefined;
+  let scrapedH1: string | undefined;
+  let scrapedBrand: string | undefined;
 
   try {
     const scraped = await scrapePageWithCache(affiliateUrl, scrapeClient);
     productContext = scraped.context;
     scrapedTitle = scraped.data?.title;
     scrapedDescription = scraped.data?.description;
+    scrapedH1 = scraped.data?.h1;
+    scrapedBrand = scraped.data?.brand;
   } catch {
     /* continue without scrape context */
   }
@@ -160,6 +164,8 @@ export async function POST(request: Request) {
       productContext,
       scrapedTitle,
       scrapedDescription,
+      scrapedH1,
+      scrapedBrand,
     });
 
     await supabase

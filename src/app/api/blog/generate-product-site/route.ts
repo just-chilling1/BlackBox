@@ -57,6 +57,8 @@ export async function POST(request: Request) {
   let resolvedContext = productContext;
   let resolvedTitle = scrapedTitle;
   let resolvedDescription = scrapedDescription;
+  let scrapedH1: string | undefined;
+  let scrapedBrand: string | undefined;
 
   const affiliateUrl = links[0]?.url?.trim();
   if (!resolvedContext && affiliateUrl) {
@@ -65,6 +67,8 @@ export async function POST(request: Request) {
     resolvedContext = scraped.context;
     resolvedTitle = resolvedTitle ?? scraped.data?.title;
     resolvedDescription = resolvedDescription ?? scraped.data?.description;
+    scrapedH1 = scraped.data?.h1;
+    scrapedBrand = scraped.data?.brand;
   }
 
   try {
@@ -78,6 +82,8 @@ export async function POST(request: Request) {
       productContext: resolvedContext,
       scrapedTitle: resolvedTitle,
       scrapedDescription: resolvedDescription,
+      scrapedH1,
+      scrapedBrand,
     });
 
     return NextResponse.json({

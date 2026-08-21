@@ -14,6 +14,8 @@ export interface GenerateProductSiteParams {
   themeConfig?: ThemeConfig | null;
   productContext?: string;
   scrapedTitle?: string;
+  scrapedH1?: string;
+  scrapedBrand?: string;
   scrapedDescription?: string;
 }
 
@@ -35,6 +37,9 @@ export async function generateProductSite(
   const productName = deriveProductName({
     niche: params.niche,
     scrapedTitle: params.scrapedTitle,
+    scrapedH1: params.scrapedH1,
+    scrapedBrand: params.scrapedBrand,
+    scrapedDescription: params.scrapedDescription,
     affiliateLabel: affiliate.label,
   });
 

@@ -28,6 +28,8 @@ export interface BlogSite {
   armed_links: ArmedLink[];
   status: "draft" | "live";
   site_type?: "product" | "blog";
+  product_name?: string | null;
+  product_url?: string | null;
   sales_page_html?: string | null;
   sales_page_json?: Record<string, unknown> | null;
   created_at: string;
