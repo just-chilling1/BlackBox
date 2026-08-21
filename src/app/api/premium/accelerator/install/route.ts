@@ -48,6 +48,7 @@ export async function POST(request: Request) {
         assetId: result.site.id,
         site: result.site,
         siteUrl: sitePublicPath(result.site),
+        pinCount: result.pinCount,
         /** @deprecated alias for older clients */
         threadsCopied: 0,
       },

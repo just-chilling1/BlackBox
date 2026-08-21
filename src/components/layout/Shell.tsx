@@ -77,7 +77,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h)+env(safe-area-inset-top,0px)+0.5rem)] transition-[padding] duration-300 sm:px-6 lg:pb-10 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-10 lg:pt-10">
+        <main className="app-main-canvas relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h)+env(safe-area-inset-top,0px)+0.5rem)] transition-[padding] duration-300 sm:px-6 lg:pb-10 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-10 lg:pt-10">
           <div className="app-content-layer flex min-h-full w-full min-w-0 flex-col gap-6">
             <PageMotion>{children}</PageMotion>
             {!hideSupportBanner ? <SupportCtaBanner className="mt-2" /> : null}

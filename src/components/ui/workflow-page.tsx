@@ -5,9 +5,9 @@ type WorkflowWidth = "narrow" | "default" | "wide" | "full";
 
 const widthClass: Record<WorkflowWidth, string> = {
   narrow: "max-w-xl",
-  default: "max-w-4xl",
-  wide: "max-w-6xl",
-  full: "max-w-7xl",
+  default: "w-full max-w-none",
+  wide: "w-full max-w-none",
+  full: "w-full max-w-none",
 };
 
 export function WorkflowPage({
@@ -20,7 +20,7 @@ export function WorkflowPage({
   className?: string;
 }) {
   return (
-    <div className={clsx("page-container mx-auto w-full", widthClass[width], className)}>
+    <div className={clsx("page-container mx-auto flex min-h-0 w-full flex-1 flex-col", widthClass[width], className)}>
       {children}
     </div>
   );

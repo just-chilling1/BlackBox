@@ -278,17 +278,6 @@ export default function MoneyPageEditor() {
         </GlassPanel>
       ) : null}
 
-      {!affiliateUrl ? (
-        <GlassPanel className="space-y-5 p-6 sm:p-7">
-          <h2 className="ds-h3">Add your affiliate link</h2>
-          <p className="text-sm text-ink-3">Your CTA buttons will use this link once you save it.</p>
-          <input className="input-base w-full" value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)} />
-          <button type="button" className="btn-secondary" onClick={() => void save()}>
-            Save link
-          </button>
-        </GlassPanel>
-      ) : null}
-
       {editing && copy ? (
         <GlassPanel className="space-y-5 p-6 sm:p-7">
           <h2 className="ds-h3">Edit page copy</h2>
@@ -316,7 +305,7 @@ export default function MoneyPageEditor() {
           Loading preview...
         </GlassPanel>
       ) : typeof site?.sales_page_html === "string" ? (
-        <div className="preview-frame">
+        <div className="preview-frame preview-frame--fill">
           <div className="preview-frame-bar">
             <span className="preview-frame-dot" />
             <span className="preview-frame-dot" />
@@ -325,7 +314,7 @@ export default function MoneyPageEditor() {
           </div>
           <iframe
             title="Money page preview"
-            className="h-[80vh] min-h-[520px] w-full"
+            className="preview-frame-iframe"
             style={{ background: previewBg }}
             srcDoc={site.sales_page_html as string}
           />

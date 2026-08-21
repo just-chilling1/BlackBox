@@ -4,5 +4,5 @@ import type { ReactNode } from "react";
 
 /** Route wrapper — content renders immediately (no enter fade delay). */
 export function PageMotion({ children }: { children: ReactNode }) {
-  return <div className="min-h-full">{children}</div>;
+  return <div className="flex min-h-0 flex-1 flex-col">{children}</div>;
 }

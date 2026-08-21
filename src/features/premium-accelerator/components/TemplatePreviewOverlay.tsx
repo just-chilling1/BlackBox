@@ -177,8 +177,8 @@ export function TemplatePreviewOverlay({
           {!loading && !error && preview && tab === "pins" ? (
             <div className="space-y-3 p-4 sm:p-5">
               <p className="text-xs text-text-muted">
-                These are draft pin headlines. After you use this page, generate real pins with images
-                on the Traffic step.
+                10 ready pin headlines for this page. When you install, these pins are saved with
+                images so you can post from Traffic right away.
               </p>
               {preview.pins.length > 0 ? (
                 <ul className="space-y-3">
@@ -220,8 +220,8 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[var(--np-line)] bg-[var(--np-surface-sub)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
           <p className="text-xs text-text-muted">
             {hasAffiliateLink
-              ? "Money page CTAs use your affiliate link. Generate real pins after install."
-              : "Add your affiliate link above to wire the money page CTA."}
+              ? "Money page CTAs use your applied affiliate link. 10 pins are included on install."
+              : "Apply your affiliate link above to wire the money page CTA."}
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={onClose} className="btn-secondary px-4 py-2 text-sm">

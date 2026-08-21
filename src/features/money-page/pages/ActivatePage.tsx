@@ -147,7 +147,7 @@ export default function ActivateAssetPage() {
   const currentLabel =
     stageIndex >= STAGES.length ? "Finalizing asset" : STAGES[Math.min(stageIndex, STAGES.length - 1)];
 
-  async function activate(options?: { redirectTo?: "ready" | "traffic" }) {
+  async function activate() {
     setError("");
     if (!productUrl.trim() && !productName.trim()) {
       setError("Paste a product URL or enter a product name.");
@@ -178,12 +178,6 @@ export default function ActivateAssetPage() {
 
       setStageIndex(STAGES.length);
       setAssetId(data.assetId);
-
-      if (options?.redirectTo === "traffic" && data.assetId) {
-        router.push(`/traffic/${data.assetId}`);
-        return;
-      }
-
       setPhase("ready");
     } catch {
       window.clearInterval(timer);
@@ -277,13 +271,6 @@ export default function ActivateAssetPage() {
                 View my asset
                 <ArrowRight size={16} strokeWidth={2.25} />
               </button>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => router.push(`/traffic/${assetId}`)}
-              >
-                Generate traffic
-              </button>
             </div>
           </GlassPanel>
 
@@ -301,18 +288,6 @@ export default function ActivateAssetPage() {
             </div>
           </aside>
         </div>
-
-        <section className="activate-page-end-cta" aria-label="Next step">
-          <button
-            type="button"
-            className="btn-primary activate-traffic-cta"
-            onClick={() => router.push(`/traffic/${assetId}`)}
-          >
-            <Pin size={18} strokeWidth={1.75} aria-hidden />
-            Generate Traffic
-            <ArrowRight size={16} strokeWidth={2.25} />
-          </button>
-        </section>
       </WorkflowPage>
     );
   }
@@ -460,18 +435,6 @@ export default function ActivateAssetPage() {
           </div>
         </aside>
       </div>
-
-      <section className="activate-page-end-cta" aria-label="Generate traffic">
-        <button
-          type="button"
-          className="btn-primary activate-traffic-cta"
-          onClick={() => void activate({ redirectTo: "traffic" })}
-        >
-          <Pin size={18} strokeWidth={1.75} aria-hidden />
-          Generate Traffic
-          <ArrowRight size={16} strokeWidth={2.25} />
-        </button>
-      </section>
     </WorkflowPage>
   );
 }

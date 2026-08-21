@@ -1,8 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Activity, ExternalLink, Loader2, Rocket } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  ExternalLink,
+  FileText,
+  Loader2,
+  MousePointerClick,
+  Pencil,
+  Pin,
+  Rocket,
+  Sparkles,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
@@ -21,6 +34,7 @@ interface ResultsPayload {
     status: string;
     traffic: number;
     affiliateClicks: number;
+    pins?: number;
     ctr: number;
     href: string;
     publicPath?: string | null;
@@ -37,6 +51,26 @@ function StatusBadge({ status }: { status: string }) {
       {status}
     </span>
   );
+}
+
+function formatRelativeTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const diffMs = Date.now() - date.getTime();
+  const minutes = Math.floor(diffMs / 60_000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function activityIcon(text: string) {
+  if (/clicked/i.test(text)) return MousePointerClick;
+  if (/pinterest/i.test(text)) return Pin;
+  return Users;
 }
 
 export default function ResultsPage() {
@@ -61,14 +95,53 @@ export default function ResultsPage() {
   }, []);
 
   const stats = [
-    { label: "Money pages live", value: data?.moneyPagesLive ?? 0 },
-    { label: "Traffic assets created", value: data?.trafficAssetsCreated ?? 0 },
-    { label: "Visitors generated", value: data?.visitorsGenerated ?? 0 },
-    { label: "Affiliate clicks", value: data?.affiliateClicks ?? 0 },
+    {
+      label: "Money pages live",
+      value: data?.moneyPagesLive ?? 0,
+      icon: FileText,
+      tone: "pulse" as const,
+    },
+    {
+      label: "Traffic assets created",
+      value: data?.trafficAssetsCreated ?? 0,
+      icon: Pin,
+      tone: "accent" as const,
+    },
+    {
+      label: "Visitors generated",
+      value: data?.visitorsGenerated ?? 0,
+      icon: Users,
+      tone: "neutral" as const,
+    },
+    {
+      label: "Affiliate clicks",
+      value: data?.affiliateClicks ?? 0,
+      icon: MousePointerClick,
+      tone: "gold" as const,
+    },
   ];
 
+  const insight = useMemo(() => {
+    if (!data || loading) return null;
+    const assetCount = data.assets.length;
+    const liveCount = data.moneyPagesLive;
+    const hasTraffic = data.visitorsGenerated > 0;
+    const hasClicks = data.affiliateClicks > 0;
+
+    if (assetCount === 0) {
+      return "Activate your first product to publish a money page and start tracking real performance.";
+    }
+    if (!hasTraffic && !hasClicks) {
+      return `${assetCount} asset${assetCount === 1 ? "" : "s"} in your workspace · ${liveCount} live. Post your Pinterest pins to start generating visitors.`;
+    }
+    if (hasTraffic && !hasClicks) {
+      return `${data.visitorsGenerated} visitor${data.visitorsGenerated === 1 ? "" : "s"} so far. Clicks usually follow once traffic hits your money page CTA.`;
+    }
+    return `${data.affiliateClicks} affiliate click${data.affiliateClicks === 1 ? "" : "s"} from ${data.visitorsGenerated} visitor${data.visitorsGenerated === 1 ? "" : "s"} across ${assetCount} asset${assetCount === 1 ? "" : "s"}.`;
+  }, [data, loading]);
+
   return (
-    <WorkflowPage width="wide">
+    <WorkflowPage className="results-workspace">
       <WorkflowStepsBar current="results" />
       <PageHeader
         eyebrow="Step 4"
@@ -78,102 +151,206 @@ export default function ResultsPage() {
 
       {error ? <div className="alert-banner">{error}</div> : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <GlassPanel key={stat.label} className="stat-card">
-            <div className="stat-card-label">{stat.label}</div>
-            <div className="stat-card-value">
-              {loading ? <Loader2 className="inline h-6 w-6 animate-spin text-pulse-500" /> : stat.value}
-            </div>
-          </GlassPanel>
-        ))}
+      <div className="results-stat-grid">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <GlassPanel key={stat.label} className={`results-stat-card results-stat-card--${stat.tone}`}>
+              <span className={`results-stat-icon results-stat-icon--${stat.tone}`} aria-hidden>
+                <Icon size={18} strokeWidth={1.75} />
+              </span>
+              <div className="results-stat-copy">
+                <div className="results-stat-label">{stat.label}</div>
+                <div className="results-stat-value">
+                  {loading ? <Loader2 className="inline h-6 w-6 animate-spin text-pulse-500" /> : stat.value}
+                </div>
+              </div>
+            </GlassPanel>
+          );
+        })}
       </div>
 
-      <GlassPanel className="overflow-hidden p-0">
-        <div className="border-b border-[var(--np-line)] px-5 py-4">
-          <h2 className="ds-h3">Asset performance</h2>
-        </div>
-        {(data?.assets ?? []).length === 0 && !loading ? (
-          <div className="p-6">
-            <EmptyState
-              icon={Rocket}
-              title="No assets yet"
-              description="Activate your first product to publish a money page and start tracking visitors."
-              actionHref="/activate"
-              actionLabel="Activate an asset"
-            />
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="bg-[var(--np-surface-field)] text-xs uppercase tracking-wide text-ink-4">
-                <tr>
-                  <th className="px-5 py-3 font-medium">Product</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Traffic</th>
-                  <th className="px-5 py-3 font-medium">Affiliate clicks</th>
-                  <th className="px-5 py-3 font-medium">CTR</th>
-                  <th className="px-5 py-3 font-medium text-right">Sales page</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(data?.assets ?? []).map((asset) => {
-                  const viewHref = asset.viewHref || asset.publicPath || asset.href;
-                  return (
-                    <tr key={asset.id} className="border-t border-[var(--np-line)]">
-                      <td className="px-5 py-4">
-                        <Link href={asset.href} className="font-medium text-pulse-500 hover:underline">
-                          {asset.product}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4">
-                        <StatusBadge status={asset.status} />
-                      </td>
-                      <td className="px-5 py-4 text-ink-2">{asset.traffic} visitors</td>
-                      <td className="px-5 py-4 text-ink-2">{asset.affiliateClicks} clicks</td>
-                      <td className="px-5 py-4 text-ink-2">{asset.ctr.toFixed(1)}%</td>
-                      <td className="px-5 py-4 text-right">
-                        <a
-                          href={viewHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-secondary inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 text-[13px]"
-                        >
-                          View
-                          <ExternalLink size={14} strokeWidth={1.75} />
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </GlassPanel>
-
-      <GlassPanel className="space-y-5 p-6 sm:p-7">
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-pulse-500" />
-          <h2 className="ds-h3">Recent activity</h2>
-        </div>
-        {(data?.activity ?? []).length === 0 ? (
-          <p className="text-sm leading-relaxed text-ink-4">
-            No tracked events yet. Publish a page and share a pin to see activity here.
+      {insight ? (
+        <GlassPanel className="results-insight-panel">
+          <p className="results-insight-badge">
+            <Sparkles size={14} strokeWidth={1.75} aria-hidden />
+            Performance snapshot
           </p>
-        ) : (
-          <ul className="space-y-3">
-            {(data?.activity ?? []).map((item) => (
-              <li
-                key={item.at + item.text}
-                className="rounded-lg border border-[var(--np-line)] bg-[var(--np-surface-field)] px-4 py-3 text-sm text-ink-2"
-              >
-                {item.text}
-              </li>
-            ))}
-          </ul>
-        )}
-      </GlassPanel>
+          <p className="results-insight-copy">{insight}</p>
+        </GlassPanel>
+      ) : null}
+
+      <div className="results-main-grid">
+        <GlassPanel className="results-performance-panel overflow-hidden p-0">
+          <div className="results-panel-header">
+            <div>
+              <p className="results-panel-eyebrow">
+                <TrendingUp size={14} strokeWidth={1.75} aria-hidden />
+                Portfolio
+              </p>
+              <h2 className="ds-h3">Asset performance</h2>
+            </div>
+            {!loading && (data?.assets.length ?? 0) > 0 ? (
+              <Link href="/activate" className="btn-secondary results-panel-action">
+                Activate another
+                <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
+              </Link>
+            ) : null}
+          </div>
+
+          {(data?.assets ?? []).length === 0 && !loading ? (
+            <div className="p-6">
+              <EmptyState
+                icon={Rocket}
+                title="No assets yet"
+                description="Activate your first product to publish a money page and start tracking visitors."
+                actionHref="/activate"
+                actionLabel="Activate an asset"
+              />
+            </div>
+          ) : loading ? (
+            <div className="results-table-loading">
+              <Loader2 className="h-6 w-6 animate-spin text-pulse-500" aria-hidden />
+              <p className="text-sm text-ink-3">Loading asset performance…</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="results-table w-full min-w-[860px] text-left text-sm">
+                <thead>
+                  <tr>
+                    <th className="px-5 py-3 font-medium">Product</th>
+                    <th className="px-5 py-3 font-medium">Status</th>
+                    <th className="px-5 py-3 font-medium">Traffic</th>
+                    <th className="px-5 py-3 font-medium">Pins</th>
+                    <th className="px-5 py-3 font-medium">Affiliate clicks</th>
+                    <th className="px-5 py-3 font-medium">CTR</th>
+                    <th className="px-5 py-3 font-medium text-right">Sales page</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(data?.assets ?? []).map((asset) => {
+                    const viewHref = asset.viewHref || asset.publicPath || asset.href;
+                    const ctrWidth = Math.min(100, Math.max(0, asset.ctr));
+                    return (
+                      <tr key={asset.id} className="results-table-row">
+                        <td className="px-5 py-4">
+                          <Link href={asset.href} className="results-product-link">
+                            {asset.product}
+                          </Link>
+                        </td>
+                        <td className="px-5 py-4">
+                          <StatusBadge status={asset.status} />
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="results-metric">{asset.traffic}</span>
+                          <span className="results-metric-unit"> visitors</span>
+                        </td>
+                        <td className="px-5 py-4">
+                          {(asset.pins ?? 0) > 0 ? (
+                            <Link href={`/traffic/${asset.id}`} className="results-traffic-link">
+                              {asset.pins} pins
+                            </Link>
+                          ) : (
+                            <Link href={`/traffic/${asset.id}`} className="results-traffic-link results-traffic-link--muted">
+                              Generate
+                            </Link>
+                          )}
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="results-metric">{asset.affiliateClicks}</span>
+                          <span className="results-metric-unit"> clicks</span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="results-ctr-cell">
+                            <span className="results-metric">{asset.ctr.toFixed(1)}%</span>
+                            <span className="results-ctr-bar" aria-hidden>
+                              <span className="results-ctr-bar-fill" style={{ width: `${ctrWidth}%` }} />
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <div className="flex flex-wrap items-center justify-end gap-2">
+                            <Link
+                              href={asset.href}
+                              className="btn-secondary inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 text-[13px]"
+                            >
+                              <Pencil size={14} strokeWidth={1.75} aria-hidden />
+                              Edit
+                            </Link>
+                            <a
+                              href={viewHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-secondary inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 text-[13px]"
+                            >
+                              Preview
+                              <ExternalLink size={14} strokeWidth={1.75} />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </GlassPanel>
+
+        <GlassPanel className="results-activity-panel">
+          <div className="results-panel-header results-panel-header--compact">
+            <div>
+              <p className="results-panel-eyebrow">
+                <Activity size={14} strokeWidth={1.75} aria-hidden />
+                Live feed
+              </p>
+              <h2 className="ds-h3">Recent activity</h2>
+            </div>
+          </div>
+
+          {(data?.activity ?? []).length === 0 && !loading ? (
+            <div className="results-activity-empty">
+              <span className="results-activity-empty-icon" aria-hidden>
+                <Activity size={22} strokeWidth={1.5} />
+              </span>
+              <p className="text-sm leading-relaxed text-ink-3">
+                No tracked events yet. Publish a page and share a pin to see activity here.
+              </p>
+              <Link href="/activate" className="btn-secondary mt-2 inline-flex items-center gap-1.5">
+                Get started
+                <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
+              </Link>
+            </div>
+          ) : loading ? (
+            <div className="results-table-loading results-table-loading--compact">
+              <Loader2 className="h-5 w-5 animate-spin text-pulse-500" aria-hidden />
+            </div>
+          ) : (
+            <ul className="results-activity-feed">
+              {(data?.activity ?? []).map((item) => {
+                const Icon = activityIcon(item.text);
+                const isClick = /clicked/i.test(item.text);
+                return (
+                  <li key={item.at + item.text} className="results-activity-item">
+                    <span
+                      className={`results-activity-icon ${isClick ? "results-activity-icon--click" : "results-activity-icon--visit"}`}
+                      aria-hidden
+                    >
+                      <Icon size={15} strokeWidth={1.75} />
+                    </span>
+                    <div className="results-activity-copy">
+                      <p className="results-activity-text">{item.text}</p>
+                      <time className="results-activity-time" dateTime={item.at}>
+                        {formatRelativeTime(item.at)}
+                      </time>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </GlassPanel>
+      </div>
     </WorkflowPage>
   );
 }

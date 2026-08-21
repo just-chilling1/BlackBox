@@ -2,7 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowRight, ImageIcon, Loader2, Pin, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Copy,
+  Download,
+  ImageIcon,
+  Link2,
+  Loader2,
+  Pin,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
@@ -102,7 +112,7 @@ export default function TrafficPage() {
   }
 
   return (
-    <WorkflowPage>
+    <WorkflowPage className="traffic-workspace">
       <WorkflowStepsBar current="traffic" assetId={assetId} />
       <PageHeader
         eyebrow="Step 3"
@@ -135,7 +145,7 @@ export default function TrafficPage() {
           </div>
         </div>
       ) : pins.length === 0 ? (
-        <GlassPanel className="traffic-hero-panel">
+        <GlassPanel className="traffic-hero-panel traffic-hero-panel--fill">
           <div className="traffic-hero-shimmer" aria-hidden />
           <div className="traffic-hero-inner">
             <p className="traffic-hero-badge">
@@ -176,13 +186,47 @@ export default function TrafficPage() {
           </div>
         </GlassPanel>
       ) : (
-        <>
+        <div className="traffic-workspace-body">
+          <div className="traffic-summary-strip">
+            <GlassPanel className="traffic-summary-card">
+              <span className="traffic-summary-icon" aria-hidden>
+                <Pin size={18} strokeWidth={1.75} />
+              </span>
+              <div>
+                <p className="traffic-summary-value">{pins.length}</p>
+                <p className="traffic-summary-label">Pinterest pins ready</p>
+              </div>
+            </GlassPanel>
+            <GlassPanel className="traffic-summary-card">
+              <span className="traffic-summary-icon traffic-summary-icon--accent" aria-hidden>
+                <Link2 size={18} strokeWidth={1.75} />
+              </span>
+              <div>
+                <p className="traffic-summary-value">Tracked</p>
+                <p className="traffic-summary-label">Each pin links to your money page</p>
+              </div>
+            </GlassPanel>
+            <GlassPanel className="traffic-summary-card">
+              <span className="traffic-summary-icon traffic-summary-icon--gold" aria-hidden>
+                <TrendingUp size={18} strokeWidth={1.75} />
+              </span>
+              <div>
+                <p className="traffic-summary-value">Post &amp; earn</p>
+                <p className="traffic-summary-label">Download images and copy text to Pinterest</p>
+              </div>
+            </GlassPanel>
+          </div>
+
           <GlassPanel className="traffic-toolbar-panel">
             <div className="traffic-toolbar-copy">
-              <h2 className="ds-h4">Your Pinterest pins are ready</h2>
+              <p className="traffic-toolbar-eyebrow">
+                <Pin size={14} strokeWidth={1.75} aria-hidden />
+                Pinterest workspace
+              </p>
+              <h2 className="ds-h4">Your pins are ready to post</h2>
               <p className="text-sm leading-relaxed text-ink-2">
-                Post these pins to Pinterest and use the provided link. Each visitor will be sent directly to your
-                money page.
+                Download each image, copy the title and description, then paste your tracking link when you publish on
+                Pinterest. Every click routes visitors to your money page.
               </p>
             </div>
             <div className="traffic-toolbar-actions">
@@ -197,16 +241,19 @@ export default function TrafficPage() {
 
           <div className="pin-card-grid">
             {pins.map((pin, index) => (
-              <GlassPanel key={pin.id} className="pin-card p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="ds-h4">Pin #{index + 1}</h3>
+              <GlassPanel key={pin.id} className="pin-card">
+                <div className="pin-card-header">
+                  <span className="pin-card-badge">Pin #{index + 1}</span>
                   {copied.endsWith(pin.id) ? (
-                    <span className="text-xs font-medium text-success">Copied</span>
+                    <span className="pin-card-copied">Copied</span>
                   ) : null}
                 </div>
 
                 {pin.image_url ? (
                   <div className="pin-card-media">
+                    <span className="pin-card-media-index" aria-hidden>
+                      {index + 1}
+                    </span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={pinImageSrc(pin.image_url)}
@@ -217,55 +264,75 @@ export default function TrafficPage() {
                   </div>
                 ) : null}
 
-                <p className="text-base font-medium leading-snug text-ink">{pin.headline}</p>
+                <div className="pin-card-body">
+                  <p className="pin-card-headline">{pin.headline}</p>
 
-                <div className="pin-meta-row">
-                  <div>
-                    <div className="pin-meta-label">Title</div>
-                    {pin.title}
-                  </div>
-                  <div>
-                    <div className="pin-meta-label">Description</div>
-                    {pin.description}
-                  </div>
-                  <div>
-                    <div className="pin-meta-label">Keywords</div>
-                    {(pin.keywords || []).join(", ")}
-                  </div>
-                  <div>
-                    <div className="pin-meta-label">Destination</div>
-                    <span className="break-all text-xs leading-relaxed">{destination(pin.id)}</span>
+                  <div className="pin-meta-grid">
+                    <div className="pin-meta-field">
+                      <div className="pin-meta-label">Title</div>
+                      <p className="pin-meta-value">{pin.title}</p>
+                    </div>
+                    <div className="pin-meta-field">
+                      <div className="pin-meta-label">Description</div>
+                      <p className="pin-meta-value">{pin.description}</p>
+                    </div>
+                    <div className="pin-meta-field pin-meta-field--full">
+                      <div className="pin-meta-label">Keywords</div>
+                      <p className="pin-meta-value pin-meta-keywords">
+                        {(pin.keywords || []).map((keyword) => (
+                          <span key={keyword} className="pin-keyword-chip">
+                            {keyword}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                    <div className="pin-meta-field pin-meta-field--full">
+                      <div className="pin-meta-label">Destination link</div>
+                      <p className="pin-meta-value pin-meta-link">{destination(pin.id)}</p>
+                    </div>
                   </div>
                 </div>
 
                 <div className="pin-card-actions">
-                  <a className="btn-compact" href={pinDownloadHref(pin.image_url)}>
-                    Download image
+                  <a className="pin-action-btn pin-action-btn--primary" href={pinDownloadHref(pin.image_url)}>
+                    <Download size={14} strokeWidth={1.75} aria-hidden />
+                    Download
                   </a>
-                  <button type="button" className="btn-compact" onClick={() => void copy(`t${pin.id}`, pin.title)}>
-                    {copied === `t${pin.id}` ? "Copied" : "Copy title"}
+                  <button
+                    type="button"
+                    className="pin-action-btn"
+                    onClick={() => void copy(`t${pin.id}`, pin.title)}
+                  >
+                    <Copy size={14} strokeWidth={1.75} aria-hidden />
+                    {copied === `t${pin.id}` ? "Copied" : "Title"}
                   </button>
                   <button
                     type="button"
-                    className="btn-compact"
+                    className="pin-action-btn"
                     onClick={() => void copy(`d${pin.id}`, pin.description)}
                   >
-                    {copied === `d${pin.id}` ? "Copied" : "Copy description"}
+                    <Copy size={14} strokeWidth={1.75} aria-hidden />
+                    {copied === `d${pin.id}` ? "Copied" : "Description"}
                   </button>
                   <button
                     type="button"
-                    className="btn-compact"
+                    className="pin-action-btn"
                     onClick={() => void copy(`l${pin.id}`, destination(pin.id))}
                   >
-                    {copied === `l${pin.id}` ? "Copied" : "Copy link"}
+                    <Link2 size={14} strokeWidth={1.75} aria-hidden />
+                    {copied === `l${pin.id}` ? "Copied" : "Link"}
                   </button>
                 </div>
               </GlassPanel>
             ))}
           </div>
 
-          <GlassPanel className="flex flex-wrap items-center justify-between gap-4 p-6">
-            <div>
+          <GlassPanel className="traffic-results-cta">
+            <div className="traffic-results-copy">
+              <p className="traffic-toolbar-eyebrow">
+                <TrendingUp size={14} strokeWidth={1.75} aria-hidden />
+                Next step
+              </p>
               <h2 className="ds-h3">Ready to track results?</h2>
               <p className="mt-1 text-sm text-ink-3">
                 Your pins are saved. Continue to see visits, clicks, and what is converting.
@@ -273,9 +340,10 @@ export default function TrafficPage() {
             </div>
             <button type="button" className="btn-primary" onClick={() => router.push("/results")}>
               Continue to Results
+              <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
             </button>
           </GlassPanel>
-        </>
+        </div>
       )}
     </WorkflowPage>
   );

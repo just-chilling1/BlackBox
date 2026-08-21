@@ -57,28 +57,17 @@ const SIZES = {
   },
 };
 
-export function BrandLogo({
-  size = "sm",
-  showTagline = true,
-  compact = false,
-  splitTitle = false,
-  stacked = false,
-  className,
-}: BrandLogoProps) {
-  const s = SIZES[size];
-  const Icon = getNavIcon(brand.logo.icon);
-  const useImage = brand.logo.type === "image";
-  const isWordmarkImage = useImage && brand.logo.wordmark;
-  const primarySrc: string =
-    useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
-  const fallbackSrc: string | undefined =
-    useImage && compact && brand.logo.iconSrcFallback
-      ? brand.logo.iconSrcFallback
-      : brand.logo.srcFallback;
+function splitProductName(name: string): { primary: string; accent: string } {
+  const trimmed = name.trim();
+  const space = trimmed.indexOf(" ");
+  if (space === -1) return { primary: trimmed, accent: "" };
+  return { primary: trimmed.slice(0, space), accent: trimmed.slice(space + 1) };
+}
+
+function useLogoImage(primarySrc: string, fallbackSrc?: string) {
   const [imageSrc, setImageSrc] = useState<string>(primarySrc ?? fallbackSrc ?? "");
 
   useEffect(() => {
-    if (!useImage) return;
     const preferred = primarySrc;
     const fallback = fallbackSrc;
     if (!preferred) {
@@ -94,7 +83,66 @@ export function BrandLogo({
     probe.onload = () => setImageSrc(preferred);
     probe.onerror = () => setImageSrc(fallback);
     probe.src = preferred;
-  }, [useImage, primarySrc, fallbackSrc]);
+  }, [primarySrc, fallbackSrc]);
+
+  return [imageSrc, setImageSrc] as const;
+}
+
+export function BrandLogo({
+  size = "sm",
+  showTagline = true,
+  compact = false,
+  splitTitle = false,
+  stacked = false,
+  className,
+}: BrandLogoProps) {
+  const s = SIZES[size];
+  const Icon = getNavIcon(brand.logo.icon);
+  const useImage = brand.logo.type === "image";
+  const isWordmarkImage = useImage && brand.logo.wordmark;
+  const useSidebarLockup = size === "sidebar" && !compact && useImage;
+
+  const primarySrc: string =
+    useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
+  const fallbackSrc: string | undefined =
+    useImage && compact && brand.logo.iconSrcFallback
+      ? brand.logo.iconSrcFallback
+      : brand.logo.srcFallback;
+
+  const sidebarIconPrimary = brand.logo.iconSrc ?? brand.logo.src;
+  const sidebarIconFallback = brand.logo.iconSrcFallback ?? brand.logo.srcFallback;
+
+  const [imageSrc, setImageSrc] = useLogoImage(primarySrc, fallbackSrc);
+  const [sidebarIconSrc, setSidebarIconSrc] = useLogoImage(sidebarIconPrimary, sidebarIconFallback);
+
+  if (useSidebarLockup) {
+    const { primary, accent } = splitProductName(brand.productName);
+
+    return (
+      <div className={clsx("sidebar-brand-lockup", className)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={sidebarIconSrc}
+          alt=""
+          width={48}
+          height={48}
+          className="sidebar-brand-icon"
+          loading="eager"
+          decoding="async"
+          aria-hidden
+          onError={() => {
+            if (sidebarIconFallback && sidebarIconSrc !== sidebarIconFallback) {
+              setSidebarIconSrc(sidebarIconFallback);
+            }
+          }}
+        />
+        <span className="sidebar-brand-title" aria-label={brand.logo.alt}>
+          <span className="sidebar-brand-title-primary">{primary}</span>
+          {accent ? <span className="sidebar-brand-title-accent"> {accent}</span> : null}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div

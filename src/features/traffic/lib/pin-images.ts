@@ -1,8 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
+  collectScrapedImageCandidates,
   normalizeImageUrl,
   persistExternalImage,
-  resolveFastImageUrl,
+  pickUnusedScrapedImageUrl,
 } from "@/features/blog-builder/lib/images";
 import { SiteImagePool } from "@/features/blog-builder/lib/site-image-pool";
 import type { PinCopy } from "@/features/traffic/lib/pin-rules";
@@ -132,11 +133,10 @@ export function pinRenderBackgroundCandidates(params: {
 
 /**
  * Resolve unique Pinterest pin backgrounds:
- * one preferred hero (pin 0) → Pixabay product stock (varied) → scrape fallback → tagged photos.
+ * one preferred hero (pin 0) → unique scraped affiliate images → Pixabay stock → tagged photos.
  *
- * Always prefer stock after the first preferred slot so every pin does not re-scrape
- * the same affiliate og:image (often stored under a different persisted URL than the hero).
- * Every returned URL is unique within the batch (and vs preferred/prior images).
+ * Scraped page images are collected once and assigned at most once per batch (normalized URL dedupe).
+ * Stock fills remaining slots so pins never collapse to the same affiliate og:image.
  */
 export async function resolvePinBackgroundImages(params: {
   pins: PinCopy[];
@@ -193,6 +193,19 @@ export async function resolvePinBackgroundImages(params: {
   const stockQueries = productStockQueries(params.productName, params.hobby);
   const productTokens = productSearchTokens(params.productName);
 
+  const hasScrapeTargets = Boolean(
+    params.scrapeUrl?.trim() || (params.scrapeUrls?.length ?? 0) > 0
+  );
+  const scrapedCandidates = hasScrapeTargets
+    ? await collectScrapedImageCandidates({
+        scrapeUrl: params.scrapeUrl,
+        scrapeUrls: params.scrapeUrls,
+        scrapeKeywords: productTokens,
+      })
+    : [];
+
+  const excludeForImages = () => [...usedKeys];
+
   const pickUnusedFallback = (pinIdx: number, headlineLen: number): string | null => {
     for (let attempt = 0; attempt < 12; attempt++) {
       const candidate = productPhotoFallbackUrl(
@@ -221,7 +234,18 @@ export async function resolvePinBackgroundImages(params: {
       chosen = heroForFirstPin;
     }
 
-    // 2) Product-name Pixabay first (horizontal), scrape only as fallback.
+    // 2) Next unused scraped affiliate image — each scraped URL at most once per batch.
+    if (!chosen && scrapedCandidates.length > 0) {
+      const scraped = await pickUnusedScrapedImageUrl({
+        candidates: scrapedCandidates,
+        excludeUrls: excludeForImages(),
+      });
+      if (scraped && !isUsed(scraped)) {
+        chosen = scraped;
+      }
+    }
+
+    // 3) Product-name Pixabay stock (never re-scrape through the pool).
     if (!chosen) {
       const queryList =
         stockQueries.length > 0 ? stockQueries : [params.productName.trim()].filter(Boolean);
@@ -240,13 +264,6 @@ export async function resolvePinBackgroundImages(params: {
               "no text overlay",
             ].join(". "),
             hobby: params.hobby?.trim() || undefined,
-            // Avoid scrape for later pins — affiliate og:image is almost always the same hero.
-            scrapeUrl:
-              i === 0 && q === rotated.length - 1
-                ? params.scrapeUrl?.trim() || undefined
-                : undefined,
-            scrapeUrls:
-              i === 0 && q === rotated.length - 1 ? params.scrapeUrls : undefined,
             scrapeKeywords: keywords.length ? keywords : productTokens,
             pickOffset: i * 3 + q,
             seedBoost: i * 11 + q * 3 + keywords.length + (pin.headline?.length ?? 0) + usedKeys.size,
@@ -264,7 +281,7 @@ export async function resolvePinBackgroundImages(params: {
       }
     }
 
-    // 3) Product-tagged / AI fallback — must be unused.
+    // 4) Product-tagged / AI fallback — must be unused.
     if (!chosen || isUsed(chosen)) {
       chosen = pickUnusedFallback(i, pin.headline?.length ?? 0);
     }

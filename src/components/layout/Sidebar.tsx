@@ -136,14 +136,14 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
 
   return (
     <div className="sidebar-panel flex h-full min-h-0 w-full flex-col overflow-hidden">
-      <div className={clsx("sidebar-header shrink-0", collapsed ? "p-3" : "px-3.5 py-3.5")}>
-        <div className={clsx("flex w-full items-center", collapsed ? "flex-col gap-3" : "gap-2")}>
+      <div className={clsx("sidebar-header shrink-0", collapsed ? "p-3" : "px-3 py-3.5")}>
+        <div className={clsx("flex w-full items-center", collapsed ? "flex-col gap-3" : "gap-1.5")}>
           <Link
             href="/dashboard"
             onClick={handleNavClick}
             className={clsx(
               "rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--np-pulse-500)]",
-              collapsed ? "flex w-full justify-center" : "min-w-0 flex-1"
+              collapsed ? "flex w-full justify-center" : "min-w-0 flex-1 overflow-hidden"
             )}
             title={brand.productName}
           >

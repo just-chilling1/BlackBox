@@ -454,6 +454,75 @@ async function fetchScrapedImageUrl(
   return null;
 }
 
+/** Merge scraped page images from all targets, deduped in stable order. */
+export async function collectScrapedImageCandidates(params: {
+  scrapeUrl?: string | null;
+  scrapeUrls?: string[];
+  scrapeKeywords?: string[];
+  limit?: number;
+}): Promise<string[]> {
+  const targets = [params.scrapeUrl, ...(params.scrapeUrls ?? [])].filter((url): url is string =>
+    Boolean(url?.trim())
+  );
+  if (targets.length === 0) return [];
+
+  const keywords = params.scrapeKeywords ?? [];
+  const limit = params.limit ?? 24;
+  const seen = new Set<string>();
+  const out: string[] = [];
+
+  const push = (url: string | null | undefined) => {
+    if (!url?.trim()) return;
+    const key = normalizeImageUrl(url);
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(url);
+  };
+
+  for (const target of targets) {
+    const ranked = await scrapeRelevantImagesFromUrl(target, {
+      keywords,
+      limit: 12,
+    });
+    for (const url of ranked) push(url);
+    push(await scrapeImageFromUrl(target));
+    if (out.length >= limit) break;
+  }
+
+  return out.slice(0, limit);
+}
+
+/** Return the first scraped candidate not present in excludeUrls (normalized compare). */
+export function pickFirstUnusedImageCandidate(
+  candidates: readonly string[],
+  excludeUrls: readonly string[]
+): string | null {
+  for (const candidate of candidates) {
+    if (!isExcludedUrl(candidate, [...excludeUrls])) return candidate;
+  }
+  return null;
+}
+
+/** Pick the next unused scraped page image; each URL is only returned once per exclude set. */
+export async function pickUnusedScrapedImageUrl(params: {
+  candidates: readonly string[];
+  excludeUrls: readonly string[];
+}): Promise<string | null> {
+  const exclude = [...params.excludeUrls];
+
+  for (const candidate of params.candidates) {
+    if (isExcludedUrl(candidate, exclude)) continue;
+
+    const buffer = await fetchImageBuffer(candidate, SCRAPE_IMAGE_TIMEOUT_MS);
+    if (!buffer || buffer.length < 800) continue;
+
+    console.info("[images] assigned unique scraped pin image", candidate.slice(0, 64));
+    return candidate;
+  }
+
+  return null;
+}
+
 async function fetchScrapedImageBuffer(scrapeUrl: string): Promise<Buffer | null> {
   const scraped = await resolveScrapedImage(scrapeUrl);
   return scraped?.buffer ?? null;

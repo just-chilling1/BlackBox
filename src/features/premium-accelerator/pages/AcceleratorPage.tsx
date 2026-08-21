@@ -1,14 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Link as LinkIcon,
-  Filter,
-  Loader2,
-  PlayCircle,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { Link as LinkIcon, Filter, Loader2 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -39,6 +32,7 @@ export default function AcceleratorPage() {
   const [niche, setNiche] = useState("All");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [affiliateLink, setAffiliateLink] = useState("");
+  const [linkApplied, setLinkApplied] = useState(false);
   const [cloningId, setCloningId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -52,12 +46,14 @@ export default function AcceleratorPage() {
     assetId: string;
   } | null>(null);
   const [error, setError] = useState("");
-  const [showTraining, setShowTraining] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(AFFILIATE_STORAGE_KEY);
-      if (saved) setAffiliateLink(saved);
+      if (saved) {
+        setAffiliateLink(saved);
+        setLinkApplied(true);
+      }
     } catch {
       /* ignore */
     }
@@ -94,8 +90,21 @@ export default function AcceleratorPage() {
   }, [loadTemplates]);
 
   const filtered = useMemo(() => {
-    return templates.filter((t) => niche === "All" || t.niche === niche);
-  }, [templates, niche]);
+    const list = templates.filter((t) => niche === "All" || t.niche === niche);
+    return [...list].sort((a, b) => {
+      const aUsed = Boolean(a.used || (cloneResult?.catalogId === a.id));
+      const bUsed = Boolean(b.used || (cloneResult?.catalogId === b.id));
+      if (aUsed !== bUsed) return aUsed ? -1 : 1;
+      if (aUsed && bUsed && cloneResult) {
+        if (a.id === cloneResult.catalogId) return -1;
+        if (b.id === cloneResult.catalogId) return 1;
+      }
+      if (aUsed && bUsed) {
+        return (b.usedAt || "").localeCompare(a.usedAt || "");
+      }
+      return a.id - b.id;
+    });
+  }, [templates, niche, cloneResult]);
 
   const visibleTemplates = useMemo(
     () => filtered.slice(0, visibleCount),
@@ -106,13 +115,13 @@ export default function AcceleratorPage() {
     setVisibleCount(PAGE_SIZE);
   }, [niche]);
 
-  const hasAffiliateLink = affiliateLink.trim().length > 0;
+  const hasAffiliateLink = affiliateLink.trim().length > 0 && linkApplied;
   const hasMore = visibleCount < filtered.length;
 
   const handleClone = useCallback(
     async (catalogId: number) => {
-      if (!affiliateLink.trim()) {
-        setError("Enter your affiliate link first.");
+      if (!affiliateLink.trim() || !linkApplied) {
+        setError("Apply your affiliate link first.");
         return;
       }
       setCloningId(catalogId);
@@ -127,7 +136,22 @@ export default function AcceleratorPage() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Install failed");
         const assetId = (data.assetId as string) || (data.site?.id as string);
-        setCloneResult({ catalogId, siteUrl: data.siteUrl, assetId });
+        const siteUrl = data.siteUrl as string;
+        setCloneResult({ catalogId, siteUrl, assetId });
+        setTemplates((prev) => {
+          const next = prev.map((t) =>
+            t.id === catalogId
+              ? {
+                  ...t,
+                  used: true,
+                  usedAssetId: assetId,
+                  usedSiteUrl: siteUrl,
+                  usedAt: new Date().toISOString(),
+                }
+              : t
+          );
+          return next;
+        });
         setPreviewOpen(false);
         setPreviewCatalogId(null);
         setPreviewData(null);
@@ -137,7 +161,7 @@ export default function AcceleratorPage() {
         setCloningId(null);
       }
     },
-    [affiliateLink]
+    [affiliateLink, linkApplied]
   );
 
   const handleView = useCallback(
@@ -152,7 +176,7 @@ export default function AcceleratorPage() {
       try {
         const params = new URLSearchParams({ catalogId: String(catalogId) });
         const link = affiliateLink.trim();
-        if (link) params.set("affiliateUrl", link);
+        if (link && linkApplied) params.set("affiliateUrl", link);
 
         const res = await fetch(`/api/premium/accelerator/preview?${params.toString()}`, {
           cache: "no-store",
@@ -167,7 +191,7 @@ export default function AcceleratorPage() {
         setViewingId(null);
       }
     },
-    [affiliateLink]
+    [affiliateLink, linkApplied]
   );
 
   const closePreview = useCallback(() => {
@@ -188,7 +212,7 @@ export default function AcceleratorPage() {
         <PageHeader
           eyebrow="Premium"
           title="Asset Vault"
-          subtitle="200 ready-made money pages — add your link, then generate Pinterest pins."
+          subtitle="200 ready-made money pages — apply your link, install a page, and get 10 pins ready."
         />
         <PageSkeleton cards={6} />
       </WorkflowPage>
@@ -200,35 +224,22 @@ export default function AcceleratorPage() {
       <PageHeader
         eyebrow="Premium"
         title="Asset Vault"
-        subtitle={`${total} ready-made money pages across every niche — preview any page, install it with your link, then get pins.`}
-        actions={
-          <button
-            type="button"
-            onClick={() => setShowTraining((v) => !v)}
-            className="btn-secondary inline-flex items-center gap-2 text-sm"
-          >
-            <PlayCircle size={16} />
-            Training
-            {showTraining ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
-        }
+        subtitle={`${total} ready-made money pages across every niche — apply your link, install a page with 10 pins included.`}
       />
 
-      {showTraining ? (
-        <PremiumVideoTutorial
-          vimeoId="1215530104"
-          title="Asset Vault Training"
-          description="Browse ready-made money pages, install one with your affiliate link, then generate Pinterest pins on the Traffic step."
-          iframeTitle="Asset Vault training video"
-        />
-      ) : null}
+      <PremiumVideoTutorial
+        vimeoId="1215530104"
+        title="Asset Vault Training"
+        description="Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post."
+        iframeTitle="Asset Vault training video"
+      />
 
       <GlassPanel className="space-y-5 p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-text-primary">Your affiliate link</p>
             <p className="mt-1 text-xs text-text-muted">
-              Required to use a page. CTAs wire to this link when you install.
+              Apply a link to wire CTAs on every page you install.
             </p>
           </div>
           <p className="text-xs text-text-muted">All {total} pages ready to install</p>
@@ -241,23 +252,46 @@ export default function AcceleratorPage() {
           </span>
           <AffiliateLinkField
             value={affiliateLink}
-            onChange={setAffiliateLink}
+            onChange={(url) => {
+              setAffiliateLink(url);
+              setLinkApplied(false);
+            }}
+            onApply={(url) => {
+              setAffiliateLink(url);
+              setLinkApplied(true);
+              setError("");
+            }}
+            actionMode="apply"
             inputId="accelerator-affiliate-link"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Filter size={14} className="shrink-0 text-text-muted" />
-          {["All", ...ACCELERATOR_NICHES].map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setNiche(n)}
-              className={clsx("select-chip-pill", niche === n && "is-selected")}
-            >
-              {n}
-            </button>
-          ))}
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
+              <Filter size={14} className="text-pulse-700" />
+              Select niche
+            </p>
+            <p className="text-xs text-text-muted">
+              {niche === "All" ? "All niches" : niche}
+            </p>
+          </div>
+          <div
+            className="flex flex-wrap gap-2 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-3"
+            role="group"
+            aria-label="Select niche"
+          >
+            {["All", ...ACCELERATOR_NICHES].map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setNiche(n)}
+                className={clsx("select-chip-pill", niche === n && "is-selected")}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
         </div>
 
         <p className="text-xs text-text-muted">
@@ -271,12 +305,12 @@ export default function AcceleratorPage() {
 
       <p className="text-sm text-text-muted">
         Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
-        to add it to your account with your link — then generate pins on Traffic.
+        — it installs with your link and 10 ready Pinterest pins.
       </p>
 
       <GenerationProgress
         active={cloningId !== null}
-        label="Installing money page with your affiliate link..."
+        label="Installing money page with your affiliate link and 10 pins..."
       />
 
       <div
@@ -286,7 +320,16 @@ export default function AcceleratorPage() {
         {visibleTemplates.map((t) => (
           <VaultTemplateCard
             key={t.id}
-            template={t}
+            template={
+              cloneResult?.catalogId === t.id
+                ? {
+                    ...t,
+                    used: true,
+                    usedAssetId: cloneResult.assetId,
+                    usedSiteUrl: cloneResult.siteUrl,
+                  }
+                : t
+            }
             cloningId={cloningId}
             viewingId={viewingId}
             clonedSiteUrl={cloneResult?.catalogId === t.id ? cloneResult.siteUrl : null}

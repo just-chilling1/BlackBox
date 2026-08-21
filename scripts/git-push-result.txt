@@ -1,0 +1,15 @@
+$ git status -sb
+## main...origin/main
+$ git add -A
+$ git reset HEAD -- .env .env.local 2>nul || git reset HEAD -- .env .env.local
+$ git commit -m "Resolve merge conflicts and ship support, money-page, and BrandLogo fixes."
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+exit 1
+$ git push https://github.com/just-chilling1/BlackBox.git HEAD:main
+$ git log -1 --oneline
+a5a493e UI Optimization
+$ git status -sb
+## main...origin/main

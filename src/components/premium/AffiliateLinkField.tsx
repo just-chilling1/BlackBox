@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Loader2, Save } from "lucide-react";
+import { Check, Link2, Loader2, Save } from "lucide-react";
 import { ContentReservePicker } from "@/features/blog-builder/components/ContentReservePicker";
 import type { ArmedLink } from "@/features/blog-builder/types";
 import {
@@ -17,6 +17,13 @@ interface AffiliateLinkFieldProps {
   onChange: (url: string) => void;
   inputId?: string;
   placeholder?: string;
+  /**
+   * `save-to-vault` (default): persist the URL to Links Library.
+   * `apply`: validate and apply the URL for CTAs without saving to the vault.
+   */
+  actionMode?: "save-to-vault" | "apply";
+  /** Called after a successful Apply Link (apply mode only). */
+  onApply?: (url: string) => void;
 }
 
 function validVaultLinks(links: ArmedLink[]): ArmedLink[] {
@@ -28,12 +35,15 @@ export function AffiliateLinkField({
   onChange,
   inputId = "affiliate-link",
   placeholder = "https://...",
+  actionMode = "save-to-vault",
+  onApply,
 }: AffiliateLinkFieldProps) {
   const [vaultLinks, setVaultLinks] = useState<ArmedLink[]>([]);
   const [loadingVault, setLoadingVault] = useState(true);
   const [selectedVaultUrl, setSelectedVaultUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [applied, setApplied] = useState(false);
   const [saveError, setSaveError] = useState("");
 
   const loadVault = useCallback(async () => {
@@ -72,11 +82,19 @@ export function AffiliateLinkField({
     setSelectedVaultUrl(match?.url ?? null);
   }, [value, vaultLinks]);
 
+  useEffect(() => {
+    if (actionMode !== "apply") return;
+    if (!isValidAffiliateUrl(value)) {
+      setApplied(false);
+    }
+  }, [actionMode, value]);
+
   const handleSelectFromVault = (link: ArmedLink | null) => {
     if (!link) {
       setSelectedVaultUrl(null);
       onChange("");
       setSaved(false);
+      setApplied(false);
       setSaveError("");
       return;
     }
@@ -84,12 +102,15 @@ export function AffiliateLinkField({
     setSelectedVaultUrl(link.url);
     onChange(link.url);
     setSaved(true);
+    setApplied(true);
     setSaveError("");
+    if (actionMode === "apply") onApply?.(normalizeAffiliateUrl(link.url) || link.url);
   };
 
   const handleInputChange = (nextUrl: string) => {
     onChange(nextUrl);
     setSaved(false);
+    setApplied(false);
     setSaveError("");
 
     if (!selectedVaultUrl) return;
@@ -143,11 +164,26 @@ export function AffiliateLinkField({
     }
   };
 
+  const handleApplyLink = () => {
+    const url = normalizeAffiliateUrl(value);
+    if (!isValidAffiliateUrl(url)) {
+      setSaveError("Enter a valid URL starting with https://");
+      setApplied(false);
+      return;
+    }
+
+    onChange(url);
+    setApplied(true);
+    setSaveError("");
+    onApply?.(url);
+  };
+
   const normalizedValue = normalizeAffiliateUrl(value);
   const isInVault = vaultLinks.some(
     (link) => normalizeAffiliateUrl(link.url) === normalizedValue
   );
   const canSave = isValidAffiliateUrl(value) && !isInVault && !saving;
+  const canApply = Boolean(value.trim()) && !applied;
 
   return (
     <div className="space-y-3">
@@ -186,21 +222,33 @@ export function AffiliateLinkField({
       </label>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => void handleSaveToVault()}
-          disabled={!canSave}
-          className="btn-secondary inline-flex items-center gap-2 border-[var(--np-line-pulse)] bg-pulse-100/40 text-sm font-medium text-pulse-700 shadow-sm hover:bg-pulse-100/70 disabled:opacity-40"
-        >
-          {saving ? (
-            <Loader2 size={14} className="animate-spin" />
-          ) : saved && isInVault ? (
-            <Check size={14} />
-          ) : (
-            <Save size={14} />
-          )}
-          {saved && isInVault ? "Saved to Links Library" : "Save to Links Library"}
-        </button>
+        {actionMode === "apply" ? (
+          <button
+            type="button"
+            onClick={handleApplyLink}
+            disabled={!canApply}
+            className="btn-secondary inline-flex items-center gap-2 border-[var(--np-line-pulse)] bg-pulse-100/40 text-sm font-medium text-pulse-700 shadow-sm hover:bg-pulse-100/70 disabled:opacity-40"
+          >
+            {applied ? <Check size={14} /> : <Link2 size={14} />}
+            {applied ? "Link applied" : "Apply Link"}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void handleSaveToVault()}
+            disabled={!canSave}
+            className="btn-secondary inline-flex items-center gap-2 border-[var(--np-line-pulse)] bg-pulse-100/40 text-sm font-medium text-pulse-700 shadow-sm hover:bg-pulse-100/70 disabled:opacity-40"
+          >
+            {saving ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : saved && isInVault ? (
+              <Check size={14} />
+            ) : (
+              <Save size={14} />
+            )}
+            {saved && isInVault ? "Saved to Links Library" : "Save to Links Library"}
+          </button>
+        )}
         {vaultLinks.length > 0 && (
           <Link
             href="/link-vault"
@@ -210,6 +258,12 @@ export function AffiliateLinkField({
           </Link>
         )}
       </div>
+
+      {actionMode === "apply" && applied ? (
+        <p className="text-xs text-pulse-700">
+          This link will be used on money page CTAs when you install a page.
+        </p>
+      ) : null}
 
       {saveError && <p className="text-xs text-error">{saveError}</p>}
     </div>

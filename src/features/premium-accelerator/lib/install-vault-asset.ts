@@ -11,10 +11,12 @@ import {
   type VaultCatalogEntry,
 } from "./catalog";
 import { buildVaultMoneyPageCopy } from "./vault-copy";
+import { seedVaultPins } from "./seed-vault-pins";
 
 export interface InstallVaultAssetResult {
   site: Record<string, unknown> & { id: string; slug: string; owner_handle?: string | null };
   catalogEntry: VaultCatalogEntry;
+  pinCount: number;
 }
 
 /**
@@ -139,6 +141,14 @@ export async function installVaultAsset(params: {
     throw new Error(updateError.message);
   }
 
+  const pinCount = await seedVaultPins({
+    supabase: params.supabase,
+    userId: params.user.id,
+    siteId: created.id,
+    entry,
+    salesPageJson: copy as unknown as Record<string, unknown>,
+  });
+
   return {
     site: {
       ...created,
@@ -148,5 +158,6 @@ export async function installVaultAsset(params: {
       status: "live",
     },
     catalogEntry: entry,
+    pinCount,
   };
 }

@@ -4,6 +4,7 @@ import {
   pinRenderBackgroundCandidates,
   productPhotoFallbackUrl,
 } from "./pin-images";
+import { pickFirstUnusedImageCandidate } from "@/features/blog-builder/lib/images";
 
 describe("pinRenderBackgroundCandidates", () => {
   it("does not put the shared hero ahead of unique per-pin fallbacks", () => {
@@ -55,5 +56,23 @@ describe("productPhotoFallbackUrl", () => {
     );
     const unique = new Set(urls);
     assert.equal(unique.size, urls.length);
+  });
+});
+
+describe("pickFirstUnusedImageCandidate", () => {
+  it("never returns the same scraped url twice for sequential picks", () => {
+    const candidates = [
+      "https://cdn.example.com/scraped-a.jpg",
+      "https://cdn.example.com/scraped-b.jpg",
+      "https://cdn.example.com/scraped-a.jpg?size=large",
+    ];
+    const first = pickFirstUnusedImageCandidate(candidates, []);
+    assert.equal(first, candidates[0]);
+
+    const second = pickFirstUnusedImageCandidate(candidates, [first!]);
+    assert.equal(second, candidates[1]);
+
+    const third = pickFirstUnusedImageCandidate(candidates, [first!, second!]);
+    assert.equal(third, null);
   });
 });

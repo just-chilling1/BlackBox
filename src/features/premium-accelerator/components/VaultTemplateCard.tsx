@@ -9,8 +9,10 @@ import {
   ArrowRight,
   Pencil,
   Image,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
+import { clsx } from "clsx";
 
 export interface VaultTemplateRow {
   id: number;
@@ -24,6 +26,10 @@ export interface VaultTemplateRow {
   themeLabel?: string;
   colorTheme?: string;
   variationId?: string;
+  used?: boolean;
+  usedAssetId?: string | null;
+  usedSiteUrl?: string | null;
+  usedAt?: string | null;
 }
 
 interface VaultTemplateCardProps {
@@ -49,11 +55,18 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
 }: VaultTemplateCardProps) {
   const isCloning = cloningId === template.id;
   const isViewing = viewingId === template.id;
-  const isCloned = Boolean(clonedSiteUrl && clonedAssetId);
+  const siteUrl = clonedSiteUrl || template.usedSiteUrl || null;
+  const assetId = clonedAssetId || template.usedAssetId || null;
+  const isUsed = Boolean(template.used || (siteUrl && assetId));
   const accent = template.accent || "#14B8A6";
 
   return (
-    <article className="vault-asset-card group flex flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_220px]">
+    <article
+      className={clsx(
+        "vault-asset-card group flex flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_220px]",
+        isUsed && "vault-asset-card--used"
+      )}
+    >
       <div
         className="vault-asset-card__hero relative h-24 shrink-0 overflow-hidden"
         style={{
@@ -78,6 +91,12 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
             </span>
           ) : null}
         </div>
+        {isUsed ? (
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md bg-black/45 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+            <Check size={11} />
+            Used
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
@@ -91,10 +110,10 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
           </p>
         </div>
 
-        {isCloned ? (
+        {isUsed && siteUrl && assetId ? (
           <div className="mt-auto flex flex-col gap-2">
             <Link
-              href={clonedSiteUrl!}
+              href={siteUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary inline-flex items-center justify-center gap-2 text-sm"
@@ -104,21 +123,32 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
             </Link>
             <div className="grid grid-cols-2 gap-2">
               <Link
-                href={`/money-page/${clonedAssetId}`}
+                href={`/money-page/${assetId}`}
                 className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
               >
                 <Pencil size={14} />
                 Edit
               </Link>
               <Link
-                href={`/traffic/${clonedAssetId}`}
+                href={`/traffic/${assetId}`}
                 className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
               >
                 <Image size={14} />
-                Get pins
+                View pins
                 <ArrowRight size={14} />
               </Link>
             </div>
+            {!clonedSiteUrl ? (
+              <button
+                type="button"
+                disabled={isCloning || !hasAffiliateLink}
+                onClick={() => onClone(template.id)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--np-line)] px-3 py-2 text-xs font-medium text-text-muted transition-colors hover:border-[var(--np-line-strong)] hover:text-text-primary disabled:opacity-40"
+              >
+                {isCloning ? <Loader2 size={12} className="animate-spin" /> : <Copy size={12} />}
+                Use again
+              </button>
+            ) : null}
           </div>
         ) : (
           <div className="mt-auto flex flex-col gap-2">
