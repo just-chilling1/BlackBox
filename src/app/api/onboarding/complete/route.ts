@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
 import { ONBOARDING_META_KEY } from "@/config/onboarding-content";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
+import { setOnboardingCompleteCookie } from "@/lib/onboarding-cookie";
 
 export const dynamic = "force-dynamic";
 
@@ -53,10 +54,18 @@ export async function POST(request: Request) {
   }
 
   const profileClient = getServiceRoleClient() ?? supabase;
-  await profileClient
+  const { error: profileError } = await profileClient
     .from("users")
-    .update({ onboarding_completed_at: completedAt })
-    .eq("id", user.id);
+    .upsert(
+      { id: user.id, onboarding_completed_at: completedAt },
+      { onConflict: "id", ignoreDuplicates: false }
+    );
 
-  return NextResponse.json({ ok: true }, { headers: NO_STORE_HEADERS });
+  if (profileError) {
+    console.warn("[onboarding/complete] users profile upsert failed:", profileError.message);
+  }
+
+  const response = NextResponse.json({ ok: true }, { headers: NO_STORE_HEADERS });
+  setOnboardingCompleteCookie(response);
+  return response;
 }

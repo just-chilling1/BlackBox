@@ -111,6 +111,7 @@ export function OnboardingFlow() {
       const res = await fetch("/api/onboarding/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify({ firstName: trimmed }),
       });
 
@@ -121,6 +122,8 @@ export function OnboardingFlow() {
         return;
       }
 
+      await supabase.auth.refreshSession();
+      clearCachedClientUser();
       window.location.href = ONBOARDING_DASHBOARD_ROUTE;
     } catch {
       setError("Something went wrong. Please try again.");

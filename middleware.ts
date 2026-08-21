@@ -2,6 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { resolveOnboardingGate } from '@/lib/onboarding-gate'
 import { isDevAuthBypassEnabled } from '@/lib/dev-bypass'
+import { ONBOARDING_COMPLETE_COOKIE, setOnboardingCompleteCookie } from '@/lib/onboarding-cookie'
 
 /** Public route prefixes that bypass auth (extend per product — e.g. hosted sites, sales pages). */
 const PUBLIC_ROUTE_PREFIXES = [
@@ -11,9 +12,6 @@ const PUBLIC_ROUTE_PREFIXES = [
   '/article/',
   '/review/',
 ]
-
-const ONBOARDING_COMPLETE_COOKIE = "bb_onboarding_complete";
-const ONBOARDING_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
@@ -116,12 +114,7 @@ export async function middleware(request: NextRequest) {
         }
 
         if (gate.isComplete) {
-            response.cookies.set(ONBOARDING_COMPLETE_COOKIE, '1', {
-                maxAge: ONBOARDING_COOKIE_MAX_AGE,
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-            })
+            setOnboardingCompleteCookie(response)
         }
     }
 
