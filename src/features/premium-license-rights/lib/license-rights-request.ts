@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase";
-import { SUPPORT_EMAIL } from "@/lib/support";
 import { storageKeys } from "@/lib/storage-keys";
 
 export const REQUEST_SUBJECT = "License Rights";
@@ -13,9 +12,7 @@ export interface PendingLicenseRightsRequest {
   submittedAt: string;
 }
 
-export type SubmitLicenseRightsResult =
-  | { ok: true; viaMailto: boolean }
-  | { ok: false; error: string };
+export type SubmitLicenseRightsResult = { ok: true } | { ok: false; error: string };
 
 function pendingStorageKey(userId: string): string {
   return `${storageKeys.licenseRightsRequest}_${userId}`;
@@ -85,22 +82,16 @@ export async function fetchPendingLicenseRequest(): Promise<PendingLicenseRights
 
 async function parseJsonResponse(res: Response): Promise<{
   error?: string;
-  useMailto?: boolean;
   success?: boolean;
 } | null> {
   const text = await res.text();
   if (!text.trim()) return {};
 
   try {
-    return JSON.parse(text) as { error?: string; useMailto?: boolean; success?: boolean };
+    return JSON.parse(text) as { error?: string; success?: boolean };
   } catch {
     return null;
   }
-}
-
-function openLicenseRightsMailto(email: string, message: string) {
-  const body = `Please reply to: ${email}\n\n${message}`;
-  window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(REQUEST_SUBJECT)}&body=${encodeURIComponent(body)}`;
 }
 
 export async function submitLicenseRightsRequest({
@@ -132,7 +123,6 @@ export async function submitLicenseRightsRequest({
     });
     const persistData = await parseJsonResponse(persistRes);
 
-    // Also notify support (Freshdesk / mailto)
     const supportRes = await fetch("/api/support", {
       method: "POST",
       headers,
@@ -141,22 +131,12 @@ export async function submitLicenseRightsRequest({
     });
     const supportData = await parseJsonResponse(supportRes);
 
-    if (
-      persistData?.useMailto ||
-      supportData === null ||
-      supportRes.status === 401 ||
-      supportData?.useMailto
-    ) {
-      openLicenseRightsMailto(email, message);
-      return { ok: true, viaMailto: true };
-    }
-
     if ((persistRes.ok && persistData?.success) || (supportRes.ok && supportData?.success)) {
-      return { ok: true, viaMailto: false };
+      return { ok: true };
     }
 
     if (persistRes.ok) {
-      return { ok: true, viaMailto: false };
+      return { ok: true };
     }
 
     return {

@@ -1,11 +1,4 @@
 export type SourceType =
-  | "Idea Pin"
-  | "Standard Pin"
-  | "Board"
-  | "Search"
-  | "Profile"
-  | "Checklist"
-  /** @deprecated Legacy mixed-traffic catalog (unused by NullPing Pinterest playbook) */
   | "Forum"
   | "Social"
   | "Directory"

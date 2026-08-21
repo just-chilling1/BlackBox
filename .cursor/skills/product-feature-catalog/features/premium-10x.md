@@ -1,32 +1,31 @@
 # premium-10x
 
 **Feature ID:** `premium-10x`  
-**Tier:** PREMIUM
+**Tier:** PREMIUM  
+**Alias of:** `premium-social` (Instant Income)
 
 ## Description
 
-Generate many Facebook post variants (10+) from one article — different hooks, angles, CTAs.
+Generate many Facebook post variants (10+) from one live money page — different hooks, angles, CTAs.
 
 ## User flow
 
 ```
-/10x → Select article from portfolio
+/social-payouts → Select live money page
   → AI generates post batch
   → Copy each individually
 ```
 
 ## Routes
 
-`/10x` — premium nav section
+`/social-payouts` — premium nav section (user label: Instant Income)
 
 ## APIs
 
-`POST /api/generate-posts` — `RAPIDAPI_KEY`
-
-Optional: `user_powerups` table for entitlement gating.
+`POST /api/premium/social-payouts` — `RAPIDAPI_KEY`
 
 ## Implementation steps
 
-1. Add `"premium-10x"` to `enabledFeatures`
-2. Requires `portfolio` / `articles`
+1. Add `"premium-social"` (or `"premium-10x"`) to `enabledFeatures`
+2. Requires `money-page` / live assets
 3. Premium upsell page styling

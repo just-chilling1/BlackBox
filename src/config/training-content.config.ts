@@ -3,6 +3,7 @@
  * Add Vimeo IDs in training.config.ts (platform) and below (premium) when videos are uploaded.
  */
 
+import type { FeatureId } from "./features.config";
 import { brand } from "./brand.config";
 import { faqSections } from "./faq.config";
 
@@ -63,7 +64,14 @@ export const trainingQuickStartChecklist = [
 ] as const;
 
 /** Premium walkthrough slots — titles match NullPing Cash premium nav labels */
-export const trainingPremiumVideos = [
+export const trainingPremiumVideos: ReadonlyArray<{
+  id: string;
+  badge: string;
+  title: string;
+  description: string;
+  duration: string;
+  feature: FeatureId;
+}> = [
   {
     id: "1215530104",
     badge: "Unlimited",
@@ -71,6 +79,7 @@ export const trainingPremiumVideos = [
     description:
       "Install from two hundred ready-made money pages — swap in your affiliate link, get 10 pins, then finish Traffic → Results.",
     duration: "5+ min",
+    feature: "premium-accelerator",
   },
   {
     id: "1215568587",
@@ -79,14 +88,16 @@ export const trainingPremiumVideos = [
     description:
       "Add authority article sections to your money page — CTAs use your /m tracking URL. Copy for external posts is optional.",
     duration: "5+ min",
+    feature: "premium-recurring",
   },
   {
     id: "1215574185",
-    badge: "Pin Multiplier",
-    title: "Pin Multiplier",
+    badge: "Instant Income",
+    title: "Instant Income",
     description:
-      "Generate extra Pinterest pin batches for a live money page — new hooks and angles beyond your first 10.",
+      "Bulk-generate Facebook post variants from a live money page — different hooks and angles, then copy and paste.",
     duration: "5+ min",
+    feature: "premium-social",
   },
   {
     id: "1215579801",
@@ -95,8 +106,9 @@ export const trainingPremiumVideos = [
     description:
       "Real account status — email confirmation, session, HTTPS, and recent money-page activity. Manage license on Account.",
     duration: "2+ min",
+    feature: "protector",
   },
-] as const;
+];
 
 export const trainingContentReady = true;
 

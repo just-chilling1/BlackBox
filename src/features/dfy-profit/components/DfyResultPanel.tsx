@@ -1,24 +1,26 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Check,
   Copy,
+  ExternalLink,
   Facebook,
   FileText,
-  Image as ImageIcon,
+  Globe,
   Loader2,
   Pin,
   RefreshCw,
 } from "lucide-react";
 import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
-import { PostCreateJourney } from "@/components/premium/PostCreateJourney";
 import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
 import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
+import { resolvePublicUrl } from "@/lib/app-url";
 
 export interface DfySalesResult {
   siteId: string;
   offerUrl: string;
+  offerPath?: string;
   templateName: string;
   templateId: string;
   productName: string;
@@ -96,6 +98,12 @@ export function DfyResultPanel({
 }: DfyResultPanelProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  const liveOfferUrl = useMemo(() => {
+    if (!sales) return "";
+    if (sales.offerPath) return resolvePublicUrl(sales.offerPath);
+    return resolvePublicUrl(sales.offerUrl);
+  }, [sales]);
+
   const copyText = useCallback(async (id: string, text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -125,13 +133,39 @@ export function DfyResultPanel({
       <h2 className="text-lg font-medium text-text-primary">Your Done-For-You Profit kit</h2>
 
       {sales ? (
-        <PostCreateJourney
-          assetId={sales.siteId}
-          publicUrl={sales.offerUrl}
-          productName={sales.productName}
-          pinCount={pins.length || undefined}
-          title="Live sales page"
-        />
+        <article className="glass-card space-y-3 p-5">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pulse-100 text-pulse-700">
+              <Globe size={18} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-text-primary">Sales page</p>
+              <p className="text-xs text-text-muted">
+                Template: {sales.templateName} · {sales.productName}
+              </p>
+              <p className="mt-2 truncate text-sm text-text-secondary">{liveOfferUrl}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={liveOfferUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary inline-flex items-center gap-2 text-sm"
+            >
+              <ExternalLink size={14} />
+              Open live page
+            </a>
+            <button
+              type="button"
+              onClick={() => void copyText("offer-url", liveOfferUrl)}
+              className="btn-secondary inline-flex items-center gap-2 text-sm"
+            >
+              {copiedId === "offer-url" ? <Check size={14} /> : <Copy size={14} />}
+              {copiedId === "offer-url" ? "Copied" : "Copy URL"}
+            </button>
+          </div>
+        </article>
       ) : null}
 
       <article className="glass-card space-y-4 p-5">
@@ -144,7 +178,7 @@ export function DfyResultPanel({
               <p className="text-sm font-medium text-text-primary">Pinterest pins</p>
               <p className="mt-1 text-sm text-text-secondary">
                 {pins.length > 0
-                  ? `${pins.length} ready-to-post pins with images — download from Traffic or copy below.`
+                  ? `${pins.length} ready-to-post pins — download or copy the text below.`
                   : pinsError ||
                     (isGeneratingPins
                       ? "Generating 3 Pinterest pins with images…"
@@ -174,26 +208,26 @@ export function DfyResultPanel({
         ) : null}
 
         {pins.length > 0 ? (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
             {pins.map((pin, index) => {
               const src = pinImageSrc(pin.image_url);
               return (
                 <li
                   key={pin.id}
-                  className="overflow-hidden rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)]"
+                  className="flex w-[min(100%,300px)] shrink-0 flex-col gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)]"
                 >
-                  <div className="relative aspect-[2/3] overflow-hidden bg-[var(--np-surface-field)]">
+                  <div className="relative overflow-hidden rounded-t-xl bg-[var(--np-surface-field)]">
                     {src ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={src}
                         alt={pin.headline}
-                        className="h-full w-full object-cover"
+                        className="block h-auto max-h-[520px] w-full object-contain"
                         loading={index < 3 ? "eager" : "lazy"}
                         decoding="async"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center text-xs text-text-muted">
+                      <div className="flex min-h-[240px] items-center justify-center text-xs text-text-muted">
                         Pin {index + 1}
                       </div>
                     )}
@@ -201,8 +235,8 @@ export function DfyResultPanel({
                       Pin {index + 1}
                     </span>
                   </div>
-                  <div className="space-y-2 p-3">
-                    <p className="line-clamp-3 text-xs font-semibold leading-snug text-text-primary">
+                  <div className="space-y-2 px-3 pb-3">
+                    <p className="line-clamp-4 text-xs font-semibold leading-snug text-text-primary">
                       {pin.headline}
                     </p>
                     <button
@@ -218,13 +252,6 @@ export function DfyResultPanel({
               );
             })}
           </ul>
-        ) : null}
-
-        {sales && pins.length > 0 ? (
-          <p className="inline-flex items-center gap-2 text-xs text-text-muted">
-            <ImageIcon size={12} />
-            Full pin workspace lives in Traffic for this money page.
-          </p>
         ) : null}
       </article>
 

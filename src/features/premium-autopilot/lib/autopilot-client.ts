@@ -1,5 +1,7 @@
 import { fetchJson } from "@/lib/fetch-json";
 import { storageKeys } from "@/lib/storage-keys";
+import { resolveAutopilotNiche } from "./traffic-sources";
+import type { LiveAssetSummary } from "@/app/api/assets/list/route";
 
 export interface AutopilotState {
   promotion_url: string | null;
@@ -7,8 +9,29 @@ export interface AutopilotState {
   completed_source_ids: string[];
 }
 
+export interface LatestLivePage {
+  niche: string;
+  promotionUrl: string;
+  siteId: string;
+}
+
 const SETTINGS_URL = "/api/premium/autopilot/settings";
 const COMPLETIONS_URL = "/api/premium/autopilot/completions";
+
+export async function fetchLatestLivePage(): Promise<LatestLivePage | null> {
+  const result = await fetchJson<{ assets?: LiveAssetSummary[] }>("/api/assets/list", {
+    credentials: "include",
+    cache: "no-store",
+  });
+  const asset = result.ok ? result.data.assets?.[0] : null;
+  if (!asset?.publicUrl) return null;
+
+  return {
+    niche: resolveAutopilotNiche(asset.niche),
+    promotionUrl: asset.publicUrl,
+    siteId: asset.id,
+  };
+}
 
 export async function fetchAutopilotState(): Promise<AutopilotState | null> {
   const result = await fetchJson<AutopilotState>(SETTINGS_URL, {

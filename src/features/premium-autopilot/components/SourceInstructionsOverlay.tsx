@@ -28,7 +28,6 @@ interface SourceInstructionsOverlayProps {
   onToggleComplete: () => void;
   onCopyDescription: () => void;
   renderCopy: (template: string) => string;
-  trafficHref?: string;
 }
 
 export function SourceInstructionsOverlay({
@@ -39,7 +38,6 @@ export function SourceInstructionsOverlay({
   onToggleComplete,
   onCopyDescription,
   renderCopy,
-  trafficHref,
 }: SourceInstructionsOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -143,20 +141,14 @@ export function SourceInstructionsOverlay({
               </div>
 
               <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-                {trafficHref ? (
-                  <a href={trafficHref} className="btn-primary h-12 flex-1 py-0 text-sm">
-                    <ExternalLink size={15} />
-                    Open Traffic pins
-                  </a>
-                ) : null}
                 <a
                   href={source.url.startsWith("/") ? source.url : source.url}
                   target={source.url.startsWith("/") ? undefined : "_blank"}
                   rel={source.url.startsWith("/") ? undefined : "noopener noreferrer"}
-                  className="btn-secondary h-12 flex-1 py-0 text-sm"
+                  className="btn-primary h-12 flex-1 py-0 text-sm"
                 >
                   <ExternalLink size={15} />
-                  {source.url.startsWith("/") ? "Open in app" : "Go to Pinterest"}
+                  {source.url.startsWith("/") ? "Open in app" : "Go To Site"}
                 </a>
                 <button
                   type="button"

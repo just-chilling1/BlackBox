@@ -24,7 +24,7 @@ export function buildCuratedInstructions(opts: {
       `Go to ${opts.url.replace(/\/$/, "")} and create a free Reddit account if you don't already have one.`,
       "Complete your profile with a photo and a short bio so you look like a real member, not a throwaway promo account.",
       `Read the community rules, then leave 3-5 genuinely helpful comments on existing posts in ${name} before you share anything.`,
-      `When someone asks a question your page actually answers, write a useful reply first and include {LINK} only as an optional resource.`,
+      `When someone asks a question your money page actually answers, write a useful reply first and include {LINK} only as an optional resource.`,
       "Come back a few times this week. Helpful comments keep ranking and send visitors for months — Reddit removes bare promotional posts immediately.",
     ];
   }
@@ -34,9 +34,9 @@ export function buildCuratedInstructions(opts: {
       return [
         `Go to ${host} and create a free account.`,
         "Complete your profile with a photo and a short bio so other members take you seriously.",
-        "Go to Settings → Signature (or Profile → About) and add your link with the description below.",
+        "Go to Settings → Signature (or Profile → About) and add your money page link with the description below.",
         `Make 3-5 helpful posts in ${focus}. Answer the question first — never drop a bare link.`,
-        "Your signature with your link appears on every post automatically, so each useful reply keeps sending traffic.",
+        "Your signature with your money page link appears on every post automatically, so each useful reply keeps sending traffic.",
       ];
     case "Social":
       return [
@@ -51,8 +51,8 @@ export function buildCuratedInstructions(opts: {
         `Open ${host} and look for the free listing, submit, or 'add a resource' flow.`,
         "Create an account if the directory requires one, and fill every required field so the listing is not rejected.",
         `Use a clear title, pick the closest ${community} category, and paste the description below with {LINK}.`,
-        `Double-check that the URL, title, and category all match what the page actually is — inaccurate listings get dropped.`,
-        "Submit and wait for approval (often 1-7 days). Recheck the listing once it goes live so the link still points to your page.",
+        `Double-check that the URL, title, and category all match what the money page actually is — inaccurate listings get dropped.`,
+        "Submit and wait for approval (often 1-7 days). Recheck the listing once it goes live so the link still points to your money page.",
       ];
     case "Blog":
       return [
@@ -74,7 +74,7 @@ export function buildCuratedInstructions(opts: {
       return [
         `Go to ${host} and open the free posting flow for services, gigs, or community listings.`,
         "Write a specific, honest title — describe the help you offer, not a generic 'make money' claim.",
-        `Paste the description below in the body and include {LINK} so readers can open the page.`,
+        `Paste the description below in the body and include {LINK} so readers can open your money page.`,
         "Fill in location and category fields accurately so the post is not filtered out.",
         "Repost every 48 hours if the site allows it. Fresh listings stay at the top and keep sending visitors.",
       ];
@@ -108,36 +108,6 @@ export function buildSubmissionDescription(opts: {
   const link = "{LINK}";
 
   const templates: Record<SourceType, readonly [string, string, string]> = {
-    "Idea Pin": [
-      `Idea Pin follow-up for ${name}: ${offerAngle}. Full page: ${link}`,
-      `More detail than fits in one pin — ${offerAngle} for ${name}: ${link}`,
-      `Swipe-through recap from ${name}: ${offerAngle}. Open here: ${link}`,
-    ],
-    "Standard Pin": [
-      `${name} pin: ${offerAngle}. Visit: ${link}`,
-      `Saved this ${name} resource — ${offerAngle} with next steps: ${link}`,
-      `Pin description for ${name}: ${offerAngle}. Link: ${link}`,
-    ],
-    Board: [
-      `Board resource for ${name}: ${offerAngle}. Page: ${link}`,
-      `Pinned to ${name}: ${offerAngle} with the full walkthrough at ${link}`,
-      `${name} board pin — ${offerAngle}. Details: ${link}`,
-    ],
-    Search: [
-      `Keyword landing for ${name}: ${offerAngle}. Open: ${link}`,
-      `Search-friendly summary for ${name}: ${offerAngle} — ${link}`,
-      `${name} SEO pin: ${offerAngle}. Full page: ${link}`,
-    ],
-    Profile: [
-      `Profile link for ${name}: ${offerAngle}. Visit: ${link}`,
-      `Website field for ${name} — ${offerAngle}: ${link}`,
-      `${name} bio resource: ${offerAngle}. Page: ${link}`,
-    ],
-    Checklist: [
-      `${name} checklist step: ${offerAngle}. Open: ${link}`,
-      `Weekly Pinterest task for ${name}: ${offerAngle} — ${link}`,
-      `Mark complete after reviewing ${offerAngle} for ${name}: ${link}`,
-    ],
     Forum: [
       `For anyone on ${name} still looking for a next step: I put together ${offerAngle} here: ${link}`,
       `I keep ${offerAngle} for ${name} members who want extra reading — skip it if it is not a fit: ${link}`,
@@ -151,12 +121,12 @@ export function buildSubmissionDescription(opts: {
     Directory: [
       `Resource listing for ${name}: ${offerAngle}. Visit: ${link}`,
       `${name} submission: ${offerAngle} with useful next steps at ${link}`,
-      `Added ${offerAngle} to ${name} so people can open the full page here: ${link}`,
+      `Added ${offerAngle} to ${name} so people can open the full money page here: ${link}`,
     ],
     Blog: [
       `Left this for ${name} readers who want a fuller walkthrough: ${offerAngle} — ${link}`,
       `If this ${name} piece is useful, I also put together ${offerAngle} with extra steps: ${link}`,
-      `One extra resource for ${name} readers: ${offerAngle}. Full page: ${link}`,
+      `One extra resource for ${name} readers: ${offerAngle}. Full money page: ${link}`,
     ],
     "Q&A": [
       `I wrote a longer answer as ${offerAngle} for this ${name} question. Optional reading: ${link}`,
@@ -165,12 +135,12 @@ export function buildSubmissionDescription(opts: {
     ],
     Classified: [
       `${name} listing: ${offerAngle}. Details here: ${link}`,
-      `Offering ${offerAngle} via ${name}. Open the page for the full write-up: ${link}`,
+      `Offering ${offerAngle} via ${name}. Open the money page for the full write-up: ${link}`,
       `Posted on ${name}: ${offerAngle} with next steps at ${link}`,
     ],
     Video: [
       `Full resource from this ${name} video: ${offerAngle} — ${link}`,
-      `More detail than I could fit on ${name}: ${offerAngle}. Page is here: ${link}`,
+      `More detail than I could fit on ${name}: ${offerAngle}. Money page is here: ${link}`,
       `${name} follow-up: ${offerAngle} with the steps from the video: ${link}`,
     ],
   };
@@ -180,18 +150,6 @@ export function buildSubmissionDescription(opts: {
 
 function defaultFocus(type: SourceType, community: string) {
   switch (type) {
-    case "Idea Pin":
-      return `your ${community} Idea Pin drafts`;
-    case "Standard Pin":
-      return `your ${community} standard pin batch`;
-    case "Board":
-      return `your public ${community} board`;
-    case "Search":
-      return `Pinterest search terms for ${community}`;
-    case "Profile":
-      return `your Pinterest profile settings`;
-    case "Checklist":
-      return `this week's ${community} posting checklist`;
     case "Forum":
       return `the most active ${community} boards`;
     case "Social":

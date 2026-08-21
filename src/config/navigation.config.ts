@@ -28,7 +28,8 @@ export type NavIconName =
   | "Send"
   | "Calculator"
   | "Users"
-  | "Zap";
+  | "Zap"
+  | "Infinity";
 
 export interface NavItem {
   path: string;
@@ -115,10 +116,10 @@ export const upgradeNav: NavItem[] = [
 
 /** Premium section — single source for sidebar, bottom nav, dashboard widget */
 export const premiumNav: NavItem[] = [
-  { path: "/accelerator", label: "Unlimited", icon: "Zap", feature: "premium-accelerator" },
+  { path: "/accelerator", label: "Unlimited", icon: "Infinity", feature: "premium-accelerator" },
   { path: "/dfy-profit", label: "Done-For-You Profit", icon: "Wallet", feature: "premium-dfy-profit" },
-  { path: "/social-payouts", label: "Pin Multiplier", icon: "Image", feature: "premium-social" },
-  { path: "/autopilot", label: "Pinterest Autopilot", icon: "Rocket", feature: "premium-autopilot" },
+  { path: "/social-payouts", label: "Instant Income", icon: "Megaphone", feature: "premium-social" },
+  { path: "/autopilot", label: "Automated Profits", icon: "Rocket", feature: "premium-autopilot" },
   { path: "/recurring-wealth", label: "Guaranteed High-Ticket Payouts", icon: "Repeat", feature: "premium-recurring" },
   { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
   { path: "/account#license", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },

@@ -1,5 +1,3 @@
-"use client";
-
 import { ReactNode } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { trainingContent as trainingMeta } from "@/config/training.config";

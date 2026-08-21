@@ -92,11 +92,9 @@ function EditionContentCard({ item, index }: { item: EditionContent; index: numb
 
 function PendingActivationPanel({
   email,
-  viaMailto,
   onReset,
 }: {
   email: string;
-  viaMailto: boolean;
   onReset: () => void;
 }) {
   return (
@@ -117,20 +115,9 @@ function PendingActivationPanel({
           <h3 className="support-success-title">Request received</h3>
         </div>
         <p className="support-success-body">
-          {viaMailto ? (
-            <>
-              Your email app should open with subject{" "}
-              <span className="font-medium text-text-heading">{REQUEST_SUBJECT}</span>. Tap{" "}
-              <span className="font-medium text-text-heading">Send</span> to deliver it — then
-              we&apos;ll reply to <span className="support-success-email">{email}</span>.
-            </>
-          ) : (
-            <>
-              We&apos;ll reply to <span className="support-success-email">{email}</span> when
-              your reseller license is activated.
-            </>
-          )}{" "}
-          We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+          We&apos;ll reply to <span className="support-success-email">{email}</span> when your
+          reseller license is activated. We usually respond within about 2 hours — during busy
+          periods, please allow 24–48 hours.
         </p>
       </div>
 
@@ -159,7 +146,6 @@ export function LicenseRightsPanel({ compact = false }: { compact?: boolean }) {
   const [formState, setFormState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [pending, setPending] = useState<PendingLicenseRightsRequest | null>(null);
-  const [viaMailto, setViaMailto] = useState(false);
   const [ready, setReady] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
@@ -179,7 +165,6 @@ export function LicenseRightsPanel({ compact = false }: { compact?: boolean }) {
   const handleReset = () => {
     if (userId) clearPendingRequest(userId);
     setPending(null);
-    setViaMailto(false);
     setFormState("idle");
     setErrorMessage("");
   };
@@ -229,7 +214,6 @@ export function LicenseRightsPanel({ compact = false }: { compact?: boolean }) {
 
       if (userId) savePendingRequest(userId, trimmedEmail);
       setPending({ email: trimmedEmail, submittedAt: new Date().toISOString() });
-      setViaMailto(result.viaMailto);
       setFormState("idle");
     },
     [email, message, userId]
@@ -299,11 +283,7 @@ export function LicenseRightsPanel({ compact = false }: { compact?: boolean }) {
             {!ready ? (
               <FormSkeleton />
             ) : pending ? (
-              <PendingActivationPanel
-                email={pending.email}
-                viaMailto={viaMailto}
-                onReset={handleReset}
-              />
+              <PendingActivationPanel email={pending.email} onReset={handleReset} />
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="min-w-0">

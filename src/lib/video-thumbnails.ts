@@ -1,39 +1,54 @@
 export const VIDEO_THUMBNAILS: Record<string, string> = {};
 
-/** Dashboard / academy posters disabled — play placeholder only */
 export const DASHBOARD_VIDEO_THUMBNAILS = [] as const;
 export const ACADEMY_PLATFORM_THUMBNAILS = [] as const;
 export const ACADEMY_PREMIUM_THUMBNAILS = [] as const;
 
 const VIMEO_ID_REGEX = /vimeo\.com\/(?:video\/)?(\d+)/;
 
-export function getVideoThumbnailById(_id: string): string | null {
-  return null;
+function normalizeVimeoId(videoId: string): string | null {
+  const trimmed = videoId.trim();
+  if (!trimmed) return null;
+  const match = trimmed.match(VIMEO_ID_REGEX);
+  return match?.[1] ?? trimmed.replace(/\D/g, "") || null;
 }
 
-export function getDashboardVideoThumbnail(_index: number): string | null {
-  return null;
+/** Lightweight Vimeo poster URL — no API key required. */
+export function getVimeoThumbnailUrl(videoId: string): string | null {
+  const id = normalizeVimeoId(videoId);
+  return id ? `https://vumbnail.com/${id}.jpg` : null;
 }
 
-export function getAcademyPlatformThumbnail(_index: number): string | null {
-  return null;
+export function getVideoThumbnailById(id: string): string | null {
+  return VIDEO_THUMBNAILS[id] ?? getVimeoThumbnailUrl(id);
 }
 
-export function getAcademyPremiumThumbnail(_index: number): string | null {
-  return null;
+export function getDashboardVideoThumbnail(index: number): string | null {
+  const src = DASHBOARD_VIDEO_THUMBNAILS[index];
+  return src ?? null;
+}
+
+export function getAcademyPlatformThumbnail(index: number): string | null {
+  const src = ACADEMY_PLATFORM_THUMBNAILS[index];
+  return src ?? null;
+}
+
+export function getAcademyPremiumThumbnail(index: number): string | null {
+  const src = ACADEMY_PREMIUM_THUMBNAILS[index];
+  return src ?? null;
 }
 
 export function resolveVideoThumbnail(
-  _videoId: string,
-  _fallbackSrc?: string | null
+  videoId: string,
+  fallbackSrc?: string | null
 ): string | null {
-  return null;
+  if (fallbackSrc) return fallbackSrc;
+  return getVimeoThumbnailUrl(videoId);
 }
 
 export function toEmbedUrl(videoUrl: string, autoplay = true): string {
-  const match = videoUrl.match(VIMEO_ID_REGEX);
-  const id = match?.[1] ?? videoUrl.replace(/\D/g, "");
-  // byline/portrait/title hide the uploader and channel info in the player chrome
+  const id = normalizeVimeoId(videoUrl);
+  if (!id) return videoUrl;
   const params = new URLSearchParams({
     badge: "0",
     byline: "0",

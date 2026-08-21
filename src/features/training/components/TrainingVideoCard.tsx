@@ -1,10 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { Clock } from "lucide-react";
 import { VideoThumbnail } from "@/components/ui/video-thumbnail";
-import { VideoOverlay } from "@/components/ui/video-overlay";
 import { vimeoPlayerUrl, type AcademyVideo } from "@/lib/training-content";
+
+const VideoOverlay = dynamic(
+  () => import("@/components/ui/video-overlay").then((mod) => mod.VideoOverlay),
+  { ssr: false }
+);
 
 interface TrainingVideoCardProps {
   video: AcademyVideo;

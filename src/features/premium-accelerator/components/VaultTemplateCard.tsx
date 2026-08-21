@@ -7,12 +7,11 @@ import {
   Eye,
   Loader2,
   ArrowRight,
-  Pencil,
-  Image,
-  Check,
+  FolderOpen,
 } from "lucide-react";
 import Link from "next/link";
 import { clsx } from "clsx";
+import { resolvePublicUrl } from "@/lib/app-url";
 
 export interface VaultTemplateRow {
   id: number;
@@ -48,139 +47,79 @@ export const VaultTemplateCard = memo(function VaultTemplateCard({
   cloningId,
   viewingId,
   clonedSiteUrl,
-  clonedAssetId,
   hasAffiliateLink,
   onView,
   onClone,
 }: VaultTemplateCardProps) {
   const isCloning = cloningId === template.id;
   const isViewing = viewingId === template.id;
-  const siteUrl = clonedSiteUrl || template.usedSiteUrl || null;
-  const assetId = clonedAssetId || template.usedAssetId || null;
-  const isUsed = Boolean(template.used || (siteUrl && assetId));
-  const accent = template.accent || "#14B8A6";
+  const sitePath = clonedSiteUrl || template.usedSiteUrl || null;
+  const liveSiteUrl = sitePath ? resolvePublicUrl(sitePath) : null;
+  const isCloned = Boolean(liveSiteUrl);
 
   return (
     <article
       className={clsx(
-        "vault-asset-card group flex flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_220px]",
-        isUsed && "vault-asset-card--used"
+        "glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]"
       )}
     >
-      <div
-        className="vault-asset-card__hero relative h-24 shrink-0 overflow-hidden"
-        style={{
-          background: `linear-gradient(145deg, ${accent} 0%, color-mix(in srgb, ${accent} 35%, #0B1220) 100%)`,
-        }}
-      >
-        <div className="absolute inset-0 opacity-40" aria-hidden>
-          <div className="absolute -right-6 -top-8 h-28 w-28 rounded-full bg-white/20 blur-2xl" />
-          <div className="absolute bottom-2 left-3 right-3 space-y-1.5">
-            <div className="h-1.5 w-2/3 rounded-full bg-white/50" />
-            <div className="h-1 w-1/2 rounded-full bg-white/35" />
-            <div className="h-1 w-3/5 rounded-full bg-white/25" />
-          </div>
-        </div>
-        <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1.5">
-          <span className="rounded-md bg-black/35 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-white backdrop-blur-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">
             {template.niche}
-          </span>
-          {template.themeLabel ? (
-            <span className="rounded-md bg-black/25 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
-              {template.themeLabel}
-            </span>
-          ) : null}
+          </p>
+          <h3 className="mt-1 line-clamp-2 font-medium text-text-primary">{template.productName}</h3>
+          <p className="mt-1 text-xs text-text-muted">{template.templateName}</p>
         </div>
-        {isUsed ? (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md bg-black/45 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-            <Check size={11} />
-            Used
+        {!template.seeded ? (
+          <span className="shrink-0 rounded bg-pulse-100 px-2 py-0.5 text-[13px] text-text-muted">
+            Pending
           </span>
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div className="min-w-0">
-          <p className="text-[12px] font-medium text-pulse-700">{template.toneLabel}</p>
-          <h3 className="mt-1 line-clamp-2 text-[15px] font-semibold leading-snug text-text-primary">
-            {template.productName}
-          </h3>
-          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted">
-            {template.hook}
-          </p>
+      {isCloned && liveSiteUrl ? (
+        <div className="mt-auto flex flex-col gap-2">
+          <Link
+            href={liveSiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary inline-flex items-center justify-center gap-2 text-sm"
+          >
+            View offer
+            <ExternalLink size={14} />
+          </Link>
+          <Link
+            href="/offers"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
+          >
+            <FolderOpen size={14} />
+            Offers Library
+            <ArrowRight size={14} />
+          </Link>
         </div>
-
-        {isUsed && siteUrl && assetId ? (
-          <div className="mt-auto flex flex-col gap-2">
-            <Link
-              href={siteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary inline-flex items-center justify-center gap-2 text-sm"
-            >
-              Open money page
-              <ExternalLink size={14} />
-            </Link>
-            <div className="grid grid-cols-2 gap-2">
-              <Link
-                href={`/money-page/${assetId}`}
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
-              >
-                <Pencil size={14} />
-                Edit
-              </Link>
-              <Link
-                href={`/traffic/${assetId}`}
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--np-line)] bg-[var(--np-surface)] px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:border-[var(--np-line-strong)]"
-              >
-                <Image size={14} />
-                View pins
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-            {!clonedSiteUrl ? (
-              <button
-                type="button"
-                disabled={isCloning || !hasAffiliateLink}
-                onClick={() => onClone(template.id)}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--np-line)] px-3 py-2 text-xs font-medium text-text-muted transition-colors hover:border-[var(--np-line-strong)] hover:text-text-primary disabled:opacity-40"
-              >
-                {isCloning ? <Loader2 size={12} className="animate-spin" /> : <Copy size={12} />}
-                Use again
-              </button>
-            ) : null}
-          </div>
-        ) : (
-          <div className="mt-auto flex flex-col gap-2">
-            <button
-              type="button"
-              disabled={isViewing}
-              onClick={() => onView(template.id)}
-              className="btn-secondary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
-            >
-              {isViewing ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Eye size={14} />
-              )}
-              Preview
-            </button>
-            <button
-              type="button"
-              disabled={isCloning || !hasAffiliateLink}
-              onClick={() => onClone(template.id)}
-              className="btn-primary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
-            >
-              {isCloning ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Copy size={14} />
-              )}
-              Use this page
-            </button>
-          </div>
-        )}
-      </div>
+      ) : (
+        <div className="mt-auto flex flex-col gap-2">
+          <button
+            type="button"
+            disabled={!template.seeded || isViewing}
+            onClick={() => onView(template.id)}
+            className="btn-secondary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
+          >
+            {isViewing ? <Loader2 size={14} className="animate-spin" /> : <Eye size={14} />}
+            View
+          </button>
+          <button
+            type="button"
+            disabled={!template.seeded || isCloning || !hasAffiliateLink}
+            onClick={() => onClone(template.id)}
+            className="btn-primary inline-flex items-center justify-center gap-2 text-sm disabled:opacity-40"
+          >
+            {isCloning ? <Loader2 size={14} className="animate-spin" /> : <Copy size={14} />}
+            Use this template
+          </button>
+        </div>
+      )}
     </article>
   );
 });

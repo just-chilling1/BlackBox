@@ -16,8 +16,8 @@ export const PREMIUM_SECTION_LABEL = premiumSectionLabel;
 const PREMIUM_DESCRIPTIONS: Record<string, string> = {
   "/accelerator": "200 pre-made money pages — clone one, then generate pins.",
   "/dfy-profit": "Done-For-You Profit: live sales page, 3 pins, authority article, and 3 Facebook posts.",
-  "/social-payouts": "Extra Pinterest pin batches for a live money page.",
-  "/autopilot": "Pinterest posting playbook tied to your live money page.",
+  "/social-payouts": "Bulk Facebook posts from a live money page — copy and paste.",
+  "/autopilot": "Curated traffic sources checklist with promotion URL tracking for your live money page.",
   "/recurring-wealth": "Authority article sections that strengthen a money page.",
   "/protector": "Real account status — email, session, and recent activity.",
   "/account#license": "Request reseller license rights — our team activates the edition.",

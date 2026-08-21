@@ -1,16 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link as LinkIcon, Filter, Loader2 } from "lucide-react";
+import { Link as LinkIcon, Filter, Loader2, Rocket } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { GenerationProgress } from "@/components/ui/generation-progress";
-import { GlassPanel } from "@/components/ui/glass-panel";
+import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
-import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
-import { PostCreateJourney } from "@/components/premium/PostCreateJourney";
+import { PremiumPageLayout } from "@/components/premium/PremiumPageLayout";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
+import { PremiumFooter } from "@/components/premium/PremiumFooter";
+import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
 import { PREMIUM_NICHE_FILTER_LABELS } from "@/lib/premium-niches";
 import {
   TemplatePreviewOverlay,
@@ -23,15 +25,18 @@ import {
 
 const PAGE_SIZE = 24;
 const AFFILIATE_STORAGE_KEY = `${brand.storagePrefix}_accelerator_affiliate`;
+const SEED_POLL_MS = 15_000;
 
 export default function AcceleratorPage() {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [templates, setTemplates] = useState<VaultTemplateRow[]>([]);
+  const [seededCount, setSeededCount] = useState(0);
+  const [ready, setReady] = useState(false);
   const [total, setTotal] = useState(200);
   const [niche, setNiche] = useState("All");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [affiliateLink, setAffiliateLink] = useState("");
-  const [linkApplied, setLinkApplied] = useState(false);
   const [cloningId, setCloningId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -43,17 +48,13 @@ export default function AcceleratorPage() {
     catalogId: number;
     siteUrl: string;
     assetId: string;
-    productName?: string;
   } | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(AFFILIATE_STORAGE_KEY);
-      if (saved) {
-        setAffiliateLink(saved);
-        setLinkApplied(true);
-      }
+      if (saved) setAffiliateLink(saved);
     } catch {
       /* ignore */
     }
@@ -69,8 +70,11 @@ export default function AcceleratorPage() {
     }
   }, [affiliateLink]);
 
-  const loadTemplates = useCallback(async () => {
-    setLoading(true);
+  const loadTemplates = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
+    if (silent) setRefreshing(true);
+    else setLoading(true);
+
     setError("");
     try {
       const res = await fetch("/api/premium/accelerator/templates", { cache: "no-store" });
@@ -78,10 +82,20 @@ export default function AcceleratorPage() {
       if (!res.ok) throw new Error(data.error || "Failed to load templates");
       setTemplates(data.templates ?? []);
       setTotal(data.total ?? 200);
+      setSeededCount(
+        data.seededCount ??
+          (data.templates as VaultTemplateRow[] | undefined)?.filter((t) => t.seeded).length ??
+          data.total ??
+          0
+      );
+      setReady(data.ready ?? true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load");
+      if (!silent) {
+        setError(e instanceof Error ? e.message : "Failed to load");
+      }
     } finally {
-      setLoading(false);
+      if (silent) setRefreshing(false);
+      else setLoading(false);
     }
   }, []);
 
@@ -89,18 +103,21 @@ export default function AcceleratorPage() {
     void loadTemplates();
   }, [loadTemplates]);
 
+  useEffect(() => {
+    if (ready) return;
+    const timer = window.setInterval(() => void loadTemplates({ silent: true }), SEED_POLL_MS);
+    return () => window.clearInterval(timer);
+  }, [ready, loadTemplates]);
+
   const filtered = useMemo(() => {
     const list = templates.filter((t) => niche === "All" || t.niche === niche);
     return [...list].sort((a, b) => {
-      const aUsed = Boolean(a.used || (cloneResult?.catalogId === a.id));
-      const bUsed = Boolean(b.used || (cloneResult?.catalogId === b.id));
+      const aUsed = Boolean(a.used || cloneResult?.catalogId === a.id);
+      const bUsed = Boolean(b.used || cloneResult?.catalogId === b.id);
       if (aUsed !== bUsed) return aUsed ? -1 : 1;
       if (aUsed && bUsed && cloneResult) {
         if (a.id === cloneResult.catalogId) return -1;
         if (b.id === cloneResult.catalogId) return 1;
-      }
-      if (aUsed && bUsed) {
-        return (b.usedAt || "").localeCompare(a.usedAt || "");
       }
       return a.id - b.id;
     });
@@ -115,13 +132,13 @@ export default function AcceleratorPage() {
     setVisibleCount(PAGE_SIZE);
   }, [niche]);
 
-  const hasAffiliateLink = affiliateLink.trim().length > 0 && linkApplied;
+  const hasAffiliateLink = affiliateLink.trim().length > 0;
   const hasMore = visibleCount < filtered.length;
 
   const handleClone = useCallback(
     async (catalogId: number) => {
-      if (!affiliateLink.trim() || !linkApplied) {
-        setError("Apply your affiliate link first.");
+      if (!affiliateLink.trim()) {
+        setError("Enter your affiliate link first.");
         return;
       }
       setCloningId(catalogId);
@@ -137,10 +154,7 @@ export default function AcceleratorPage() {
         if (!res.ok) throw new Error(data.error || "Install failed");
         const assetId = (data.assetId as string) || (data.site?.id as string);
         const siteUrl = data.siteUrl as string;
-        const productName =
-          (data.site?.product_name as string | undefined) ||
-          templates.find((t) => t.id === catalogId)?.productName;
-        setCloneResult({ catalogId, siteUrl, assetId, productName });
+        setCloneResult({ catalogId, siteUrl, assetId });
         setTemplates((prev) =>
           prev.map((t) =>
             t.id === catalogId
@@ -163,7 +177,7 @@ export default function AcceleratorPage() {
         setCloningId(null);
       }
     },
-    [affiliateLink, linkApplied, templates]
+    [affiliateLink]
   );
 
   const handleView = useCallback(
@@ -178,7 +192,7 @@ export default function AcceleratorPage() {
       try {
         const params = new URLSearchParams({ catalogId: String(catalogId) });
         const link = affiliateLink.trim();
-        if (link && linkApplied) params.set("affiliateUrl", link);
+        if (link) params.set("affiliateUrl", link);
 
         const res = await fetch(`/api/premium/accelerator/preview?${params.toString()}`, {
           cache: "no-store",
@@ -193,7 +207,7 @@ export default function AcceleratorPage() {
         setViewingId(null);
       }
     },
-    [affiliateLink, linkApplied]
+    [affiliateLink]
   );
 
   const closePreview = useCallback(() => {
@@ -210,101 +224,90 @@ export default function AcceleratorPage() {
 
   if (loading && templates.length === 0) {
     return (
-      <PremiumWorkflowShell
+      <PremiumPageLayout
         title="Unlimited"
-        subtitle="200 ready-made money pages — apply your link, install a page, and get 10 pins ready."
+        subtitle="200 pre-made money pages — apply your link, install a page, and get 10 pins ready."
+        animate={false}
       >
         <PageSkeleton cards={6} />
-      </PremiumWorkflowShell>
+      </PremiumPageLayout>
     );
   }
 
   return (
-    <PremiumWorkflowShell
+    <PremiumPageLayout
       title="Unlimited"
-      subtitle={`${total} ready-made money pages across every niche — apply your link, install a page with 10 pins included.`}
-      training={{
-        vimeoId: "1215530104",
-        title: "Unlimited Training",
-        description:
-          "Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post.",
-        iframeTitle: "Unlimited training video",
-      }}
-      tip={
-        <>
-          Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
-          — it installs with your link and 10 Pinterest pins from the offer page. If scrape finds no
-          photo, a stock fallback is used.
-        </>
+      subtitle={`${seededCount} of ${total} pre-made money pages across every niche — apply your link, install a page with 10 pins included.`}
+      footer={
+        <PremiumFooter>
+          Powered by {brand.productName}. Unlimited pages are seeded once — members always install stored copies.
+        </PremiumFooter>
       }
     >
-      {cloneResult ? (
-        <PostCreateJourney
-          assetId={cloneResult.assetId}
-          publicUrl={cloneResult.siteUrl}
-          productName={cloneResult.productName}
-          showRegeneratePins
-          pinCount={10}
-          title="Installed — finish the NullPing loop"
-        />
-      ) : null}
+      <PremiumVideoTutorial
+        vimeoId="1215530104"
+        title="Unlimited Training"
+        description="Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post."
+        iframeTitle="Unlimited training video"
+      />
 
-      <GlassPanel className="space-y-5 p-5 sm:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-sm font-medium text-text-primary">Your affiliate link</p>
-            <p className="mt-1 text-xs text-text-muted">
-              Apply a link to wire CTAs on every page you install.
-            </p>
-          </div>
-          <p className="text-xs text-text-muted">All {total} pages ready to install</p>
-        </div>
+      <PremiumStepsSection
+        steps={[
+          {
+            num: "1",
+            title: "Pick a template",
+            desc: "Browse 200 pre-made money pages across every niche and preview any one before you commit.",
+          },
+          {
+            num: "2",
+            title: "Install with your link",
+            desc: "Paste your affiliate link and the money page plus 10 Pinterest pins become yours instantly.",
+          },
+          {
+            num: "3",
+            title: "Post your pins",
+            desc: "Open Traffic for your installed page, download the pins, and start sending visitors to your live money page.",
+          },
+        ]}
+      />
 
-        <div>
+      <PremiumControlCard
+        icon={Rocket}
+        title="200 Money Pages + 10 Pins"
+        description="Each template includes a ready-made money page — install instantly with your affiliate link and get 10 Pinterest pins."
+        badge={
+          !ready ? (
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--np-line-pulse)] bg-pulse-100/10 px-3 py-1 text-[13px] font-medium text-pulse-700">
+              {refreshing && <Loader2 size={12} className="animate-spin" />}
+              Seeding in progress ({seededCount}/{total})
+            </span>
+          ) : undefined
+        }
+      >
+        <div className="block">
           <span className="mb-2 flex items-center gap-2 text-sm font-medium text-text-primary">
             <LinkIcon size={14} className="text-pulse-700" />
-            Affiliate URL
+            Your affiliate link
           </span>
           <AffiliateLinkField
             value={affiliateLink}
-            onChange={(url) => {
-              setAffiliateLink(url);
-              setLinkApplied(false);
-            }}
-            onApply={(url) => {
-              setAffiliateLink(url);
-              setLinkApplied(true);
-              setError("");
-            }}
-            actionMode="apply"
+            onChange={setAffiliateLink}
             inputId="accelerator-affiliate-link"
           />
         </div>
 
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
-              <Filter size={14} className="text-pulse-700" />
-              Select niche
-            </p>
-            <p className="text-xs text-text-muted">{niche === "All" ? "All niches" : niche}</p>
-          </div>
-          <div
-            className="flex flex-wrap gap-2 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-3"
-            role="group"
-            aria-label="Select niche"
-          >
-            {PREMIUM_NICHE_FILTER_LABELS.map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setNiche(n)}
-                className={clsx("select-chip-pill", niche === n && "is-selected")}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter size={14} className="text-text-muted" />
+          {PREMIUM_NICHE_FILTER_LABELS.map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setNiche(n)}
+              className={clsx("select-chip-pill", niche === n && "is-selected")}
+            >
+              {n}
+            </button>
+          ))}
         </div>
 
         <p className="text-xs text-text-muted">
@@ -314,14 +317,14 @@ export default function AcceleratorPage() {
         </p>
 
         {error ? <PremiumErrorAlert message={error} /> : null}
-      </GlassPanel>
+      </PremiumControlCard>
 
       <GenerationProgress
         active={cloningId !== null}
         label="Installing money page with your affiliate link and 10 pins..."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div id={GENERATION_RESULTS_ID} className="scroll-mt-24 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {visibleTemplates.map((t) => (
           <VaultTemplateCard
             key={t.id}
@@ -381,6 +384,6 @@ export default function AcceleratorPage() {
           if (previewCatalogId != null) void handleClone(previewCatalogId);
         }}
       />
-    </PremiumWorkflowShell>
+    </PremiumPageLayout>
   );
 }

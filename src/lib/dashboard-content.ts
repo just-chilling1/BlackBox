@@ -4,6 +4,8 @@ import { dashboardContent } from "@/config/dashboard.config";
 import { trainingContent } from "@/config/training.config";
 import { isFeatureEnabled } from "@/config/features.config";
 import { getDashboardHowItWorksSteps } from "@/lib/dashboard-steps";
+import { resolveVideoThumbnail, toEmbedUrl } from "@/lib/video-thumbnails";
+
 export type DashboardVideo = {
   id: string;
   title: string;
@@ -13,11 +15,14 @@ export type DashboardVideo = {
 };
 
 export function getDashboardVideos(): DashboardVideo[] {
-  return dashboardContent.videos.map((video, index) => ({
-    ...video,
-    id: video.id || trainingContent.videos[index]?.id || "",
-    thumbnailSrc: null,
-  }));
+  return dashboardContent.videos.map((video, index) => {
+    const id = video.id || trainingContent.videos[index]?.id || "";
+    return {
+      ...video,
+      id,
+      thumbnailSrc: resolveVideoThumbnail(id),
+    };
+  });
 }
 
 export function getDashboardSubtitle(): string {
@@ -66,5 +71,5 @@ export function getDashboardAcademyCta(): {
 }
 
 export function vimeoPlayerUrl(id: string): string {
-  return `https://player.vimeo.com/video/${id}`;
+  return toEmbedUrl(id, false);
 }

@@ -9,7 +9,8 @@ import {
   trainingWorkflowSteps,
 } from "@/config/training-content.config";
 import { isFeatureEnabled } from "@/config/features.config";
-import { vimeoPlayerUrl } from "@/lib/dashboard-content";
+import { faqSections } from "@/config/faq.config";
+import { resolveVideoThumbnail, toEmbedUrl } from "@/lib/video-thumbnails";
 
 export type AcademyVideo = {
   id: string;
@@ -20,18 +21,21 @@ export type AcademyVideo = {
   thumbnailSrc: string | null;
 };
 
-export function getPlatformTutorialVideos(): AcademyVideo[] {
-  return trainingContent.videos.map((video) => ({
+function withThumbnail<T extends { id: string }>(video: T): T & { thumbnailSrc: string | null } {
+  return {
     ...video,
-    thumbnailSrc: null,
-  }));
+    thumbnailSrc: resolveVideoThumbnail(video.id),
+  };
+}
+
+export function getPlatformTutorialVideos(): AcademyVideo[] {
+  return trainingContent.videos.map(withThumbnail);
 }
 
 export function getPremiumTutorialVideos(): AcademyVideo[] {
-  return trainingPremiumVideos.map((video) => ({
-    ...video,
-    thumbnailSrc: null,
-  }));
+  return trainingPremiumVideos
+    .filter((video) => isFeatureEnabled(video.feature))
+    .map(({ feature: _feature, ...video }) => withThumbnail(video));
 }
 
 export function getTrainingStartCta(): {
@@ -60,4 +64,20 @@ export function getTrainingStartCta(): {
   };
 }
 
-export { trainingCta, trainingProTips, trainingQuickStartChecklist, trainingWorkflowSteps, vimeoPlayerUrl };
+export function getAcademyOverview(): {
+  platformCount: number;
+  premiumCount: number;
+  faqCount: number;
+} {
+  return {
+    platformCount: trainingContent.videos.length,
+    premiumCount: getPremiumTutorialVideos().length,
+    faqCount: faqSections.reduce((total, section) => total + section.items.length, 0),
+  };
+}
+
+export { trainingCta, trainingProTips, trainingQuickStartChecklist, trainingWorkflowSteps };
+
+export function vimeoPlayerUrl(id: string): string {
+  return toEmbedUrl(id, false);
+}

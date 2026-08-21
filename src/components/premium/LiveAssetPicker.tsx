@@ -116,7 +116,7 @@ export function LiveAssetPicker({
         <EmptyState
           icon={Zap}
           title="No live money page yet"
-          description="Activate an asset first — then you can generate extra pins, run Autopilot, or add authority sections here."
+          description="Activate an asset first — then you can generate Instant Income posts, run Autopilot, or add authority sections here."
           action={{ label: "Activate Asset", href: "/activate" }}
         />
       </div>

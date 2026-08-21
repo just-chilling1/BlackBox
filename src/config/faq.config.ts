@@ -88,12 +88,12 @@ export const faqSections: FaqSection[] = [
         a: "Done-For-You Profit builds a live sales page from your affiliate link and niche, then generates 3 Pinterest pins, an authority article, and 3 Facebook posts in one run.",
       },
       {
-        q: "What is Pin Multiplier?",
-        a: "Pin Multiplier generates extra Pinterest pin batches for a live money page — new hooks and angles beyond your first 10. Download images from Traffic and use each pin’s tracking link when you post.",
+        q: "What is Instant Income?",
+        a: "Instant Income bulk-generates Facebook post variants from a live money page. Every generation is kept as a saved post set, and the built-in Facebook posting best practices show you how to post without breaking group rules. Visits show up in Results with ?src=facebook.",
       },
       {
-        q: "What is Pinterest Autopilot?",
-        a: "Pinterest Autopilot is a guided Pinterest posting playbook for your live money page. It does not auto-publish — you download pins from Traffic, post manually, check off steps, and track visits in Results.",
+        q: "What is Automated Profits?",
+        a: "Automated Profits is a curated checklist of 180 traffic sources across 9 niches. Pick your live money page, filter by niche, follow each source’s steps, copy the ready-made description with your tracking link, and mark sources complete. Visits show up in Results.",
       },
       {
         q: "What are Guaranteed High-Ticket Payouts?",

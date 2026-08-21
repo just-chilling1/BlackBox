@@ -1,48 +1,186 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import Link from "next/link";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  ArrowRight,
-  Check,
+  Megaphone,
   Copy,
-  Download,
-  Image as ImageIcon,
+  Check,
+  ChevronDown,
+  ClipboardCopy,
+  Clock3,
+  Gift,
   Loader2,
+  MessagesSquare,
+  ScrollText,
+  Shuffle,
   Sparkles,
+  Timer,
 } from "lucide-react";
+import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
+import { PremiumControlCard } from "@/components/premium/PremiumControlCard";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
+import { PremiumBestPracticesSection } from "@/components/premium/PremiumBestPracticesSection";
 import { LiveAssetPicker, type LiveAssetSummary } from "@/components/premium/LiveAssetPicker";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
-import { GlassPanel } from "@/components/ui/glass-panel";
+import { formatThreadVersionDate } from "@/features/publish-kit/lib/thread-batches";
 
-interface PinRow {
+interface SavedPost {
   id: string;
-  headline: string;
-  title: string;
-  description: string;
-  keywords?: string[];
-  image_url: string | null;
-  batch_id?: string | null;
-  trackingUrl?: string;
-  created_at?: string;
+  body: string;
+  batchId?: string;
+  createdAt?: string;
 }
 
-const SITE_STORAGE_KEY = `${brand.storagePrefix}_pin_multiplier_site`;
-
-function pinImageSrc(url: string) {
-  const base = url.includes("?") ? url : `${url}?v=7`;
-  if (base.includes("v=")) return base.replace(/([?&])v=\d+/, "$1v=7");
-  return `${base}&v=7`;
+interface PostGeneration {
+  batchId: string;
+  createdAt: string;
+  posts: SavedPost[];
 }
 
-function pinDownloadHref(url: string | null) {
-  if (!url) return "#";
-  const withVersion = pinImageSrc(url);
-  return `${withVersion}${withVersion.includes("?") ? "&" : "?"}download=1`;
+interface PostCardProps {
+  post: SavedPost;
+  index: number;
+  copiedId: string | null;
+  onCopy: (post: SavedPost) => void;
+}
+
+const SITE_STORAGE_KEY = `${brand.storagePrefix}_instant_income_site`;
+
+const FACEBOOK_BEST_PRACTICES = [
+  {
+    icon: ScrollText,
+    title: "Read each group's rules first",
+    desc: "Some groups ban outside links, some only allow them on promo days like \"Self-Promo Saturday\", and some require admin approval. One rule-breaking post can get you muted or banned — check the pinned rules before every post.",
+  },
+  {
+    icon: Gift,
+    title: "Lead with value (70/30 rule)",
+    desc: "Spend your first 1–2 weeks in a group answering questions and sharing tips before dropping any link. Keep roughly 70% of your activity pure value and only 30% promotional — that's what keeps you welcome.",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Put your link in the first comment",
+    desc: "Posts with links in the body get their reach limited. Where the group allows it, keep the post itself helpful and drop your money-page link (with ?src=facebook) in the first comment instead.",
+  },
+  {
+    icon: Shuffle,
+    title: "Use a different variant per group",
+    desc: "Identical text across groups is the clearest spam fingerprint on Facebook. That's exactly why you get 10 variants here — pick a different one for every group you post in.",
+  },
+  {
+    icon: Timer,
+    title: "Pace yourself",
+    desc: "Space posts at least 1–2 minutes apart and stay under roughly 25–50 groups a day. Blasting the same money page into 30 groups in one minute reads as a bot and tanks your account.",
+  },
+  {
+    icon: Clock3,
+    title: "Post at peak times & disclose",
+    desc: "Tuesday–Thursday mornings (8–10 AM) and lunch breaks (12–1 PM) tend to perform best — test your niche. And always add a short disclosure like \"I may earn a commission\" at the top of the post.",
+  },
+];
+
+const PostCard = memo(function PostCard({ post, index, copiedId, onCopy }: PostCardProps) {
+  const isCopied = copiedId === post.id;
+
+  return (
+    <article className="glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)] [content-visibility:auto] [contain-intrinsic-size:auto_180px]">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">
+          Variant {index + 1}
+        </p>
+        <button
+          type="button"
+          onClick={() => onCopy(post)}
+          className={clsx(
+            "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors",
+            isCopied
+              ? "bg-pulse-200 text-pulse-700"
+              : "bg-pulse-100 text-text-secondary hover:bg-pulse-100/70"
+          )}
+        >
+          {isCopied ? <Check size={12} /> : <Copy size={12} />}
+          {isCopied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">{post.body}</p>
+    </article>
+  );
+});
+
+function GenerationCard({
+  generation,
+  name,
+  open,
+  onToggle,
+  copiedId,
+  onCopy,
+}: {
+  generation: PostGeneration;
+  name: string;
+  open: boolean;
+  onToggle: () => void;
+  copiedId: string | null;
+  onCopy: (post: SavedPost) => void;
+}) {
+  const [copiedAll, setCopiedAll] = useState(false);
+
+  const copyAll = async () => {
+    try {
+      const text = generation.posts
+        .map((post, i) => `Variant ${i + 1}\n${post.body}`)
+        .join("\n\n---\n\n");
+      await navigator.clipboard.writeText(text);
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <section className="glass-card overflow-hidden">
+      <div className="flex flex-wrap items-center gap-2 pr-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          className="flex min-w-0 flex-1 items-center gap-3 p-4 text-left transition-colors hover:bg-canvas"
+        >
+          <ChevronDown
+            size={16}
+            className={clsx("shrink-0 text-text-muted transition-transform", open && "rotate-180")}
+          />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-text-primary">{name}</p>
+            <p className="text-xs text-text-muted">
+              Generated {formatThreadVersionDate(generation.createdAt)} · {generation.posts.length}{" "}
+              post{generation.posts.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => void copyAll()}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border-dim bg-white px-3 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:border-[var(--np-line-pulse)] hover:text-pulse-700"
+        >
+          {copiedAll ? <Check size={13} /> : <ClipboardCopy size={13} />}
+          {copiedAll ? "Copied!" : "Copy all"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="grid gap-3 border-t border-border-dim/70 p-4 sm:grid-cols-2">
+          {generation.posts.map((post, i) => (
+            <PostCard key={post.id} post={post} index={i} copiedId={copiedId} onCopy={onCopy} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 export default function SocialPayoutsPage() {
@@ -51,32 +189,39 @@ export default function SocialPayoutsPage() {
 
   const [selectedSiteId, setSelectedSiteId] = useState("");
   const [selectedAsset, setSelectedAsset] = useState<LiveAssetSummary | null>(null);
-  const [pins, setPins] = useState<PinRow[]>([]);
-  const [loadingPins, setLoadingPins] = useState(false);
+  const [postsBySite, setPostsBySite] = useState<Record<string, SavedPost[]>>({});
+  const [openBatchId, setOpenBatchId] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState("");
-  const [lastBatchId, setLastBatchId] = useState<string | null>(null);
 
-  const loadPins = useCallback(async (siteId: string) => {
+  const posts = useMemo(
+    () => postsBySite[selectedSiteId] ?? [],
+    [postsBySite, selectedSiteId]
+  );
+
+  const loadPosts = useCallback(async (siteId: string) => {
     if (!siteId) {
-      setPins([]);
       return;
     }
-    setLoadingPins(true);
-    setError("");
+
+    setLoadingPosts(true);
     try {
       const res = await fetch(`/api/premium/social-payouts?siteId=${encodeURIComponent(siteId)}`, {
         cache: "no-store",
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load pins");
-      setPins(Array.isArray(data.pins) ? data.pins : []);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load pins");
-      setPins([]);
+      if (res.ok) {
+        const loaded = (data.posts ?? []) as SavedPost[];
+        setPostsBySite((prev) => ({ ...prev, [siteId]: loaded }));
+      } else {
+        setError(typeof data.error === "string" ? data.error : "Failed to load posts");
+      }
+    } catch {
+      setError("Failed to load posts");
     } finally {
-      setLoadingPins(false);
+      setLoadingPosts(false);
     }
   }, []);
 
@@ -84,13 +229,32 @@ export default function SocialPayoutsPage() {
     (assetId: string, asset: LiveAssetSummary | null) => {
       setSelectedSiteId(assetId);
       setSelectedAsset(asset);
-      setLastBatchId(null);
-      void loadPins(assetId);
+      setOpenBatchId(null);
+      setError("");
+      if (assetId) {
+        void loadPosts(assetId);
+      }
     },
-    [loadPins]
+    [loadPosts]
   );
 
-  const generateExtraBatch = async () => {
+  const generations = useMemo<PostGeneration[]>(() => {
+    const map = new Map<string, PostGeneration>();
+    for (const post of posts) {
+      const batchId = post.batchId ?? "legacy";
+      let generation = map.get(batchId);
+      if (!generation) {
+        generation = { batchId, createdAt: post.createdAt ?? "", posts: [] };
+        map.set(batchId, generation);
+      }
+      generation.posts.push(post);
+    }
+    return [...map.values()];
+  }, [posts]);
+
+  const hasExistingPosts = posts.length > 0;
+
+  const handleGenerate = async () => {
     if (!selectedSiteId) {
       setError("Select a money page first.");
       return;
@@ -98,73 +262,88 @@ export default function SocialPayoutsPage() {
     setGenerating(true);
     setError("");
     try {
-      const res = await fetch("/api/pins/generate", {
+      const promoBase = selectedAsset?.publicUrl?.trim() || "";
+      const siteUrl = promoBase
+        ? `${promoBase}${promoBase.includes("?") ? "&" : "?"}src=facebook`
+        : undefined;
+
+      const res = await fetch("/api/premium/social-payouts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ siteId: selectedSiteId, extraBatch: true }),
+        body: JSON.stringify({ siteId: selectedSiteId, siteUrl }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to generate pins");
-      const newPins = (data.pins ?? []) as PinRow[];
-      setLastBatchId(newPins[0]?.batch_id ?? data.batchId ?? null);
-      await loadPins(selectedSiteId);
+      if (!res.ok) throw new Error(data.error || "Generation failed");
+      await loadPosts(selectedSiteId);
+      if (typeof data.batchId === "string" && data.batchId) {
+        setOpenBatchId(data.batchId);
+      }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate pins");
+      setError(e instanceof Error ? e.message : "Generation failed");
     } finally {
       setGenerating(false);
     }
   };
 
-  const copy = async (key: string, text: string) => {
+  const handleCopy = useCallback(async (post: SavedPost) => {
     try {
-      await navigator.clipboard.writeText(text);
-      setCopied(key);
-      window.setTimeout(() => setCopied(""), 2000);
+      await navigator.clipboard.writeText(post.body);
+      setCopiedId(post.id);
+      setTimeout(() => setCopiedId(null), 2000);
     } catch {
       /* ignore */
     }
-  };
-
-  const trackingBase = selectedAsset?.publicUrl ?? "";
-
-  const destination = (pinId: string) =>
-    pins.find((p) => p.id === pinId)?.trackingUrl ||
-    (trackingBase ? `${trackingBase}?pin=${pinId}&src=pinterest` : "");
-
-  const batches = useMemo(() => {
-    const map = new Map<string, PinRow[]>();
-    for (const pin of pins) {
-      const key = pin.batch_id || "legacy";
-      const list = map.get(key) ?? [];
-      list.push(pin);
-      map.set(key, list);
-    }
-    return Array.from(map.entries());
-  }, [pins]);
-
-  const latestBatchPins = lastBatchId
-    ? pins.filter((p) => p.batch_id === lastBatchId)
-    : batches[0]?.[1] ?? [];
+  }, []);
 
   return (
     <PremiumWorkflowShell
-      title="Pin Multiplier"
-      subtitle="Generate extra Pinterest pin batches for a live money page — new hooks and angles beyond your first 10."
+      title="Instant Income"
+      subtitle="Bulk Facebook posts — pick a live money page, generate 10 scroll-stopping variants with different hooks and angles, then copy and paste."
       training={{
-        vimeoId: "1215530104",
-        title: "Pin Multiplier Training",
+        vimeoId: "1215574185",
+        title: "Instant Income Training",
         description:
-          "Pick a live money page, generate another batch of Pinterest pins, then download and post with tracking links.",
-        iframeTitle: "Pin Multiplier training video",
+          "Watch how to turn one money page into 10+ scroll-stopping Facebook posts with different hooks and angles — then copy, paste, and post.",
+        iframeTitle: "Instant Income training video",
       }}
       tip={
         <>
-          Tip: Each batch appends to your pin vault — open{" "}
-          <span className="text-text-primary">Traffic</span> anytime to download images and copy.
+          Tip: Each generation is saved as its own post set. Visits from these posts show in Results with{" "}
+          <span className="text-text-primary">?src=facebook</span>.
         </>
       }
     >
-      <GlassPanel className="space-y-5 p-5 sm:p-6">
+      <PremiumStepsSection
+        steps={[
+          {
+            num: "1",
+            title: "Select a money page",
+            desc: "Pick any live money page — its tracking link gets baked into every post automatically.",
+          },
+          {
+            num: "2",
+            title: "Generate post variants",
+            desc: "One click creates 10 Facebook posts with different hooks and angles so you never sound repetitive.",
+          },
+          {
+            num: "3",
+            title: "Copy and post",
+            desc: "Copy your favorites and paste them into Facebook groups and pages. Every generation is saved as its own set.",
+          },
+        ]}
+      />
+
+      <PremiumBestPracticesSection
+        title="Facebook Posting Best Practices"
+        subtitle="Follow these and your posts keep reaching people instead of getting flagged."
+        items={FACEBOOK_BEST_PRACTICES}
+      />
+
+      <PremiumControlCard
+        icon={Megaphone}
+        title="Bulk post generator"
+        description="One money page → many scroll-stopping posts with your link baked in."
+      >
         <LiveAssetPicker
           value={selectedSiteId}
           preferredId={preferredId}
@@ -174,121 +353,79 @@ export default function SocialPayoutsPage() {
           disabled={generating}
         />
 
-        {selectedSiteId ? (
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              disabled={generating}
-              onClick={() => void generateExtraBatch()}
-              className="btn-primary inline-flex items-center gap-2 text-sm disabled:opacity-50"
-            >
-              {generating ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Sparkles size={14} />
-              )}
-              Generate 10 more pins
-            </button>
-            <Link
-              href={`/traffic/${selectedSiteId}`}
-              className="btn-secondary inline-flex items-center gap-2 text-sm"
-            >
-              <ImageIcon size={14} />
-              Open in Traffic
-              <ArrowRight size={14} />
-            </Link>
-            <p className="text-xs text-text-muted">
-              {pins.length} pin{pins.length === 1 ? "" : "s"} on this page
-              {batches.length > 1 ? ` · ${batches.length} batches` : ""}
-            </p>
-          </div>
-        ) : null}
+        {selectedAsset ? (
+          <p className="text-xs text-text-muted">
+            {selectedAsset.niche ? `Niche: ${selectedAsset.niche} · ` : ""}
+            Published
+            {posts.length > 0 ? ` · ${posts.length} saved posts` : ""}
+          </p>
+        ) : selectedSiteId ? null : (
+          <p className="text-xs text-text-muted">
+            Pick a live money page to see its saved post sets and generate new ones.
+          </p>
+        )}
 
         {error ? <PremiumErrorAlert message={error} /> : null}
-      </GlassPanel>
+
+        {selectedSiteId ? (
+          <div className="space-y-2">
+            <button
+              type="button"
+              disabled={generating || !selectedSiteId}
+              onClick={() => void handleGenerate()}
+              className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+            >
+              {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+              {generating
+                ? "Generating 10 posts…"
+                : hasExistingPosts
+                  ? "Generate new posts"
+                  : "Generate posts"}
+            </button>
+            {hasExistingPosts && !generating ? (
+              <p className="text-xs text-text-muted">
+                Each generation is saved as a new post set — your older sets stay below.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </PremiumControlCard>
 
       <GenerationProgress
         active={generating}
-        label="Generating an extra Pinterest pin batch with new angles…"
+        label="Generating 10 scroll-stopping Facebook post variants..."
       />
 
-      {loadingPins && pins.length === 0 ? (
-        <p className="inline-flex items-center gap-2 text-sm text-text-muted">
-          <Loader2 size={14} className="animate-spin" />
-          Loading pins…
-        </p>
-      ) : null}
+      {selectedSiteId && (loadingPosts || generations.length > 0) ? (
+        <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-3">
+          <h2 className="text-lg font-medium text-text-primary">
+            {loadingPosts && generations.length === 0
+              ? "Loading saved posts…"
+              : `Saved post sets (${generations.length})`}
+          </h2>
 
-      {latestBatchPins.length > 0 || pins.length > 0 ? (
-        <section id={GENERATION_RESULTS_ID} className="scroll-mt-24 space-y-4">
-          <div className="flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <h2 className="text-lg font-medium text-text-primary">
-                {lastBatchId ? "New pin batch" : "Your pins"}
-              </h2>
-              <p className="mt-1 text-sm text-text-muted">
-                Download the image, copy title and description, paste the tracking link on Pinterest.
-              </p>
+          {loadingPosts && generations.length === 0 ? (
+            <div className="flex items-center gap-2 rounded-xl border border-divider bg-canvas px-4 py-6 text-sm text-text-muted">
+              <Loader2 size={16} className="animate-spin" />
+              Loading saved posts…
             </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {(lastBatchId ? latestBatchPins : pins.slice(0, 10)).map((pin, index) => (
-              <GlassPanel key={pin.id} className="overflow-hidden p-0">
-                <div className="relative aspect-[2/3] bg-[var(--np-surface-field)]">
-                  {pin.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={pinImageSrc(pin.image_url)}
-                      alt={pin.headline}
-                      className="h-full w-full object-cover"
-                      loading={index < 3 ? "eager" : "lazy"}
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-xs text-text-muted">
-                      Pin {index + 1}
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-2 p-3">
-                  <p className="line-clamp-2 text-xs font-semibold text-text-primary">{pin.headline}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    <a
-                      href={pinDownloadHref(pin.image_url)}
-                      className="inline-flex items-center gap-1 rounded-md border border-[var(--np-line)] px-2 py-1 text-[11px] font-medium text-text-secondary hover:border-pulse-700 hover:text-pulse-700"
-                    >
-                      <Download size={11} />
-                      Image
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => void copy(`t${pin.id}`, pin.title)}
-                      className="inline-flex items-center gap-1 rounded-md border border-[var(--np-line)] px-2 py-1 text-[11px] font-medium text-text-secondary hover:border-pulse-700 hover:text-pulse-700"
-                    >
-                      {copied === `t${pin.id}` ? <Check size={11} /> : <Copy size={11} />}
-                      Title
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void copy(`d${pin.id}`, pin.description)}
-                      className="inline-flex items-center gap-1 rounded-md border border-[var(--np-line)] px-2 py-1 text-[11px] font-medium text-text-secondary hover:border-pulse-700 hover:text-pulse-700"
-                    >
-                      {copied === `d${pin.id}` ? <Check size={11} /> : <Copy size={11} />}
-                      Desc
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void copy(`l${pin.id}`, destination(pin.id))}
-                      className="inline-flex items-center gap-1 rounded-md border border-[var(--np-line)] px-2 py-1 text-[11px] font-medium text-text-secondary hover:border-pulse-700 hover:text-pulse-700"
-                    >
-                      {copied === `l${pin.id}` ? <Check size={11} /> : <Copy size={11} />}
-                      Link
-                    </button>
-                  </div>
-                </div>
-              </GlassPanel>
-            ))}
-          </div>
+          ) : (
+            generations.map((generation, i) => (
+              <GenerationCard
+                key={generation.batchId}
+                generation={generation}
+                name={`Post set #${generations.length - i}`}
+                open={openBatchId === generation.batchId}
+                onToggle={() =>
+                  setOpenBatchId((prev) =>
+                    prev === generation.batchId ? null : generation.batchId
+                  )
+                }
+                copiedId={copiedId}
+                onCopy={handleCopy}
+              />
+            ))
+          )}
         </section>
       ) : null}
     </PremiumWorkflowShell>

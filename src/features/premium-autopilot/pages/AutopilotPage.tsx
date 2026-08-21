@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Image as ImageIcon, Lightbulb, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Lightbulb } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
+import { PremiumStepsSection } from "@/components/premium/PremiumStepsSection";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { LiveAssetPicker, type LiveAssetSummary } from "@/components/premium/LiveAssetPicker";
 import { SourceCard } from "@/features/premium-autopilot/components/SourceCard";
@@ -20,6 +21,7 @@ import {
 } from "@/features/premium-autopilot/lib/traffic-sources";
 import {
   fetchAutopilotState,
+  fetchLatestLivePage,
   migrateLegacyCompletions,
   saveAutopilotSettings,
   setAutopilotCompletion,
@@ -47,11 +49,16 @@ export default function AutomatedProfitsPage() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [hydrated, setHydrated] = useState(false);
   const lastSavedUrl = useRef<string | null>(null);
+  const lastSavedNiche = useRef<string | null>(null);
+  const appliedAssetDefault = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const initialState = await fetchAutopilotState();
+      const [initialState, latestPage] = await Promise.all([
+        fetchAutopilotState(),
+        fetchLatestLivePage(),
+      ]);
       const state = await migrateLegacyCompletions(initialState);
       if (cancelled) return;
 
@@ -59,10 +66,16 @@ export default function AutomatedProfitsPage() {
       if (savedUrl) {
         setPageUrl(savedUrl);
         lastSavedUrl.current = savedUrl;
+      } else if (latestPage?.promotionUrl) {
+        setPageUrl(latestPage.promotionUrl);
+        lastSavedUrl.current = latestPage.promotionUrl;
       }
 
       const savedNiche = resolveAutopilotNiche(state?.selected_niche);
-      setSelectedNiche(savedNiche === "All" ? "All" : savedNiche);
+      const hasSavedNiche = savedNiche !== "All";
+      const defaultNiche = hasSavedNiche ? savedNiche : (latestPage?.niche ?? "All");
+      setSelectedNiche(defaultNiche);
+      if (hasSavedNiche) lastSavedNiche.current = savedNiche;
 
       if (state?.completed_source_ids?.length) {
         setCompleted(new Set(state.completed_source_ids));
@@ -74,14 +87,25 @@ export default function AutomatedProfitsPage() {
     };
   }, []);
 
-  const handleAssetChange = useCallback((assetId: string, asset: LiveAssetSummary | null) => {
-    setSelectedSiteId(assetId);
-    setSelectedAsset(asset);
-    if (asset?.publicUrl) {
-      setPageUrl(asset.publicUrl);
-      lastSavedUrl.current = null;
-    }
-  }, []);
+  const handleAssetChange = useCallback(
+    (assetId: string, asset: LiveAssetSummary | null) => {
+      setSelectedSiteId(assetId);
+      setSelectedAsset(asset);
+      if (asset?.publicUrl) {
+        setPageUrl(asset.publicUrl);
+        lastSavedUrl.current = null;
+      }
+
+      if (!appliedAssetDefault.current && asset?.niche && lastSavedNiche.current == null) {
+        const nicheFromAsset = resolveAutopilotNiche(asset.niche);
+        if (nicheFromAsset !== "All") {
+          setSelectedNiche(nicheFromAsset);
+          appliedAssetDefault.current = true;
+        }
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (!hydrated) return;
@@ -103,33 +127,64 @@ export default function AutomatedProfitsPage() {
       if (niche === selectedNiche) return;
       setSelectedNiche(niche);
       setVisibleCount(PAGE_SIZE);
-      await saveAutopilotSettings({ selected_niche: niche });
+      setExpandedId(null);
+      if (!hydrated) return;
+      if (lastSavedNiche.current === niche) return;
+      const ok = await saveAutopilotSettings({ selected_niche: niche });
+      if (ok) lastSavedNiche.current = niche;
     },
+    [selectedNiche, hydrated]
+  );
+
+  const toggleCompleted = useCallback(
+    async (id: string) => {
+      const wasDone = completed.has(id);
+      const nextDone = !wasDone;
+
+      setCompleted((prev) => {
+        const next = new Set(prev);
+        if (nextDone) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+
+      if (!hydrated) return;
+
+      const ok = await setAutopilotCompletion(id, nextDone);
+      if (!ok) {
+        setCompleted((prev) => {
+          const rollback = new Set(prev);
+          if (wasDone) rollback.add(id);
+          else rollback.delete(id);
+          return rollback;
+        });
+      }
+    },
+    [completed, hydrated]
+  );
+
+  const filteredSources = useMemo(
+    () => filterSourcesByNiche(selectedNiche),
     [selectedNiche]
   );
 
-  const filtered = useMemo(() => filterSourcesByNiche(selectedNiche), [selectedNiche]);
-  const visible = filtered.slice(0, visibleCount);
-  const progress = SOURCES.length ? Math.round((completed.size / SOURCES.length) * 100) : 0;
+  const visibleSources = useMemo(
+    () => filteredSources.slice(0, visibleCount),
+    [filteredSources, visibleCount]
+  );
 
-  const toggleComplete = async (id: string) => {
-    const next = !completed.has(id);
-    setCompleted((prev) => {
-      const copy = new Set(prev);
-      if (next) copy.add(id);
-      else copy.delete(id);
-      return copy;
-    });
-    const ok = await setAutopilotCompletion(id, next);
-    if (!ok) {
-      setCompleted((prev) => {
-        const copy = new Set(prev);
-        if (next) copy.delete(id);
-        else copy.add(id);
-        return copy;
-      });
-    }
-  };
+  const completedCount = useMemo(
+    () => filteredSources.filter((s) => completed.has(s.id)).length,
+    [filteredSources, completed]
+  );
+
+  const progressPercent =
+    filteredSources.length > 0
+      ? Math.round((completedCount / filteredSources.length) * 100)
+      : 0;
+
+  const hasMore = visibleCount < filteredSources.length;
+  const selectedSource = SOURCES.find((source) => source.id === expandedId) ?? null;
 
   const copyDescription = async (id: string) => {
     const source = SOURCES.find((s) => s.id === id);
@@ -145,28 +200,46 @@ export default function AutomatedProfitsPage() {
     }
   };
 
-  const expanded = expandedId ? SOURCES.find((s) => s.id === expandedId) ?? null : null;
-  const trafficHref = selectedSiteId ? `/traffic/${selectedSiteId}` : undefined;
-
   return (
     <PremiumWorkflowShell
-      title="Pinterest Autopilot"
-      subtitle="A guided Pinterest posting playbook for your live money page — not auto-publish. Download pins from Traffic, post manually, track in Results."
+      title="Automated Profits"
+      subtitle="180 practical traffic sources across 9 niches — choose the market your money page was built for and share it where it is genuinely useful."
       training={{
         vimeoId: "1215530104",
-        title: "Pinterest Autopilot Training",
+        title: "How to Use Automated Profits",
         description:
-          "Pick a live money page, work through the Pinterest checklist, and use Traffic to download pin images with tracking links.",
-        iframeTitle: "Pinterest Autopilot training video",
+          "Pick a live money page, filter by niche, follow each source’s steps, and copy the ready-made description with your tracking link.",
+        iframeTitle: "Automated Profits training video",
       }}
       tip={
         <>
-          Tip: This is a checklist for real Pinterest work. Use{" "}
-          <span className="text-text-primary">Traffic</span> for pin images — Autopilot does not
-          post for you.
+          Tip: Start with a few sources where you can genuinely help the audience. Read each
+          community&apos;s rules first, and only share your money page when it directly supports
+          your answer. Visits show up in Results.
         </>
       }
     >
+      <PremiumStepsSection
+        title="How This Works (Super Simple!)"
+        steps={[
+          {
+            num: "1",
+            title: "Pick Your Niche",
+            desc: "Choose the niche your money page was built for and get 20 practical traffic sources tailored to that market.",
+          },
+          {
+            num: "2",
+            title: "Share Your Money Page",
+            desc: "Follow the platform rules and use the step-by-step guidance to share your page where it directly helps the conversation.",
+          },
+          {
+            num: "3",
+            title: "Build Consistent Visibility",
+            desc: "Return to the sources that work for you, contribute useful answers, mark them complete, and check Results for visits.",
+          },
+        ]}
+      />
+
       <GlassPanel className="space-y-5 p-5 sm:p-6">
         <LiveAssetPicker
           value={selectedSiteId}
@@ -177,87 +250,112 @@ export default function AutomatedProfitsPage() {
         />
 
         {selectedAsset ? (
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-text-primary">{selectedAsset.productName}</p>
-              <p className="truncate text-xs text-text-muted">{pageUrl || selectedAsset.publicUrl}</p>
-            </div>
-            <Link
-              href={`/traffic/${selectedAsset.id}`}
-              className="btn-primary inline-flex items-center gap-2 text-sm"
-            >
-              <ImageIcon size={14} />
-              Open Traffic
-              <ArrowRight size={14} />
-            </Link>
+          <div className="rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] px-4 py-3">
+            <p className="text-sm font-medium text-text-primary">{selectedAsset.productName}</p>
+            <p className="truncate text-xs text-text-muted">{pageUrl || selectedAsset.publicUrl}</p>
+            <p className="mt-1 text-xs text-text-muted">
+              We insert this URL into every submission description below. Progress syncs to your
+              account.
+            </p>
           </div>
-        ) : null}
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <Lightbulb size={14} className="text-pulse-700" />
-            Progress: {completed.size}/{SOURCES.length} ({progress}%)
-          </div>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter playbook">
-            {NICHES.map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => void handleNicheChange(n)}
-                className={clsx("select-chip-pill", selectedNiche === n && "is-selected")}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
+        ) : pageUrl ? (
+          <p className="text-xs text-text-muted">
+            Promoting: <span className="break-all text-text-secondary">{pageUrl}</span>
+          </p>
+        ) : (
+          <p className="text-xs text-text-muted">
+            Select a live money page so we can insert the tracking link into each source
+            description.
+          </p>
+        )}
       </GlassPanel>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        {visible.map((source, index) => (
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by niche">
+        {NICHES.map((niche) => (
+          <button
+            key={niche}
+            type="button"
+            onClick={() => void handleNicheChange(niche)}
+            className={clsx("select-chip-pill", selectedNiche === niche && "is-selected")}
+          >
+            {niche}
+          </button>
+        ))}
+      </div>
+
+      <GlassPanel className="flex flex-col gap-3 p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h3 className="text-base font-medium text-text-primary">Your Progress</h3>
+            <p className="text-sm text-text-secondary">
+              {completedCount} of {filteredSources.length} sources completed
+            </p>
+          </div>
+          <div className="text-right">
+            <span className="text-2xl font-medium text-pulse-700">{progressPercent}%</span>
+            <p className="text-xs text-text-muted">Complete</p>
+          </div>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-surface">
+          <motion.div
+            className="h-full rounded-full bg-grad-pulse"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+        <p className="inline-flex items-center gap-1.5 text-xs text-text-muted">
+          <Lightbulb size={12} className="text-pulse-700" />
+          Progress is counted for the niche filter you have selected.
+        </p>
+      </GlassPanel>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+        {visibleSources.map((source, idx) => (
           <SourceCard
             key={source.id}
             source={source}
             isDone={completed.has(source.id)}
-            index={index}
+            index={idx}
             onView={() => setExpandedId(source.id)}
-            onToggleComplete={() => void toggleComplete(source.id)}
+            onToggleComplete={() => void toggleCompleted(source.id)}
           />
         ))}
       </div>
 
-      {visibleCount < filtered.length ? (
+      {hasMore ? (
         <div className="flex justify-center">
           <button
             type="button"
-            onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-            className="btn-secondary px-6 py-2 text-sm"
+            onClick={() =>
+              setVisibleCount((n) => Math.min(n + PAGE_SIZE, filteredSources.length))
+            }
+            className="btn-secondary px-6 py-3 text-sm"
           >
-            Load more
+            Show more sources ({filteredSources.length - visibleCount} remaining)
           </button>
         </div>
       ) : null}
 
       <SourceInstructionsOverlay
-        source={expanded}
-        isDone={expanded ? completed.has(expanded.id) : false}
-        copied={expanded ? copiedDescId === expanded.id : false}
+        source={selectedSource}
+        isDone={selectedSource ? completed.has(selectedSource.id) : false}
+        copied={selectedSource != null && copiedDescId === selectedSource.id}
         onClose={() => setExpandedId(null)}
         onToggleComplete={() => {
-          if (expanded) void toggleComplete(expanded.id);
+          if (selectedSource) void toggleCompleted(selectedSource.id);
         }}
         onCopyDescription={() => {
-          if (expanded) void copyDescription(expanded.id);
+          if (selectedSource) void copyDescription(selectedSource.id);
         }}
         renderCopy={(template) =>
           renderSourceCopy(
             template,
-            expanded
-              ? autopilotTrackingUrl(pageUrl, expanded.id) || pageUrl
+            selectedSource
+              ? autopilotTrackingUrl(pageUrl, selectedSource.id) || pageUrl
               : pageUrl
           )
         }
-        trafficHref={trafficHref}
       />
     </PremiumWorkflowShell>
   );

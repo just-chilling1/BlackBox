@@ -29,6 +29,7 @@ import {
   Calculator,
   Users,
   Zap,
+  Infinity,
   type LucideIcon,
 } from "lucide-react";
 import type { NavIconName } from "@/config/navigation.config";
@@ -64,6 +65,7 @@ const ICON_MAP: Record<NavIconName | "Target" | "Smartphone", LucideIcon> = {
   Calculator,
   Users,
   Zap,
+  Infinity,
 };
 
 export function getNavIcon(name: string): LucideIcon {

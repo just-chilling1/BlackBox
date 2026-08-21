@@ -101,14 +101,14 @@ export function buildSitePromoteContext(params: {
   const pageExcerpt = site.sales_page_html ? htmlToPlainText(site.sales_page_html) : "";
 
   const websiteLines = [
-    `Website: ${site.title}`,
+    `Money page title: ${site.title}`,
     site.tagline ? `Tagline: ${site.tagline}` : "",
     `Niche / territory: ${territory}`,
-    site.site_type === "product" ? "Site type: product promotion page" : "Site type: content site",
+    site.site_type === "product" ? "Page type: product money page" : "Page type: content money page",
   ].filter(Boolean);
 
   const productLines = [
-    affiliateLabel ? `Offer label: ${affiliateLabel}` : "",
+    affiliateLabel ? `Product label: ${affiliateLabel}` : "",
     scrapedProductContext?.trim() || "",
     salesCopySummary,
     !salesCopySummary && pageExcerpt ? `Page copy excerpt: ${pageExcerpt}` : "",
@@ -116,16 +116,16 @@ export function buildSitePromoteContext(params: {
 
   const productSummary =
     productLines.join("\n").trim() ||
-    `A ${territory} offer promoted through ${site.title}.`;
+    `A ${territory} product promoted through a money page titled ${site.title}.`;
 
   const websiteSummary = websiteLines.join("\n");
 
   const fullContext = [
-    "=== WEBSITE ===",
+    "=== MONEY PAGE ===",
     websiteSummary,
-    siteUrl ? `Offer page URL (use in CTA): ${siteUrl}` : "",
+    siteUrl ? `Money page URL (use in CTA): ${siteUrl}` : "",
     "",
-    "=== PRODUCT / OFFER ===",
+    "=== PRODUCT ===",
     productSummary,
   ]
     .filter(Boolean)

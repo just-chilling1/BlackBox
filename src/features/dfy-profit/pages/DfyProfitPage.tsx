@@ -128,6 +128,7 @@ export default function DfyProfitPage() {
       setSales({
         siteId,
         offerUrl: startData.offerUrl as string,
+        offerPath: (startData.offerPath as string | undefined) ?? `/m/${startData.slug as string}`,
         templateName: startData.templateName as string,
         templateId: startData.templateId as string,
         productName: (startData.productName as string) || "",

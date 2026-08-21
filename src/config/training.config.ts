@@ -4,9 +4,9 @@ export const trainingRoutes = {
 } as const;
 
 export const trainingContent = {
-  pageTitle: "Training",
+  pageTitle: "Academy",
   pageSubtitle:
-    "Click-by-click walkthroughs for NullPing Cash — watch in order after the Dashboard intro videos.",
+    "Click-by-click walkthroughs for NullPing Cash — start with the Dashboard intro videos, then work through the core tutorials below.",
   /** Used by global-top banner, sidebar promos, and modal-training */
   externalTrainingUrl: "https://perpetualincome365.convertri.com/7figure-everwebinar-registration#aff=DigitalAvalon&cam=membersarea",
   /** Academy platform tutorials — core NullPing workflow */

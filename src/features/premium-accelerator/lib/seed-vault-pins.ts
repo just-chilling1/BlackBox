@@ -14,6 +14,8 @@ export async function seedVaultPins(params: {
   entry: VaultCatalogEntry;
   scrapeUrl?: string | null;
   heroImage?: string | null;
+  /** Pre-seeded unique pin images — skips live scrape/resolve when present. */
+  preloadedPinImages?: string[] | null;
   salesPageJson?: Record<string, unknown> | null;
 }): Promise<number> {
   const { count } = await params.supabase
@@ -28,6 +30,7 @@ export async function seedVaultPins(params: {
     entry: params.entry,
     scrapeUrl: params.scrapeUrl,
     heroImage: params.heroImage,
+    preloadedPinImages: params.preloadedPinImages,
     userId: params.userId,
     supabase: params.supabase,
   });

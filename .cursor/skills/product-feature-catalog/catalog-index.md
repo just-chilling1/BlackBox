@@ -44,7 +44,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | `article-images` | CORE | Hero and social images for drafts | [article-images](features/article-images.md) |
 | `article-publish` | CORE | Preview, SEO meta, publish or export HTML | [article-publish](features/article-publish.md) |
 | `portfolio` | CORE | Saved drafts and published articles library | [portfolio](features/portfolio.md) |
-| `premium-10x` | PREMIUM | Bulk Facebook post variants from one article | [premium-10x](features/premium-10x.md) |
+| `premium-10x` | PREMIUM | Alias for Instant Income — bulk Facebook posts from a money page | [premium-10x](features/premium-10x.md) |
 | `premium-infinite` | PREMIUM | Batch-generate multiple articles from one niche | [premium-infinite](features/premium-infinite.md) |
 | `premium-automation` | PREMIUM | Publishing calendar and scheduled posts | [premium-automation](features/premium-automation.md) |
 
@@ -95,9 +95,9 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | `premium-dfy` | PREMIUM | Done-for-you vault (keywords, articles, images, leads, products) | [premium-dfy](features/premium-dfy.md) |
 | `premium-dfy-profit` | PREMIUM | One-click: link + niche → live sales page + 3 pins + article + 3 Facebook posts | [premium-dfy-profit](features/premium-dfy-profit.md) |
 | `premium-instant` | PREMIUM | Pre-written social posts with images | [premium-instant](features/premium-instant.md) |
-| `premium-autopilot` | PREMIUM | Pinterest posting playbook for a live money page | [premium-autopilot](features/premium-autopilot.md) |
+| `premium-autopilot` | PREMIUM | Curated traffic sources checklist for a live money page | [premium-autopilot](features/premium-autopilot.md) |
 | `premium-accelerator` | PREMIUM | 200 ready-made money pages — install + pins | [premium-accelerator](features/premium-accelerator.md) |
-| `premium-social` | PREMIUM | Pin Multiplier — extra Pinterest pin batches | [premium-social](features/premium-social.md) |
+| `premium-social` | PREMIUM | Instant Income — bulk Facebook posts from a live money page | [premium-social](features/premium-social.md) |
 | `protector` | PREMIUM | Real account status (email, session, activity) | [protector](features/protector.md) |
 | `premium-license-rights` | PREMIUM | Reseller license request on Account | [premium-license-rights](features/premium-license-rights.md) |
 

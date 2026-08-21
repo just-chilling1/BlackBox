@@ -98,7 +98,6 @@ export async function POST(request: Request) {
         {
           error:
             "Database setup incomplete. Run the license_rights_requests migration, then try again.",
-          useMailto: true,
         },
         { status: 503, headers: NO_STORE_HEADERS }
       );

@@ -172,16 +172,19 @@ export async function POST(request: Request) {
       .eq("id", siteId)
       .eq("user_id", user.id);
 
-    const offerUrl = buildOfferPageUrl(
-      getServerAppUrl(request),
-      siteSlug,
-      (result.site.owner_handle as string | null | undefined) ?? ownerHandle
-    );
+    const resolvedHandle =
+      (result.site.owner_handle as string | null | undefined) ?? ownerHandle;
+    const offerPath = sitePublicPath({
+      slug: siteSlug,
+      owner_handle: resolvedHandle,
+    });
+    const offerUrl = buildOfferPageUrl(getServerAppUrl(request), siteSlug, resolvedHandle);
 
     return NextResponse.json(
       {
         siteId,
         slug: siteSlug,
+        offerPath,
         offerUrl,
         templateId: template.id,
         templateName: template.name,

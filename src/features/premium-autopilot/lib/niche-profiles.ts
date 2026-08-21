@@ -25,7 +25,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#wellness", "#healthyhabits", "#healthtips"],
     keywords: ["wellness", "healthy habits", "preventive health"],
     directoryQuery: "health and wellness resource directories",
-    offerAngle: "a practical health and wellness resource page",
+    offerAngle: "a live money page for people comparing wellness options",
     demand: "high",
   },
   finance: {
@@ -36,7 +36,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#personalfinance", "#investing", "#moneymindset"],
     keywords: ["personal finance", "investing basics", "money management"],
     directoryQuery: "personal finance resource directories",
-    offerAngle: "a practical personal-finance resource page",
+    offerAngle: "a live money page for people comparing personal-finance options",
     demand: "high",
   },
   fitness: {
@@ -47,7 +47,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#fitness", "#workouttips", "#sportsperformance"],
     keywords: ["fitness", "workout planning", "sports performance"],
     directoryQuery: "fitness and sports resource directories",
-    offerAngle: "a practical fitness and sports resource page",
+    offerAngle: "a live money page for people comparing fitness and sports options",
     demand: "high",
   },
   marketing: {
@@ -58,7 +58,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#digitalmarketing", "#marketingtips", "#growthmarketing"],
     keywords: ["digital marketing", "content strategy", "audience growth"],
     directoryQuery: "digital marketing resource directories",
-    offerAngle: "a practical digital-marketing resource page",
+    offerAngle: "a live money page for people comparing digital-marketing options",
     demand: "medium",
   },
   selfhelp: {
@@ -69,7 +69,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#personaldevelopment", "#selfimprovement", "#mindset"],
     keywords: ["personal development", "self improvement", "goal setting"],
     directoryQuery: "personal development resource directories",
-    offerAngle: "a practical personal-development resource page",
+    offerAngle: "a live money page for people comparing personal-development options",
     demand: "medium",
   },
   beauty: {
@@ -80,7 +80,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#skincare", "#beautytips", "#makeup"],
     keywords: ["skincare", "beauty routines", "makeup advice"],
     directoryQuery: "beauty and skincare resource directories",
-    offerAngle: "a practical beauty and skincare resource page",
+    offerAngle: "a live money page for people comparing beauty and skincare options",
     demand: "high",
   },
   education: {
@@ -91,7 +91,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#learning", "#studytips", "#education"],
     keywords: ["learning", "study strategies", "online education"],
     directoryQuery: "education and learning resource directories",
-    offerAngle: "a practical education and learning resource page",
+    offerAngle: "a live money page for people comparing education and learning options",
     demand: "medium",
   },
   business: {
@@ -102,7 +102,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#entrepreneurship", "#smallbusiness", "#businesstips"],
     keywords: ["entrepreneurship", "small business", "business strategy"],
     directoryQuery: "business and entrepreneurship resource directories",
-    offerAngle: "a practical business and entrepreneurship resource page",
+    offerAngle: "a live money page for people comparing business and entrepreneurship options",
     demand: "high",
   },
   travel: {
@@ -113,7 +113,7 @@ export const AUTOPILOT_NICHE_PROFILES = {
     hashtags: ["#travel", "#travelplanning", "#lifestyle"],
     keywords: ["travel planning", "travel tips", "lifestyle"],
     directoryQuery: "travel and lifestyle resource directories",
-    offerAngle: "a practical travel and lifestyle resource page",
+    offerAngle: "a live money page for people comparing travel and lifestyle options",
     demand: "medium",
   },
 } as const satisfies Record<AutopilotNicheKey, AutopilotNicheProfile>;

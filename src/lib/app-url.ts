@@ -31,8 +31,13 @@ function getOriginFromRequest(request: Request): string | null {
   }
 }
 
-/** Resolve the public app origin on the server — avoids localhost when env is unset on Vercel. */
+/** Resolve the public app origin on the server — prefers the live request host over stale env. */
 export function getServerAppUrl(request?: Request): string {
+  if (request) {
+    const origin = getOriginFromRequest(request);
+    if (origin) return origin;
+  }
+
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
   if (configured && !isLocalhostUrl(configured)) {
     return stripTrailingSlash(configured);
@@ -43,13 +48,21 @@ export function getServerAppUrl(request?: Request): string {
     return `https://${stripTrailingSlash(vercelUrl)}`;
   }
 
-  if (request) {
-    const origin = getOriginFromRequest(request);
-    if (origin) return origin;
-  }
-
   if (configured) return stripTrailingSlash(configured);
   return stripTrailingSlash(getAppUrl());
+}
+
+/** Turn a relative public path into an absolute URL for the current app origin. */
+export function resolvePublicUrl(pathOrUrl: string, origin?: string): string {
+  const trimmed = pathOrUrl.trim();
+  if (!trimmed) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  const base =
+    origin ??
+    (typeof window !== "undefined" ? window.location.origin : getServerAppUrl());
+
+  return `${stripTrailingSlash(base)}${trimmed.startsWith("/") ? trimmed : `/${trimmed}`}`;
 }
 
 /** Path a site is served at — member-handle URLs for new sites, /sites/{slug} for legacy ones. */
@@ -65,8 +78,17 @@ export function buildOfferPageUrl(
   return `${stripTrailingSlash(appUrl)}${sitePublicPath({ slug, owner_handle: ownerHandle })}`;
 }
 
-/** Rewrite stored offer links that used localhost or the wrong host. */
+/** Rewrite stored money-page links that used localhost, a wrong host, or a legacy path. */
 export function resolveOfferPageLinksInText(text: string, offerPageUrl: string, slug: string): string {
   const escapedSlug = slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return text.replace(new RegExp(`https?:\\/\\/[^\\s]+\\/sites\\/${escapedSlug}`, "gi"), offerPageUrl);
+  const query = "(?:\\?[^\\s]*)?";
+  return text
+    .replace(
+      new RegExp(`https?:\\/\\/[^\\s]+\\/sites\\/${escapedSlug}${query}`, "gi"),
+      offerPageUrl
+    )
+    .replace(
+      new RegExp(`https?:\\/\\/[^\\s]+\\/m\\/${escapedSlug}${query}`, "gi"),
+      offerPageUrl
+    );
 }

@@ -3,7 +3,7 @@ export const FACEBOOK_POST_ANGLES = [
   {
     label: "Personal story",
     instruction:
-      "Open with a specific moment from your life (time, place, feeling). Share what changed after you found this offer.",
+      "Open with a specific moment from your life (time, place, feeling). Share what changed after you found this product.",
   },
   {
     label: "Pain point",
@@ -33,12 +33,12 @@ export const FACEBOOK_POST_ANGLES = [
   {
     label: "Quick tip",
     instruction:
-      "Lead with one actionable tip from the offer's world, then mention the full resource at the link.",
+      "Lead with one actionable tip from the product's world, then mention the full resource at the link.",
   },
   {
     label: "Contrarian take",
     instruction:
-      "Challenge a common belief in this niche, then explain what actually works — tied to the offer.",
+      "Challenge a common belief in this niche, then explain what actually works — tied to the product.",
   },
   {
     label: "List format",
@@ -70,7 +70,7 @@ export function buildFacebookPostUserPrompt(params: {
     .map((a, i) => `${i + 1}. ${a.label}: ${a.instruction}`)
     .join("\n");
 
-  return `Using this offer + website context, write exactly ${count} distinct Facebook posts.
+  return `Using this money page + product context, write exactly ${count} distinct Facebook posts.
 
 ${params.fullContext}
 

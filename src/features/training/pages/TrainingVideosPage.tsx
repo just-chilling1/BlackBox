@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CheckCircle2, Lightbulb, LucideIcon, Play, Star } from "lucide-react";
 import {
+  getAcademyOverview,
   getPlatformTutorialVideos,
   getPremiumTutorialVideos,
   trainingProTips,
@@ -10,6 +11,11 @@ import {
 import { TrainingPageLayout } from "../components/TrainingPageLayout";
 import { TrainingVideoCard } from "../components/TrainingVideoCard";
 import { TrainingCtaSection } from "../components/TrainingCtaSection";
+import {
+  AcademyOverview,
+  TrainingSectionNav,
+  type AcademySectionLink,
+} from "../components/TrainingSectionNav";
 
 function TrainingSectionHeader({
   icon: Icon,
@@ -36,10 +42,28 @@ function TrainingSectionHeader({
 export default function TrainingVideosPage() {
   const platformVideos = getPlatformTutorialVideos();
   const premiumVideos = getPremiumTutorialVideos();
+  const overview = getAcademyOverview();
+
+  const sectionLinks: AcademySectionLink[] = [
+    { id: "platform-tutorials", label: "Core tutorials" },
+    { id: "quick-reference", label: "Quick reference" },
+    ...(premiumVideos.length > 0
+      ? [{ id: "premium-tutorials", label: "Premium" } as AcademySectionLink]
+      : []),
+    { id: "launch-resources", label: "Launch resources" },
+  ];
 
   return (
     <TrainingPageLayout>
-      <section className="flex flex-col gap-6">
+      <AcademyOverview
+        platformCount={overview.platformCount}
+        premiumCount={overview.premiumCount}
+        faqCount={overview.faqCount}
+      />
+
+      <TrainingSectionNav sections={sectionLinks} />
+
+      <section id="platform-tutorials" className="scroll-mt-24 flex flex-col gap-6">
         <TrainingSectionHeader
           icon={Play}
           title="Platform Tutorials"
@@ -52,8 +76,10 @@ export default function TrainingVideosPage() {
         </div>
       </section>
 
-      <section className="glass-card p-5 sm:p-6">
-        <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-text-muted">Quick reference</h3>
+      <section id="quick-reference" className="scroll-mt-24 glass-card p-5 sm:p-6">
+        <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-text-muted">
+          Quick reference
+        </h3>
         <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trainingWorkflowSteps.map((step) => (
             <li key={step.step} className="flex gap-3">
@@ -74,20 +100,22 @@ export default function TrainingVideosPage() {
         </ol>
       </section>
 
-      <section className="flex flex-col gap-6">
-        <TrainingSectionHeader
-          icon={Star}
-          title="Premium Feature Tutorials"
-          subtitle="Scale after your first live money page — watch in any order"
-        />
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
-          {premiumVideos.map((video) => (
-            <TrainingVideoCard key={video.badge} video={video} />
-          ))}
-        </div>
-      </section>
+      {premiumVideos.length > 0 ? (
+        <section id="premium-tutorials" className="scroll-mt-24 flex flex-col gap-6">
+          <TrainingSectionHeader
+            icon={Star}
+            title="Premium Feature Tutorials"
+            subtitle="Scale after your first live money page — watch in any order"
+          />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7">
+            {premiumVideos.map((video) => (
+              <TrainingVideoCard key={video.badge} video={video} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div id="launch-resources" className="scroll-mt-24 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="glass-card p-5 sm:p-6">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-pulse-700" />

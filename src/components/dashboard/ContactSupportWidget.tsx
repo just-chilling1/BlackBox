@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Headphones, Loader2, Mail } from "lucide-react";
 import { getCachedClientUser } from "@/lib/auth-client-cache";
-import { APP_SUPPORT_NAME, FREE_TRAINING_URL, SUPPORT_EMAIL } from "@/lib/support";
+import { FREE_TRAINING_URL, SUPPORT_EMAIL } from "@/lib/support";
 import { trainingContent } from "@/config/training.config";
 import { supabase } from "@/lib/supabase";
 import { DashboardSection } from "./DashboardSection";
@@ -29,47 +29,25 @@ function trainingUpsellUrl(): string | null {
 
 async function parseJsonResponse(res: Response): Promise<{
   error?: string;
-  useMailto?: boolean;
   success?: boolean;
 } | null> {
   const text = await res.text();
   if (!text.trim()) return {};
 
   try {
-    return JSON.parse(text) as { error?: string; useMailto?: boolean; success?: boolean };
+    return JSON.parse(text) as { error?: string; success?: boolean };
   } catch {
     return null;
   }
 }
 
-function openSupportMailto(email: string, message: string) {
-  const subject = `${APP_SUPPORT_NAME} — Support Request`;
-  const body = `Please reply to: ${email}\n\n${message}`;
-  window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
-function finishWithMailto(
-  email: string,
-  message: string,
-  setSubmittedEmail: (value: string) => void,
-  setSentViaMailto: (value: boolean) => void,
-  setFormState: (value: FormState) => void
-) {
-  openSupportMailto(email, message);
-  setSubmittedEmail(email);
-  setSentViaMailto(true);
-  setFormState("success");
-}
-
 function SupportSuccessPanel({
   embedded,
   submittedEmail,
-  sentViaMailto,
   onReset,
 }: {
   embedded: boolean;
   submittedEmail: string;
-  sentViaMailto: boolean;
   onReset: () => void;
 }) {
   const upsellUrl = trainingUpsellUrl();
@@ -80,22 +58,10 @@ function SupportSuccessPanel({
         <div className="support-success-icon">
           <CheckCircle2 className="h-6 w-6" aria-hidden />
         </div>
-        <h3 className="support-success-title">
-          {sentViaMailto ? "Check your email app" : "Message sent"}
-        </h3>
+        <h3 className="support-success-title">Message sent</h3>
         <p className="support-success-body">
-          {sentViaMailto ? (
-            <>
-              Your email app should open with your message ready to send. Tap{" "}
-              <span className="font-medium text-text-heading">Send</span> to deliver it — then
-              we&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
-            </>
-          ) : (
-            <>
-              We&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>.
-            </>
-          )}{" "}
-          We usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
+          We&apos;ll reply to <span className="support-success-email">{submittedEmail}</span>. We
+          usually respond within about 2 hours — during busy periods, please allow 24–48 hours.
         </p>
         <p className="support-success-body">
           Remember: our reply will go to{" "}
@@ -138,7 +104,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const [message, setMessage] = useState("");
   const [formState, setFormState] = useState<FormState>("idle");
   const [submittedEmail, setSubmittedEmail] = useState("");
-  const [sentViaMailto, setSentViaMailto] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -150,7 +115,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
   const resetForm = () => {
     setFormState("idle");
     setMessage("");
-    setSentViaMailto(false);
     setErrorMessage("");
   };
 
@@ -198,47 +162,17 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
 
         const data = await parseJsonResponse(res);
 
-        if (data === null) {
-          finishWithMailto(
-            trimmedEmail,
-            trimmedMessage,
-            setSubmittedEmail,
-            setSentViaMailto,
-            setFormState
-          );
-          return;
-        }
-
-        if (res.status === 401) {
-          finishWithMailto(
-            trimmedEmail,
-            trimmedMessage,
-            setSubmittedEmail,
-            setSentViaMailto,
-            setFormState
-          );
-          return;
-        }
-
-        if (res.ok && data.success) {
+        if (res.ok && data?.success) {
           setSubmittedEmail(trimmedEmail);
-          setSentViaMailto(false);
           setFormState("success");
           return;
         }
 
-        if (data.useMailto) {
-          finishWithMailto(
-            trimmedEmail,
-            trimmedMessage,
-            setSubmittedEmail,
-            setSentViaMailto,
-            setFormState
-          );
-          return;
+        if (res.status === 401) {
+          throw new Error("Your session expired. Please refresh and try again.");
         }
 
-        throw new Error(data.error || "Something went wrong. Please try again.");
+        throw new Error(data?.error || "Something went wrong. Please try again.");
       } catch (err) {
         setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
         setFormState("error");
@@ -252,7 +186,6 @@ export function ContactSupportWidget({ embedded = false }: { embedded?: boolean 
       <SupportSuccessPanel
         embedded={embedded}
         submittedEmail={submittedEmail}
-        sentViaMailto={sentViaMailto}
         onReset={resetForm}
       />
     );

@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "setup:supabase-auth": "node scripts/apply-supabase-auth-setup.mjs",
-    "seed:recurring": "npx tsx scripts/seed-recurring-stream.ts"
+    "seed:recurring": "npx tsx scripts/seed-recurring-stream.ts",
+    "seed:accelerator": "npx tsx scripts/seed-accelerator-vault.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

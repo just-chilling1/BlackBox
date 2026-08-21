@@ -271,6 +271,8 @@ export async function fetchNicheRelatedImage(params: {
   niche?: string | null;
   productName?: string;
   seedOffset?: number;
+  excludeUrls?: string[];
+  excludeStockIds?: string[];
 }): Promise<string | null> {
   const niche = params.niche?.trim() || "";
   const nicheKey = resolvePremiumNicheValue(niche) ?? niche;
@@ -280,14 +282,18 @@ export async function fetchNicheRelatedImage(params: {
     HOBBY_VISUAL_QUERIES[niche],
     niche,
   ].filter((q): q is string => Boolean(q?.trim()));
+  const excludeUrls = params.excludeUrls ?? [];
+  const excludeStockIds = params.excludeStockIds ?? [];
 
   for (const query of queries) {
-    const url = await fetchPixabayImageUrl(productName, niche || productName, {
+    const hit = await fetchPixabayImage(productName, niche || productName, {
       customQuery: query,
       hobby: niche || undefined,
       seedBoost: params.seedOffset,
+      excludeUrls,
+      excludeStockIds,
     });
-    if (url) return url;
+    if (hit?.url && !isExcludedUrl(hit.url, excludeUrls)) return hit.url;
   }
   return null;
 }
