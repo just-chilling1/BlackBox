@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
+  ArrowLeft,
   ArrowRight,
   Copy,
   Download,
@@ -16,7 +18,6 @@ import {
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
-import { WorkflowStepsBar } from "@/components/ui/workflow-steps";
 import { sitePublicPath } from "@/lib/app-url";
 
 interface PinRow {
@@ -113,10 +114,13 @@ export default function TrafficPage() {
 
   return (
     <WorkflowPage className="traffic-workspace">
-      <WorkflowStepsBar current="traffic" assetId={assetId} />
+      <Link href="/traffic" className="traffic-back-link">
+        <ArrowLeft size={16} strokeWidth={2} aria-hidden />
+        Back to Traffic Generator
+      </Link>
       <PageHeader
-        eyebrow="Step 3"
-        title="Activate your traffic"
+        eyebrow="Pin workspace"
+        title="Generate Pinterest traffic"
         subtitle="NullPing prepares Pinterest pins that send visitors straight to your money page."
       />
 

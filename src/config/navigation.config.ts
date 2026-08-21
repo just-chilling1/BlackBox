@@ -49,6 +49,7 @@ export const homeNav: NavItem = {
 
 export const workflowSteps: NavItem[] = [
   { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator", workflowStep: 1 },
+  { path: "/traffic", label: "Traffic Generator", icon: "Image", feature: "traffic-pins" },
   { path: "/results", label: "Results", icon: "Activity", feature: "results", workflowStep: 2 },
 ];
 
@@ -119,7 +120,7 @@ export const premiumNav: NavItem[] = [
   { path: "/autopilot", label: "Pinterest Autopilot", icon: "Rocket", feature: "premium-autopilot" },
   { path: "/recurring-wealth", label: "Authority Boosters", icon: "Repeat", feature: "premium-recurring" },
   { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
-  { path: "/license-rights", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },
+  { path: "/account#license", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },
 ];
 
 export const premiumSectionLabel = "Premium Features";
@@ -128,6 +129,7 @@ export const premiumSectionLabel = "Premium Features";
 export const bottomNavTabs: NavItem[] = [
   homeNav,
   { path: "/activate", label: "Activate", icon: "Zap", feature: "asset-activator" },
+  { path: "/traffic", label: "Traffic", icon: "Image", feature: "traffic-pins" },
   { path: "/results", label: "Results", icon: "Activity", feature: "results" },
 ];
 

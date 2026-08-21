@@ -81,7 +81,7 @@ export const faqSections: FaqSection[] = [
     items: [
       {
         q: "What is Asset Vault?",
-        a: "Asset Vault gives you access to 200 ready-made money pages across popular niches. Add your affiliate link, pick a page, install it instantly, then generate Pinterest pins on the Traffic step.",
+        a: "Asset Vault gives you access to 200 ready-made money pages across popular niches. Add your affiliate link, install a page with 10 pins, optionally regenerate AI pins, then continue to Traffic and Results.",
       },
       {
         q: "What is One-Click Asset?",
@@ -89,23 +89,23 @@ export const faqSections: FaqSection[] = [
       },
       {
         q: "What is Pin Multiplier?",
-        a: "Pin Multiplier bulk-generates multiple social post variants from one offer so you can promote the same money page with different hooks and angles without rewriting each time.",
+        a: "Pin Multiplier generates extra Pinterest pin batches for a live money page — new hooks and angles beyond your first 10. Download images from Traffic and use each pin’s tracking link when you post.",
       },
       {
         q: "What is Pinterest Autopilot?",
-        a: "Pinterest Autopilot is a curated traffic-source checklist. Save your promotion URL, browse suggested places to post, copy snippets, and mark sources complete as you go.",
+        a: "Pinterest Autopilot is a guided Pinterest posting playbook for your live money page. It does not auto-publish — you download pins from Traffic, post manually, check off steps, and track visits in Results.",
       },
       {
         q: "What are Authority Boosters?",
-        a: "Authority Boosters are ready-to-publish authority articles. Filter by niche, weave in your affiliate link, then copy the article for your blog, Medium, LinkedIn, Quora, or similar platforms.",
+        a: "Authority Boosters add long-form authority sections to your money page (primary), with optional copy for Medium, LinkedIn, or your blog. CTAs use your /m page tracking URL with ?src=article.",
       },
       {
         q: "What is Cyber Protection?",
-        a: "Cyber Protection is your account security overview — verification status, security checks, and recent activity — so you can keep your member account in good standing.",
+        a: "Cyber Protection shows real account status — email confirmation, session, HTTPS, and recent money-page / pin / visit activity. Manage profile and license from Account.",
       },
       {
         q: "What is Reseller & License Rights?",
-        a: "Use Reseller & License Rights to request turnkey reseller activation. Submit the form and our team reviews the request. You will see a pending status until activation is completed.",
+        a: "Open Account → Reseller & License Rights to request turnkey reseller activation. Submit the form and our team reviews the request. You will see a pending status until activation is completed.",
       },
     ],
   },

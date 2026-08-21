@@ -1,83 +1,15 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
-import { getApiUser, getServiceRoleClient } from "@/lib/api-auth";
+import { getApiUser } from "@/lib/api-auth";
 import { NO_STORE_HEADERS } from "@/lib/api-cache-headers";
-import {
-  buildOfferPageUrl,
-  getServerAppUrl,
-  resolveOfferPageLinksInText,
-} from "@/lib/app-url";
-import { saveFacebookPostBatch, listFacebookPostsForSite } from "@/features/blog-builder/lib/facebook-posts-vault";
-import { generateFacebookPostsForOffer } from "@/features/publish-kit/lib/generate-facebook-posts";
-import type { BlogSite } from "@/features/blog-builder/types";
+import { buildOfferPageUrl, getServerAppUrl } from "@/lib/app-url";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
 
-/** Social Payouts (10x): bulk-generate Facebook post variants from a member's offer/site. */
-export async function POST(request: Request) {
-  const guard = featureApiGuard("premium-social");
-  if (guard) return guard;
-
-  const { supabase, user } = await getApiUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE_HEADERS });
-  }
-
-  const body = await request.json().catch(() => ({}));
-  const siteId = typeof body.siteId === "string" ? body.siteId.trim() : "";
-  const siteUrlInput = typeof body.siteUrl === "string" ? body.siteUrl.trim() : "";
-
-  if (!siteId) {
-    return NextResponse.json({ error: "siteId is required" }, { status: 400, headers: NO_STORE_HEADERS });
-  }
-
-  const { data: siteRow } = await supabase
-    .from("sites")
-    .select("*")
-    .eq("id", siteId)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!siteRow) {
-    return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
-  }
-
-  const site = siteRow as BlogSite;
-  const promoLink =
-    siteUrlInput || buildOfferPageUrl(getServerAppUrl(request), site.slug, site.owner_handle);
-
-  try {
-    const scrapeClient = getServiceRoleClient();
-    const generated = await generateFacebookPostsForOffer({
-      site,
-      promoLink,
-      scrapeClient,
-    });
-
-    const saved = await saveFacebookPostBatch(supabase, user.id, siteId, generated);
-
-    return NextResponse.json(
-      {
-        posts: saved.map((p) => ({
-          id: p.id,
-          body: p.body,
-          batchId: p.batch_id,
-          createdAt: p.created_at,
-        })),
-        batchId: saved[0]?.batch_id ?? null,
-        promoLink,
-        count: saved.length,
-      },
-      { headers: NO_STORE_HEADERS }
-    );
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Generation failed";
-    const status = msg.includes("no posts") ? 502 : 500;
-    return NextResponse.json({ error: msg }, { status, headers: NO_STORE_HEADERS });
-  }
-}
-
+/**
+ * Pin Multiplier: list existing site_pins for a money page.
+ * Generation is handled by POST /api/pins/generate with { extraBatch: true }.
+ */
 export async function GET(request: Request) {
   const guard = featureApiGuard("premium-social");
   if (guard) return guard;
@@ -94,30 +26,46 @@ export async function GET(request: Request) {
 
   const { data: siteRow } = await supabase
     .from("sites")
-    .select("slug, owner_handle")
+    .select("id, slug, owner_handle, product_name, title, status")
     .eq("id", siteId)
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (!siteRow?.slug) {
-    return NextResponse.json({ error: "Offer not found" }, { status: 404, headers: NO_STORE_HEADERS });
+    return NextResponse.json({ error: "Money page not found" }, { status: 404, headers: NO_STORE_HEADERS });
   }
 
-  const offerPageUrl = buildOfferPageUrl(
-    getServerAppUrl(request),
-    siteRow.slug,
-    siteRow.owner_handle
-  );
-  const posts = await listFacebookPostsForSite(supabase, user.id, siteId);
+  const { data: pins, error } = await supabase
+    .from("site_pins")
+    .select("id, headline, title, description, keywords, image_url, batch_id, created_at, idx")
+    .eq("user_id", user.id)
+    .eq("site_id", siteId)
+    .order("created_at", { ascending: false })
+    .order("idx", { ascending: true });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500, headers: NO_STORE_HEADERS });
+  }
+
+  const origin = getServerAppUrl(request);
+  const publicUrl = buildOfferPageUrl(origin, siteRow.slug, siteRow.owner_handle);
+
+  const withImages = (pins ?? []).map((pin) => ({
+    ...pin,
+    image_url:
+      typeof pin.image_url === "string" && pin.image_url.startsWith("http")
+        ? `/api/pins/${pin.id}/image?v=7`
+        : pin.image_url || `/api/pins/${pin.id}/image?v=7`,
+    trackingUrl: `${publicUrl}?pin=${pin.id}&src=pinterest`,
+  }));
 
   return NextResponse.json(
     {
-      posts: posts.map((p) => ({
-        id: p.id,
-        body: resolveOfferPageLinksInText(p.body, offerPageUrl, siteRow.slug),
-        batchId: p.batch_id,
-        createdAt: p.created_at,
-      })),
+      pins: withImages,
+      pinCount: withImages.length,
+      publicUrl,
+      productName: siteRow.product_name || siteRow.title,
+      status: siteRow.status,
     },
     { headers: NO_STORE_HEADERS }
   );

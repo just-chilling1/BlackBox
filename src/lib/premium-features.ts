@@ -16,11 +16,11 @@ export const PREMIUM_SECTION_LABEL = premiumSectionLabel;
 const PREMIUM_DESCRIPTIONS: Record<string, string> = {
   "/accelerator": "200 pre-made money pages — clone one, then generate pins.",
   "/dfy-profit": "One click: money page plus 10 Pinterest traffic assets.",
-  "/social-payouts": "Extra pin batches beyond the first 10 for a live money page.",
-  "/autopilot": "Curated Pinterest boards and traffic sources for your live page.",
-  "/recurring-wealth": "Supporting authority articles attached to a money page.",
-  "/protector": "Account security score and verification trust layer.",
-  "/license-rights": "Request reseller license rights — our team activates the edition.",
+  "/social-payouts": "Extra Pinterest pin batches for a live money page.",
+  "/autopilot": "Pinterest posting playbook tied to your live money page.",
+  "/recurring-wealth": "Authority article sections that strengthen a money page.",
+  "/protector": "Real account status — email, session, and recent activity.",
+  "/account#license": "Request reseller license rights — our team activates the edition.",
 };
 
 /**

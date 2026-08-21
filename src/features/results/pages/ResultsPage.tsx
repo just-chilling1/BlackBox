@@ -144,7 +144,7 @@ export default function ResultsPage() {
     <WorkflowPage className="results-workspace">
       <WorkflowStepsBar current="results" />
       <PageHeader
-        eyebrow="Step 4"
+        eyebrow="Step 3"
         title="Your results"
         subtitle="These numbers come from real visits and clicks — nothing is simulated."
       />

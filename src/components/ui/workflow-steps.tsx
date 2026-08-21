@@ -4,12 +4,11 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { Check } from "lucide-react";
 
-export type WorkflowStepId = "activate" | "money-page" | "traffic" | "results";
+export type WorkflowStepId = "activate" | "money-page" | "results";
 
 const STEPS: { id: WorkflowStepId; label: string; path: (assetId?: string) => string | null }[] = [
   { id: "activate", label: "Activate", path: () => "/activate" },
   { id: "money-page", label: "Money page", path: (id) => (id ? `/money-page/${id}` : null) },
-  { id: "traffic", label: "Traffic", path: (id) => (id ? `/traffic/${id}` : null) },
   { id: "results", label: "Results", path: () => "/results" },
 ];
 

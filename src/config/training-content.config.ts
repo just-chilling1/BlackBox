@@ -69,7 +69,7 @@ export const trainingPremiumVideos = [
     badge: "Asset Vault",
     title: "Asset Vault",
     description:
-      "Install from two hundred ready-made money pages — swap in your affiliate link, then generate Pinterest pins.",
+      "Install from two hundred ready-made money pages — swap in your affiliate link, get 10 pins, then finish Traffic → Results.",
     duration: "5+ min",
   },
   {
@@ -77,7 +77,7 @@ export const trainingPremiumVideos = [
     badge: "Authority Boosters",
     title: "Authority Boosters",
     description:
-      "Use ready-to-publish authority articles with your affiliate link woven in for blogs, Medium, LinkedIn, and more.",
+      "Add authority article sections to your money page — CTAs use your /m tracking URL. Copy for external posts is optional.",
     duration: "5+ min",
   },
   {
@@ -85,7 +85,7 @@ export const trainingPremiumVideos = [
     badge: "Pin Multiplier",
     title: "Pin Multiplier",
     description:
-      "Bulk-generate social post variants from one offer — different hooks and angles, ready to copy and share.",
+      "Generate extra Pinterest pin batches for a live money page — new hooks and angles beyond your first 10.",
     duration: "5+ min",
   },
   {
@@ -93,7 +93,7 @@ export const trainingPremiumVideos = [
     badge: "Cyber Protection",
     title: "Cyber Protection",
     description:
-      "Account security dashboard — verification status, encryption checks, and activity log for peace of mind.",
+      "Real account status — email confirmation, session, HTTPS, and recent money-page activity. Manage license on Account.",
     duration: "2+ min",
   },
 ] as const;

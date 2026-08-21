@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ShieldCheck,
   Lock,
   CheckCircle,
-  Globe,
-  UserCheck,
+  Mail,
   KeyRound,
-  Eye,
-  Server,
-  Wifi,
   Clock,
+  Activity,
+  Image as ImageIcon,
+  Globe,
+  AlertCircle,
 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { PageLoading } from "@/components/ui/page-loading";
@@ -21,134 +22,253 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { brand } from "@/config/brand.config";
 
-const securityChecks = [
-  {
-    label: "Account Verified",
-    description: "Your email address has been verified and confirmed",
-    icon: UserCheck,
-  },
-  {
-    label: "Secure Connection",
-    description: "All data is transmitted over encrypted HTTPS connection",
-    icon: Lock,
-  },
-  {
-    label: "Session Protected",
-    description: "Your session is authenticated with a secure token",
-    icon: KeyRound,
-  },
-  {
-    label: "Data Encryption",
-    description: "All personal and financial data is encrypted at rest",
-    icon: Eye,
-  },
-  {
-    label: "Server Status",
-    description: `All ${brand.productName} servers are online and operational`,
-    icon: Server,
-  },
-  {
-    label: "API Connectivity",
-    description: "Connection to Digistore24 and traffic APIs is stable",
-    icon: Wifi,
-  },
-];
+interface AccountActivity {
+  lastPublishAt: string | null;
+  lastPinAt: string | null;
+  lastVisitAt: string | null;
+  livePages: number;
+  pinCount: number;
+}
 
-const activityLog = [
-  { event: "Successful login", offsetMinutes: 0, icon: UserCheck },
-  { event: "Session renewed", offsetMinutes: 2, icon: KeyRound },
-  { event: "Security scan completed", offsetMinutes: 15, icon: ShieldCheck },
-  { event: "SSL certificate verified", offsetMinutes: 60, icon: Lock },
-  { event: "System health check passed", offsetMinutes: 180, icon: Server },
-];
-
-function formatRelativeTime(iso: string | undefined, fallbackMinutes: number): string {
-  if (!iso) {
-    if (fallbackMinutes === 0) return "Just now";
-    if (fallbackMinutes < 60) return `${fallbackMinutes} minutes ago`;
-    const h = Math.floor(fallbackMinutes / 60);
-    return h === 1 ? "1 hour ago" : `${h} hours ago`;
-  }
-
+function formatRelativeTime(iso: string | null | undefined): string {
+  if (!iso) return "—";
   const diffMs = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diffMs / 60_000);
   if (mins < 1) return "Just now";
   if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"} ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
-  return "Today";
-}
-
-function formatLastLogin(iso: string | undefined): string {
-  if (!iso) return "Today";
-  const hours = Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
-  return hours < 24 ? "Today" : formatRelativeTime(iso, 0);
+  const days = Math.floor(hours / 24);
+  if (days < 14) return days === 1 ? "1 day ago" : `${days} days ago`;
+  try {
+    return new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" });
+  } catch {
+    return iso;
+  }
 }
 
 export default function ProtectorPage() {
   const [loading, setLoading] = useState(true);
-  const [userEmail, setUserEmail] = useState("user@example.com");
+  const [userEmail, setUserEmail] = useState("");
   const [lastSignIn, setLastSignIn] = useState<string | undefined>();
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
+  const [isHttps, setIsHttps] = useState(true);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [activity, setActivity] = useState<AccountActivity>({
+    lastPublishAt: null,
+    lastPinAt: null,
+    lastVisitAt: null,
+    livePages: 0,
+    pinCount: 0,
+  });
 
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
+    setIsHttps(typeof window !== "undefined" ? window.location.protocol === "https:" : true);
+
+    void (async () => {
+      const [{ data: userData }, { data: sessionData }] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.auth.getSession(),
+      ]);
+      const user = userData.user;
       if (user?.email) setUserEmail(user.email);
       setLastSignIn(user?.last_sign_in_at ?? undefined);
+      setEmailConfirmed(Boolean(user?.email_confirmed_at));
+      setHasSession(Boolean(sessionData.session));
+
+      if (user) {
+        const { data: sites } = await supabase
+          .from("sites")
+          .select("id, status, updated_at, created_at")
+          .eq("user_id", user.id)
+          .eq("is_template", false)
+          .order("updated_at", { ascending: false })
+          .limit(50);
+
+        const siteList = sites ?? [];
+        const live = siteList.filter((s) => s.status === "live");
+        const siteIds = siteList.map((s) => s.id);
+
+        let lastPinAt: string | null = null;
+        let lastVisitAt: string | null = null;
+        let pinCount = 0;
+
+        if (siteIds.length > 0) {
+          const [{ data: pins }, { count }, { data: visits }] = await Promise.all([
+            supabase
+              .from("site_pins")
+              .select("created_at")
+              .eq("user_id", user.id)
+              .in("site_id", siteIds)
+              .order("created_at", { ascending: false })
+              .limit(1),
+            supabase
+              .from("site_pins")
+              .select("*", { count: "exact", head: true })
+              .eq("user_id", user.id)
+              .in("site_id", siteIds),
+            supabase
+              .from("page_visits")
+              .select("created_at")
+              .in("site_id", siteIds)
+              .order("created_at", { ascending: false })
+              .limit(1),
+          ]);
+          lastPinAt = pins?.[0]?.created_at ?? null;
+          lastVisitAt = visits?.[0]?.created_at ?? null;
+          pinCount = count ?? 0;
+        }
+
+        setActivity({
+          lastPublishAt: live[0]?.updated_at ?? live[0]?.created_at ?? null,
+          lastPinAt,
+          lastVisitAt,
+          livePages: live.length,
+          pinCount,
+        });
+      }
+
       setLoading(false);
-    });
+    })();
   }, []);
 
-  const activity = useMemo(
-    () =>
-      activityLog.map((item, i) => ({
-        ...item,
-        time:
-          i === 0 && lastSignIn
-            ? formatRelativeTime(lastSignIn, 0)
-            : formatRelativeTime(undefined, item.offsetMinutes),
-      })),
-    [lastSignIn]
-  );
+  const checks = useMemo(() => {
+    const items: Array<{
+      label: string;
+      description: string;
+      ok: boolean;
+      icon: typeof CheckCircle;
+    }> = [
+      {
+        label: emailConfirmed ? "Email confirmed" : "Email not confirmed",
+        description: emailConfirmed
+          ? "Your email address is verified on this account."
+          : "Confirm your email to keep account recovery options working.",
+        ok: emailConfirmed,
+        icon: Mail,
+      },
+      {
+        label: hasSession ? "Session active" : "No active session",
+        description: hasSession
+          ? "You are signed in with a valid auth session."
+          : "Sign in again to restore your session.",
+        ok: hasSession,
+        icon: KeyRound,
+      },
+      {
+        label: isHttps ? "Secure connection (HTTPS)" : "Insecure connection",
+        description: isHttps
+          ? "This page is served over HTTPS."
+          : "You are not on HTTPS — use the production app URL.",
+        ok: isHttps,
+        icon: Lock,
+      },
+      {
+        label: `${activity.livePages} live money page${activity.livePages === 1 ? "" : "s"}`,
+        description: "Published NullPing money pages on your account.",
+        ok: activity.livePages > 0,
+        icon: Globe,
+      },
+    ];
+    return items;
+  }, [emailConfirmed, hasSession, isHttps, activity.livePages]);
+
+  const resendConfirmation = async () => {
+    if (!userEmail) return;
+    setResendState("sending");
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: userEmail,
+    });
+    setResendState(error ? "error" : "sent");
+  };
 
   if (loading) {
-    return <PageLoading message="Loading Cyber Protection..." />;
+    return <PageLoading message="Loading account status..." />;
   }
 
   return (
     <PremiumWorkflowShell
       title="Cyber Protection"
-      subtitle="Your account security overview — membership verification, encryption status, and activity monitoring."
+      subtitle="Real account and activity status for your NullPing membership — no fake security scores."
       training={{
         vimeoId: "1215579801",
         title: "Cyber Protection Training",
         description:
-          "Watch what Cyber Protection monitors for you — account verification, encryption, and session security — and how to read your security overview.",
+          "See what is real on this page: email confirmation, session, HTTPS, and recent money-page activity.",
         iframeTitle: "Cyber Protection training video",
       }}
+      tip={
+        <>
+          Tip: Manage profile and reseller license on{" "}
+          <Link href="/account" className="text-pulse-700 underline">
+            Account
+          </Link>
+          .
+        </>
+      }
     >
       <GlassPanel className="space-y-5 p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-text-primary">Security overview</p>
+            <p className="text-sm font-medium text-text-primary">Account status</p>
             <p className="mt-1 text-xs text-text-muted">
-              Everything is monitored in real time.
+              Facts from your {brand.productName} session and assets.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-4 py-3">
-            <div className="h-3 w-3 animate-pulse rounded-full bg-success shadow-[0_0_10px_rgba(16,185,129,0.35)]" />
-            <span className="text-sm font-medium uppercase tracking-wider text-success">
-              All Systems Secure
+          <div
+            className={cn(
+              "flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3",
+              emailConfirmed && hasSession && isHttps
+                ? "border-success/20 bg-success/10"
+                : "border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10"
+            )}
+          >
+            {emailConfirmed && hasSession && isHttps ? (
+              <ShieldCheck className="h-4 w-4 text-success" />
+            ) : (
+              <AlertCircle className="h-4 w-4 text-[var(--np-warning)]" />
+            )}
+            <span
+              className={cn(
+                "text-sm font-medium uppercase tracking-wider",
+                emailConfirmed && hasSession && isHttps
+                  ? "text-success"
+                  : "text-[var(--np-warning)]"
+              )}
+            >
+              {emailConfirmed && hasSession && isHttps ? "Account healthy" : "Action recommended"}
             </span>
           </div>
         </div>
 
         <div className="stat-grid">
           {[
-            { label: "Security Score", value: "100%", icon: ShieldCheck, color: "text-success" },
-            { label: "Account Status", value: "Verified", icon: CheckCircle, color: "text-success" },
-            { label: "Encryption", value: "AES-256", icon: Lock, color: "text-ink-3" },
-            { label: "Uptime", value: "99.9%", icon: Globe, color: "text-blue-600" },
+            {
+              label: "Email",
+              value: emailConfirmed ? "Confirmed" : "Unconfirmed",
+              icon: Mail,
+              color: emailConfirmed ? "text-success" : "text-[var(--np-warning)]",
+            },
+            {
+              label: "Session",
+              value: hasSession ? "Active" : "None",
+              icon: KeyRound,
+              color: hasSession ? "text-success" : "text-[var(--np-warning)]",
+            },
+            {
+              label: "Last sign-in",
+              value: formatRelativeTime(lastSignIn),
+              icon: Clock,
+              color: "text-text-secondary",
+            },
+            {
+              label: "Connection",
+              value: isHttps ? "HTTPS" : "HTTP",
+              icon: Lock,
+              color: isHttps ? "text-success" : "text-[var(--np-warning)]",
+            },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -156,14 +276,14 @@ export default function ProtectorPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <div className="rounded-[var(--np-r-lg)] border border-[var(--np-line)] bg-[var(--np-surface-field)] p-5 transition-colors hover:border-success/20">
+              <div className="rounded-[var(--np-r-lg)] border border-[var(--np-line)] bg-[var(--np-surface-field)] p-5">
                 <div className="mb-3 flex items-center gap-3">
                   <stat.icon className={cn("h-5 w-5", stat.color)} />
                   <span className="text-[13px] font-medium uppercase tracking-wider text-text-muted">
                     {stat.label}
                   </span>
                 </div>
-                <div className="text-2xl font-medium text-text-heading">{stat.value}</div>
+                <div className="truncate text-xl font-medium text-text-heading">{stat.value}</div>
               </div>
             </motion.div>
           ))}
@@ -172,71 +292,125 @@ export default function ProtectorPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          <h2 className="text-lg font-medium text-text-heading">Security Checks</h2>
+          <h2 className="text-lg font-medium text-text-heading">Status checks</h2>
           <div className="space-y-3">
-            {securityChecks.map((check, i) => (
+            {checks.map((check, i) => (
               <motion.div
                 key={check.label}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + i * 0.06 }}
+                transition={{ delay: 0.2 + i * 0.05 }}
               >
-                <GlassPanel
-                  intensity="low"
-                  className="p-4 transition-all duration-300 hover:border-success/20"
-                >
+                <GlassPanel intensity="low" className="p-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-success/20 bg-success/10">
-                      <check.icon className="h-5 w-5 text-success" />
+                    <div
+                      className={cn(
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border",
+                        check.ok
+                          ? "border-success/20 bg-success/10"
+                          : "border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10"
+                      )}
+                    >
+                      <check.icon
+                        className={cn(
+                          "h-5 w-5",
+                          check.ok ? "text-success" : "text-[var(--np-warning)]"
+                        )}
+                      />
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-sm font-medium text-text-primary">{check.label}</h3>
                       <p className="text-xs text-text-muted">{check.description}</p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-success" />
-                      <span className="text-[13px] font-medium uppercase tracking-wider text-success">
-                        Verified
-                      </span>
-                    </div>
+                    <span
+                      className={cn(
+                        "text-[13px] font-medium uppercase tracking-wider",
+                        check.ok ? "text-success" : "text-[var(--np-warning)]"
+                      )}
+                    >
+                      {check.ok ? "OK" : "Review"}
+                    </span>
                   </div>
                 </GlassPanel>
               </motion.div>
             ))}
           </div>
+
+          {!emailConfirmed ? (
+            <div className="rounded-xl border border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10 p-4">
+              <p className="text-sm text-text-primary">Confirm your email</p>
+              <p className="mt-1 text-xs text-text-muted">
+                We’ll resend a confirmation link to {userEmail || "your inbox"}.
+              </p>
+              <button
+                type="button"
+                disabled={resendState === "sending" || resendState === "sent"}
+                onClick={() => void resendConfirmation()}
+                className="btn-primary mt-3 inline-flex text-sm disabled:opacity-50"
+              >
+                {resendState === "sending"
+                  ? "Sending…"
+                  : resendState === "sent"
+                    ? "Sent — check inbox"
+                    : resendState === "error"
+                      ? "Try again"
+                      : "Resend confirmation"}
+              </button>
+            </div>
+          ) : null}
         </div>
 
         <div className="space-y-4">
-          <GlassPanel intensity="low" className="border-success/20 p-5">
-            <h3 className="mb-4 text-sm font-medium text-text-heading">Account Info</h3>
+          <GlassPanel intensity="low" className="p-5">
+            <h3 className="mb-4 text-sm font-medium text-text-heading">Account</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
                 <span className="text-xs text-text-muted">Email</span>
                 <span className="ml-4 truncate text-xs font-medium text-text-primary">
-                  {userEmail}
+                  {userEmail || "—"}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
                 <span className="text-xs text-text-muted">Membership</span>
                 <span className="text-xs font-medium text-success">Active</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[var(--np-line)] py-2">
-                <span className="text-xs text-text-muted">2FA</span>
-                <span className="text-xs font-medium text-success">Enabled</span>
-              </div>
               <div className="flex items-center justify-between py-2">
-                <span className="text-xs text-text-muted">Last Login</span>
+                <span className="text-xs text-text-muted">Last sign-in</span>
                 <span className="text-xs font-medium text-text-primary">
-                  {formatLastLogin(lastSignIn)}
+                  {formatRelativeTime(lastSignIn)}
                 </span>
               </div>
+            </div>
+            <div className="mt-4 flex flex-col gap-2">
+              <Link href="/account" className="btn-primary text-center text-sm">
+                Manage account
+              </Link>
+              <Link href="/forgot-password" className="btn-secondary text-center text-sm">
+                Reset password
+              </Link>
             </div>
           </GlassPanel>
 
           <GlassPanel intensity="low" className="p-5">
-            <h3 className="mb-4 text-sm font-medium text-text-heading">Recent Activity</h3>
+            <h3 className="mb-4 text-sm font-medium text-text-heading">Recent activity</h3>
             <div className="space-y-3">
-              {activity.map((item) => (
+              {[
+                {
+                  event: "Last money page update",
+                  time: formatRelativeTime(activity.lastPublishAt),
+                  icon: Globe,
+                },
+                {
+                  event: `Pin assets (${activity.pinCount})`,
+                  time: formatRelativeTime(activity.lastPinAt),
+                  icon: ImageIcon,
+                },
+                {
+                  event: "Last public page visit",
+                  time: formatRelativeTime(activity.lastVisitAt),
+                  icon: Activity,
+                },
+              ].map((item) => (
                 <div key={item.event} className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[var(--np-line)] bg-[var(--np-surface-field)]">
                     <item.icon className="h-3.5 w-3.5 text-text-muted" />

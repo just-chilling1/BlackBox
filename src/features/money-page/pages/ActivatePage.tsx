@@ -10,7 +10,6 @@ import {
   Link2,
   Loader2,
   Package,
-  Pin,
   Rocket,
   Search,
   Sparkles,
@@ -30,8 +29,7 @@ const STAGES = [
   "Writing product review",
   "Creating headlines",
   "Adding monetization links",
-  "Preparing traffic sources",
-  "Finalizing asset",
+  "Finalizing sales page",
 ] as const;
 
 const HOW_IT_WORKS = [
@@ -47,8 +45,8 @@ const HOW_IT_WORKS = [
   },
   {
     icon: Rocket,
-    title: "You traffic",
-    body: "Generate Pinterest pins and send buyers in.",
+    title: "You publish",
+    body: "Review the page, publish when ready, then generate traffic separately.",
   },
 ] as const;
 
@@ -194,8 +192,8 @@ export default function ActivateAssetPage() {
         <WorkflowStepsBar current="money-page" assetId={assetId} />
         <PageHeader
           eyebrow="Step 2"
-          title="Your asset is ready"
-          subtitle={`${brand.productName} built a money page for this product. Preview it, publish when you're happy, then generate Pinterest traffic.`}
+          title="Your sales page is ready"
+          subtitle={`${brand.productName} built a money page for this product. Preview it, publish when you're happy, then use Traffic Generator when you want Pinterest pins.`}
         />
 
         <div className="activate-ready-layout">
@@ -212,7 +210,7 @@ export default function ActivateAssetPage() {
                 <h2 className="activate-ready-title">Money page unlocked</h2>
                 <p className="activate-ready-summary">
                   <span className="activate-ready-product">{assetLabel}</span>
-                  {" "}is live in your workspace. Review the page, tweak anything you want, then move on to traffic.
+                  {" "}is ready in your workspace. Review the sales page, tweak anything you want, then publish.
                 </p>
               </div>
             </div>
@@ -238,25 +236,11 @@ export default function ActivateAssetPage() {
                 </span>
                 <div className="activate-ready-step-copy">
                   <p className="activate-ready-step-title">
-                    <Pin size={15} strokeWidth={1.75} aria-hidden />
-                    Generate Pinterest traffic
-                  </p>
-                  <p className="activate-ready-step-body">
-                    Create pins that send buyers straight to your money page.
-                  </p>
-                </div>
-              </li>
-              <li className="activate-ready-step">
-                <span className="activate-ready-step-num" aria-hidden>
-                  3
-                </span>
-                <div className="activate-ready-step-copy">
-                  <p className="activate-ready-step-title">
                     <Rocket size={15} strokeWidth={1.75} aria-hidden />
                     Track results
                   </p>
                   <p className="activate-ready-step-body">
-                    Watch clicks and conversions as your asset starts working.
+                    After you publish and send traffic, watch visits and clicks in Results.
                   </p>
                 </div>
               </li>
@@ -278,12 +262,12 @@ export default function ActivateAssetPage() {
             <div className="activate-aside-card">
               <p className="activate-aside-eyebrow">Recommended</p>
               <p className="activate-ready-aside-lead">
-                Open the money page first. Small edits now make traffic convert better later.
+                Open the money page first. Small edits now make your sales page convert better later.
               </p>
               <ul className="activate-aside-list">
                 <li>Confirm the product name &amp; offer</li>
                 <li>Check the CTA / affiliate link</li>
-                <li>Publish, then generate pins</li>
+                <li>Publish before sending traffic</li>
               </ul>
             </div>
           </aside>
@@ -314,7 +298,7 @@ export default function ActivateAssetPage() {
       <PageHeader
         eyebrow="Step 1"
         title="What do you want to promote?"
-        subtitle={`Paste a product URL or type the name. ${brand.productName} handles the rest — no prompts, no SEO settings.`}
+        subtitle={`Paste a product URL or type the name. ${brand.productName} builds your sales page — traffic generation is a separate step.`}
       />
 
       <div className="activate-layout">
@@ -430,7 +414,7 @@ export default function ActivateAssetPage() {
               <li>Full product review money page</li>
               <li>Buyer-focused headlines &amp; structure</li>
               <li>Monetization CTA ready to publish</li>
-              <li>Traffic workflow unlocked next</li>
+              <li>Traffic Generator available separately</li>
             </ul>
           </div>
         </aside>

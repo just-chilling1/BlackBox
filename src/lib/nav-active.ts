@@ -9,5 +9,12 @@ export function isNavPathActive(pathname: string, itemPath: string): boolean {
   if (itemPath === "/support") {
     return pathname === "/support" || pathname.startsWith("/support/");
   }
-  return pathname === itemPath;
+  if (itemPath === "/traffic") {
+    return pathname === "/traffic" || pathname.startsWith("/traffic/");
+  }
+  if (itemPath === "/account" || itemPath.startsWith("/account#")) {
+    return pathname === "/account";
+  }
+  const pathOnly = itemPath.split("#")[0];
+  return pathname === pathOnly || pathname === itemPath;
 }

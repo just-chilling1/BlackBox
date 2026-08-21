@@ -1,3 +1,9 @@
+export interface MoneyPageAuthoritySection {
+  title: string;
+  body: string;
+  articleId: number;
+}
+
 export interface MoneyPageCopy {
   headline: string;
   subheadline: string;
@@ -13,6 +19,8 @@ export interface MoneyPageCopy {
   finalRecommendation: string;
   ctaLabel: string;
   heroImage?: string;
+  /** Optional authority article sections appended by Authority Boosters */
+  authoritySections?: MoneyPageAuthoritySection[];
 }
 
 export function isMoneyPageCopy(value: unknown): value is MoneyPageCopy {

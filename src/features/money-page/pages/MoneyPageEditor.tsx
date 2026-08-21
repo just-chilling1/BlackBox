@@ -272,7 +272,7 @@ export default function MoneyPageEditor() {
               {copied ? "Copied" : "Copy link"}
             </button>
             <button type="button" className="btn-primary" onClick={() => router.push(`/traffic/${assetId}`)}>
-              Generate traffic
+              Open Traffic Generator
             </button>
           </div>
         </GlassPanel>

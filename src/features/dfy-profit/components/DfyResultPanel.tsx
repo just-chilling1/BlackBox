@@ -1,20 +1,16 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Link from "next/link";
 import {
-  ArrowRight,
   Check,
   Copy,
-  ExternalLink,
-  Globe,
   Image as ImageIcon,
   Loader2,
-  Pencil,
   Pin,
   RefreshCw,
 } from "lucide-react";
 import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
+import { PostCreateJourney } from "@/components/premium/PostCreateJourney";
 
 export interface DfySalesResult {
   siteId: string;
@@ -77,54 +73,13 @@ export function DfyResultPanel({
       <h2 className="text-lg font-medium text-text-primary">Your One-Click Asset</h2>
 
       {sales ? (
-        <article className="glass-card space-y-3 p-5">
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pulse-100 text-pulse-700">
-              <Globe size={18} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-text-primary">Money page</p>
-              <p className="text-xs text-text-muted">
-                {sales.templateName} · {sales.productName}
-              </p>
-              <p className="mt-2 truncate text-sm text-text-secondary">{sales.offerUrl}</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={sales.offerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary inline-flex items-center gap-2 text-sm"
-            >
-              <ExternalLink size={14} />
-              Open money page
-            </a>
-            <Link
-              href={`/money-page/${sales.siteId}`}
-              className="btn-secondary inline-flex items-center gap-2 text-sm"
-            >
-              <Pencil size={14} />
-              Edit
-            </Link>
-            <Link
-              href={`/traffic/${sales.siteId}`}
-              className="btn-secondary inline-flex items-center gap-2 text-sm"
-            >
-              <ImageIcon size={14} />
-              View pins
-              <ArrowRight size={14} />
-            </Link>
-            <button
-              type="button"
-              onClick={() => void copyText("offer-url", sales.offerUrl)}
-              className="btn-secondary inline-flex items-center gap-2 text-sm"
-            >
-              {copiedId === "offer-url" ? <Check size={14} /> : <Copy size={14} />}
-              {copiedId === "offer-url" ? "Copied" : "Copy URL"}
-            </button>
-          </div>
-        </article>
+        <PostCreateJourney
+          assetId={sales.siteId}
+          publicUrl={sales.offerUrl}
+          productName={sales.productName}
+          pinCount={pins.length || undefined}
+          title="Ready — finish the NullPing loop"
+        />
       ) : null}
 
       <article className="glass-card space-y-4 p-5">
@@ -145,15 +100,6 @@ export function DfyResultPanel({
               </p>
             </div>
           </div>
-          {pins.length > 0 && sales ? (
-            <Link
-              href={`/traffic/${sales.siteId}`}
-              className="btn-primary inline-flex items-center gap-2 text-sm"
-            >
-              Open Traffic
-              <ArrowRight size={14} />
-            </Link>
-          ) : null}
         </div>
 
         {isGeneratingPins && pins.length === 0 ? (
@@ -223,12 +169,10 @@ export function DfyResultPanel({
         ) : null}
 
         {sales && pins.length > 0 ? (
-          <div className="flex flex-wrap gap-2 border-t border-[var(--np-line)] pt-4">
-            <Link href={`/results`} className="btn-secondary inline-flex items-center gap-2 text-sm">
-              Continue to Results
-              <ArrowRight size={14} />
-            </Link>
-          </div>
+          <p className="inline-flex items-center gap-2 text-xs text-text-muted">
+            <ImageIcon size={12} />
+            Full pin workspace lives in Traffic for this money page.
+          </p>
         ) : null}
       </article>
     </section>

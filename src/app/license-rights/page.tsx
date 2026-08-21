@@ -1,15 +1,6 @@
-import { FeatureGuard } from "@/components/layout/FeatureGuard";
-import { loadFeaturePage } from "@/lib/load-feature-page";
+import { redirect } from "next/navigation";
 
-const LicenseRightsPage = loadFeaturePage(
-  () => import("@/features/premium-license-rights/pages/LicenseRightsPage"),
-  "Loading License Rights..."
-);
-
+/** License Rights lives on Account — keep old URL working. */
 export default function Page() {
-  return (
-    <FeatureGuard feature="premium-license-rights">
-      <LicenseRightsPage />
-    </FeatureGuard>
-  );
+  redirect("/account#license");
 }

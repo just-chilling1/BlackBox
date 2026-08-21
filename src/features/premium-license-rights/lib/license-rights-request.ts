@@ -58,6 +58,31 @@ export function clearPendingRequest(userId: string): void {
   }
 }
 
+/** Prefer server pending state; fall back to localStorage. */
+export async function fetchPendingLicenseRequest(): Promise<PendingLicenseRightsRequest | null> {
+  try {
+    const res = await fetch("/api/premium/license-rights", {
+      cache: "no-store",
+      credentials: "same-origin",
+    });
+    const data = await res.json().catch(() => null);
+    if (res.ok && data?.pending?.email) {
+      return {
+        email: data.pending.email as string,
+        submittedAt: (data.pending.submittedAt as string) || new Date().toISOString(),
+      };
+    }
+  } catch {
+    /* fall through */
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user?.id) return readPendingRequest(user.id);
+  return null;
+}
+
 async function parseJsonResponse(res: Response): Promise<{
   error?: string;
   useMailto?: boolean;
@@ -98,25 +123,46 @@ export async function submitLicenseRightsRequest({
       headers.Authorization = `Bearer ${session.access_token}`;
     }
 
-    const res = await fetch("/api/support", {
+    // Persist server-side first
+    const persistRes = await fetch("/api/premium/license-rights", {
+      method: "POST",
+      headers,
+      credentials: "same-origin",
+      body: JSON.stringify({ email, message }),
+    });
+    const persistData = await parseJsonResponse(persistRes);
+
+    // Also notify support (Freshdesk / mailto)
+    const supportRes = await fetch("/api/support", {
       method: "POST",
       headers,
       credentials: "same-origin",
       body: JSON.stringify({ email, message, subject: REQUEST_SUBJECT }),
     });
+    const supportData = await parseJsonResponse(supportRes);
 
-    const data = await parseJsonResponse(res);
-
-    if (data === null || res.status === 401 || data.useMailto) {
+    if (
+      persistData?.useMailto ||
+      supportData === null ||
+      supportRes.status === 401 ||
+      supportData?.useMailto
+    ) {
       openLicenseRightsMailto(email, message);
       return { ok: true, viaMailto: true };
     }
 
-    if (res.ok && data.success) {
+    if ((persistRes.ok && persistData?.success) || (supportRes.ok && supportData?.success)) {
       return { ok: true, viaMailto: false };
     }
 
-    return { ok: false, error: data.error || "Something went wrong. Please try again." };
+    if (persistRes.ok) {
+      return { ok: true, viaMailto: false };
+    }
+
+    return {
+      ok: false,
+      error: persistData?.error || supportData?.error || "Something went wrong. Please try again.",
+    };
   } catch (err) {
     return {
       ok: false,

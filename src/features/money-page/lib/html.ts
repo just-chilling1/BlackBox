@@ -455,6 +455,16 @@ export function buildMoneyPageHtml(params: {
       <div class="section-head"><h2>Our review</h2></div>
       <div class="prose">${paragraphs(copy.review)}</div>
     </section>
+    ${(copy.authoritySections ?? [])
+      .map(
+        (section) => `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(section.title)}</h2></div>
+      <div class="prose">${paragraphs(section.body)}</div>
+      ${ctaButton}
+    </section>`
+      )
+      .join("")}
     <section>
       <div class="section-head"><h2>Frequently asked questions</h2></div>
       ${faqs}

@@ -80,15 +80,15 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
   { id: "premium-dfy-profit", tier: "premium", description: "One-click asset: affiliate link + niche → money page + 10 Pinterest pins.", guide: "premium-dfy-profit" },
   { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
-  { id: "premium-autopilot", tier: "premium", description: "Curated traffic sources checklist with promotion URL tracking.", guide: "premium-autopilot" },
+  { id: "premium-autopilot", tier: "premium", description: "Pinterest posting playbook for a live money page — guided checklist, not auto-publish.", guide: "premium-autopilot" },
   { id: "premium-accelerator", tier: "premium", description: "200 ready-made money pages across niches — install with your affiliate link, then generate Pinterest pins.", guide: "premium-accelerator" },
-  { id: "premium-social", tier: "premium", description: "Bulk social post generator — many Facebook variants from one offer.", guide: "premium-social" },
-  { id: "premium-10x", tier: "premium", description: "Alias for Instant Income bulk post generation (see premium-social).", guide: "premium-10x" },
+  { id: "premium-social", tier: "premium", description: "Pin Multiplier — extra Pinterest pin batches for a live money page.", guide: "premium-social" },
+  { id: "premium-10x", tier: "premium", description: "Alias for Pin Multiplier (see premium-social).", guide: "premium-10x" },
   { id: "premium-infinite", tier: "premium", description: "Batch-generate multiple full articles from one niche.", guide: "premium-infinite" },
   { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
-  { id: "premium-recurring", tier: "premium", description: "100 ready-to-publish authority articles (Guaranteed High-Ticket Payouts).", guide: "premium-recurring" },
-  { id: "protector", tier: "premium", description: "Account security score and verification trust UI.", guide: "protector" },
-  { id: "premium-license-rights", tier: "premium", description: "Reseller license request form — send a License Rights ticket and wait for team activation.", guide: "premium-license-rights" },
+  { id: "premium-recurring", tier: "premium", description: "Authority Boosters — add authority sections to a money page (optional external copy).", guide: "premium-recurring" },
+  { id: "protector", tier: "premium", description: "Cyber Protection — real account status (email, session, HTTPS, activity).", guide: "protector" },
+  { id: "premium-license-rights", tier: "premium", description: "Reseller license request on Account — License Rights ticket until team activation.", guide: "premium-license-rights" },
 ];
 
 /** Skeleton ships with training only. Enable modules per product. */

@@ -7,7 +7,9 @@ import { warmRouteData } from "@/lib/warm-route-data";
 type WarmNavLinkProps = ComponentProps<typeof Link>;
 
 function hrefToPath(href: WarmNavLinkProps["href"]): string | null {
-  if (typeof href === "string") return href.split("?")[0] ?? href;
+  if (typeof href === "string") {
+    return href.split("#")[0]?.split("?")[0] ?? href;
+  }
   if (href && typeof href === "object" && "pathname" in href && href.pathname) {
     return href.pathname;
   }

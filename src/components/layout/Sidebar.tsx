@@ -216,18 +216,28 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
         {renderNavLink(supportNav)}
 
         <div className={clsx("sidebar-user-card", collapsed && "flex-col justify-center gap-2 px-1.5 py-2")}>
-          <div className="sidebar-user-avatar" aria-hidden>
-            {userInitials}
-          </div>
-          {!collapsed && (
-            <div className="sidebar-user-meta">
-              <div className="sidebar-user-name">{displayName}</div>
-              <div className="sidebar-user-status">
-                <span className="sidebar-user-status-dot" aria-hidden />
-                Active Member
-              </div>
+          <Link
+            href="/account"
+            onClick={handleNavClick}
+            className={clsx(
+              "flex min-w-0 flex-1 items-center gap-3 rounded-lg outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-pulse-700",
+              collapsed && "justify-center"
+            )}
+            title="Account"
+          >
+            <div className="sidebar-user-avatar" aria-hidden>
+              {userInitials}
             </div>
-          )}
+            {!collapsed && (
+              <div className="sidebar-user-meta">
+                <div className="sidebar-user-name">{displayName}</div>
+                <div className="sidebar-user-status">
+                  <span className="sidebar-user-status-dot" aria-hidden />
+                  Active Member
+                </div>
+              </div>
+            )}
+          </Link>
           <button
             type="button"
             onClick={() => void handleLogout()}

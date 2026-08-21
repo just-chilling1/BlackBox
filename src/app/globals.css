@@ -2050,6 +2050,161 @@ html[data-sidebar="collapsed"] {
     flex: 1;
   }
 
+  .traffic-back-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--np-ink-3);
+    transition: color var(--np-dur) var(--np-ease);
+  }
+
+  .traffic-back-link:hover {
+    color: var(--np-pulse-500);
+  }
+
+  .traffic-hub-intro {
+    padding: 1.15rem 1.35rem;
+    border-color: color-mix(in srgb, var(--np-line-pulse) 55%, transparent);
+    background:
+      radial-gradient(ellipse 70% 120% at 0% 0%, rgba(0, 240, 255, 0.07), transparent 55%),
+      var(--np-surface);
+  }
+
+  .traffic-hub-intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 0 0.4rem;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--np-pulse-500);
+  }
+
+  .traffic-hub-intro-copy {
+    margin: 0;
+    max-width: 46rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--np-ink-2);
+  }
+
+  .traffic-hub-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .traffic-hub-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.15rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .traffic-hub-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .traffic-hub-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1.25rem 1.35rem;
+    transition:
+      border-color var(--np-dur) var(--np-ease),
+      box-shadow var(--np-dur) var(--np-ease),
+      transform var(--np-dur) var(--np-ease);
+  }
+
+  .traffic-hub-card:hover {
+    border-color: color-mix(in srgb, var(--np-line-pulse) 70%, transparent);
+    box-shadow:
+      var(--np-shadow-card),
+      0 16px 36px -28px rgba(0, 240, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .traffic-hub-card-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .traffic-hub-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--np-r-pill);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .traffic-hub-status.is-live {
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.28);
+    color: var(--np-success);
+  }
+
+  .traffic-hub-status.is-draft {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    color: var(--np-warning);
+  }
+
+  .traffic-hub-pin-count {
+    font-size: 0.75rem;
+    color: var(--np-ink-4);
+  }
+
+  .traffic-hub-card-title {
+    margin: 0;
+    font-family: var(--font-brand);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--np-ink-strong);
+  }
+
+  .traffic-hub-card-copy {
+    margin: 0;
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--np-ink-3);
+  }
+
+  .traffic-hub-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.25rem;
+  }
+
+  .traffic-hub-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .traffic-hub-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 1.35rem;
+  }
+
   .traffic-workspace-body {
     display: flex;
     min-height: 0;

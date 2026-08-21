@@ -5,13 +5,12 @@ import { Link as LinkIcon, Filter, Loader2 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
-import { PageHeader } from "@/components/ui/page-header";
+import { GenerationProgress } from "@/components/ui/generation-progress";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { WorkflowPage } from "@/components/ui/workflow-page";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
-import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
+import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
+import { PostCreateJourney } from "@/components/premium/PostCreateJourney";
 import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
 import {
   TemplatePreviewOverlay,
@@ -44,6 +43,7 @@ export default function AcceleratorPage() {
     catalogId: number;
     siteUrl: string;
     assetId: string;
+    productName?: string;
   } | null>(null);
   const [error, setError] = useState("");
 
@@ -137,9 +137,12 @@ export default function AcceleratorPage() {
         if (!res.ok) throw new Error(data.error || "Install failed");
         const assetId = (data.assetId as string) || (data.site?.id as string);
         const siteUrl = data.siteUrl as string;
-        setCloneResult({ catalogId, siteUrl, assetId });
-        setTemplates((prev) => {
-          const next = prev.map((t) =>
+        const productName =
+          (data.site?.product_name as string | undefined) ||
+          templates.find((t) => t.id === catalogId)?.productName;
+        setCloneResult({ catalogId, siteUrl, assetId, productName });
+        setTemplates((prev) =>
+          prev.map((t) =>
             t.id === catalogId
               ? {
                   ...t,
@@ -149,9 +152,8 @@ export default function AcceleratorPage() {
                   usedAt: new Date().toISOString(),
                 }
               : t
-          );
-          return next;
-        });
+          )
+        );
         setPreviewOpen(false);
         setPreviewCatalogId(null);
         setPreviewData(null);
@@ -161,7 +163,7 @@ export default function AcceleratorPage() {
         setCloningId(null);
       }
     },
-    [affiliateLink, linkApplied]
+    [affiliateLink, linkApplied, templates]
   );
 
   const handleView = useCallback(
@@ -208,31 +210,44 @@ export default function AcceleratorPage() {
 
   if (loading && templates.length === 0) {
     return (
-      <WorkflowPage width="wide">
-        <PageHeader
-          eyebrow="Premium"
-          title="Asset Vault"
-          subtitle="200 ready-made money pages — apply your link, install a page, and get 10 pins ready."
-        />
+      <PremiumWorkflowShell
+        title="Asset Vault"
+        subtitle="200 ready-made money pages — apply your link, install a page, and get 10 pins ready."
+      >
         <PageSkeleton cards={6} />
-      </WorkflowPage>
+      </PremiumWorkflowShell>
     );
   }
 
   return (
-    <WorkflowPage width="wide">
-      <PageHeader
-        eyebrow="Premium"
-        title="Asset Vault"
-        subtitle={`${total} ready-made money pages across every niche — apply your link, install a page with 10 pins included.`}
-      />
-
-      <PremiumVideoTutorial
-        vimeoId="1215530104"
-        title="Asset Vault Training"
-        description="Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post."
-        iframeTitle="Asset Vault training video"
-      />
+    <PremiumWorkflowShell
+      title="Asset Vault"
+      subtitle={`${total} ready-made money pages across every niche — apply your link, install a page with 10 pins included.`}
+      training={{
+        vimeoId: "1215530104",
+        title: "Asset Vault Training",
+        description:
+          "Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post.",
+        iframeTitle: "Asset Vault training video",
+      }}
+      tip={
+        <>
+          Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
+          — it installs with your link and 10 ready Pinterest pins. Use{" "}
+          <span className="text-text-primary">AI pins</span> after install for Traffic-quality images.
+        </>
+      }
+    >
+      {cloneResult ? (
+        <PostCreateJourney
+          assetId={cloneResult.assetId}
+          publicUrl={cloneResult.siteUrl}
+          productName={cloneResult.productName}
+          showRegeneratePins
+          pinCount={10}
+          title="Installed — finish the NullPing loop"
+        />
+      ) : null}
 
       <GlassPanel className="space-y-5 p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -272,9 +287,7 @@ export default function AcceleratorPage() {
               <Filter size={14} className="text-pulse-700" />
               Select niche
             </p>
-            <p className="text-xs text-text-muted">
-              {niche === "All" ? "All niches" : niche}
-            </p>
+            <p className="text-xs text-text-muted">{niche === "All" ? "All niches" : niche}</p>
           </div>
           <div
             className="flex flex-wrap gap-2 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-3"
@@ -303,20 +316,12 @@ export default function AcceleratorPage() {
         {error ? <PremiumErrorAlert message={error} /> : null}
       </GlassPanel>
 
-      <p className="text-sm text-text-muted">
-        Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
-        — it installs with your link and 10 ready Pinterest pins.
-      </p>
-
       <GenerationProgress
         active={cloningId !== null}
         label="Installing money page with your affiliate link and 10 pins..."
       />
 
-      <div
-        id={GENERATION_RESULTS_ID}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 scroll-mt-24"
-      >
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visibleTemplates.map((t) => (
           <VaultTemplateCard
             key={t.id}
@@ -376,6 +381,6 @@ export default function AcceleratorPage() {
           if (previewCatalogId != null) void handleClone(previewCatalogId);
         }}
       />
-    </WorkflowPage>
+    </PremiumWorkflowShell>
   );
 }

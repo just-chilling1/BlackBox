@@ -1,7 +1,5 @@
 import { fetchJson } from "@/lib/fetch-json";
-import { buildOfferPageUrl } from "@/lib/app-url";
 import { storageKeys } from "@/lib/storage-keys";
-import { resolveAutopilotNiche } from "./traffic-sources";
 
 export interface AutopilotState {
   promotion_url: string | null;
@@ -11,39 +9,6 @@ export interface AutopilotState {
 
 const SETTINGS_URL = "/api/premium/autopilot/settings";
 const COMPLETIONS_URL = "/api/premium/autopilot/completions";
-
-interface LatestSiteRow {
-  slug: string;
-  owner_handle?: string | null;
-  territory?: string | null;
-}
-
-interface LatestSiteResponse {
-  summaries?: Array<{ site?: LatestSiteRow | null }>;
-}
-
-export interface LatestAutopilotOffer {
-  niche: string;
-  promotionUrl: string;
-}
-
-export async function fetchLatestOffer(): Promise<LatestAutopilotOffer | null> {
-  const result = await fetchJson<LatestSiteResponse>("/api/blog/site?lite=1", {
-    credentials: "include",
-    cache: "no-store",
-  });
-  const site = result.ok ? result.data.summaries?.[0]?.site : null;
-  if (!site?.slug || typeof window === "undefined") return null;
-
-  return {
-    niche: resolveAutopilotNiche(site.territory),
-    promotionUrl: buildOfferPageUrl(
-      window.location.origin,
-      site.slug,
-      site.owner_handle
-    ),
-  };
-}
 
 export async function fetchAutopilotState(): Promise<AutopilotState | null> {
   const result = await fetchJson<AutopilotState>(SETTINGS_URL, {
