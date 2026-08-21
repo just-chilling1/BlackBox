@@ -7,6 +7,7 @@ import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
+import { WorkflowStepsBar } from "@/components/ui/workflow-steps";
 import { EmptyState } from "@/components/ui/empty-state";
 
 interface TrafficAssetRow {
@@ -38,10 +39,11 @@ export default function TrafficHubPage() {
 
   return (
     <WorkflowPage className="traffic-workspace">
+      <WorkflowStepsBar current="traffic" />
       <PageHeader
-        eyebrow="Traffic"
-        title="Traffic Generator"
-        subtitle={`Pick a money page and generate Pinterest pins that send visitors to your sales page — separate from ${brand.productName} activation.`}
+        eyebrow="Step 2"
+        title="Generate Traffic"
+        subtitle={`Pick a money page and create Pinterest pins that send visitors to your sales page — separate from ${brand.productName} activation.`}
       />
 
       {error ? <div className="alert-banner">{error}</div> : null}
@@ -52,7 +54,7 @@ export default function TrafficHubPage() {
           Pinterest traffic
         </p>
         <p className="traffic-hub-intro-copy">
-          Activate Asset builds your sales page. Use Traffic Generator when you are ready to create pin images,
+          Activate Asset builds your sales page. Open Generate Traffic when you are ready to create pin images,
           titles, descriptions, and tracking links for that page.
         </p>
       </GlassPanel>

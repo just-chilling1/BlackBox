@@ -116,7 +116,7 @@ export default function TrafficPage() {
     <WorkflowPage className="traffic-workspace">
       <Link href="/traffic" className="traffic-back-link">
         <ArrowLeft size={16} strokeWidth={2} aria-hidden />
-        Back to Traffic Generator
+        Back to Generate Traffic
       </Link>
       <PageHeader
         eyebrow="Pin workspace"

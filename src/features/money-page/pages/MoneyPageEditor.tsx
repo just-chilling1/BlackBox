@@ -6,7 +6,6 @@ import { Check, CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
-import { WorkflowStepsBar } from "@/components/ui/workflow-steps";
 import { isMoneyPageCopy, type MoneyPageCopy } from "@/features/money-page/lib/types";
 import {
   getMoneyPageColorTheme,
@@ -185,9 +184,7 @@ export default function MoneyPageEditor() {
 
   return (
     <WorkflowPage>
-      <WorkflowStepsBar current="money-page" assetId={assetId} />
       <PageHeader
-        eyebrow="Step 2"
         title="Money page"
         subtitle="This is the review page NullPing built. Edit if you want, then publish."
         actions={
@@ -271,8 +268,8 @@ export default function MoneyPageEditor() {
             >
               {copied ? "Copied" : "Copy link"}
             </button>
-            <button type="button" className="btn-primary" onClick={() => router.push(`/traffic/${assetId}`)}>
-              Open Traffic Generator
+            <button type="button" className="btn-primary" onClick={() => router.push("/traffic")}>
+              Open Generate Traffic
             </button>
           </div>
         </GlassPanel>

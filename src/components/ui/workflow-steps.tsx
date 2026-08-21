@@ -4,20 +4,20 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { Check } from "lucide-react";
 
-export type WorkflowStepId = "activate" | "money-page" | "results";
+export type WorkflowStepId = "activate" | "traffic" | "results";
 
-const STEPS: { id: WorkflowStepId; label: string; path: (assetId?: string) => string | null }[] = [
-  { id: "activate", label: "Activate", path: () => "/activate" },
-  { id: "money-page", label: "Money page", path: (id) => (id ? `/money-page/${id}` : null) },
+const STEPS: { id: WorkflowStepId; label: string; path: () => string }[] = [
+  { id: "activate", label: "Activate Asset", path: () => "/activate" },
+  { id: "traffic", label: "Generate Traffic", path: () => "/traffic" },
   { id: "results", label: "Results", path: () => "/results" },
 ];
 
 export function WorkflowStepsBar({
   current,
-  assetId,
   className,
 }: {
   current: WorkflowStepId;
+  /** @deprecated Asset id is not used — workflow pages are top-level routes. */
   assetId?: string;
   className?: string;
 }) {
@@ -27,7 +27,7 @@ export function WorkflowStepsBar({
     <nav aria-label="Workflow progress" className={clsx("workflow-steps", className)}>
       <ol className="workflow-steps-list">
         {STEPS.map((step, index) => {
-          const href = step.path(assetId);
+          const href = step.path();
           const done = index < currentIndex;
           const active = step.id === current;
           const upcoming = index > currentIndex;
@@ -48,8 +48,7 @@ export function WorkflowStepsBar({
             </>
           );
 
-          // Results is always reachable (no asset id required).
-          const canNavigate = Boolean(href) && (!upcoming || step.id === "results");
+          const canNavigate = Boolean(href);
 
           return (
             <li key={step.id} className={clsx("workflow-step", active && "workflow-step--active")}>

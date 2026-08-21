@@ -49,8 +49,8 @@ export const homeNav: NavItem = {
 
 export const workflowSteps: NavItem[] = [
   { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator", workflowStep: 1 },
-  { path: "/traffic", label: "Traffic Generator", icon: "Image", feature: "traffic-pins" },
-  { path: "/results", label: "Results", icon: "Activity", feature: "results", workflowStep: 2 },
+  { path: "/traffic", label: "Generate Traffic", icon: "Image", feature: "traffic-pins", workflowStep: 2 },
+  { path: "/results", label: "Results", icon: "Activity", feature: "results", workflowStep: 3 },
 ];
 
 /** Extraction workflow home (connect → scan dashboard) */
@@ -66,6 +66,7 @@ export const blogBuilderWorkflowSteps: NavItem[] = [
 /** Generate tools */
 export const blogBuilderGenerateNav: NavItem[] = [
   { path: "/activate", label: "Activate Asset", icon: "Zap", feature: "asset-activator" },
+  { path: "/traffic", label: "Generate Traffic", icon: "Image", feature: "traffic-pins" },
   { path: "/results", label: "Results", icon: "Activity", feature: "results" },
 ];
 

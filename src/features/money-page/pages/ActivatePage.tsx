@@ -189,11 +189,10 @@ export default function ActivateAssetPage() {
 
     return (
       <WorkflowPage width="full">
-        <WorkflowStepsBar current="money-page" assetId={assetId} />
+        <WorkflowStepsBar current="activate" />
         <PageHeader
-          eyebrow="Step 2"
           title="Your sales page is ready"
-          subtitle={`${brand.productName} built a money page for this product. Preview it, publish when you're happy, then use Traffic Generator when you want Pinterest pins.`}
+          subtitle={`${brand.productName} built a money page for this product. Preview it, publish when you're happy, then use Generate Traffic when you want Pinterest pins.`}
         />
 
         <div className="activate-ready-layout">
@@ -298,7 +297,7 @@ export default function ActivateAssetPage() {
       <PageHeader
         eyebrow="Step 1"
         title="What do you want to promote?"
-        subtitle={`Paste a product URL or type the name. ${brand.productName} builds your sales page — traffic generation is a separate step.`}
+        subtitle={`Paste a product URL or type the name. ${brand.productName} builds your sales page only — use Generate Traffic separately when you're ready for pins.`}
       />
 
       <div className="activate-layout">
@@ -414,7 +413,7 @@ export default function ActivateAssetPage() {
               <li>Full product review money page</li>
               <li>Buyer-focused headlines &amp; structure</li>
               <li>Monetization CTA ready to publish</li>
-              <li>Traffic Generator available separately</li>
+              <li>Generate Traffic available separately</li>
             </ul>
           </div>
         </aside>

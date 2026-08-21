@@ -132,7 +132,7 @@ function SidebarContent({ collapsed, onToggle, onMobileClose }: SidebarContentPr
   const trainingItems = [...coreResourceNav, ...resourceNav];
   const showGenerateFromBlog =
     blogEnabled &&
-    !workflowSteps.some((step) => step.path === "/activate" || step.path === "/results");
+    !workflowSteps.some((step) => step.path === "/activate" || step.path === "/traffic" || step.path === "/results");
 
   return (
     <div className="sidebar-panel flex h-full min-h-0 w-full flex-col overflow-hidden">
