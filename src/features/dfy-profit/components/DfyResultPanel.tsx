@@ -5,16 +5,20 @@ import {
   Check,
   Copy,
   ExternalLink,
+  Eye,
   Facebook,
   FileText,
   Globe,
   Loader2,
   Pin,
   RefreshCw,
+  X,
 } from "lucide-react";
 import { GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { FacebookPostCard } from "@/features/blog-builder/components/FacebookPostCard";
+import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
 import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
+import { copyPinImageToClipboard, PinCard } from "@/features/traffic/components/PinCard";
 import { resolvePublicUrl } from "@/lib/app-url";
 
 export interface DfySalesResult {
@@ -61,12 +65,6 @@ interface DfyResultPanelProps {
   onRetryPosts: () => void;
 }
 
-function pinImageSrc(url: string | null | undefined): string | null {
-  if (!url?.trim()) return null;
-  if (url.startsWith("http") || url.startsWith("/")) return url;
-  return null;
-}
-
 function htmlToPlainText(html: string): string {
   return html
     .replace(/<\/p>/gi, "\n\n")
@@ -101,6 +99,7 @@ export function DfyResultPanel({
   onRetryPosts,
 }: DfyResultPanelProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showArticlePreview, setShowArticlePreview] = useState(false);
 
   const liveOfferUrl = useMemo(() => {
     if (!sales) return "";
@@ -116,6 +115,13 @@ export function DfyResultPanel({
     } catch {
       /* ignore */
     }
+  }, []);
+
+  const copyPinImage = useCallback(async (id: string, imageUrl: string) => {
+    const result = await copyPinImageToClipboard(imageUrl);
+    if (result === "failed") return;
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
   }, []);
 
   const hasAnything =
@@ -182,7 +188,7 @@ export function DfyResultPanel({
               <p className="text-sm font-medium text-text-primary">Pinterest pins</p>
               <p className="mt-1 text-sm text-text-secondary">
                 {pins.length > 0
-                  ? `${pins.length} ready-to-post pins — right-click or long-press each image to save.`
+                  ? `${pins.length} ready-to-post pins with images, copy, keywords, and your live destination URL.`
                   : pinsError ||
                     (isGeneratingPins
                       ? "Generating 3 Pinterest pins with images…"
@@ -212,37 +218,19 @@ export function DfyResultPanel({
         ) : null}
 
         {pins.length > 0 ? (
-          <ul className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
-            {pins.map((pin, index) => {
-              const src = pinImageSrc(pin.image_url);
-              return (
-                <li
-                  key={pin.id}
-                  className="flex w-[min(100%,300px)] shrink-0 flex-col gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)]"
-                >
-                  <div className="relative overflow-hidden rounded-xl bg-[var(--np-surface-field)]">
-                    {src ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={src}
-                        alt={pin.headline}
-                        className="block h-auto max-h-[520px] w-full object-contain"
-                        loading={index < 3 ? "eager" : "lazy"}
-                        decoding="async"
-                      />
-                    ) : (
-                      <div className="flex min-h-[240px] items-center justify-center text-xs text-text-muted">
-                        Pin {index + 1}
-                      </div>
-                    )}
-                    <span className="absolute left-2 top-2 rounded-md bg-black/55 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                      Pin {index + 1}
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="pin-card-grid">
+            {pins.map((pin, index) => (
+              <PinCard
+                key={pin.id}
+                pin={pin}
+                index={index}
+                destinationUrl={liveOfferUrl}
+                copiedId={copiedId}
+                onCopyText={(id, text) => void copyText(id, text)}
+                onCopyImage={(id, url) => void copyPinImage(id, url)}
+              />
+            ))}
+          </div>
         ) : null}
       </article>
 
@@ -292,9 +280,18 @@ export function DfyResultPanel({
             <p className="text-sm font-semibold text-text-primary">{article.title}</p>
             <p className="text-sm leading-relaxed text-text-secondary">
               {countArticleWords(article.html).toLocaleString()} words — full niche guide with your
-              product featured. Copy HTML for a site editor, or plain text for Medium and LinkedIn.
+              product featured. Copy HTML for a site editor, plain text for Medium and LinkedIn, or
+              read the full article below.
             </p>
             <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setShowArticlePreview((open) => !open)}
+                className="btn-primary inline-flex items-center gap-2 text-sm"
+              >
+                {showArticlePreview ? <X size={14} /> : <Eye size={14} />}
+                {showArticlePreview ? "Hide article" : "View full article"}
+              </button>
               <button
                 type="button"
                 onClick={() => void copyText("article-html", article.html)}
@@ -312,6 +309,27 @@ export function DfyResultPanel({
                 {copiedId === "article-text" ? "Copied" : "Copy text"}
               </button>
             </div>
+            {showArticlePreview ? (
+              <div className="overflow-hidden rounded-xl border border-[var(--np-line-pulse)] bg-[var(--np-surface)] shadow-[0_0_40px_-18px_rgba(0,240,255,0.35)]">
+                <div className="flex items-start justify-between gap-3 border-b border-[var(--np-line)] bg-[color-mix(in_srgb,var(--np-signal-100)_55%,var(--np-surface))] px-4 py-3">
+                  <p className="text-sm font-semibold text-text-primary">{article.title}</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowArticlePreview(false)}
+                    className="rounded-lg p-1.5 text-text-muted transition-colors hover:bg-[var(--np-surface-field)] hover:text-text-primary"
+                    aria-label="Close article preview"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div
+                  className="recurring-article-body recurring-article-reader max-h-[min(70vh,720px)] max-w-none overflow-y-auto px-5 py-6 md:px-8 md:py-8"
+                  dangerouslySetInnerHTML={{
+                    __html: wrapArticleWithTitle(article.title, article.html),
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
         ) : null}
       </article>

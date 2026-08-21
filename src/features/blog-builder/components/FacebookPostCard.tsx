@@ -20,7 +20,7 @@ export function FacebookPostCard({ post, resolvedText }: FacebookPostCardProps) 
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border-dim/90 bg-white p-4 shadow-sm">
+    <div className="flex flex-col gap-3 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)] p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[13px] font-medium uppercase tracking-wider text-text-muted">
           <Facebook size={12} className="text-pulse-700" aria-hidden />
