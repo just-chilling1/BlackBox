@@ -38,7 +38,7 @@ export function DashboardVideoTrack() {
 
       {videos[2] ? <DashboardVideoCard video={videos[2]} /> : null}
 
-      <section className="flex min-w-0 flex-col gap-3">
+      <section className="dashboard-start-ctas flex min-w-0 flex-col gap-3">
         <Link
           href={startCta.href}
           className="btn-primary min-h-[48px] w-full px-4 text-center text-sm leading-snug sm:text-base"

@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ImageIcon, Loader2 } from "lucide-react";
+import { ArrowRight, ImageIcon, Loader2, Pin, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
 import { WorkflowStepsBar } from "@/components/ui/workflow-steps";
-import { EmptyState } from "@/components/ui/empty-state";
 import { sitePublicPath } from "@/lib/app-url";
 
 interface PinRow {
@@ -111,30 +110,15 @@ export default function TrafficPage() {
         subtitle="NullPing prepares Pinterest pins that send visitors straight to your money page."
       />
 
-      <GlassPanel className="space-y-5 p-6 sm:p-7">
-        <p className="text-sm leading-relaxed text-ink-2">
-          Post these pins to Pinterest and use the provided link. Each visitor will be sent directly to your money page.
-        </p>
-        {error ? <div className="alert-banner">{error}</div> : null}
-        <div className="flex flex-wrap gap-3">
-          <button type="button" className="btn-primary" disabled={busy || loading} onClick={() => void generate()}>
-            {busy ? "Generating..." : pins.length ? "Regenerate traffic assets" : "Generate traffic assets"}
-          </button>
-          {pins.length > 0 ? (
-            <button type="button" className="btn-secondary" onClick={() => router.push("/results")}>
-              Save & continue to Results
-            </button>
-          ) : null}
-        </div>
-      </GlassPanel>
+      {error ? <div className="alert-banner">{error}</div> : null}
 
       {loading ? (
-        <GlassPanel className="flex items-center justify-center gap-3 p-10 text-ink-3">
-          <Loader2 className="h-5 w-5 animate-spin text-pulse-500" />
-          Loading pins...
+        <GlassPanel className="traffic-loading-panel">
+          <Loader2 className="h-6 w-6 animate-spin text-pulse-500" aria-hidden />
+          <p className="text-sm text-ink-3">Loading traffic workspace…</p>
         </GlassPanel>
       ) : busy ? (
-        <div className="pin-generating-panel" role="status" aria-live="polite">
+        <div className="pin-generating-panel traffic-generating-panel" role="status" aria-live="polite">
           <div className="pin-generating-visual" aria-hidden>
             <span className="pin-generating-ring" />
             <span className="pin-generating-ring pin-generating-ring--delay" />
@@ -151,13 +135,66 @@ export default function TrafficPage() {
           </div>
         </div>
       ) : pins.length === 0 ? (
-        <EmptyState
-          icon={ImageIcon}
-          title="No traffic assets yet"
-          description="Generate 10 ready-to-post Pinterest pins for this money page. Each pin includes the image, title, description, and tracking link."
-        />
+        <GlassPanel className="traffic-hero-panel">
+          <div className="traffic-hero-shimmer" aria-hidden />
+          <div className="traffic-hero-inner">
+            <p className="traffic-hero-badge">
+              <Sparkles className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+              Pinterest traffic
+            </p>
+
+            <div className="traffic-hero-icon" aria-hidden>
+              <ImageIcon size={28} strokeWidth={1.5} />
+            </div>
+
+            <h2 className="traffic-hero-title">No traffic assets yet</h2>
+            <p className="traffic-hero-lead">
+              Generate 10 ready-to-post Pinterest pins for this money page. Each pin includes the image, title,
+              description, and tracking link.
+            </p>
+
+            <ul className="traffic-hero-list">
+              <li>Images sized for Pinterest</li>
+              <li>Titles and descriptions included</li>
+              <li>Links track visitors to your money page</li>
+            </ul>
+
+            <button
+              type="button"
+              className="btn-primary traffic-generate-cta"
+              disabled={busy}
+              onClick={() => void generate()}
+            >
+              <Pin size={18} strokeWidth={1.75} aria-hidden />
+              Generate Traffic Assets
+              <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
+            </button>
+
+            <p className="traffic-hero-note">
+              Post the pins to Pinterest and use the provided link. Each visitor goes directly to your money page.
+            </p>
+          </div>
+        </GlassPanel>
       ) : (
         <>
+          <GlassPanel className="traffic-toolbar-panel">
+            <div className="traffic-toolbar-copy">
+              <h2 className="ds-h4">Your Pinterest pins are ready</h2>
+              <p className="text-sm leading-relaxed text-ink-2">
+                Post these pins to Pinterest and use the provided link. Each visitor will be sent directly to your
+                money page.
+              </p>
+            </div>
+            <div className="traffic-toolbar-actions">
+              <button type="button" className="btn-primary" disabled={busy} onClick={() => void generate()}>
+                Regenerate traffic assets
+              </button>
+              <button type="button" className="btn-secondary" onClick={() => router.push("/results")}>
+                Save &amp; continue to Results
+              </button>
+            </div>
+          </GlassPanel>
+
           <div className="pin-card-grid">
             {pins.map((pin, index) => (
               <GlassPanel key={pin.id} className="pin-card p-5 sm:p-6">

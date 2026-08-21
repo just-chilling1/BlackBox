@@ -6,7 +6,7 @@ export const supportRoutes = {
   faq: "/support#faq",
 } as const;
 
-const SUPPORT_EMAIL = "NullPingCash@neoai.freshdesk.com";
+const SUPPORT_EMAIL = "NullPingProfit@neoai.freshdesk.com";
 
 export const support = {
   email: SUPPORT_EMAIL,

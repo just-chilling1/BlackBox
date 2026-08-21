@@ -15,6 +15,7 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
+import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -138,10 +139,15 @@ export default function ActivateAssetPage() {
     return Math.min(96, Math.round(((stageIndex + 0.35) / STAGES.length) * 100));
   }, [stageIndex]);
 
+  const urlFilled = productUrl.trim().length > 0;
+  const nameFilled = productName.trim().length > 0;
+  const productNameDisabled = urlFilled;
+  const productUrlDisabled = nameFilled && !urlFilled;
+
   const currentLabel =
     stageIndex >= STAGES.length ? "Finalizing asset" : STAGES[Math.min(stageIndex, STAGES.length - 1)];
 
-  async function activate() {
+  async function activate(options?: { redirectTo?: "ready" | "traffic" }) {
     setError("");
     if (!productUrl.trim() && !productName.trim()) {
       setError("Paste a product URL or enter a product name.");
@@ -172,6 +178,12 @@ export default function ActivateAssetPage() {
 
       setStageIndex(STAGES.length);
       setAssetId(data.assetId);
+
+      if (options?.redirectTo === "traffic" && data.assetId) {
+        router.push(`/traffic/${data.assetId}`);
+        return;
+      }
+
       setPhase("ready");
     } catch {
       window.clearInterval(timer);
@@ -289,6 +301,18 @@ export default function ActivateAssetPage() {
             </div>
           </aside>
         </div>
+
+        <section className="activate-page-end-cta" aria-label="Next step">
+          <button
+            type="button"
+            className="btn-primary activate-traffic-cta"
+            onClick={() => router.push(`/traffic/${assetId}`)}
+          >
+            <Pin size={18} strokeWidth={1.75} aria-hidden />
+            Generate Traffic
+            <ArrowRight size={16} strokeWidth={2.25} />
+          </button>
+        </section>
       </WorkflowPage>
     );
   }
@@ -346,11 +370,11 @@ export default function ActivateAssetPage() {
                 <Package size={16} strokeWidth={1.75} className="text-pulse-500" aria-hidden />
                 <div>
                   <h2 className="activate-field-title">Product details</h2>
-                  <p className="activate-field-hint">Provide a URL, a name, or both.</p>
+                  <p className="activate-field-hint">Provide a product URL or enter a name.</p>
                 </div>
               </div>
 
-              <label className="activate-field">
+              <label className={clsx("activate-field", productUrlDisabled && "activate-field--disabled")}>
                 <span className="field-label">Product URL</span>
                 <input
                   className="input-base w-full"
@@ -359,6 +383,8 @@ export default function ActivateAssetPage() {
                   placeholder="https://example.com/product"
                   autoComplete="url"
                   inputMode="url"
+                  disabled={productUrlDisabled}
+                  aria-disabled={productUrlDisabled}
                 />
               </label>
 
@@ -366,7 +392,7 @@ export default function ActivateAssetPage() {
                 or
               </div>
 
-              <label className="activate-field">
+              <label className={clsx("activate-field", productNameDisabled && "activate-field--disabled")}>
                 <span className="field-label">Product name</span>
                 <input
                   className="input-base w-full"
@@ -374,6 +400,8 @@ export default function ActivateAssetPage() {
                   onChange={(e) => setProductName(e.target.value)}
                   placeholder="Best sleep supplement"
                   autoComplete="off"
+                  disabled={productNameDisabled}
+                  aria-disabled={productNameDisabled}
                 />
               </label>
             </section>
@@ -432,6 +460,18 @@ export default function ActivateAssetPage() {
           </div>
         </aside>
       </div>
+
+      <section className="activate-page-end-cta" aria-label="Generate traffic">
+        <button
+          type="button"
+          className="btn-primary activate-traffic-cta"
+          onClick={() => void activate({ redirectTo: "traffic" })}
+        >
+          <Pin size={18} strokeWidth={1.75} aria-hidden />
+          Generate Traffic
+          <ArrowRight size={16} strokeWidth={2.25} />
+        </button>
+      </section>
     </WorkflowPage>
   );
 }

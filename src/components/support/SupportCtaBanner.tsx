@@ -23,7 +23,7 @@ export function SupportCtaBanner({
   return (
     <section
       className={clsx(
-        "relative overflow-hidden rounded-2xl border border-[var(--np-line-pulse)] bg-[var(--np-surface)] shadow-[var(--np-shadow-card)]",
+        "support-cta-banner relative overflow-hidden rounded-2xl border border-[var(--np-line-pulse)] bg-[var(--np-surface)] shadow-[var(--np-shadow-card)]",
         className
       )}
     >

@@ -100,9 +100,7 @@ export async function activateAsset(params: {
 
   const productUrl = productUrlRaw && looksLikeUrl(productUrlRaw)
     ? normalizeAffiliateUrl(productUrlRaw)
-    : productUrlRaw && looksLikeUrl(nameRaw)
-      ? normalizeAffiliateUrl(nameRaw)
-      : productUrlRaw;
+    : "";
 
   const affiliateUrl = affiliateRaw ? normalizeAffiliateUrl(affiliateRaw) : "";
   const admin = getServiceRoleClient();
@@ -127,7 +125,7 @@ export async function activateAsset(params: {
       : scrapedTitle || nameRaw || "Featured product";
 
   const niche = inferNiche(productName, productContext || scrapedDescription);
-  const ctaUrl = affiliateUrl || productUrl || "https://example.com";
+  const ctaUrl = affiliateUrl || productUrl || "";
   const armedLinks: ArmedLink[] = ctaUrl
     ? [{ label: productName, url: ctaUrl, network: detectLinkNetwork(ctaUrl) }]
     : [];

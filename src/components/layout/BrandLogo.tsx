@@ -36,12 +36,12 @@ const SIZES = {
     tagline: "text-[13px]",
   },
   sidebar: {
-    box: "w-[38px] h-[38px]",
-    icon: 18,
-    imgHeight: "h-[38px] w-[38px]",
+    box: "w-[44px] h-[44px]",
+    icon: 22,
+    imgHeight: "h-[44px] w-[44px]",
     wordmarkHeight: "",
     wordmarkWidth: "sidebar-brand-wordmark",
-    img: 38,
+    img: 44,
     title: "text-[19px] leading-tight",
     tagline: "text-[13px]",
   },
@@ -69,12 +69,13 @@ export function BrandLogo({
   const Icon = getNavIcon(brand.logo.icon);
   const useImage = brand.logo.type === "image";
   const isWordmarkImage = useImage && brand.logo.wordmark;
-  const primarySrc = useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
-  const fallbackSrc =
+  const primarySrc: string =
+    useImage && compact && brand.logo.iconSrc ? brand.logo.iconSrc : brand.logo.src;
+  const fallbackSrc: string | undefined =
     useImage && compact && brand.logo.iconSrcFallback
       ? brand.logo.iconSrcFallback
       : brand.logo.srcFallback;
-  const [imageSrc, setImageSrc] = useState(fallbackSrc ?? primarySrc);
+  const [imageSrc, setImageSrc] = useState<string>(fallbackSrc ?? primarySrc);
 
   useEffect(() => {
     if (!useImage) return;

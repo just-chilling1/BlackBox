@@ -38,8 +38,15 @@ export function buildMoneyPageHtml(params: {
   const { siteId, productName, copy, ctaUrl } = params;
   const theme = getMoneyPageColorTheme(params.colorTheme);
   const variation = getMoneyPageVariation(params.variationId);
-  const ctaHref = moneyPageTrackHref(siteId, ctaUrl);
+  const showCta = Boolean(ctaUrl?.trim());
+  const ctaHref = showCta ? moneyPageTrackHref(siteId, ctaUrl.trim()) : "";
   const cta = escapeHtml(copy.ctaLabel || variation.ctaLabels[0]);
+  const ctaButton = showCta
+    ? `<p><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></p>`
+    : "";
+  const stickyBar = showCta
+    ? `<div class="bar"><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></div>`
+    : "";
   const hero = copy.heroImage
     ? `<img class="hero-img" src="${escapeHtml(copy.heroImage)}" alt="${escapeHtml(productName)}" loading="lazy" />`
     : "";
@@ -106,7 +113,7 @@ export function buildMoneyPageHtml(params: {
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
-    .wrap { max-width: 820px; margin: 0 auto; padding: 28px 20px 96px; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 28px 20px ${showCta ? "96px" : "28px"}; }
     .hero {
       padding: 28px 24px;
       border: 1px solid var(--line);
@@ -402,7 +409,7 @@ export function buildMoneyPageHtml(params: {
       <ul class="trust-row">
         ${trustRow}
       </ul>
-      <p><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></p>
+      ${ctaButton}
     </header>
     <section>
       <div class="section-head"><h2>Product introduction</h2></div>
@@ -448,13 +455,13 @@ export function buildMoneyPageHtml(params: {
     <section class="cta-panel">
       <h2>Final recommendation</h2>
       <div class="prose">${paragraphs(copy.finalRecommendation)}</div>
-      <p><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></p>
+      ${ctaButton}
     </section>
     <footer>
       <p>This page may use affiliate links. If you buy through them, a commission may be earned at no extra cost to you.</p>
     </footer>
   </div>
-  <div class="bar"><a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer nofollow sponsored">${cta}</a></div>
+  ${stickyBar}
 </body>
 </html>`;
 }

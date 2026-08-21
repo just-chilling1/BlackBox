@@ -1,14 +1,37 @@
 @echo off
 cd /d "%~dp0.."
-echo Quick push (no local build) ...
-call node scripts\copy-logos-now.mjs 2>nul
+echo === Push BrandLogo TypeScript fix to GitHub ===
+echo.
+
+git status -sb
+echo.
+
+git add src/components/layout/BrandLogo.tsx
 git add -A
 git reset HEAD -- .env .env.local 2>nul
-git commit -m "Fix Vercel build and ship NullPing logo + theme." -m "Resolve BrandLogo TypeScript error, remove stale thumbnailSrc, and commit logo assets."
+
+git commit -m "Fix BrandLogo imageSrc TypeScript type for Vercel build."
+if errorlevel 1 (
+  echo No new commit needed - checking if already pushed...
+)
+
+echo.
+echo Pushing to https://github.com/just-chilling1/BlackBox.git ...
 git push https://github.com/just-chilling1/BlackBox.git HEAD:main
-if errorlevel 1 git push origin HEAD
+if errorlevel 1 (
+  git push origin HEAD
+  if errorlevel 1 (
+    echo PUSH FAILED
+    pause
+    exit /b 1
+  )
+)
+
 echo.
+echo === Result ===
 git log -1 --oneline
+git status -sb
 echo.
-echo Watch deploy: https://vercel.com/essams-projects-52baa131/black-box
+echo GitHub: https://github.com/just-chilling1/BlackBox
+echo Vercel: https://vercel.com/essams-projects-52baa131/black-box
 pause
