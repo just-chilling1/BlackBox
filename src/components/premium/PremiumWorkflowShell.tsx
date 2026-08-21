@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
+import { type ReactNode } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { WorkflowPage } from "@/components/ui/workflow-page";
 import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial";
@@ -9,7 +8,7 @@ import { PremiumVideoTutorial } from "@/components/premium/PremiumVideoTutorial"
 type WorkflowWidth = "narrow" | "default" | "wide";
 
 export interface PremiumTrainingConfig {
-  vimeoId: string;
+  vimeoId?: string;
   title: string;
   description: string;
   iframeTitle?: string;
@@ -36,33 +35,11 @@ export function PremiumWorkflowShell({
   training,
   tip,
 }: PremiumWorkflowShellProps) {
-  const [showTraining, setShowTraining] = useState(false);
-
   return (
     <WorkflowPage width={width}>
-      <PageHeader
-        eyebrow="Premium"
-        title={title}
-        subtitle={subtitle}
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            {training ? (
-              <button
-                type="button"
-                onClick={() => setShowTraining((v) => !v)}
-                className="btn-secondary inline-flex items-center gap-2 text-sm"
-              >
-                <PlayCircle size={16} />
-                Training
-                {showTraining ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              </button>
-            ) : null}
-            {actions}
-          </div>
-        }
-      />
+      <PageHeader eyebrow="Premium" title={title} subtitle={subtitle} actions={actions} />
 
-      {showTraining && training ? (
+      {training ? (
         <PremiumVideoTutorial
           vimeoId={training.vimeoId}
           title={training.title}

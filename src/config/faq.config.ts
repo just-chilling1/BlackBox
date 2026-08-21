@@ -85,7 +85,7 @@ export const faqSections: FaqSection[] = [
       },
       {
         q: "What is One-Click Asset?",
-        a: "One-Click Asset builds a full promo kit from an affiliate link and niche — a hosted sales page, story thread, authority article, and Facebook post variants you can copy and use right away.",
+        a: "One-Click Asset builds a NullPing money page from your affiliate link and niche, then generates 10 Pinterest pins with images — the same core loop as Activate → Traffic → Results.",
       },
       {
         q: "What is Pin Multiplier?",

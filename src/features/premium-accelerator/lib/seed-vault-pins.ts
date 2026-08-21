@@ -2,21 +2,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { VaultCatalogEntry } from "./catalog";
 import { buildVaultPinDrafts } from "./vault-pins";
 
-/** Deterministic pin background — avoids scraping during vault install. */
-function vaultPinImageUrl(productName: string, seed: number): string | null {
-  const tags = productName
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter((w) => w.length > 2 && !/^\d+$/.test(w))
-    .slice(0, 3);
-  if (tags.length === 0) return null;
-  const lock = Math.abs(seed) % 10_000;
-  return `https://loremflickr.com/1200/675/${encodeURIComponent(tags.join(","))}/all?lock=${lock}`;
-}
-
 /**
- * Insert 10 ready Pinterest pins for a vault money page (deterministic copy + fallback images).
+ * Insert 10 ready Pinterest pins for a vault money page (deterministic copy + images).
  * Skips if pins already exist for the site.
  */
 export async function seedVaultPins(params: {
@@ -36,9 +23,6 @@ export async function seedVaultPins(params: {
 
   const copies = buildVaultPinDrafts(params.entry);
   const batchId = crypto.randomUUID();
-  const backgrounds = copies.map((_, idx) =>
-    vaultPinImageUrl(params.entry.productName, params.entry.id * 17 + idx * 31)
-  );
 
   const rows = copies.map((pin, idx) => ({
     user_id: params.userId,
@@ -49,7 +33,7 @@ export async function seedVaultPins(params: {
     title: pin.title,
     description: pin.description,
     keywords: pin.keywords,
-    source_image_url: backgrounds[idx],
+    source_image_url: pin.imageUrl,
   }));
 
   let { data: inserted, error } = await params.supabase.from("site_pins").insert(rows).select("id");
@@ -73,7 +57,7 @@ export async function seedVaultPins(params: {
   await Promise.all(
     inserted.map(async (row, idx) => {
       const imagePath = `/api/pins/${row.id}/image`;
-      const source = backgrounds[idx];
+      const source = copies[idx]?.imageUrl;
       if (source) pinImages[row.id] = source;
       await params.supabase
         .from("site_pins")

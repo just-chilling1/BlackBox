@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Check, Loader2, Sparkles } from "lucide-react";
+import { Check, Filter, Link as LinkIcon, Loader2, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
@@ -12,96 +12,45 @@ import { isValidAffiliateUrl } from "@/features/blog-builder/lib/affiliate-url";
 import { NICHE_OPTIONS } from "@/features/blog-builder/types";
 import {
   DfyResultPanel,
-  type DfyArticleResult,
-  type DfyFacebookPost,
+  type DfyPinResult,
   type DfySalesResult,
 } from "@/features/dfy-profit/components/DfyResultPanel";
 
-type Stage = "idle" | "sales" | "thread" | "article" | "posts" | "done";
+type Stage = "idle" | "sales" | "pins" | "done";
 
 const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
-  sales: "Building your sales page…",
-  thread: "Writing your X story thread…",
-  article: "Writing your authority article…",
-  posts: "Generating Facebook posts…",
+  sales: "Building your money page…",
+  pins: "Generating 10 Pinterest pins with images…",
 };
 
 export default function DfyProfitPage() {
   const [affiliateUrl, setAffiliateUrl] = useState("");
+  const [linkApplied, setLinkApplied] = useState(false);
   const [niche, setNiche] = useState("");
   const [stage, setStage] = useState<Stage>("idle");
   const [error, setError] = useState("");
   const [sales, setSales] = useState<DfySalesResult | null>(null);
-  const [article, setArticle] = useState<DfyArticleResult | null>(null);
-  const [posts, setPosts] = useState<DfyFacebookPost[]>([]);
-  const [thread, setThread] = useState<{
-    id: string;
-    text: string;
-    angle: string | null;
-    imageUrl: string | null;
-  }[]>([]);
-  const [productContext, setProductContext] = useState("");
-  const [productName, setProductName] = useState("");
-  const [nicheLabel, setNicheLabel] = useState("");
+  const [pins, setPins] = useState<DfyPinResult[]>([]);
+  const [pinsError, setPinsError] = useState("");
+  const [retryingPins, setRetryingPins] = useState(false);
   const [lastTemplateId, setLastTemplateId] = useState<string | undefined>();
-  const [articleError, setArticleError] = useState("");
-  const [postsError, setPostsError] = useState("");
-  const [threadError, setThreadError] = useState("");
-  const [retryingArticle, setRetryingArticle] = useState(false);
-  const [retryingPosts, setRetryingPosts] = useState(false);
-  const [retryingThread, setRetryingThread] = useState(false);
 
-  const generating =
-    stage === "sales" || stage === "article" || stage === "posts" || stage === "thread";
+  const generating = stage === "sales" || stage === "pins";
 
-  const runArticleStage = useCallback(
-    async (siteId: string, ctx: string, name: string, nicheName: string) => {
-      const res = await fetch("/api/premium/dfy-profit/article", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          siteId,
-          productContext: ctx,
-          productName: name,
-          niche: nicheName,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Article generation failed");
-      return {
-        title: data.title as string,
-        excerpt: data.excerpt as string,
-        html: data.html as string,
-      } satisfies DfyArticleResult;
-    },
-    []
-  );
-
-  const runPostsStage = useCallback(async (siteId: string) => {
-    const res = await fetch("/api/premium/dfy-profit/posts", {
+  const runPinsStage = useCallback(async (siteId: string) => {
+    const res = await fetch("/api/pins/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ siteId }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Facebook post generation failed");
-    return (data.posts ?? []) as DfyFacebookPost[];
-  }, []);
-
-  const runThreadStage = useCallback(async (siteId: string) => {
-    const res = await fetch("/api/premium/dfy-profit/x-thread", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteId }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "X thread generation failed");
-    return (data.posts ?? []) as typeof thread;
+    if (!res.ok) throw new Error(data.error || "Pin generation failed");
+    return (data.pins ?? []) as DfyPinResult[];
   }, []);
 
   const handleGenerate = async () => {
-    if (!isValidAffiliateUrl(affiliateUrl)) {
-      setError("Enter a valid affiliate URL starting with https://");
+    if (!linkApplied || !isValidAffiliateUrl(affiliateUrl)) {
+      setError("Apply a valid affiliate URL starting with https://");
       return;
     }
     if (!niche) {
@@ -110,19 +59,12 @@ export default function DfyProfitPage() {
     }
 
     setError("");
-    setArticleError("");
-    setPostsError("");
-    setThreadError("");
+    setPinsError("");
     setSales(null);
-    setArticle(null);
-    setPosts([]);
-    setThread([]);
+    setPins([]);
     setStage("sales");
 
     let siteId = "";
-    let ctx = "";
-    let name = "";
-    let nicheName = "";
 
     try {
       const startRes = await fetch("/api/premium/dfy-profit/start", {
@@ -135,135 +77,114 @@ export default function DfyProfitPage() {
         }),
       });
       const startData = await startRes.json();
-      if (!startRes.ok) throw new Error(startData.error || "Sales page generation failed");
+      if (!startRes.ok) throw new Error(startData.error || "Money page generation failed");
 
       siteId = startData.siteId as string;
-      ctx = (startData.productContext as string) || "";
-      name = (startData.productName as string) || "";
-      nicheName = (startData.niche as string) || niche;
-      setProductContext(ctx);
-      setProductName(name);
-      setNicheLabel(nicheName);
       setLastTemplateId(startData.templateId as string);
       setSales({
         siteId,
         offerUrl: startData.offerUrl as string,
         templateName: startData.templateName as string,
         templateId: startData.templateId as string,
-        productName: name,
+        productName: (startData.productName as string) || "",
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Sales page generation failed");
+      setError(e instanceof Error ? e.message : "Money page generation failed");
       setStage("idle");
       return;
     }
 
-    setStage("thread");
+    setStage("pins");
     try {
-      const threadResult = await runThreadStage(siteId);
-      setThread(threadResult);
+      const pinResults = await runPinsStage(siteId);
+      setPins(pinResults);
     } catch (e) {
-      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
-    }
-
-    setStage("article");
-    try {
-      const articleResult = await runArticleStage(siteId, ctx, name, nicheName);
-      setArticle(articleResult);
-    } catch (e) {
-      setArticleError(e instanceof Error ? e.message : "Article generation failed");
-    }
-
-    setStage("posts");
-    try {
-      const postsResult = await runPostsStage(siteId);
-      setPosts(postsResult);
-    } catch (e) {
-      setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
+      setPinsError(e instanceof Error ? e.message : "Pin generation failed");
     }
 
     setStage("done");
   };
 
-  const handleRetryArticle = async () => {
+  const handleRetryPins = async () => {
     if (!sales?.siteId) return;
-    setRetryingArticle(true);
-    setArticleError("");
+    setRetryingPins(true);
+    setPinsError("");
     try {
-      const result = await runArticleStage(
-        sales.siteId,
-        productContext,
-        productName,
-        nicheLabel
-      );
-      setArticle(result);
+      const result = await runPinsStage(sales.siteId);
+      setPins(result);
     } catch (e) {
-      setArticleError(e instanceof Error ? e.message : "Article generation failed");
+      setPinsError(e instanceof Error ? e.message : "Pin generation failed");
     } finally {
-      setRetryingArticle(false);
-    }
-  };
-
-  const handleRetryPosts = async () => {
-    if (!sales?.siteId) return;
-    setRetryingPosts(true);
-    setPostsError("");
-    try {
-      const result = await runPostsStage(sales.siteId);
-      setPosts(result);
-    } catch (e) {
-      setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
-    } finally {
-      setRetryingPosts(false);
-    }
-  };
-
-  const handleRetryThread = async () => {
-    if (!sales?.siteId) return;
-    setRetryingThread(true);
-    setThreadError("");
-    try {
-      const result = await runThreadStage(sales.siteId);
-      setThread(result);
-    } catch (e) {
-      setThreadError(e instanceof Error ? e.message : "X thread generation failed");
-    } finally {
-      setRetryingThread(false);
+      setRetryingPins(false);
     }
   };
 
   return (
     <PremiumWorkflowShell
       title="One-Click Asset"
-      subtitle="Paste your affiliate link, pick a niche, and get a live money page plus supporting assets in one run."
+      subtitle="Paste your affiliate link, pick a niche, and get a live money page plus 10 Pinterest pins — same core flow as Activate."
       tip={
         <>
-          Tip: Kits land in your Offers Library — sales page, article, Facebook posts, and an X
-          thread.
+          Tip: Apply your link first, then generate. You&apos;ll get a hosted money page and 10 pins
+          ready for Traffic.
         </>
       }
+      training={{
+        vimeoId: "1215530104",
+        title: "One-Click Asset Training",
+        description:
+          "Apply your affiliate link, pick a niche, and generate a money page with 10 Pinterest pins in one run — then post from Traffic.",
+        iframeTitle: "One-Click Asset training video",
+      }}
     >
       <GlassPanel className="space-y-5 p-5 sm:p-6">
-        <div>
-          <p className="text-sm font-medium text-text-primary">Generate your kit</p>
-          <p className="mt-1 text-xs text-text-muted">
-            One click creates a hosted sales page, authority article, Facebook posts, and an X story
-            thread.
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-text-primary">Generate your asset</p>
+            <p className="mt-1 text-xs text-text-muted">
+              One click creates a hosted money page and 10 Pinterest pins with images.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <span className="block text-sm font-medium text-text-primary">Affiliate link</span>
+        <div>
+          <span className="mb-2 flex items-center gap-2 text-sm font-medium text-text-primary">
+            <LinkIcon size={14} className="text-pulse-700" />
+            Affiliate URL
+          </span>
           <AffiliateLinkField
             value={affiliateUrl}
-            onChange={setAffiliateUrl}
+            onChange={(url) => {
+              setAffiliateUrl(url);
+              setLinkApplied(false);
+            }}
+            onApply={(url) => {
+              setAffiliateUrl(url);
+              setLinkApplied(true);
+              setError("");
+            }}
+            actionMode="apply"
             inputId="dfy-profit-affiliate-link"
           />
         </div>
 
-        <fieldset>
-          <legend className="mb-3 text-sm font-medium text-text-primary">Niche</legend>
-          <div className="flex flex-wrap gap-2">
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
+              <Filter size={14} className="text-pulse-700" />
+              Select niche
+            </p>
+            <p className="text-xs text-text-muted">
+              {niche
+                ? NICHE_OPTIONS.find((o) => o.value === niche)?.label ?? niche
+                : "Choose one"}
+            </p>
+          </div>
+          <div
+            className="flex flex-wrap gap-2 rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-3"
+            role="group"
+            aria-label="Select niche"
+          >
             {NICHE_OPTIONS.map((option) => {
               const selected = niche === option.value;
               return (
@@ -280,47 +201,33 @@ export default function DfyProfitPage() {
               );
             })}
           </div>
-        </fieldset>
+        </div>
 
         {error ? <PremiumErrorAlert message={error} /> : null}
 
         <button
           type="button"
-          disabled={generating}
+          disabled={generating || !linkApplied || !niche}
           onClick={() => void handleGenerate()}
           className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
         >
           {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-          {generating ? "Generating…" : sales ? "Generate another kit" : "Generate kit"}
+          {generating ? "Generating…" : sales ? "Generate another asset" : "Generate asset"}
         </button>
       </GlassPanel>
 
       <GenerationProgress
         active={generating}
-        label={
-          stage === "sales" || stage === "thread" || stage === "article" || stage === "posts"
-            ? STAGE_LABELS[stage]
-            : "Generating…"
-        }
+        label={stage === "sales" || stage === "pins" ? STAGE_LABELS[stage] : "Generating…"}
       />
 
       <DfyResultPanel
         sales={sales}
-        article={article}
-        posts={posts}
-        thread={thread}
-        articleError={articleError}
-        postsError={postsError}
-        threadError={threadError}
-        isGeneratingThread={stage === "thread"}
-        isGeneratingArticle={stage === "article"}
-        isGeneratingPosts={stage === "posts"}
-        retryingArticle={retryingArticle}
-        retryingPosts={retryingPosts}
-        retryingThread={retryingThread}
-        onRetryArticle={() => void handleRetryArticle()}
-        onRetryPosts={() => void handleRetryPosts()}
-        onRetryThread={() => void handleRetryThread()}
+        pins={pins}
+        pinsError={pinsError}
+        isGeneratingPins={stage === "pins" || retryingPins}
+        retryingPins={retryingPins}
+        onRetryPins={() => void handleRetryPins()}
       />
     </PremiumWorkflowShell>
   );

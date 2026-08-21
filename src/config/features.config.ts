@@ -78,7 +78,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "traffic-pins", tier: "core", description: "Generate Pinterest pin assets that send traffic to money pages.", guide: "traffic-pins" },
   { id: "results", tier: "core", description: "Tracked visitors, affiliate clicks, and per-asset performance.", guide: "results" },
   { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
-  { id: "premium-dfy-profit", tier: "premium", description: "One-click kit: affiliate link + niche → sales page, authority article, and 3 Facebook posts.", guide: "premium-dfy-profit" },
+  { id: "premium-dfy-profit", tier: "premium", description: "One-click asset: affiliate link + niche → money page + 10 Pinterest pins.", guide: "premium-dfy-profit" },
   { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
   { id: "premium-autopilot", tier: "premium", description: "Curated traffic sources checklist with promotion URL tracking.", guide: "premium-autopilot" },
   { id: "premium-accelerator", tier: "premium", description: "200 ready-made money pages across niches — install with your affiliate link, then generate Pinterest pins.", guide: "premium-accelerator" },

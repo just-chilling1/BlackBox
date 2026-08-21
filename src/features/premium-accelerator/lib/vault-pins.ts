@@ -112,22 +112,97 @@ const NICHE_PIN_HOOKS: Record<VaultNiche, string[]> = {
   ],
 };
 
-/** Build 10 deterministic pin drafts for vault preview (not stored). */
-export function buildVaultPinDrafts(entry: VaultCatalogEntry): PinCopy[] {
+/** Scene angles so each of the 10 pins gets a distinct visual. */
+const PIN_IMAGE_ANGLES = [
+  "hero product photo on a clean background",
+  "lifestyle scene showing the product in daily use",
+  "close-up detail shot of the product",
+  "flat lay product styling with related props",
+  "warm ambient lifestyle context for the niche",
+  "minimal studio shot with soft lighting",
+  "person interacting with the product naturally",
+  "overhead product arrangement",
+  "moody editorial product photography",
+  "bright modern product showcase",
+] as const;
+
+const NICHE_VISUAL_CONTEXT: Record<VaultNiche, string> = {
+  sleep: "calm bedroom night routine sleep wellness",
+  "boxing & combat sports": "boxing gym training gear athletic",
+  "health & fitness": "home fitness workout healthy lifestyle",
+  beauty: "skincare beauty vanity clean aesthetic",
+  "make money": "desk laptop productivity side hustle",
+  software: "modern laptop workspace app productivity",
+  pets: "happy pet owner home lifestyle",
+  education: "study desk learning books notebook",
+  general: "modern lifestyle product photography",
+};
+
+export interface VaultPinDraft extends PinCopy {
+  /** Ready-to-display background image for this pin (unique per template + index). */
+  imageUrl: string;
+}
+
+function productPhotoTokens(productName: string): string {
+  return productName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2)
+    .slice(0, 4)
+    .join(" ");
+}
+
+/**
+ * Deterministic Pinterest-sized (2:3) image URL for a vault pin.
+ * Unique per catalog entry + pin index so every template has 10 distinct images.
+ */
+export function buildVaultPinImageUrl(entry: VaultCatalogEntry, pinIdx: number): string {
+  const angle = PIN_IMAGE_ANGLES[pinIdx % PIN_IMAGE_ANGLES.length];
+  const nicheCtx = NICHE_VISUAL_CONTEXT[entry.niche];
+  const productBits = productPhotoTokens(entry.productName) || entry.productName;
+  const seed = entry.id * 97 + pinIdx * 31 + 11;
+  const prompt = [
+    "photorealistic vertical Pinterest pin photo",
+    productBits,
+    nicheCtx,
+    angle,
+    "no text, no watermark, no logo, high quality",
+  ].join(", ");
+
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1000&height=1500&nologo=true&seed=${seed}`;
+}
+
+/** Build 10 deterministic pin drafts (copy + unique images) for vault preview/install. */
+export function buildVaultPinDrafts(entry: VaultCatalogEntry): VaultPinDraft[] {
   const name = entry.productName;
   const hooks = NICHE_PIN_HOOKS[entry.niche];
   const nicheKeyword = entry.niche.split("&")[0].trim();
 
   return hooks.map((hook, i) => {
     const headline = hook.includes("this")
-      ? hook.replace(/this (sleep |fitness |beauty |money |pet |education |combat )?product/i, name).replace(/this software/i, name).replace(/this gear/i, name).replace(/this app/i, name).replace(/this course kit/i, name).replace(/this learning product/i, name).replace(/this piece of gear/i, name)
+      ? hook
+          .replace(/this (sleep |fitness |beauty |money |pet |education |combat )?product/i, name)
+          .replace(/this software/i, name)
+          .replace(/this gear/i, name)
+          .replace(/this app/i, name)
+          .replace(/this course kit/i, name)
+          .replace(/this learning product/i, name)
+          .replace(/this piece of gear/i, name)
       : `${hook}: ${name}`;
-    const clippedHeadline = (headline.includes(name) ? headline : `${headline} — ${name}`).slice(0, 80);
+    const clippedHeadline = (headline.includes(name) ? headline : `${headline} — ${name}`).slice(
+      0,
+      80
+    );
     return {
       headline: clippedHeadline,
       title: clippedHeadline.slice(0, 100),
       description: `A simple review of ${name} for ${entry.niche}. Tap through to the money page for benefits, drawbacks, and a clear recommendation.`,
-      keywords: [name, nicheKeyword, "review", "is it worth it", "honest review", `pin ${i + 1}`].slice(0, 6),
+      keywords: [name, nicheKeyword, "review", "is it worth it", "honest review", `pin ${i + 1}`].slice(
+        0,
+        6
+      ),
+      imageUrl: buildVaultPinImageUrl(entry, i),
     };
   });
 }

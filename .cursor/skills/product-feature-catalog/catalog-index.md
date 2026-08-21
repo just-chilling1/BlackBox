@@ -93,7 +93,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | Feature ID | Tier | Description | Guide |
 |------------|------|-------------|-------|
 | `premium-dfy` | PREMIUM | Done-for-you vault (keywords, articles, images, leads, products) | [premium-dfy](features/premium-dfy.md) |
-| `premium-dfy-profit` | PREMIUM | One-click kit: link + niche → sales page, authority article, 3 FB posts | [premium-dfy-profit](features/premium-dfy-profit.md) |
+| `premium-dfy-profit` | PREMIUM | One-click: link + niche → money page + 10 Pinterest pins | [premium-dfy-profit](features/premium-dfy-profit.md) |
 | `premium-instant` | PREMIUM | Pre-written social posts with images | [premium-instant](features/premium-instant.md) |
 | `premium-autopilot` | PREMIUM | Traffic source checklist with promotion URL | [premium-autopilot](features/premium-autopilot.md) |
 | `premium-accelerator` | PREMIUM | Bulk-generate websites and ready-to-post content | [premium-accelerator](features/premium-accelerator.md) |

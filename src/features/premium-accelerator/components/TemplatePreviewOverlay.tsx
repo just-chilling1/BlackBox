@@ -14,7 +14,7 @@ export interface VaultTemplatePreview {
   title: string;
   tagline: string | null;
   salesPageHtml: string;
-  pins: PinCopy[];
+  pins: Array<PinCopy & { imageUrl?: string }>;
 }
 
 type PreviewTab = "money-page" | "pins";
@@ -175,36 +175,64 @@ export function TemplatePreviewOverlay({
           ) : null}
 
           {!loading && !error && preview && tab === "pins" ? (
-            <div className="space-y-3 p-4 sm:p-5">
+            <div className="space-y-4 p-4 sm:p-5">
               <p className="text-xs text-text-muted">
-                10 ready pin headlines for this page. When you install, these pins are saved with
-                images so you can post from Traffic right away.
+                Each template includes 10 Pinterest pins with unique images. Install to save them to
+                Traffic ready to download and post.
               </p>
               {preview.pins.length > 0 ? (
-                <ul className="space-y-3">
+                <ul className="grid gap-4 sm:grid-cols-2">
                   {preview.pins.map((pin, i) => (
                     <li
                       key={i}
-                      className="rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)] p-4"
+                      className="overflow-hidden rounded-xl border border-[var(--np-line)] bg-[var(--np-surface)]"
                     >
-                      <p className="text-[11px] font-medium uppercase tracking-wider text-pulse-700">
-                        Pin {i + 1}
-                      </p>
-                      <h3 className="mt-1 text-sm font-semibold text-text-primary">{pin.headline}</h3>
-                      <p className="mt-1 text-xs text-text-muted">{pin.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-text-muted">{pin.description}</p>
-                      {pin.keywords.length > 0 ? (
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {pin.keywords.map((kw) => (
-                            <span
-                              key={kw}
-                              className="rounded-md border border-[var(--np-line)] px-2 py-0.5 text-[11px] text-text-muted"
-                            >
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
+                      <div className="relative aspect-[2/3] overflow-hidden bg-[var(--np-surface-field)]">
+                        {pin.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={pin.imageUrl}
+                            alt={pin.headline}
+                            className="h-full w-full object-cover"
+                            loading={i < 2 ? "eager" : "lazy"}
+                            decoding="async"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              const img = e.currentTarget;
+                              if (img.dataset.fallback === "1") return;
+                              img.dataset.fallback = "1";
+                              img.src = `https://picsum.photos/seed/vault-${preview.catalogId}-${i}/1000/1500`;
+                            }}
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-xs text-text-muted">
+                            Image {i + 1}
+                          </div>
+                        )}
+                        <span className="absolute left-2 top-2 rounded-md bg-black/55 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+                          Pin {i + 1}
+                        </span>
+                      </div>
+                      <div className="space-y-2 p-4">
+                        <h3 className="text-sm font-semibold leading-snug text-text-primary">
+                          {pin.headline}
+                        </h3>
+                        <p className="text-xs leading-relaxed text-text-muted line-clamp-3">
+                          {pin.description}
+                        </p>
+                        {pin.keywords.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {pin.keywords.map((kw) => (
+                              <span
+                                key={kw}
+                                className="rounded-md border border-[var(--np-line)] px-2 py-0.5 text-[11px] text-text-muted"
+                              >
+                                {kw}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -220,7 +248,7 @@ export function TemplatePreviewOverlay({
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[var(--np-line)] bg-[var(--np-surface-sub)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
           <p className="text-xs text-text-muted">
             {hasAffiliateLink
-              ? "Money page CTAs use your applied affiliate link. 10 pins are included on install."
+              ? "Money page CTAs use your applied affiliate link. 10 pins with images are included on install."
               : "Apply your affiliate link above to wire the money page CTA."}
           </p>
           <div className="flex flex-wrap gap-2">

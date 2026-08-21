@@ -161,6 +161,16 @@ export async function POST(request: Request) {
       scrapedDescription,
     });
 
+    await supabase
+      .from("sites")
+      .update({
+        product_url: affiliateUrl,
+        status: "live",
+        asset_source: "one-click",
+      })
+      .eq("id", siteId)
+      .eq("user_id", user.id);
+
     const offerUrl = buildOfferPageUrl(
       getServerAppUrl(request),
       siteSlug,
