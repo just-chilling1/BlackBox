@@ -3,6 +3,7 @@ import { getServiceRoleClient } from "@/lib/api-auth";
 import { readFile } from "fs/promises";
 import path from "path";
 import { pinRenderBackgroundCandidates } from "@/features/traffic/lib/pin-images";
+import { pinOverlayHeadline } from "@/features/traffic/lib/pin-rules";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -107,7 +108,7 @@ export async function GET(
 
   const { data: site } = await supabase
     .from("sites")
-    .select("product_name, title, sales_page_json")
+    .select("product_name, title, hobby, sales_page_json")
     .eq("id", pin.site_id)
     .maybeSingle();
 
@@ -115,18 +116,20 @@ export async function GET(
     heroImage?: string;
     pinImages?: Record<string, string>;
   };
-  const headline = pin.headline || pin.title || "Read the review";
+  const headline = pinOverlayHeadline(pin.headline || pin.title || "Read the review");
   const product = site?.product_name || site?.title || "";
   const download = new URL(request.url).searchParams.get("download") === "1";
-  const pinIdx = typeof (pin as { idx?: number }).idx === "number" ? (pin as { idx: number }).idx : 0;
+  const pinIdx = typeof (pin as { idx?: number }).idx === "number" ? (pin as { idx: number }).idx : -1;
+  const safeIdx = pinIdx >= 0 ? pinIdx : Math.abs(pinId.split("").reduce((n, c) => n + c.charCodeAt(0), 0)) % 10;
 
   const candidateUrls = pinRenderBackgroundCandidates({
     sourceImageUrl: (pin as { source_image_url?: string | null }).source_image_url,
     pinImageUrl: copy.pinImages?.[pin.id],
     heroImage: copy.heroImage,
     productName: product,
-    pinIdx,
+    pinIdx: safeIdx,
     headline,
+    hobby: site?.hobby ?? null,
     width: PIN_WIDTH,
     height: PIN_HEIGHT,
   });
@@ -138,18 +141,21 @@ export async function GET(
   }
 
   const fontData = await loadFont();
+  const overlay = pinOverlayHeadline(headline, 34);
+  const headlineSize = overlay.length > 28 ? 36 : overlay.length > 20 ? 40 : 44;
 
   const image = new ImageResponse(
     (
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          width: PIN_WIDTH,
+          height: PIN_HEIGHT,
           display: "flex",
           position: "relative",
           overflow: "hidden",
-          color: "#E6EDF3",
+          color: "#F8FAFC",
           fontFamily: "Inter",
+          background: "#050508",
         }}
       >
         {backgroundDataUrl ? (
@@ -162,9 +168,10 @@ export async function GET(
               position: "absolute",
               top: 0,
               left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              width: PIN_WIDTH,
+              height: PIN_HEIGHT,
+              objectFit: "contain",
+              objectPosition: "center",
             }}
           />
         ) : (
@@ -173,8 +180,8 @@ export async function GET(
               position: "absolute",
               top: 0,
               left: 0,
-              width: "100%",
-              height: "100%",
+              width: PIN_WIDTH,
+              height: PIN_HEIGHT,
               background: "linear-gradient(135deg, #0A1020 0%, #050508 55%, #121832 100%)",
             }}
           />
@@ -182,35 +189,43 @@ export async function GET(
         <div
           style={{
             position: "absolute",
-            top: 0,
             left: 0,
-            width: "100%",
-            height: "100%",
-            background: backgroundDataUrl
-              ? "linear-gradient(90deg, rgba(7,11,15,0.82) 0%, rgba(7,11,15,0.35) 55%, rgba(7,11,15,0.15) 100%)"
-              : "transparent",
-          }}
-        />
-        <div
-          style={{
-            position: "relative",
+            bottom: 0,
+            width: PIN_WIDTH,
+            height: 200,
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
-            width: "100%",
-            height: "100%",
-            padding: "48px 56px",
+            padding: "28px 48px 36px",
+            background:
+              "linear-gradient(180deg, rgba(5,5,8,0) 0%, rgba(5,5,8,0.72) 42%, rgba(5,5,8,0.94) 100%)",
           }}
         >
-          <div style={{ fontSize: 22, color: "#00F0FF", marginBottom: 16, letterSpacing: 2 }}>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 16,
+              color: "#00F0FF",
+              marginBottom: 10,
+              letterSpacing: 2.5,
+              fontWeight: 700,
+            }}
+          >
             NULLPING CASH
           </div>
-          <div style={{ fontSize: 48, lineHeight: 1.12, fontWeight: 700, maxWidth: 920 }}>
-            {headline}
+          <div
+            style={{
+              display: "flex",
+              fontSize: headlineSize,
+              lineHeight: 1.2,
+              fontWeight: 700,
+              width: 1100,
+              height: 100,
+              overflow: "hidden",
+            }}
+          >
+            {overlay}
           </div>
-          {product ? (
-            <div style={{ marginTop: 18, fontSize: 24, color: "#A7B4C2" }}>{product}</div>
-          ) : null}
         </div>
       </div>
     ),

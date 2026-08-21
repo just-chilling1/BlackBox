@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Check, CheckCircle2, ExternalLink, Loader2 } from "lucide-react";
+import { Check, CheckCircle2, ClipboardCheck, ExternalLink, Loader2, Scale, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { WorkflowPage } from "@/components/ui/workflow-page";
@@ -13,6 +13,11 @@ import {
   type MoneyPageColorThemeId,
   isMoneyPageColorThemeId,
 } from "@/features/money-page/lib/themes";
+import {
+  MONEY_PAGE_VARIATIONS,
+  type MoneyPageVariationId,
+  isMoneyPageVariationId,
+} from "@/features/money-page/lib/variations";
 import { sitePublicPath } from "@/lib/app-url";
 
 const FIELD_LABELS: Partial<Record<keyof MoneyPageCopy, string>> = {
@@ -24,6 +29,12 @@ const FIELD_LABELS: Partial<Record<keyof MoneyPageCopy, string>> = {
   finalRecommendation: "Final recommendation",
 };
 
+const VARIATION_ICONS: Record<MoneyPageVariationId, typeof Scale> = {
+  "honest-review": Scale,
+  "beginner-breakdown": BookOpen,
+  "smart-buyer": ClipboardCheck,
+};
+
 export default function MoneyPageEditor() {
   const params = useParams<{ assetId: string }>();
   const router = useRouter();
@@ -31,6 +42,7 @@ export default function MoneyPageEditor() {
   const [site, setSite] = useState<Record<string, unknown> | null>(null);
   const [copy, setCopy] = useState<MoneyPageCopy | null>(null);
   const [colorTheme, setColorTheme] = useState<MoneyPageColorThemeId>("ocean");
+  const [variationId, setVariationId] = useState<MoneyPageVariationId>("honest-review");
   const [affiliateUrl, setAffiliateUrl] = useState("");
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState("");
@@ -41,11 +53,20 @@ export default function MoneyPageEditor() {
   function applyThemeFromPayload(data: Record<string, unknown>) {
     if (isMoneyPageColorThemeId(data.colorTheme)) {
       setColorTheme(data.colorTheme);
+    } else {
+      const config = (data.site as { theme_config?: unknown } | undefined)?.theme_config;
+      if (config && typeof config === "object" && isMoneyPageColorThemeId((config as Record<string, unknown>).moneyColorTheme)) {
+        setColorTheme((config as Record<string, unknown>).moneyColorTheme as MoneyPageColorThemeId);
+      }
+    }
+
+    if (isMoneyPageVariationId(data.variationId)) {
+      setVariationId(data.variationId);
       return;
     }
     const config = (data.site as { theme_config?: unknown } | undefined)?.theme_config;
-    if (config && typeof config === "object" && isMoneyPageColorThemeId((config as Record<string, unknown>).moneyColorTheme)) {
-      setColorTheme((config as Record<string, unknown>).moneyColorTheme as MoneyPageColorThemeId);
+    if (config && typeof config === "object" && isMoneyPageVariationId((config as Record<string, unknown>).moneyVariation)) {
+      setVariationId((config as Record<string, unknown>).moneyVariation as MoneyPageVariationId);
     }
   }
 
@@ -75,15 +96,24 @@ export default function MoneyPageEditor() {
           config && typeof config === "object"
             ? (config as Record<string, unknown>).moneyColorTheme
             : null;
+        const fromVariation =
+          config && typeof config === "object"
+            ? (config as Record<string, unknown>).moneyVariation
+            : null;
         const theme = isMoneyPageColorThemeId(data.colorTheme)
           ? data.colorTheme
           : isMoneyPageColorThemeId(fromConfig)
             ? fromConfig
             : "ocean";
+        const variation = isMoneyPageVariationId(data.variationId)
+          ? data.variationId
+          : isMoneyPageVariationId(fromVariation)
+            ? fromVariation
+            : "honest-review";
         const rebuild = await fetch(`/api/assets/${assetId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ copy: pageCopy, affiliateUrl: link, colorTheme: theme }),
+          body: JSON.stringify({ copy: pageCopy, affiliateUrl: link, colorTheme: theme, variationId: variation }),
         });
         const rebuilt = await rebuild.json().catch(() => null);
         if (rebuild.ok && rebuilt?.site) {
@@ -104,15 +134,16 @@ export default function MoneyPageEditor() {
     void load();
   }, [assetId]);
 
-  async function save(nextTheme?: MoneyPageColorThemeId) {
-    setBusy(nextTheme ? "theme" : "save");
+  async function save(nextTheme?: MoneyPageColorThemeId, nextVariation?: MoneyPageVariationId) {
+    setBusy(nextTheme ? "theme" : nextVariation ? "design" : "save");
     setError("");
     const theme = nextTheme ?? colorTheme;
+    const variation = nextVariation ?? variationId;
     try {
       const res = await fetch(`/api/assets/${assetId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ copy, affiliateUrl, colorTheme: theme }),
+        body: JSON.stringify({ copy, affiliateUrl, colorTheme: theme, variationId: variation }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -121,7 +152,8 @@ export default function MoneyPageEditor() {
       }
       setSite(data.site);
       applyThemeFromPayload(data);
-      if (!nextTheme) setEditing(false);
+      if (isMoneyPageCopy(data.site.sales_page_json)) setCopy(data.site.sales_page_json);
+      if (!nextTheme && !nextVariation) setEditing(false);
       return true;
     } catch {
       setError("Save failed");
@@ -137,6 +169,35 @@ export default function MoneyPageEditor() {
     setColorTheme(themeId);
     const ok = await save(themeId);
     if (!ok) setColorTheme(previous);
+  }
+
+  async function changeVariation(nextVariationId: MoneyPageVariationId) {
+    if (nextVariationId === variationId || busy) return;
+    const previous = variationId;
+    setVariationId(nextVariationId);
+    setBusy("design");
+    setError("");
+    try {
+      const res = await fetch(`/api/assets/${assetId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "regenerate", colorTheme, variationId: nextVariationId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setVariationId(previous);
+        setError(typeof data.error === "string" ? data.error : "Could not apply page design");
+        return;
+      }
+      setSite(data.site);
+      if (isMoneyPageCopy(data.site.sales_page_json)) setCopy(data.site.sales_page_json);
+      applyThemeFromPayload(data);
+    } catch {
+      setVariationId(previous);
+      setError("Could not apply page design");
+    } finally {
+      setBusy("");
+    }
   }
 
   async function regenerate() {
@@ -212,43 +273,6 @@ export default function MoneyPageEditor() {
 
       {error ? <div className="alert-banner">{error}</div> : null}
 
-      <GlassPanel className="space-y-5 p-6 sm:p-7">
-        <div>
-          <h2 className="ds-h3">Color theme</h2>
-          <p className="mt-1 text-sm text-ink-2">Pick one of four looks for your sales page.</p>
-        </div>
-        <div className="money-theme-grid" role="radiogroup" aria-label="Money page color theme">
-          {MONEY_PAGE_COLOR_THEMES.map((theme) => {
-            const selected = theme.id === colorTheme;
-            return (
-              <button
-                key={theme.id}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                disabled={busy === "theme" || busy === "regen"}
-                className={`money-theme-card ${selected ? "is-selected" : ""}`}
-                style={{ "--theme-accent": theme.swatch } as React.CSSProperties}
-                onClick={() => void changeTheme(theme.id)}
-              >
-                <span
-                  className={`money-theme-swatch ${selected ? "is-selected" : ""}`}
-                  style={{ background: theme.swatch }}
-                  aria-hidden
-                >
-                  {selected ? <Check size={14} strokeWidth={3} className="money-theme-swatch-check" /> : null}
-                </span>
-                <span className="money-theme-copy">
-                  <span className="money-theme-label">{theme.label}</span>
-                  <span className="money-theme-desc">{theme.description}</span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        {busy === "theme" ? <p className="text-xs text-ink-3">Updating theme…</p> : null}
-      </GlassPanel>
-
       {live ? (
         <GlassPanel className="space-y-5 p-6 sm:p-7">
           <div className="success-banner">
@@ -319,6 +343,84 @@ export default function MoneyPageEditor() {
       ) : (
         <GlassPanel className="p-6 text-sm text-ink-4">No preview available yet.</GlassPanel>
       )}
+
+      <div className="money-page-customize-grid">
+        <GlassPanel className="space-y-5 p-6 sm:p-7">
+          <div>
+            <h2 className="ds-h3">Color theme</h2>
+            <p className="mt-1 text-sm text-ink-2">Pick one of four looks for your sales page.</p>
+          </div>
+          <div className="money-theme-grid" role="radiogroup" aria-label="Money page color theme">
+            {MONEY_PAGE_COLOR_THEMES.map((theme) => {
+              const selected = theme.id === colorTheme;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  disabled={busy === "theme" || busy === "design" || busy === "regen"}
+                  className={`money-theme-card ${selected ? "is-selected" : ""}`}
+                  style={{ "--theme-accent": theme.swatch } as React.CSSProperties}
+                  onClick={() => void changeTheme(theme.id)}
+                >
+                  <span
+                    className={`money-theme-swatch ${selected ? "is-selected" : ""}`}
+                    style={{ background: theme.swatch }}
+                    aria-hidden
+                  >
+                    {selected ? <Check size={14} strokeWidth={3} className="money-theme-swatch-check" /> : null}
+                  </span>
+                  <span className="money-theme-copy">
+                    <span className="money-theme-label">{theme.label}</span>
+                    <span className="money-theme-desc">{theme.description}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {busy === "theme" ? <p className="text-xs text-ink-3">Updating theme…</p> : null}
+        </GlassPanel>
+
+        <GlassPanel className="space-y-5 p-6 sm:p-7">
+          <div>
+            <h2 className="ds-h3">Page design</h2>
+            <p className="mt-1 text-sm text-ink-2">Choose how your review page is framed and structured.</p>
+          </div>
+          <div className="money-theme-grid" role="radiogroup" aria-label="Money page design">
+            {MONEY_PAGE_VARIATIONS.map((variation) => {
+              const selected = variation.id === variationId;
+              const Icon = VARIATION_ICONS[variation.id];
+              return (
+                <button
+                  key={variation.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  disabled={busy === "theme" || busy === "design" || busy === "regen"}
+                  className={`money-theme-card money-design-card ${selected ? "is-selected" : ""}`}
+                  onClick={() => void changeVariation(variation.id)}
+                >
+                  <span className={`money-design-icon ${selected ? "is-selected" : ""}`} aria-hidden>
+                    {selected ? (
+                      <Check size={14} strokeWidth={3} className="money-theme-swatch-check" />
+                    ) : (
+                      <Icon size={16} strokeWidth={2.25} />
+                    )}
+                  </span>
+                  <span className="money-theme-copy">
+                    <span className="money-theme-label">{variation.label}</span>
+                    <span className="money-theme-desc">{variation.description}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {busy === "design" ? (
+            <p className="text-xs text-ink-3">Rewriting page copy and layout for this design…</p>
+          ) : null}
+        </GlassPanel>
+      </div>
     </WorkflowPage>
   );
 }

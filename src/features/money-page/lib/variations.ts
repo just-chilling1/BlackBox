@@ -2,9 +2,25 @@ import type { MoneyPageCopy } from "./types";
 
 export type MoneyPageVariationId = "honest-review" | "beginner-breakdown" | "smart-buyer";
 
+export type MoneyPageLayoutId = "review" | "guide" | "checklist";
+
+export interface MoneyPageSectionTitles {
+  productIntro: string;
+  overview: string;
+  benefits: string;
+  whoFor: string;
+  features: string;
+  prosCons: string;
+  review: string;
+  faqs: string;
+  finalRecommendation: string;
+}
+
 export interface MoneyPageVariation {
   id: MoneyPageVariationId;
   label: string;
+  /** Short line shown in the editor */
+  description: string;
   /** Extra instructions injected into the AI prompt */
   promptAngle: string;
   /** Trust-row bullets shown in the hero */
@@ -12,12 +28,17 @@ export interface MoneyPageVariation {
   /** Section eyebrow / framing */
   eyebrow: string;
   ctaLabels: [string, string];
+  /** Section headings — changes page structure feel per design */
+  sectionTitles: MoneyPageSectionTitles;
+  /** Controls section order and visual styling in the HTML template */
+  layoutId: MoneyPageLayoutId;
 }
 
 export const MONEY_PAGE_VARIATIONS: MoneyPageVariation[] = [
   {
     id: "honest-review",
     label: "Honest review",
+    description: "Straight \"is it worth it?\" review framing",
     promptAngle: `ANGLE: Write this as a straight, independent product review.
 - Headline should feel like a clear "is it worth it?" review.
 - Lead with balanced judgment, then specifics.
@@ -25,10 +46,23 @@ export const MONEY_PAGE_VARIATIONS: MoneyPageVariation[] = [
     trustBullets: ["Beginner-friendly breakdown", "Updated for today's buyers", "Official link below"],
     eyebrow: "Independent product review",
     ctaLabels: ["Check Today's Price", "Visit Official Website"],
+    sectionTitles: {
+      productIntro: "Product introduction",
+      overview: "Product overview",
+      benefits: "Main benefits",
+      whoFor: "Who this is for",
+      features: "Key features",
+      prosCons: "Pros and cons",
+      review: "Our review",
+      faqs: "Frequently asked questions",
+      finalRecommendation: "Final recommendation",
+    },
+    layoutId: "review",
   },
   {
     id: "beginner-breakdown",
     label: "Beginner breakdown",
+    description: "Simple guide for first-time buyers",
     promptAngle: `ANGLE: Write this as a beginner-friendly walkthrough.
 - Headline should feel like a simple guide, not a hard sell.
 - Explain what the product is and who it helps in everyday language.
@@ -36,10 +70,23 @@ export const MONEY_PAGE_VARIATIONS: MoneyPageVariation[] = [
     trustBullets: ["No jargon, just clarity", "Written for first-time buyers", "See the official offer"],
     eyebrow: "Beginner-friendly guide",
     ctaLabels: ["See Official Offer", "Visit Official Website"],
+    sectionTitles: {
+      productIntro: "What is it?",
+      overview: "Simple overview",
+      benefits: "Why beginners consider it",
+      whoFor: "Best for",
+      features: "What's included",
+      prosCons: "Good to know",
+      review: "Plain-language take",
+      faqs: "Common beginner questions",
+      finalRecommendation: "Bottom line for beginners",
+    },
+    layoutId: "guide",
   },
   {
     id: "smart-buyer",
     label: "Smart buyer",
+    description: "Checklist-style decision framework",
     promptAngle: `ANGLE: Write this as a practical buyer's checklist.
 - Headline should feel decision-oriented ("should you buy?", "what to check first").
 - Emphasize trade-offs, fit, and what to verify before spending.
@@ -47,6 +94,18 @@ export const MONEY_PAGE_VARIATIONS: MoneyPageVariation[] = [
     trustBullets: ["What to check before you buy", "Honest pros and cons", "Official site in one click"],
     eyebrow: "Smart buyer checklist",
     ctaLabels: ["Compare Official Price", "Visit Official Website"],
+    sectionTitles: {
+      productIntro: "Quick product snapshot",
+      overview: "What to evaluate first",
+      benefits: "Reasons it might fit",
+      whoFor: "Good fit if you…",
+      features: "Checklist items",
+      prosCons: "Trade-offs to weigh",
+      review: "Decision notes",
+      faqs: "Buyer checklist questions",
+      finalRecommendation: "Buy or skip?",
+    },
+    layoutId: "checklist",
   },
 ];
 

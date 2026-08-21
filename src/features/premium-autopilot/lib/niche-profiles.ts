@@ -1,6 +1,6 @@
-import { NICHE_OPTIONS } from "@/features/blog-builder/types";
+import { PREMIUM_NICHE_OPTIONS, type PremiumNicheValue } from "@/lib/premium-niches";
 
-export type AutopilotNicheKey = (typeof NICHE_OPTIONS)[number]["value"];
+export type AutopilotNicheKey = PremiumNicheValue;
 
 export type TrafficDemand = "low" | "medium" | "high";
 

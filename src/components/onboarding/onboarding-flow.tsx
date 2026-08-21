@@ -6,6 +6,8 @@ import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
 import { getNavIcon } from "@/lib/nav-icons";
 import { supabase } from "@/lib/supabase";
+import { completePendingAuthFromUrl } from "@/lib/auth-pending-url";
+import { clearCachedClientUser } from "@/lib/auth-client-cache";
 import {
   onboardingContent,
   ONBOARDING_DASHBOARD_ROUTE,
@@ -53,15 +55,41 @@ export function OnboardingFlow() {
 
   const [firstName, setFirstName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activationStep, setActivationStep] = useState(0);
 
   useEffect(() => {
+    void (async () => {
+      const result = await completePendingAuthFromUrl();
+      if (result.status === "error") {
+        setError(result.message);
+        setCheckingAuth(false);
+        return;
+      }
+
+      if (result.status === "none") {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          router.replace("/login");
+          return;
+        }
+      }
+
+      clearCachedClientUser();
+      setCheckingAuth(false);
+    })();
+  }, [router]);
+
+  useEffect(() => {
+    if (checkingAuth) return;
     const timers = cfg.infoSteps.map((_, i) =>
       window.setTimeout(() => setActivationStep(i + 1), 600 * (i + 1))
     );
     return () => timers.forEach(window.clearTimeout);
-  }, [cfg.infoSteps]);
+  }, [cfg.infoSteps, checkingAuth]);
 
   const handleActivate = async () => {
     const trimmed = firstName.trim();
@@ -72,10 +100,10 @@ export function OnboardingFlow() {
 
     try {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (!user) {
+      if (!session) {
         router.replace("/login");
         return;
       }
@@ -100,6 +128,14 @@ export function OnboardingFlow() {
       setSubmitting(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="fixed inset-0 z-[300] flex min-h-[100dvh] items-center justify-center bg-canvas">
+        <p className="text-sm text-ink-4">Setting up your account…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[300] flex min-h-[100dvh] bg-canvas">

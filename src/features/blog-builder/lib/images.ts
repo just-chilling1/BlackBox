@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { buildHeroImagePrompt } from "./prompts";
 import { mapWithConcurrency } from "./concurrency";
+import { resolvePremiumNicheValue } from "@/lib/premium-niches";
 import { SiteImagePool } from "./site-image-pool";
 import { scrapeImageFromUrl, scrapeRelevantImagesFromUrl, SCRAPE_USER_AGENT } from "./scrape";
 
@@ -58,8 +58,14 @@ export const HOBBY_VISUAL_QUERIES: Record<string, string> = {
   "Dating / Relationships": "happy couple relationship together",
   "AI Writing Tools": "writer laptop content creation desk",
   "AI Platform": "artificial intelligence technology computer office",
+  sleep: "sleep bedroom night rest pillow",
   "boxing & combat sports": "boxing gloves sparring training",
   "health & fitness": "fitness workout gym training",
+  beauty: "skincare beauty serum bottle",
+  "make money": "laptop desk productivity workspace",
+  software: "laptop workspace software dashboard",
+  pets: "happy pet dog owner home",
+  education: "study desk books learning",
 };
 
 function tokenizeForQuery(text: string): string[] {
@@ -224,18 +230,66 @@ async function fetchPixabayImageUrl(
   return hit?.url ?? null;
 }
 
-export function pollinationsImageUrl(title: string, subject: string, seedOffset = 0): string {
-  const prompt = buildHeroImagePrompt(title, subject);
-
-  const seed =
-    title.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) + seedOffset;
-
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1200&height=800&seed=${seed}&nologo=true`;
-}
-
 function picsumFallbackUrl(title: string, seedOffset = 0): string {
   const seed = title.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) + seedOffset;
   return `https://picsum.photos/seed/sms-${seed}/1200/800`;
+}
+
+/** Last-resort photo after scrape retries fail — stock, then any Picsum image. */
+export async function fetchAnyFallbackImage(params: {
+  title: string;
+  subject?: string;
+  hobby?: string;
+  seedOffset?: number;
+}): Promise<string> {
+  const related = await fetchNicheRelatedImage({
+    niche: params.hobby,
+    productName: params.title,
+    seedOffset: params.seedOffset,
+  });
+  if (related) return related;
+  return picsumFallbackUrl(params.title, params.seedOffset ?? 0);
+}
+
+const NICHE_PHOTO_QUERIES: Record<string, string[]> = {
+  health: ["sleep bedroom night", "peaceful sleep bed", "wellness supplement"],
+  fitness: ["boxing gloves training", "fitness workout gym", "healthy lifestyle training"],
+  finance: ["laptop desk productivity", "home office workspace", "finance planning desk"],
+  marketing: ["laptop workspace software", "digital marketing desk", "computer dashboard office"],
+  selfhelp: ["journal planner desk", "personal development workspace", "motivation notebook"],
+  beauty: ["skincare serum bottle", "beauty vanity skincare"],
+  education: ["study desk books", "student laptop learning"],
+  business: ["entrepreneur desk laptop", "business workspace office"],
+  travel: ["happy dog owner", "travel lifestyle outdoor", "home garden patio"],
+};
+
+/**
+ * Niche-related stock photo only. Returns null when nothing matching is found —
+ * callers should omit the image rather than show a random unrelated photo.
+ */
+export async function fetchNicheRelatedImage(params: {
+  niche?: string | null;
+  productName?: string;
+  seedOffset?: number;
+}): Promise<string | null> {
+  const niche = params.niche?.trim() || "";
+  const nicheKey = resolvePremiumNicheValue(niche) ?? niche;
+  const productName = params.productName?.trim() || niche || "product";
+  const queries = [
+    ...(NICHE_PHOTO_QUERIES[nicheKey] ?? []),
+    HOBBY_VISUAL_QUERIES[niche],
+    niche,
+  ].filter((q): q is string => Boolean(q?.trim()));
+
+  for (const query of queries) {
+    const url = await fetchPixabayImageUrl(productName, niche || productName, {
+      customQuery: query,
+      hobby: niche || undefined,
+      seedBoost: params.seedOffset,
+    });
+    if (url) return url;
+  }
+  return null;
 }
 
 function findBase64InResponse(val: unknown, depth = 0): string | null {

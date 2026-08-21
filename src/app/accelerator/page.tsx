@@ -3,7 +3,7 @@ import { loadFeaturePage } from "@/lib/load-feature-page";
 
 const AcceleratorPage = loadFeaturePage(
   () => import("@/features/premium-accelerator/pages/AcceleratorPage"),
-  "Loading Asset Vault..."
+  "Loading Unlimited..."
 );
 
 export default function Page() {

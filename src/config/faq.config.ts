@@ -80,12 +80,12 @@ export const faqSections: FaqSection[] = [
     title: "Premium Features",
     items: [
       {
-        q: "What is Asset Vault?",
-        a: "Asset Vault gives you access to 200 ready-made money pages across popular niches. Add your affiliate link, install a page with 10 pins, optionally regenerate AI pins, then continue to Traffic and Results.",
+        q: "What is Unlimited?",
+        a: "Unlimited gives you access to 200 ready-made money pages across popular niches. Add your affiliate link, install a page with 10 pins, optionally regenerate AI pins, then continue to Traffic and Results.",
       },
       {
-        q: "What is One-Click Asset?",
-        a: "One-Click Asset builds a NullPing money page from your affiliate link and niche, then generates 10 Pinterest pins with images — the same core loop as Activate → Traffic → Results.",
+        q: "What is Done-For-You Profit?",
+        a: "Done-For-You Profit builds a live sales page from your affiliate link and niche, then generates 3 Pinterest pins, an authority article, and 3 Facebook posts in one run.",
       },
       {
         q: "What is Pin Multiplier?",
@@ -96,8 +96,8 @@ export const faqSections: FaqSection[] = [
         a: "Pinterest Autopilot is a guided Pinterest posting playbook for your live money page. It does not auto-publish — you download pins from Traffic, post manually, check off steps, and track visits in Results.",
       },
       {
-        q: "What are Authority Boosters?",
-        a: "Authority Boosters add long-form authority sections to your money page (primary), with optional copy for Medium, LinkedIn, or your blog. CTAs use your /m page tracking URL with ?src=article.",
+        q: "What are Guaranteed High-Ticket Payouts?",
+        a: "Guaranteed High-Ticket Payouts add long-form authority sections to your money page (primary), with optional copy for Medium, LinkedIn, or your blog. CTAs use your /m page tracking URL with ?src=article.",
       },
       {
         q: "What is Cyber Protection?",

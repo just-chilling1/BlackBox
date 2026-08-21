@@ -1,4 +1,5 @@
-import { NICHE_OPTIONS, type ArticleAngle } from "@/features/blog-builder/types";
+import { PREMIUM_NICHE_OPTIONS } from "@/lib/premium-niches";
+import type { ArticleAngle } from "@/features/blog-builder/types";
 import { buildRecurringStreamArticleContent } from "@/features/blog-builder/lib/authority-article-content";
 
 export const RECURRING_STREAM_TARGET_COUNT = 100;
@@ -52,14 +53,14 @@ function slugify(value: string): string {
 /** Build 100 authority article definitions — evenly distributed across all niches. */
 export function buildRecurringStreamCatalog(): RecurringStreamArticle[] {
   const articles: RecurringStreamArticle[] = [];
-  const nicheCount = NICHE_OPTIONS.length;
+  const nicheCount = PREMIUM_NICHE_OPTIONS.length;
   const basePerNiche = Math.floor(RECURRING_STREAM_TARGET_COUNT / nicheCount);
   const remainder = RECURRING_STREAM_TARGET_COUNT % nicheCount;
 
   let id = 1;
 
   for (let nIdx = 0; nIdx < nicheCount; nIdx++) {
-    const niche = NICHE_OPTIONS[nIdx];
+    const niche = PREMIUM_NICHE_OPTIONS[nIdx];
     const articlesForNiche = basePerNiche + (nIdx < remainder ? 1 : 0);
 
     for (let t = 0; t < articlesForNiche; t++) {
@@ -91,7 +92,10 @@ export function buildRecurringStreamCatalog(): RecurringStreamArticle[] {
   return articles;
 }
 
-export const RECURRING_STREAM_NICHES = NICHE_OPTIONS.map((n) => n.label);
+/** Value/label options — shared with Done-For-You Profit and other premium features. */
+export { PREMIUM_NICHE_OPTIONS as HIGH_TICKET_NICHE_OPTIONS } from "@/lib/premium-niches";
+
+export const RECURRING_STREAM_NICHES = PREMIUM_NICHE_OPTIONS.map((n) => n.label);
 
 /** Swap inline offer placeholder with member affiliate link. */
 export function weaveAffiliateIntoArticle(html: string, affiliateUrl: string): string {

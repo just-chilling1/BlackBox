@@ -78,7 +78,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "traffic-pins", tier: "core", description: "Generate Pinterest pin assets that send traffic to money pages.", guide: "traffic-pins" },
   { id: "results", tier: "core", description: "Tracked visitors, affiliate clicks, and per-asset performance.", guide: "results" },
   { id: "premium-dfy", tier: "premium", description: "Done-for-you vault: pre-made keywords, articles, images, leads, or products.", guide: "premium-dfy" },
-  { id: "premium-dfy-profit", tier: "premium", description: "One-click asset: affiliate link + niche → money page + 10 Pinterest pins.", guide: "premium-dfy-profit" },
+  { id: "premium-dfy-profit", tier: "premium", description: "Done-For-You Profit: affiliate link + niche → live sales page, 3 pins, authority article, and 3 Facebook posts.", guide: "premium-dfy-profit" },
   { id: "premium-instant", tier: "premium", description: "Pre-written social posts with images — copy and paste to Facebook.", guide: "premium-instant" },
   { id: "premium-autopilot", tier: "premium", description: "Pinterest posting playbook for a live money page — guided checklist, not auto-publish.", guide: "premium-autopilot" },
   { id: "premium-accelerator", tier: "premium", description: "200 ready-made money pages across niches — install with your affiliate link, then generate Pinterest pins.", guide: "premium-accelerator" },
@@ -86,7 +86,7 @@ export const FEATURE_CATALOG: FeatureMeta[] = [
   { id: "premium-10x", tier: "premium", description: "Alias for Pin Multiplier (see premium-social).", guide: "premium-10x" },
   { id: "premium-infinite", tier: "premium", description: "Batch-generate multiple full articles from one niche.", guide: "premium-infinite" },
   { id: "premium-automation", tier: "premium", description: "Schedule articles and posts on a publishing calendar.", guide: "premium-automation" },
-  { id: "premium-recurring", tier: "premium", description: "Authority Boosters — add authority sections to a money page (optional external copy).", guide: "premium-recurring" },
+  { id: "premium-recurring", tier: "premium", description: "Guaranteed High-Ticket Payouts — add authority sections to a money page (optional external copy).", guide: "premium-recurring" },
   { id: "protector", tier: "premium", description: "Cyber Protection — real account status (email, session, HTTPS, activity).", guide: "protector" },
   { id: "premium-license-rights", tier: "premium", description: "Reseller license request on Account — License Rights ticket until team activation.", guide: "premium-license-rights" },
 ];

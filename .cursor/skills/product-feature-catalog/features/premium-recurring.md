@@ -1,7 +1,7 @@
 # premium-recurring (Recurring Stream)
 
 **Feature ID:** `premium-recurring`  
-**Route:** `/recurring-wealth` (nav label: **Recurring Stream**)
+**Route:** `/recurring-wealth` (nav label: **Guaranteed High-Ticket Payouts**)
 
 ## Description
 

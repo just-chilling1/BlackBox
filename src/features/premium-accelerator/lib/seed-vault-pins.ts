@@ -1,9 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { VaultCatalogEntry } from "./catalog";
-import { buildVaultPinDrafts } from "./vault-pins";
+import { resolveVaultPinDrafts } from "./vault-images";
 
 /**
- * Insert 10 ready Pinterest pins for a vault money page (deterministic copy + images).
+ * Insert 10 ready Pinterest pins for a vault money page.
+ * Images come from the affiliate page scrape (3 retries), then any non-AI photo.
  * Skips if pins already exist for the site.
  */
 export async function seedVaultPins(params: {
@@ -11,6 +12,8 @@ export async function seedVaultPins(params: {
   userId: string;
   siteId: string;
   entry: VaultCatalogEntry;
+  scrapeUrl?: string | null;
+  heroImage?: string | null;
   salesPageJson?: Record<string, unknown> | null;
 }): Promise<number> {
   const { count } = await params.supabase
@@ -21,7 +24,13 @@ export async function seedVaultPins(params: {
 
   if ((count ?? 0) > 0) return count ?? 0;
 
-  const copies = buildVaultPinDrafts(params.entry);
+  const copies = await resolveVaultPinDrafts({
+    entry: params.entry,
+    scrapeUrl: params.scrapeUrl,
+    heroImage: params.heroImage,
+    userId: params.userId,
+    supabase: params.supabase,
+  });
   const batchId = crypto.randomUUID();
 
   const rows = copies.map((pin, idx) => ({

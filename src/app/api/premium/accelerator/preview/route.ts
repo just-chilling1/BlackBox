@@ -7,9 +7,13 @@ import { buildMoneyPageHtml } from "@/features/money-page/lib/html";
 import { getMoneyPageVariation } from "@/features/money-page/lib/variations";
 import { getAcceleratorCatalogEntry } from "@/features/premium-accelerator/lib/catalog";
 import { buildVaultMoneyPageCopy } from "@/features/premium-accelerator/lib/vault-copy";
-import { buildVaultPinDrafts } from "@/features/premium-accelerator/lib/vault-pins";
+import {
+  resolveVaultHeroImage,
+  resolveVaultPinDrafts,
+} from "@/features/premium-accelerator/lib/vault-images";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 /** Return money page HTML + Pinterest pin drafts for preview (no DB writes). */
 export async function GET(request: Request) {
@@ -41,7 +45,12 @@ export async function GET(request: Request) {
   }
 
   const affiliateUrl = affiliateRaw ? normalizeAffiliateUrl(affiliateRaw) : "";
-  const copy = buildVaultMoneyPageCopy(entry);
+  const heroImage = await resolveVaultHeroImage({
+    productName: entry.productName,
+    niche: entry.niche,
+    scrapeUrl: affiliateUrl || null,
+  });
+  const copy = buildVaultMoneyPageCopy(entry, heroImage);
   const variation = getMoneyPageVariation(entry.variationId);
   const previewCta = affiliateUrl || "https://example.com";
 
@@ -55,7 +64,11 @@ export async function GET(request: Request) {
     ctaHrefOverride: previewCta,
   });
 
-  const pins = buildVaultPinDrafts(entry);
+  const pins = await resolveVaultPinDrafts({
+    entry,
+    scrapeUrl: affiliateUrl || null,
+    heroImage,
+  });
 
   return NextResponse.json(
     {

@@ -19,7 +19,7 @@ export interface MoneyPageCopy {
   finalRecommendation: string;
   ctaLabel: string;
   heroImage?: string;
-  /** Optional authority article sections appended by Authority Boosters */
+  /** Optional authority article sections appended by Guaranteed High-Ticket Payouts */
   authoritySections?: MoneyPageAuthoritySection[];
 }
 

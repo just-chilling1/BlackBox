@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
-import { generatePinCopy } from "@/features/traffic/lib/pin-rules";
-import { resolvePinBackgroundImages } from "@/features/traffic/lib/pin-images";
+import { clampPinCount, generatePinCopy } from "@/features/traffic/lib/pin-rules";
+import {
+  resolvePinBackgroundImages,
+  uniquePinFallbackUrl,
+} from "@/features/traffic/lib/pin-images";
+import { normalizeImageUrl } from "@/features/blog-builder/lib/images";
 import {
   getThreadGenerationQuota,
   recordThreadGeneration,
@@ -17,8 +21,8 @@ function withPinImageUrls<T extends { id: string; image_url?: string | null }>(p
   return pins.map((pin) => ({
     ...pin,
     image_url: pin.image_url?.startsWith("http")
-      ? `/api/pins/${pin.id}/image?v=7`
-      : pin.image_url || `/api/pins/${pin.id}/image?v=7`,
+      ? `/api/pins/${pin.id}/image?v=10`
+      : pin.image_url || `/api/pins/${pin.id}/image?v=10`,
   }));
 }
 
@@ -88,6 +92,7 @@ export async function POST(request: Request) {
 
   const extraBatch = Boolean(body.extraBatch) && isFeatureEnabled("premium-social");
   const regenerate = Boolean(body.regenerate);
+  const pinCount = clampPinCount(body.count);
 
   let siteQuery = await supabase
     .from("sites")
@@ -165,7 +170,7 @@ export async function POST(request: Request) {
   const productName = site.product_name || site.title;
   const copyJson = site.sales_page_json;
   const context = [copyJson?.headline, copyJson?.subheadline, site.hobby].filter(Boolean).join("\n");
-  const copies = await generatePinCopy(productName, context);
+  const copies = await generatePinCopy(productName, context, pinCount);
   const batchId = crypto.randomUUID();
   const { scrapeUrl, scrapeUrls } = scrapeTargetsFromSite(site);
 
@@ -202,18 +207,52 @@ export async function POST(request: Request) {
     supabase,
   });
 
-  const rows = copies.map((pin, idx) => ({
-    user_id: user.id,
-    site_id: siteId,
-    batch_id: batchId,
-    idx,
-    headline: pin.headline,
-    title: pin.title,
-    description: pin.description,
-    keywords: pin.keywords,
-    // Do not coalesce every pin to heroImage — that made all boxing pins identical.
-    source_image_url: backgrounds[idx] || (idx === 0 ? heroImage : null) || null,
-  }));
+  // Enforce uniqueness at insert time — never coalesce multiple pins onto the same image.
+  const usedAtInsert = new Set<string>();
+  const rows = copies.map((pin, idx) => {
+    let source = backgrounds[idx] || null;
+    if (source) {
+      const key = normalizeImageUrl(source);
+      if (usedAtInsert.has(key)) {
+        source = null;
+      } else {
+        usedAtInsert.add(key);
+      }
+    }
+    // Pin 0 may use the money-page hero once if nothing else resolved.
+    if (!source && idx === 0 && heroImage) {
+      const heroKey = normalizeImageUrl(heroImage);
+      if (!usedAtInsert.has(heroKey)) {
+        source = heroImage;
+        usedAtInsert.add(heroKey);
+      }
+    }
+    // Never leave a pin without a unique background — fill with a diversified fallback.
+    if (!source) {
+      const fallback = uniquePinFallbackUrl({
+        productName,
+        pinIdx: idx,
+        usedKeys: usedAtInsert,
+        hobby: site.hobby,
+        headlineLen: pin.headline?.length ?? 0,
+      });
+      if (fallback) {
+        source = fallback;
+        usedAtInsert.add(normalizeImageUrl(fallback));
+      }
+    }
+    return {
+      user_id: user.id,
+      site_id: siteId,
+      batch_id: batchId,
+      idx,
+      headline: pin.headline,
+      title: pin.title,
+      description: pin.description,
+      keywords: pin.keywords,
+      source_image_url: source,
+    };
+  });
 
   let { data: inserted, error } = await supabase.from("site_pins").insert(rows).select("*");
 
@@ -233,15 +272,22 @@ export async function POST(request: Request) {
     );
   }
 
+  // Map backgrounds by pin idx — never zip by array order (Supabase may reorder rows).
+  const backgroundByIdx = new Map(copies.map((_, idx) => [idx, backgrounds[idx] ?? null]));
+  const sourceByIdx = new Map(
+    rows.map((row) => [row.idx, row.source_image_url as string | null])
+  );
+
   const withImages = withPinImageUrls(
-    (inserted ?? []).map((row, idx) => ({
-      ...row,
-      source_image_url:
-        (row as { source_image_url?: string | null }).source_image_url ||
-        backgrounds[idx] ||
-        (idx === 0 ? heroImage : null) ||
-        null,
-    }))
+    (inserted ?? []).map((row) => {
+      const idx = typeof (row as { idx?: number }).idx === "number" ? (row as { idx: number }).idx : 0;
+      const existing = (row as { source_image_url?: string | null }).source_image_url;
+      const source = existing || sourceByIdx.get(idx) || backgroundByIdx.get(idx) || null;
+      return {
+        ...row,
+        source_image_url: source,
+      };
+    })
   );
 
   await Promise.all(

@@ -9,18 +9,24 @@ import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell"
 import { GenerationProgress } from "@/components/ui/generation-progress";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { isValidAffiliateUrl } from "@/features/blog-builder/lib/affiliate-url";
-import { NICHE_OPTIONS } from "@/features/blog-builder/types";
+import type { SavedFacebookPost } from "@/features/blog-builder/lib/facebook-posts-vault";
 import {
   DfyResultPanel,
+  type DfyArticleResult,
   type DfyPinResult,
   type DfySalesResult,
 } from "@/features/dfy-profit/components/DfyResultPanel";
+import { PREMIUM_NICHE_OPTIONS } from "@/lib/premium-niches";
 
-type Stage = "idle" | "sales" | "pins" | "done";
+type Stage = "idle" | "sales" | "pins" | "article" | "posts" | "done";
+
+const DFY_PIN_COUNT = 3;
 
 const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
-  sales: "Building your money page…",
-  pins: "Generating 10 Pinterest pins with images…",
+  sales: "Building your sales page…",
+  pins: "Generating 3 Pinterest pins with images…",
+  article: "Writing your authority article…",
+  posts: "Generating 3 Facebook posts…",
 };
 
 export default function DfyProfitPage() {
@@ -33,19 +39,53 @@ export default function DfyProfitPage() {
   const [pins, setPins] = useState<DfyPinResult[]>([]);
   const [pinsError, setPinsError] = useState("");
   const [retryingPins, setRetryingPins] = useState(false);
+  const [article, setArticle] = useState<DfyArticleResult | null>(null);
+  const [articleError, setArticleError] = useState("");
+  const [retryingArticle, setRetryingArticle] = useState(false);
+  const [facebookPosts, setFacebookPosts] = useState<SavedFacebookPost[]>([]);
+  const [postsError, setPostsError] = useState("");
+  const [retryingPosts, setRetryingPosts] = useState(false);
   const [lastTemplateId, setLastTemplateId] = useState<string | undefined>();
 
-  const generating = stage === "sales" || stage === "pins";
+  const generating =
+    stage === "sales" || stage === "pins" || stage === "article" || stage === "posts";
 
   const runPinsStage = useCallback(async (siteId: string) => {
     const res = await fetch("/api/pins/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteId }),
+      body: JSON.stringify({ siteId, count: DFY_PIN_COUNT }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Pin generation failed");
     return (data.pins ?? []) as DfyPinResult[];
+  }, []);
+
+  const runArticleStage = useCallback(async (siteId: string) => {
+    const res = await fetch("/api/premium/dfy-profit/article", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ siteId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Authority article generation failed");
+    return {
+      id: data.id as string,
+      title: (data.title as string) || "",
+      excerpt: (data.excerpt as string) || "",
+      html: (data.html as string) || "",
+    } satisfies DfyArticleResult;
+  }, []);
+
+  const runPostsStage = useCallback(async (siteId: string) => {
+    const res = await fetch("/api/premium/dfy-profit/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ siteId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Facebook post generation failed");
+    return (data.posts ?? []) as SavedFacebookPost[];
   }, []);
 
   const handleGenerate = async () => {
@@ -60,8 +100,12 @@ export default function DfyProfitPage() {
 
     setError("");
     setPinsError("");
+    setArticleError("");
+    setPostsError("");
     setSales(null);
     setPins([]);
+    setArticle(null);
+    setFacebookPosts([]);
     setStage("sales");
 
     let siteId = "";
@@ -77,7 +121,7 @@ export default function DfyProfitPage() {
         }),
       });
       const startData = await startRes.json();
-      if (!startRes.ok) throw new Error(startData.error || "Money page generation failed");
+      if (!startRes.ok) throw new Error(startData.error || "Sales page generation failed");
 
       siteId = startData.siteId as string;
       setLastTemplateId(startData.templateId as string);
@@ -89,7 +133,7 @@ export default function DfyProfitPage() {
         productName: (startData.productName as string) || "",
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Money page generation failed");
+      setError(e instanceof Error ? e.message : "Sales page generation failed");
       setStage("idle");
       return;
     }
@@ -100,6 +144,22 @@ export default function DfyProfitPage() {
       setPins(pinResults);
     } catch (e) {
       setPinsError(e instanceof Error ? e.message : "Pin generation failed");
+    }
+
+    setStage("article");
+    try {
+      const articleResult = await runArticleStage(siteId);
+      setArticle(articleResult);
+    } catch (e) {
+      setArticleError(e instanceof Error ? e.message : "Authority article generation failed");
+    }
+
+    setStage("posts");
+    try {
+      const postResults = await runPostsStage(siteId);
+      setFacebookPosts(postResults);
+    } catch (e) {
+      setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
     }
 
     setStage("done");
@@ -119,30 +179,64 @@ export default function DfyProfitPage() {
     }
   };
 
+  const handleRetryArticle = async () => {
+    if (!sales?.siteId) return;
+    setRetryingArticle(true);
+    setArticleError("");
+    try {
+      const result = await runArticleStage(sales.siteId);
+      setArticle(result);
+    } catch (e) {
+      setArticleError(e instanceof Error ? e.message : "Authority article generation failed");
+    } finally {
+      setRetryingArticle(false);
+    }
+  };
+
+  const handleRetryPosts = async () => {
+    if (!sales?.siteId) return;
+    setRetryingPosts(true);
+    setPostsError("");
+    try {
+      const result = await runPostsStage(sales.siteId);
+      setFacebookPosts(result);
+    } catch (e) {
+      setPostsError(e instanceof Error ? e.message : "Facebook post generation failed");
+    } finally {
+      setRetryingPosts(false);
+    }
+  };
+
+  const progressStage =
+    stage === "sales" || stage === "pins" || stage === "article" || stage === "posts"
+      ? STAGE_LABELS[stage]
+      : "Generating…";
+
   return (
     <PremiumWorkflowShell
-      title="One-Click Asset"
-      subtitle="Paste your affiliate link, pick a niche, and get a live money page plus 10 Pinterest pins — same core flow as Activate."
+      title="Done-For-You Profit"
+      subtitle="Paste your affiliate link, pick a niche, and get a live sales page, 3 Pinterest pins, an authority article, and 3 Facebook posts."
       tip={
         <>
-          Tip: Apply your link first, then generate. You&apos;ll get a hosted money page and 10 pins
-          ready for Traffic.
+          Tip: Apply your link first, then generate. You&apos;ll get a published sales page plus
+          pins, an article, and Facebook copy ready to post.
         </>
       }
       training={{
         vimeoId: "1215530104",
-        title: "One-Click Asset Training",
+        title: "Done-For-You Profit Training",
         description:
-          "Apply your affiliate link, pick a niche, and generate a money page with 10 Pinterest pins in one run — then post from Traffic.",
-        iframeTitle: "One-Click Asset training video",
+          "Apply your affiliate link, pick a niche, and generate a live sales page with 3 pins, an authority article, and 3 Facebook posts in one run.",
+        iframeTitle: "Done-For-You Profit training video",
       }}
     >
       <GlassPanel className="space-y-5 p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-text-primary">Generate your asset</p>
+            <p className="text-sm font-medium text-text-primary">Generate your kit</p>
             <p className="mt-1 text-xs text-text-muted">
-              One click creates a hosted money page and 10 Pinterest pins with images.
+              One click creates a published sales page, 3 pins, an authority article, and 3 Facebook
+              posts.
             </p>
           </div>
         </div>
@@ -176,7 +270,7 @@ export default function DfyProfitPage() {
             </p>
             <p className="text-xs text-text-muted">
               {niche
-                ? NICHE_OPTIONS.find((o) => o.value === niche)?.label ?? niche
+                ? PREMIUM_NICHE_OPTIONS.find((o) => o.value === niche)?.label ?? niche
                 : "Choose one"}
             </p>
           </div>
@@ -185,7 +279,7 @@ export default function DfyProfitPage() {
             role="group"
             aria-label="Select niche"
           >
-            {NICHE_OPTIONS.map((option) => {
+            {PREMIUM_NICHE_OPTIONS.map((option) => {
               const selected = niche === option.value;
               return (
                 <button
@@ -212,14 +306,11 @@ export default function DfyProfitPage() {
           className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
         >
           {generating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-          {generating ? "Generating…" : sales ? "Generate another asset" : "Generate asset"}
+          {generating ? "Generating…" : sales ? "Generate another kit" : "Generate kit"}
         </button>
       </GlassPanel>
 
-      <GenerationProgress
-        active={generating}
-        label={stage === "sales" || stage === "pins" ? STAGE_LABELS[stage] : "Generating…"}
-      />
+      <GenerationProgress active={generating} label={progressStage} />
 
       <DfyResultPanel
         sales={sales}
@@ -228,6 +319,16 @@ export default function DfyProfitPage() {
         isGeneratingPins={stage === "pins" || retryingPins}
         retryingPins={retryingPins}
         onRetryPins={() => void handleRetryPins()}
+        article={article}
+        articleError={articleError}
+        isGeneratingArticle={stage === "article" || retryingArticle}
+        retryingArticle={retryingArticle}
+        onRetryArticle={() => void handleRetryArticle()}
+        facebookPosts={facebookPosts}
+        postsError={postsError}
+        isGeneratingPosts={stage === "posts" || retryingPosts}
+        retryingPosts={retryingPosts}
+        onRetryPosts={() => void handleRetryPosts()}
       />
     </PremiumWorkflowShell>
   );

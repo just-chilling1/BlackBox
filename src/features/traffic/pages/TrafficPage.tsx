@@ -30,9 +30,9 @@ interface PinRow {
 }
 
 function pinImageSrc(url: string) {
-  const base = url.includes("?") ? url : `${url}?v=7`;
-  if (base.includes("v=")) return base.replace(/([?&])v=\d+/, "$1v=7");
-  return `${base}&v=7`;
+  const base = url.includes("?") ? url : `${url}?v=10`;
+  if (base.includes("v=")) return base.replace(/([?&])v=\d+/, "$1v=10");
+  return `${base}&v=10`;
 }
 
 function pinDownloadHref(url: string | null) {
@@ -246,85 +246,114 @@ export default function TrafficPage() {
           <div className="pin-card-grid">
             {pins.map((pin, index) => (
               <GlassPanel key={pin.id} className="pin-card">
-                <div className="pin-card-header">
-                  <span className="pin-card-badge">Pin #{index + 1}</span>
-                  {copied.endsWith(pin.id) ? (
-                    <span className="pin-card-copied">Copied</span>
-                  ) : null}
-                </div>
-
-                {pin.image_url ? (
-                  <div className="pin-card-media">
-                    <span className="pin-card-media-index" aria-hidden>
-                      {index + 1}
-                    </span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="pin-card-media">
+                  <div className="pin-card-media-chrome">
+                    <span className="pin-card-badge">Pin #{index + 1}</span>
+                    {copied.endsWith(pin.id) ? (
+                      <span className="pin-card-copied">Copied</span>
+                    ) : null}
+                  </div>
+                  {pin.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={pinImageSrc(pin.image_url)}
                       alt={pin.headline}
                       loading="lazy"
                       decoding="async"
                     />
-                  </div>
-                ) : null}
+                  ) : (
+                    <div className="pin-card-media-empty">
+                      <ImageIcon size={22} strokeWidth={1.75} aria-hidden />
+                      <span>No preview</span>
+                    </div>
+                  )}
+                </div>
 
                 <div className="pin-card-body">
                   <p className="pin-card-headline">{pin.headline}</p>
 
-                  <div className="pin-meta-grid">
-                    <div className="pin-meta-field">
-                      <div className="pin-meta-label">Title</div>
+                  <div className="pin-copy-stack">
+                    <div className="pin-copy-row">
+                      <div className="pin-copy-row-top">
+                        <span className="pin-meta-label">Title</span>
+                        <button
+                          type="button"
+                          className="pin-copy-mini"
+                          onClick={() => void copy(`t${pin.id}`, pin.title)}
+                        >
+                          <Copy size={12} strokeWidth={2} aria-hidden />
+                          {copied === `t${pin.id}` ? "Copied" : "Copy"}
+                        </button>
+                      </div>
                       <p className="pin-meta-value">{pin.title}</p>
                     </div>
-                    <div className="pin-meta-field">
-                      <div className="pin-meta-label">Description</div>
+
+                    <div className="pin-copy-row">
+                      <div className="pin-copy-row-top">
+                        <span className="pin-meta-label">Description</span>
+                        <button
+                          type="button"
+                          className="pin-copy-mini"
+                          onClick={() => void copy(`d${pin.id}`, pin.description)}
+                        >
+                          <Copy size={12} strokeWidth={2} aria-hidden />
+                          {copied === `d${pin.id}` ? "Copied" : "Copy"}
+                        </button>
+                      </div>
                       <p className="pin-meta-value">{pin.description}</p>
                     </div>
-                    <div className="pin-meta-field pin-meta-field--full">
-                      <div className="pin-meta-label">Keywords</div>
-                      <p className="pin-meta-value pin-meta-keywords">
+                  </div>
+
+                  {(pin.keywords || []).length > 0 ? (
+                    <div className="pin-keywords-block">
+                      <span className="pin-meta-label">Keywords</span>
+                      <div className="pin-meta-keywords">
                         {(pin.keywords || []).map((keyword) => (
                           <span key={keyword} className="pin-keyword-chip">
                             {keyword}
                           </span>
                         ))}
-                      </p>
+                      </div>
                     </div>
-                    <div className="pin-meta-field pin-meta-field--full">
-                      <div className="pin-meta-label">Destination link</div>
-                      <p className="pin-meta-value pin-meta-link">{destination(pin.id)}</p>
+                  ) : null}
+
+                  <div className="pin-destination-row">
+                    <div className="pin-destination-copy">
+                      <span className="pin-meta-label">Destination</span>
+                      <p className="pin-meta-link">{destination(pin.id)}</p>
                     </div>
+                    <button
+                      type="button"
+                      className="pin-copy-mini"
+                      onClick={() => void copy(`l${pin.id}`, destination(pin.id))}
+                      aria-label="Copy destination link"
+                    >
+                      <Link2 size={12} strokeWidth={2} aria-hidden />
+                      {copied === `l${pin.id}` ? "Copied" : "Copy"}
+                    </button>
                   </div>
                 </div>
 
                 <div className="pin-card-actions">
-                  <a className="pin-action-btn pin-action-btn--primary" href={pinDownloadHref(pin.image_url)}>
-                    <Download size={14} strokeWidth={1.75} aria-hidden />
-                    Download
+                  <a
+                    className="pin-action-btn pin-action-btn--primary"
+                    href={pinDownloadHref(pin.image_url)}
+                  >
+                    <Download size={15} strokeWidth={1.75} aria-hidden />
+                    Download image
                   </a>
                   <button
                     type="button"
                     className="pin-action-btn"
-                    onClick={() => void copy(`t${pin.id}`, pin.title)}
+                    onClick={() =>
+                      void copy(
+                        `all${pin.id}`,
+                        [pin.title, pin.description, destination(pin.id)].filter(Boolean).join("\n\n")
+                      )
+                    }
                   >
                     <Copy size={14} strokeWidth={1.75} aria-hidden />
-                    {copied === `t${pin.id}` ? "Copied" : "Title"}
-                  </button>
-                  <button
-                    type="button"
-                    className="pin-action-btn"
-                    onClick={() => void copy(`d${pin.id}`, pin.description)}
-                  >
-                    <Copy size={14} strokeWidth={1.75} aria-hidden />
-                    {copied === `d${pin.id}` ? "Copied" : "Description"}
-                  </button>
-                  <button
-                    type="button"
-                    className="pin-action-btn"
-                    onClick={() => void copy(`l${pin.id}`, destination(pin.id))}
-                  >
-                    <Link2 size={14} strokeWidth={1.75} aria-hidden />
-                    {copied === `l${pin.id}` ? "Copied" : "Link"}
+                    {copied === `all${pin.id}` ? "Copied all" : "Copy all"}
                   </button>
                 </div>
               </GlassPanel>

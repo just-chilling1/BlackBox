@@ -75,7 +75,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | `wealth-sync` | CORE | Affiliate URL → AI bridge/review page | [wealth-sync](features/wealth-sync.md) |
 | `traffic-hub` | CORE | Outreach targets and AI comments for promotion | [traffic-hub](features/traffic-hub.md) |
 | `income-calculator` | CORE | Income projection from traffic and commission | [income-calculator](features/income-calculator.md) |
-| `premium-recurring` | PREMIUM | Authority Boosters — add sections to a money page | [premium-recurring](features/premium-recurring.md) |
+| `premium-recurring` | PREMIUM | Guaranteed High-Ticket Payouts — add sections to a money page | [premium-recurring](features/premium-recurring.md) |
 
 ---
 
@@ -93,7 +93,7 @@ Auth, onboarding, support, and home dashboard are **built into the skeleton** (n
 | Feature ID | Tier | Description | Guide |
 |------------|------|-------------|-------|
 | `premium-dfy` | PREMIUM | Done-for-you vault (keywords, articles, images, leads, products) | [premium-dfy](features/premium-dfy.md) |
-| `premium-dfy-profit` | PREMIUM | One-click: link + niche → money page + 10 Pinterest pins | [premium-dfy-profit](features/premium-dfy-profit.md) |
+| `premium-dfy-profit` | PREMIUM | One-click: link + niche → live sales page + 3 pins + article + 3 Facebook posts | [premium-dfy-profit](features/premium-dfy-profit.md) |
 | `premium-instant` | PREMIUM | Pre-written social posts with images | [premium-instant](features/premium-instant.md) |
 | `premium-autopilot` | PREMIUM | Pinterest posting playbook for a live money page | [premium-autopilot](features/premium-autopilot.md) |
 | `premium-accelerator` | PREMIUM | 200 ready-made money pages — install + pins | [premium-accelerator](features/premium-accelerator.md) |

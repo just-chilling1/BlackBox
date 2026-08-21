@@ -1,21 +1,11 @@
 import { NextResponse } from "next/server";
 import { featureApiGuard } from "@/lib/feature-api-guard";
 import { getApiUser } from "@/lib/api-auth";
+import { loadAccountActivity } from "@/lib/account-activity";
 import { sitePublicPath } from "@/lib/app-url";
+import { countLiveSites, loadUserSites } from "@/lib/user-sites";
 
 export const dynamic = "force-dynamic";
-
-function schemaMissing(error: { code?: string; message?: string } | null): boolean {
-  if (!error) return false;
-  const code = error.code || "";
-  const message = error.message || "";
-  return (
-    code === "42P01" ||
-    code === "PGRST205" ||
-    code === "42703" ||
-    /schema cache|does not exist|Could not find the/i.test(message)
-  );
-}
 
 type SiteRow = {
   id: string;
@@ -27,48 +17,15 @@ type SiteRow = {
   created_at?: string;
 };
 
-async function loadUserSites(
+async function loadUserSitesForResults(
   supabase: Awaited<ReturnType<typeof getApiUser>>["supabase"],
   userId: string
 ): Promise<{ sites: SiteRow[]; error: string | null }> {
-  const full = await supabase
-    .from("sites")
-    .select("id, title, product_name, slug, status, owner_handle, created_at")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
-
-  if (!full.error) {
-    return { sites: (full.data ?? []) as SiteRow[], error: null };
-  }
-
-  if (schemaMissing(full.error)) {
-    const withoutHandle = await supabase
-      .from("sites")
-      .select("id, title, product_name, slug, status, created_at")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-
-    if (!withoutHandle.error) {
-      return { sites: (withoutHandle.data ?? []) as SiteRow[], error: null };
-    }
-
-    if (schemaMissing(withoutHandle.error)) {
-      const minimal = await supabase
-        .from("sites")
-        .select("id, title, slug, status, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-
-      if (!minimal.error) {
-        return { sites: (minimal.data ?? []) as SiteRow[], error: null };
-      }
-      return { sites: [], error: minimal.error.message };
-    }
-
-    return { sites: [], error: withoutHandle.error.message };
-  }
-
-  return { sites: [], error: full.error.message };
+  const { sites, error } = await loadUserSites(supabase, userId);
+  return {
+    sites: sites as SiteRow[],
+    error,
+  };
 }
 
 export async function GET() {
@@ -77,18 +34,20 @@ export async function GET() {
   const { supabase, user } = await getApiUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { sites: siteList, error: sitesError } = await loadUserSites(supabase, user.id);
+  const { sites: siteList, error: sitesError } = await loadUserSitesForResults(supabase, user.id);
   if (sitesError) {
     return NextResponse.json({ error: sitesError }, { status: 500 });
   }
 
   const siteIds = siteList.map((s) => s.id);
+  const accountActivity = await loadAccountActivity(supabase, user.id);
 
   const empty = {
-    moneyPagesLive: siteList.filter((s) => s.status === "live").length,
+    moneyPagesLive: countLiveSites(siteList),
     trafficAssetsCreated: 0,
     visitorsGenerated: 0,
     affiliateClicks: 0,
+    accountActivity,
     assets: [] as unknown[],
     activity: [] as unknown[],
   };
@@ -165,10 +124,11 @@ export async function GET() {
     .slice(0, 20);
 
   return NextResponse.json({
-    moneyPagesLive: siteList.filter((s) => s.status === "live").length,
+    moneyPagesLive: countLiveSites(siteList),
     trafficAssetsCreated: exact.reduce((sum, row) => sum + row.pins, 0),
     visitorsGenerated: exact.reduce((sum, row) => sum + row.visits, 0),
     affiliateClicks: exact.reduce((sum, row) => sum + row.clicks, 0),
+    accountActivity,
     assets,
     activity,
     ...(metricsWarning ? { warning: metricsWarning } : {}),

@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Pencil,
   Activity,
+  FileText,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { brand } from "@/config/brand.config";
@@ -27,7 +28,7 @@ import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell"
 import { LiveAssetPicker, type LiveAssetSummary } from "@/components/premium/LiveAssetPicker";
 import { GenerationProgress, GENERATION_RESULTS_ID } from "@/components/ui/generation-progress";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { RECURRING_STREAM_NICHES } from "@/features/premium-recurring/lib/catalog";
+import { PREMIUM_NICHE_FILTER_LABELS } from "@/lib/premium-niches";
 import { CrossPlatformGuide } from "@/features/premium-recurring/components/CrossPlatformGuide";
 import { wrapArticleWithTitle } from "@/features/blog-builder/lib/authority-article-content";
 
@@ -272,7 +273,7 @@ export default function RecurringStreamPage() {
   if (initialLoading && articles.length === 0) {
     return (
       <PremiumWorkflowShell
-        title="Authority Boosters"
+        title="Guaranteed High-Ticket Payouts"
         subtitle="Long-form authority sections that strengthen your money page — CTAs point at /m/{slug}."
       >
         <PageSkeleton cards={2} />
@@ -282,14 +283,14 @@ export default function RecurringStreamPage() {
 
   return (
     <PremiumWorkflowShell
-      title="Authority Boosters"
+      title="Guaranteed High-Ticket Payouts"
       subtitle={`${seededCount || 100} authority articles — add a section to your money page, or copy for external posts with tracking links.`}
       training={{
         vimeoId: "1215568587",
-        title: "Authority Boosters Training",
+        title: "Guaranteed High-Ticket Payouts Training",
         description:
           "Pick a live money page, preview an authority article with your tracking link, then add it as a section on the money page.",
-        iframeTitle: "Authority Boosters training video",
+        iframeTitle: "Guaranteed High-Ticket Payouts training video",
       }}
       tip={
         <>
@@ -299,15 +300,20 @@ export default function RecurringStreamPage() {
       }
     >
       <GlassPanel className="overflow-hidden p-0">
-        <div className="border-b border-[var(--np-line)] bg-pulse-100/10 p-5 sm:p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-pulse-100/20 text-pulse-700">
+        <div className="relative overflow-hidden border-b border-[var(--np-line)] p-5 sm:p-6">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,color-mix(in_srgb,var(--np-pulse-500)_12%,transparent)_0%,transparent_42%,color-mix(in_srgb,#A855F7_10%,transparent)_100%)]"
+          />
+          <div className="relative flex items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-[color-mix(in_srgb,var(--np-signal-100)_80%,var(--np-surface))] text-pulse-500 shadow-[0_0_20px_-6px_rgba(0,240,255,0.45)]">
               <Repeat size={22} />
             </div>
-            <div>
-              <p className="font-medium text-text-primary">Strengthen your money page</p>
-              <p className="text-sm text-text-secondary">
-                SEO-ready guides — CTAs use your /m page with ?src=article.
+            <div className="min-w-0">
+              <p className="font-medium text-text-heading">Strengthen your money page</p>
+              <p className="mt-0.5 text-sm text-text-secondary">
+                Pick a live page, preview a guide, then add it as an authority section — CTAs track
+                with ?src=article.
               </p>
             </div>
           </div>
@@ -321,6 +327,12 @@ export default function RecurringStreamPage() {
             onChange={handleAssetChange}
             label="Live money page"
           />
+
+          {!selectedSiteId ? (
+            <p className="rounded-xl border border-dashed border-[var(--np-line-strong)] bg-[var(--np-surface-field)] px-4 py-3 text-sm text-text-muted">
+              Select a live money page above to preview articles and unlock Add / Copy.
+            </p>
+          ) : null}
 
           {selectedAsset ? (
             <div className="flex flex-wrap gap-2">
@@ -339,7 +351,7 @@ export default function RecurringStreamPage() {
           ) : null}
 
           {lastAttachedId ? (
-            <p className="rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm text-success">
+            <p className="rounded-xl border border-success/25 bg-success/10 px-3.5 py-2.5 text-sm text-success shadow-[0_0_24px_-12px_rgba(52,211,153,0.55)]">
               Authority section added to your money page.{" "}
               <Link href={`/money-page/${selectedSiteId}`} className="font-medium underline">
                 Review &amp; publish
@@ -347,24 +359,29 @@ export default function RecurringStreamPage() {
             </p>
           ) : null}
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Filter size={14} className="text-text-muted" />
-            {["All", ...RECURRING_STREAM_NICHES].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setNiche(n)}
-                className={clsx("select-chip-pill", niche === n && "is-selected")}
-              >
-                {n}
-              </button>
-            ))}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+              <Filter size={13} aria-hidden />
+              Niche
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {PREMIUM_NICHE_FILTER_LABELS.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setNiche(n)}
+                  className={clsx("select-chip-pill", niche === n && "is-selected")}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
           </div>
 
           {error ? (
             <p
               role="alert"
-              className="flex items-start gap-2 rounded-lg border border-[var(--np-danger)]/20 bg-[var(--np-danger)]/10 px-3 py-2.5 text-sm font-medium text-[var(--np-danger)]"
+              className="flex items-start gap-2 rounded-xl border border-[var(--np-danger)]/25 bg-[var(--np-danger)]/10 px-3.5 py-2.5 text-sm font-medium text-[var(--np-danger)]"
             >
               <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden />
               {error}
@@ -391,36 +408,44 @@ export default function RecurringStreamPage() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="glass-card overflow-hidden border-[var(--np-line-pulse)] scroll-mt-24"
+            className="glass-card scroll-mt-24 overflow-hidden border-[var(--np-line-pulse)] shadow-[0_0_40px_-18px_rgba(0,240,255,0.45)]"
           >
-            <div className="flex items-start justify-between gap-3 border-b border-divider p-4 md:p-5">
+            <div className="flex items-start justify-between gap-3 border-b border-[var(--np-line)] bg-[color-mix(in_srgb,var(--np-signal-100)_55%,var(--np-surface))] p-4 md:p-5">
               <div className="min-w-0">
-                <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-pulse-500">
                   {previewArticle.niche}
                 </p>
-                <h2 className="mt-1 font-medium text-text-primary">{previewArticle.title}</h2>
-                {savedTemplateIds.has(previewArticle.id) ? (
-                  <span className="mt-2 inline-block rounded-full bg-success/15 px-2 py-0.5 text-[13px] font-medium text-success">
-                    On money page
+                <h2 className="mt-1 text-lg font-semibold tracking-tight text-text-heading">
+                  {previewArticle.title}
+                </h2>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full border border-[var(--np-line)] bg-[var(--np-surface-field)] px-2.5 py-0.5 text-[12px] text-text-muted">
+                    {formatAngle(previewArticle.angle)}
                   </span>
-                ) : null}
+                  {savedTemplateIds.has(previewArticle.id) ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-success/25 bg-success/15 px-2.5 py-0.5 text-[12px] font-medium text-success">
+                      <Check size={11} aria-hidden />
+                      On money page
+                    </span>
+                  ) : null}
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setPreviewId(null)}
-                className="rounded-lg p-2 text-text-muted hover:bg-pulse-100 hover:text-text-primary"
+                className="rounded-lg border border-transparent p-2 text-text-muted transition-colors hover:border-[var(--np-line)] hover:bg-[var(--np-surface-field)] hover:text-text-primary"
                 aria-label="Close preview"
               >
                 <X size={16} />
               </button>
             </div>
             <div
-              className="recurring-article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-white px-5 py-6 md:px-8 md:py-8"
+              className="recurring-article-body recurring-article-reader max-h-[min(70vh,720px)] max-w-none overflow-y-auto px-5 py-6 md:px-8 md:py-8"
               dangerouslySetInnerHTML={{
                 __html: wrapArticleWithTitle(previewArticle.title, articleHtml[previewArticle.id]),
               }}
             />
-            <div className="flex flex-wrap gap-2 border-t border-divider p-4 md:p-5">
+            <div className="flex flex-wrap gap-2 border-t border-[var(--np-line)] bg-[color-mix(in_srgb,var(--np-surface)_88%,var(--np-signal-100))] p-4 md:p-5">
               <button
                 type="button"
                 disabled={loadingAction?.articleId === previewArticle.id}
@@ -438,7 +463,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => void copyArticle("text")}
-                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-pulse-100 px-4 py-2 text-sm font-medium text-text-primary hover:bg-pulse-100/70"
+                className="btn-secondary inline-flex items-center gap-2 text-sm"
               >
                 {copiedMode === "text" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "text" ? "Copied!" : "Copy (plain text)"}
@@ -446,7 +471,7 @@ export default function RecurringStreamPage() {
               <button
                 type="button"
                 onClick={() => void copyArticle("html")}
-                className="inline-flex items-center gap-2 rounded-lg border border-border-dim bg-pulse-100 px-4 py-2 text-sm font-medium text-text-primary hover:bg-pulse-100/70"
+                className="btn-secondary inline-flex items-center gap-2 text-sm"
               >
                 {copiedMode === "html" ? <Check size={14} /> : <Copy size={14} />}
                 {copiedMode === "html" ? "Copied!" : "Copy (HTML)"}
@@ -456,73 +481,149 @@ export default function RecurringStreamPage() {
         ) : null}
       </AnimatePresence>
 
-      <div className={clsx("space-y-4", refreshing && "opacity-60 pointer-events-none")}>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {paged.map((article) => (
-            <article
-              key={article.id}
-              className={clsx(
-                "glass-card flex flex-col gap-3 p-4 transition-colors hover:border-[var(--np-line-pulse)]",
-                previewId === article.id && "border-[var(--np-line-pulse)]"
-              )}
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-[13px] font-medium uppercase tracking-wider text-pulse-700">
-                    {article.niche}
-                  </p>
-                  <span className="rounded bg-pulse-100 px-2 py-0.5 text-[13px] text-text-muted">
-                    {formatAngle(article.angle)}
-                  </span>
+      <div className={clsx("space-y-4", refreshing && "pointer-events-none opacity-60")}>
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-text-heading">Article library</h2>
+            <p className="text-xs text-text-muted">
+              {articles.length} guide{articles.length === 1 ? "" : "s"}
+              {niche !== "All" ? ` in ${niche}` : ""}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {paged.map((article, index) => {
+            const isOpen = previewId === article.id;
+            const isSaved = savedTemplateIds.has(article.id);
+            const isBusy = loadingAction?.articleId === article.id;
+
+            return (
+              <motion.article
+                key={article.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, delay: Math.min(index * 0.03, 0.24) }}
+                className={clsx(
+                  "group relative flex flex-col overflow-hidden rounded-2xl border bg-[var(--np-surface)] shadow-[var(--np-shadow-card)] transition-[border-color,box-shadow,transform] duration-200",
+                  "hover:-translate-y-1 hover:border-[var(--np-line-pulse)] hover:shadow-[0_0_32px_-14px_rgba(0,240,255,0.4)]",
+                  isOpen
+                    ? "border-[var(--np-line-pulse)] shadow-[0_0_36px_-12px_rgba(0,240,255,0.55)]"
+                    : "border-[var(--np-line)]",
+                  isSaved && !isOpen && "border-success/30"
+                )}
+              >
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_srgb,var(--np-pulse-500)_14%,transparent),transparent_55%)] opacity-70"
+                />
+                <div
+                  aria-hidden
+                  className={clsx(
+                    "pointer-events-none absolute inset-y-0 left-0 w-[3px] transition-colors",
+                    isOpen
+                      ? "bg-[var(--np-pulse-500)]"
+                      : isSaved
+                        ? "bg-success/70"
+                        : "bg-[color-mix(in_srgb,var(--np-pulse-500)_35%,transparent)] group-hover:bg-[var(--np-pulse-500)]"
+                  )}
+                />
+
+                <div className="relative flex flex-1 flex-col gap-4 p-4 pl-5 sm:p-5 sm:pl-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--np-line-pulse)] bg-[color-mix(in_srgb,var(--np-signal-100)_80%,var(--np-surface))] text-pulse-500 shadow-[0_0_16px_-8px_rgba(0,240,255,0.7)]">
+                        <FileText size={16} aria-hidden />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-[11px] font-semibold uppercase tracking-[0.16em] text-pulse-500">
+                          {article.niche}
+                        </p>
+                        <p className="mt-0.5 text-[11px] text-text-muted">Authority guide</p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 rounded-full border border-[var(--np-line-strong)] bg-[var(--np-surface-field)] px-2.5 py-1 text-[11px] font-medium text-text-secondary">
+                      {formatAngle(article.angle)}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-text-heading">
+                      {article.title}
+                    </h3>
+                    {article.excerpt ? (
+                      <p className="mt-2 line-clamp-3 text-[12.5px] leading-relaxed text-text-secondary">
+                        {article.excerpt}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {isSaved ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">
+                        <Check size={11} aria-hidden />
+                        On money page
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--np-line)] bg-[var(--np-surface-field)] px-2.5 py-1 text-[11px] text-text-muted">
+                        Ready to attach
+                      </span>
+                    )}
+                    {isOpen ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--np-line-pulse)] bg-[color-mix(in_srgb,var(--np-signal-100)_70%,transparent)] px-2.5 py-1 text-[11px] font-medium text-pulse-500">
+                        Preview open
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-auto space-y-2 border-t border-[var(--np-line)] pt-3">
+                    <button
+                      type="button"
+                      disabled={isBusy || !selectedSiteId}
+                      onClick={() => void attachToMoneyPage(article.id)}
+                      className="btn-primary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
+                    >
+                      {isBusy && loadingAction?.action === "save" ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : isSaved ? (
+                        <Check size={14} />
+                      ) : (
+                        <Sparkles size={14} />
+                      )}
+                      {isSaved ? "Added — update again" : "Add to money page"}
+                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        disabled={isBusy || !selectedSiteId}
+                        onClick={() => void openPreview(article.id)}
+                        className={clsx(
+                          "btn-secondary inline-flex items-center justify-center gap-1.5 text-sm disabled:opacity-40",
+                          isOpen && "border-[var(--np-line-pulse)] text-pulse-500"
+                        )}
+                      >
+                        {isBusy && loadingAction?.action === "view" ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : (
+                          <Eye size={14} />
+                        )}
+                        {isOpen ? "Close" : "View"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isBusy || !selectedSiteId}
+                        onClick={() => void copyArticleFromCard(article.id)}
+                        className="btn-secondary inline-flex items-center justify-center gap-1.5 text-sm disabled:opacity-40"
+                      >
+                        {copiedArticleId === article.id ? <Check size={14} /> : <Copy size={14} />}
+                        {copiedArticleId === article.id ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mt-1 line-clamp-2 font-medium text-text-primary">{article.title}</h3>
-                {article.excerpt ? (
-                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-text-secondary">
-                    {article.excerpt}
-                  </p>
-                ) : null}
-              </div>
-              <div className="mt-auto flex flex-col gap-2">
-                <button
-                  type="button"
-                  disabled={loadingAction?.articleId === article.id || !selectedSiteId}
-                  onClick={() => void openPreview(article.id)}
-                  className="btn-secondary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
-                >
-                  {loadingAction?.articleId === article.id && loadingAction.action === "view" ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <Eye size={14} />
-                  )}
-                  {previewId === article.id ? "Close" : "View"}
-                </button>
-                <button
-                  type="button"
-                  disabled={loadingAction?.articleId === article.id || !selectedSiteId}
-                  onClick={() => void attachToMoneyPage(article.id)}
-                  className="btn-primary inline-flex w-full items-center justify-center gap-2 text-sm disabled:opacity-40"
-                >
-                  {loadingAction?.articleId === article.id && loadingAction.action === "save" ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : savedTemplateIds.has(article.id) ? (
-                    <Check size={14} />
-                  ) : (
-                    <Sparkles size={14} />
-                  )}
-                  {savedTemplateIds.has(article.id) ? "Added — update again" : "Add to money page"}
-                </button>
-                <button
-                  type="button"
-                  disabled={loadingAction?.articleId === article.id || !selectedSiteId}
-                  onClick={() => void copyArticleFromCard(article.id)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-dim bg-pulse-100 px-3 py-2 text-sm font-medium text-text-primary hover:bg-pulse-100/70 disabled:opacity-40"
-                >
-                  {copiedArticleId === article.id ? <Check size={14} /> : <Copy size={14} />}
-                  {copiedArticleId === article.id ? "Copied!" : "Copy for external"}
-                </button>
-              </div>
-            </article>
-          ))}
+              </motion.article>
+            );
+          })}
         </div>
 
         {pageCount > 1 ? (
@@ -531,7 +632,7 @@ export default function RecurringStreamPage() {
               type="button"
               disabled={page === 0}
               onClick={() => setPage((p) => Math.max(0, p - 1))}
-              className="inline-flex items-center gap-1 rounded-lg border border-border-dim px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
+              className="btn-secondary inline-flex items-center gap-1 px-3 py-1.5 text-sm disabled:opacity-40"
             >
               <ChevronLeft size={14} />
               Prev
@@ -543,7 +644,7 @@ export default function RecurringStreamPage() {
               type="button"
               disabled={page >= pageCount - 1}
               onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-              className="inline-flex items-center gap-1 rounded-lg border border-border-dim px-3 py-1.5 text-sm text-text-secondary disabled:opacity-40"
+              className="btn-secondary inline-flex items-center gap-1 px-3 py-1.5 text-sm disabled:opacity-40"
             >
               Next
               <ChevronRight size={14} />

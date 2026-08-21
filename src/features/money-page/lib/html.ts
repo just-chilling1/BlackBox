@@ -6,6 +6,8 @@ import {
 } from "./themes";
 import {
   getMoneyPageVariation,
+  type MoneyPageLayoutId,
+  type MoneyPageSectionTitles,
   type MoneyPageVariationId,
 } from "./variations";
 
@@ -26,6 +28,197 @@ function paragraphs(text: string): string {
 }
 function listItems(items: string[], className = ""): string {
   return `<ul class="${className}">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+function numberedListItems(items: string[]): string {
+  return `<ol class="numbered-list">${items
+    .map((item, index) => `<li value="${index + 1}">${escapeHtml(item)}</li>`)
+    .join("")}</ol>`;
+}
+function checklistListItems(items: string[]): string {
+  return `<ul class="checklist-list">${items
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("")}</ul>`;
+}
+function layoutStyles(layoutId: MoneyPageLayoutId, css: ReturnType<typeof getMoneyPageColorTheme>["css"]): string {
+  const base = `
+    body.layout-guide .hero { background: linear-gradient(180deg, #ffffff 0%, var(--hero-end) 55%, #ffffff 100%); }
+    body.layout-guide .benefit-card { border-style: dashed; }
+    body.layout-guide .numbered-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      counter-reset: guide-step;
+    }
+    body.layout-guide .numbered-list li {
+      counter-increment: guide-step;
+      position: relative;
+      padding: 14px 16px 14px 52px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+    }
+    body.layout-guide .numbered-list li::before {
+      content: counter(guide-step);
+      position: absolute;
+      left: 16px;
+      top: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    body.layout-checklist .hero { border-width: 2px; border-color: rgba(${css.accentRgb}, 0.24); }
+    body.layout-checklist .section-head::before { width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); }
+    body.layout-checklist .checklist-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    body.layout-checklist .checklist-list li {
+      position: relative;
+      padding: 14px 16px 14px 44px;
+      background: var(--card);
+      border: 1px solid rgba(${css.accentRgb}, 0.18);
+      border-radius: 14px;
+      color: var(--muted);
+    }
+    body.layout-checklist .checklist-list li::before {
+      content: "☐";
+      position: absolute;
+      left: 16px;
+      top: 12px;
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+    body.layout-checklist .split-card--pros h2::before { content: "+ "; color: var(--success); }
+    body.layout-checklist .split-card--cons h2::before { content: "− "; color: var(--danger); }
+  `;
+  return base;
+}
+function buildPageSections(params: {
+  copy: MoneyPageCopy;
+  titles: MoneyPageSectionTitles;
+  layoutId: MoneyPageLayoutId;
+  benefits: string;
+  faqs: string;
+  ctaButton: string;
+}): string {
+  const { copy, titles, layoutId, benefits, faqs, ctaButton } = params;
+  const whoForList =
+    layoutId === "guide"
+      ? numberedListItems(copy.whoFor)
+      : layoutId === "checklist"
+        ? checklistListItems(copy.whoFor)
+        : listItems(copy.whoFor, "check-list");
+  const featuresList =
+    layoutId === "checklist"
+      ? checklistListItems(copy.features)
+      : listItems(copy.features, "feature-list");
+
+  const productIntroSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.productIntro)}</h2></div>
+      <div class="prose">${paragraphs(copy.productIntro)}</div>
+    </section>`;
+  const overviewSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.overview)}</h2></div>
+      <div class="prose">${paragraphs(copy.overview)}</div>
+    </section>`;
+  const benefitsSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.benefits)}</h2></div>
+      <div class="benefits-grid">${benefits}</div>
+    </section>`;
+  const whoForSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.whoFor)}</h2></div>
+      ${whoForList}
+    </section>`;
+  const featuresSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.features)}</h2></div>
+      ${featuresList}
+    </section>`;
+  const prosConsSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.prosCons)}</h2></div>
+      <div class="split-grid">
+        <div class="split-card split-card--pros">
+          <h2>Pros</h2>
+          ${listItems(copy.pros)}
+        </div>
+        <div class="split-card split-card--cons">
+          <h2>Cons</h2>
+          ${listItems(copy.cons)}
+        </div>
+      </div>
+    </section>`;
+  const reviewSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.review)}</h2></div>
+      <div class="prose">${paragraphs(copy.review)}</div>
+    </section>`;
+  const authoritySections = (copy.authoritySections ?? [])
+    .map(
+      (section) => `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(section.title)}</h2></div>
+      <div class="prose">${paragraphs(section.body)}</div>
+      ${ctaButton}
+    </section>`
+    )
+    .join("");
+  const faqSection = `
+    <section>
+      <div class="section-head"><h2>${escapeHtml(titles.faqs)}</h2></div>
+      ${faqs}
+    </section>`;
+  const finalSection = `
+    <section class="cta-panel">
+      <h2>${escapeHtml(titles.finalRecommendation)}</h2>
+      <div class="prose">${paragraphs(copy.finalRecommendation)}</div>
+      ${ctaButton}
+    </section>`;
+
+  if (layoutId === "checklist") {
+    return [
+      productIntroSection,
+      overviewSection,
+      prosConsSection,
+      benefitsSection,
+      whoForSection,
+      featuresSection,
+      reviewSection,
+      authoritySections,
+      faqSection,
+      finalSection,
+    ].join("");
+  }
+
+  return [
+    productIntroSection,
+    overviewSection,
+    benefitsSection,
+    whoForSection,
+    featuresSection,
+    prosConsSection,
+    reviewSection,
+    authoritySections,
+    faqSection,
+    finalSection,
+  ].join("");
 }
 export function buildMoneyPageHtml(params: {
   siteId: string;
@@ -72,6 +265,14 @@ export function buildMoneyPageHtml(params: {
   const trustRow = variation.trustBullets
     .map((bullet) => `<li>${escapeHtml(bullet)}</li>`)
     .join("");
+  const pageSections = buildPageSections({
+    copy,
+    titles: variation.sectionTitles,
+    layoutId: variation.layoutId,
+    benefits,
+    faqs,
+    ctaButton,
+  });
   const { css } = theme;
   return `<!DOCTYPE html>
 <html lang="en">
@@ -404,9 +605,10 @@ export function buildMoneyPageHtml(params: {
       text-align: center;
       box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08);
     }
+    ${layoutStyles(variation.layoutId, css)}
   </style>
 </head>
-<body>
+<body class="layout-${variation.layoutId}">
   <div class="wrap">
     <header class="hero">
       <span class="eyebrow">${escapeHtml(variation.eyebrow)}</span>
@@ -418,62 +620,7 @@ export function buildMoneyPageHtml(params: {
       </ul>
       ${ctaButton}
     </header>
-    <section>
-      <div class="section-head"><h2>Product introduction</h2></div>
-      <div class="prose">${paragraphs(copy.productIntro)}</div>
-    </section>
-    <section>
-      <div class="section-head"><h2>Product overview</h2></div>
-      <div class="prose">${paragraphs(copy.overview)}</div>
-    </section>
-    <section>
-      <div class="section-head"><h2>Main benefits</h2></div>
-      <div class="benefits-grid">${benefits}</div>
-    </section>
-    <section>
-      <div class="section-head"><h2>Who this is for</h2></div>
-      ${listItems(copy.whoFor, "check-list")}
-    </section>
-    <section>
-      <div class="section-head"><h2>Key features</h2></div>
-      ${listItems(copy.features, "feature-list")}
-    </section>
-    <section>
-      <div class="section-head"><h2>Pros and cons</h2></div>
-      <div class="split-grid">
-        <div class="split-card split-card--pros">
-          <h2>Pros</h2>
-          ${listItems(copy.pros)}
-        </div>
-        <div class="split-card split-card--cons">
-          <h2>Cons</h2>
-          ${listItems(copy.cons)}
-        </div>
-      </div>
-    </section>
-    <section>
-      <div class="section-head"><h2>Our review</h2></div>
-      <div class="prose">${paragraphs(copy.review)}</div>
-    </section>
-    ${(copy.authoritySections ?? [])
-      .map(
-        (section) => `
-    <section>
-      <div class="section-head"><h2>${escapeHtml(section.title)}</h2></div>
-      <div class="prose">${paragraphs(section.body)}</div>
-      ${ctaButton}
-    </section>`
-      )
-      .join("")}
-    <section>
-      <div class="section-head"><h2>Frequently asked questions</h2></div>
-      ${faqs}
-    </section>
-    <section class="cta-panel">
-      <h2>Final recommendation</h2>
-      <div class="prose">${paragraphs(copy.finalRecommendation)}</div>
-      ${ctaButton}
-    </section>
+    ${pageSections}
     <footer>
       <p>This page may use affiliate links. If you buy through them, a commission may be earned at no extra cost to you.</p>
     </footer>

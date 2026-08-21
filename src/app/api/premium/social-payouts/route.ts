@@ -54,8 +54,8 @@ export async function GET(request: Request) {
     ...pin,
     image_url:
       typeof pin.image_url === "string" && pin.image_url.startsWith("http")
-        ? `/api/pins/${pin.id}/image?v=7`
-        : pin.image_url || `/api/pins/${pin.id}/image?v=7`,
+        ? `/api/pins/${pin.id}/image?v=9`
+        : pin.image_url || `/api/pins/${pin.id}/image?v=9`,
     trackingUrl: `${publicUrl}?pin=${pin.id}&src=pinterest`,
   }));
 

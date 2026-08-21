@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { scrapePageWithCache } from "@/features/blog-builder/lib/scrape-cache";
+import { fetchNicheRelatedImage } from "@/features/blog-builder/lib/images";
 import { slugify } from "@/features/blog-builder/lib/seo";
 import { getOrCreateUserHandle } from "@/lib/user-handle";
 import { getServiceRoleClient } from "@/lib/api-auth";
@@ -125,6 +126,13 @@ export async function activateAsset(params: {
       : scrapedTitle || nameRaw || "Featured product";
 
   const niche = inferNiche(productName, productContext || scrapedDescription);
+  if (!heroImage) {
+    heroImage =
+      (await fetchNicheRelatedImage({
+        niche,
+        productName,
+      })) ?? "";
+  }
   const ctaUrl = affiliateUrl || productUrl || "";
   const armedLinks: ArmedLink[] = ctaUrl
     ? [{ label: productName, url: ctaUrl, network: detectLinkNetwork(ctaUrl) }]

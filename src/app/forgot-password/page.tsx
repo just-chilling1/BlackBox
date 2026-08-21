@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Mail, ArrowLeft, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { AuthLayout } from "@/components/layout/AuthLayout";
-import { getAppUrl } from "@/lib/brand-vars";
+import { buildAuthCallbackUrl } from "@/lib/auth-redirect";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -20,9 +20,8 @@ export default function ForgotPasswordPage() {
     setError(null);
 
     try {
-      const appUrl = getAppUrl();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${appUrl}/auth/callback?next=/reset-password`,
+        redirectTo: buildAuthCallbackUrl("/reset-password"),
       });
 
       if (resetError) {

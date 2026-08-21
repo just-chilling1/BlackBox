@@ -20,6 +20,8 @@ import { PageLoading } from "@/components/ui/page-loading";
 import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { buildAuthCallbackUrl } from "@/lib/auth-redirect";
+import { clearCachedClientUser } from "@/lib/auth-client-cache";
 import { brand } from "@/config/brand.config";
 
 interface AccountActivity {
@@ -47,6 +49,60 @@ function formatRelativeTime(iso: string | null | undefined): string {
   }
 }
 
+function formatActivityTime(
+  iso: string | null | undefined,
+  emptyLabel: string
+): string {
+  if (!iso) return emptyLabel;
+  return formatRelativeTime(iso);
+}
+
+async function loadProtectorActivity(): Promise<AccountActivity | null> {
+  const endpoints = ["/api/results", "/api/protector/status"];
+
+  for (const endpoint of endpoints) {
+    const res = await fetch(endpoint, { cache: "no-store", credentials: "include" });
+    if (!res.ok) continue;
+
+    const payload = (await res.json()) as {
+      moneyPagesLive?: number;
+      trafficAssetsCreated?: number;
+      accountActivity?: AccountActivity;
+      livePages?: number;
+      pinCount?: number;
+      lastPublishAt?: string | null;
+      lastPinAt?: string | null;
+      lastVisitAt?: string | null;
+    };
+
+    if (payload.accountActivity) {
+      return payload.accountActivity;
+    }
+
+    if (typeof payload.livePages === "number") {
+      return {
+        livePages: payload.livePages,
+        pinCount: payload.pinCount ?? 0,
+        lastPublishAt: payload.lastPublishAt ?? null,
+        lastPinAt: payload.lastPinAt ?? null,
+        lastVisitAt: payload.lastVisitAt ?? null,
+      };
+    }
+
+    if (typeof payload.moneyPagesLive === "number") {
+      return {
+        livePages: payload.moneyPagesLive,
+        pinCount: payload.trafficAssetsCreated ?? 0,
+        lastPublishAt: null,
+        lastPinAt: null,
+        lastVisitAt: null,
+      };
+    }
+  }
+
+  return null;
+}
+
 export default function ProtectorPage() {
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
@@ -55,6 +111,8 @@ export default function ProtectorPage() {
   const [hasSession, setHasSession] = useState(false);
   const [isHttps, setIsHttps] = useState(true);
   const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [resendError, setResendError] = useState<string | null>(null);
+  const [justConfirmed, setJustConfirmed] = useState(false);
   const [activity, setActivity] = useState<AccountActivity>({
     lastPublishAt: null,
     lastPinAt: null,
@@ -66,67 +124,38 @@ export default function ProtectorPage() {
   useEffect(() => {
     setIsHttps(typeof window !== "undefined" ? window.location.protocol === "https:" : true);
 
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("email_confirmed") === "1") {
+        setJustConfirmed(true);
+        clearCachedClientUser();
+        params.delete("email_confirmed");
+        const next = params.toString();
+        const url = next ? `${window.location.pathname}?${next}` : window.location.pathname;
+        window.history.replaceState({}, "", url);
+      }
+    }
+
     void (async () => {
+      clearCachedClientUser();
+
       const [{ data: userData }, { data: sessionData }] = await Promise.all([
         supabase.auth.getUser(),
         supabase.auth.getSession(),
       ]);
-      const user = userData.user;
+      const user = userData.user ?? sessionData.session?.user ?? null;
       if (user?.email) setUserEmail(user.email);
       setLastSignIn(user?.last_sign_in_at ?? undefined);
       setEmailConfirmed(Boolean(user?.email_confirmed_at));
       setHasSession(Boolean(sessionData.session));
 
-      if (user) {
-        const { data: sites } = await supabase
-          .from("sites")
-          .select("id, status, updated_at, created_at")
-          .eq("user_id", user.id)
-          .eq("is_template", false)
-          .order("updated_at", { ascending: false })
-          .limit(50);
-
-        const siteList = sites ?? [];
-        const live = siteList.filter((s) => s.status === "live");
-        const siteIds = siteList.map((s) => s.id);
-
-        let lastPinAt: string | null = null;
-        let lastVisitAt: string | null = null;
-        let pinCount = 0;
-
-        if (siteIds.length > 0) {
-          const [{ data: pins }, { count }, { data: visits }] = await Promise.all([
-            supabase
-              .from("site_pins")
-              .select("created_at")
-              .eq("user_id", user.id)
-              .in("site_id", siteIds)
-              .order("created_at", { ascending: false })
-              .limit(1),
-            supabase
-              .from("site_pins")
-              .select("*", { count: "exact", head: true })
-              .eq("user_id", user.id)
-              .in("site_id", siteIds),
-            supabase
-              .from("page_visits")
-              .select("created_at")
-              .in("site_id", siteIds)
-              .order("created_at", { ascending: false })
-              .limit(1),
-          ]);
-          lastPinAt = pins?.[0]?.created_at ?? null;
-          lastVisitAt = visits?.[0]?.created_at ?? null;
-          pinCount = count ?? 0;
+      if (user || sessionData.session) {
+        const loaded = await loadProtectorActivity();
+        if (loaded) {
+          setActivity(loaded);
+        } else {
+          console.error("[protector] failed to load activity from API");
         }
-
-        setActivity({
-          lastPublishAt: live[0]?.updated_at ?? live[0]?.created_at ?? null,
-          lastPinAt,
-          lastVisitAt,
-          livePages: live.length,
-          pinCount,
-        });
       }
 
       setLoading(false);
@@ -175,13 +204,26 @@ export default function ProtectorPage() {
   }, [emailConfirmed, hasSession, isHttps, activity.livePages]);
 
   const resendConfirmation = async () => {
-    if (!userEmail) return;
+    if (!userEmail) {
+      setResendError("Sign in to resend a confirmation email.");
+      setResendState("error");
+      return;
+    }
     setResendState("sending");
+    setResendError(null);
     const { error } = await supabase.auth.resend({
       type: "signup",
       email: userEmail,
+      options: {
+        emailRedirectTo: buildAuthCallbackUrl("/protector?email_confirmed=1"),
+      },
     });
-    setResendState(error ? "error" : "sent");
+    if (error) {
+      setResendError(error.message);
+      setResendState("error");
+      return;
+    }
+    setResendState("sent");
   };
 
   if (loading) {
@@ -340,22 +382,42 @@ export default function ProtectorPage() {
             <div className="rounded-xl border border-[var(--np-warning)]/25 bg-[var(--np-warning)]/10 p-4">
               <p className="text-sm text-text-primary">Confirm your email</p>
               <p className="mt-1 text-xs text-text-muted">
-                We’ll resend a confirmation link to {userEmail || "your inbox"}.
+                {userEmail
+                  ? `We’ll resend a confirmation link to ${userEmail}.`
+                  : "Sign in so we can send a confirmation link to your inbox."}
               </p>
-              <button
-                type="button"
-                disabled={resendState === "sending" || resendState === "sent"}
-                onClick={() => void resendConfirmation()}
-                className="btn-primary mt-3 inline-flex text-sm disabled:opacity-50"
-              >
-                {resendState === "sending"
-                  ? "Sending…"
-                  : resendState === "sent"
-                    ? "Sent — check inbox"
-                    : resendState === "error"
-                      ? "Try again"
-                      : "Resend confirmation"}
-              </button>
+              {justConfirmed ? (
+                <p className="mt-2 text-xs text-success">
+                  Email confirmed — your account is up to date.
+                </p>
+              ) : null}
+              {resendError ? (
+                <p className="mt-2 text-xs text-[var(--np-danger)]">{resendError}</p>
+              ) : null}
+              {userEmail ? (
+                <button
+                  type="button"
+                  disabled={resendState === "sending" || resendState === "sent"}
+                  onClick={() => void resendConfirmation()}
+                  className="btn-primary mt-3 inline-flex text-sm disabled:opacity-50"
+                >
+                  {resendState === "sending"
+                    ? "Sending…"
+                    : resendState === "sent"
+                      ? "Sent — check inbox"
+                      : resendState === "error"
+                        ? "Try again"
+                        : "Resend confirmation"}
+                </button>
+              ) : (
+                <Link href="/login" className="btn-primary mt-3 inline-flex text-sm">
+                  Sign in
+                </Link>
+              )}
+            </div>
+          ) : justConfirmed ? (
+            <div className="rounded-xl border border-success/20 bg-success/10 p-4">
+              <p className="text-sm text-success">Email confirmed — your account is up to date.</p>
             </div>
           ) : null}
         </div>
@@ -397,17 +459,23 @@ export default function ProtectorPage() {
               {[
                 {
                   event: "Last money page update",
-                  time: formatRelativeTime(activity.lastPublishAt),
+                  time: formatActivityTime(
+                    activity.lastPublishAt,
+                    activity.livePages > 0 ? "Live — publish date unavailable" : "No live pages yet"
+                  ),
                   icon: Globe,
                 },
                 {
                   event: `Pin assets (${activity.pinCount})`,
-                  time: formatRelativeTime(activity.lastPinAt),
+                  time: formatActivityTime(
+                    activity.lastPinAt,
+                    activity.pinCount > 0 ? "Created recently" : "No pins yet"
+                  ),
                   icon: ImageIcon,
                 },
                 {
                   event: "Last public page visit",
-                  time: formatRelativeTime(activity.lastVisitAt),
+                  time: formatActivityTime(activity.lastVisitAt, "No visits yet"),
                   icon: Activity,
                 },
               ].map((item) => (

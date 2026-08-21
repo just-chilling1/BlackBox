@@ -25,23 +25,31 @@ export async function POST(request: Request) {
 
   const existingMeta = (user.user_metadata ?? {}) as Record<string, unknown>;
   const completedAt = new Date().toISOString();
+  const metadata = {
+    ...existingMeta,
+    [ONBOARDING_META_KEY]: true,
+    first_name: firstName,
+    full_name: firstName,
+  };
 
-  const { error: updateError } = await supabase.auth.updateUser({
-    data: {
-      ...existingMeta,
-      [ONBOARDING_META_KEY]: true,
-      first_name: firstName,
-      full_name: firstName,
-    },
-  });
+  const admin = getServiceRoleClient();
+  if (admin) {
+    const { error: updateError } = await admin.auth.admin.updateUserById(user.id, {
+      user_metadata: metadata,
+    });
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 400, headers: NO_STORE_HEADERS });
+    }
+  } else {
+    const { error: updateError } = await supabase.auth.updateUser({ data: metadata });
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 400, headers: NO_STORE_HEADERS });
+    }
 
-  if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 400, headers: NO_STORE_HEADERS });
-  }
-
-  const { error: refreshError } = await supabase.auth.refreshSession();
-  if (refreshError) {
-    return NextResponse.json({ error: refreshError.message }, { status: 400, headers: NO_STORE_HEADERS });
+    const { error: refreshError } = await supabase.auth.refreshSession();
+    if (refreshError) {
+      return NextResponse.json({ error: refreshError.message }, { status: 400, headers: NO_STORE_HEADERS });
+    }
   }
 
   const profileClient = getServiceRoleClient() ?? supabase;

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import {
+  ChevronDown,
   Globe,
   Linkedin,
   BookOpen,
@@ -79,19 +80,27 @@ export function CrossPlatformGuide() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-[var(--np-line)] bg-[var(--np-surface)]">
+    <div className="overflow-hidden rounded-2xl border border-[var(--np-line)] bg-[var(--np-surface)] shadow-[var(--np-shadow-card)]">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[color-mix(in_srgb,var(--np-signal-100)_40%,transparent)]"
+        aria-expanded={open}
       >
         <div>
-          <p className="text-sm font-medium text-text-primary">Where to publish (optional)</p>
+          <p className="text-sm font-medium text-text-heading">Where to publish (optional)</p>
           <p className="mt-0.5 text-xs text-text-muted">
             Secondary to adding a section on your money page — always use the tracking URL.
           </p>
         </div>
-        <span className="text-xs font-medium text-pulse-700">{open ? "Hide" : "Show"}</span>
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-pulse-500">
+          {open ? "Hide" : "Show"}
+          <ChevronDown
+            size={14}
+            className={clsx("transition-transform duration-200", open && "rotate-180")}
+            aria-hidden
+          />
+        </span>
       </button>
 
       <AnimatePresence>
@@ -106,15 +115,15 @@ export function CrossPlatformGuide() {
               {PLATFORMS.map((platform) => (
                 <div
                   key={platform.name}
-                  className={clsx(
-                    "rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-4"
-                  )}
+                  className="rounded-xl border border-[var(--np-line)] bg-[var(--np-surface-field)] p-4 transition-colors hover:border-[var(--np-line-pulse)]"
                 >
                   <div className="mb-2 flex items-center gap-2">
-                    <platform.icon size={16} className="text-pulse-700" />
-                    <p className="text-sm font-medium text-text-primary">{platform.name}</p>
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--np-line-pulse)] bg-[color-mix(in_srgb,var(--np-signal-100)_75%,transparent)] text-pulse-500">
+                      <platform.icon size={14} />
+                    </span>
+                    <p className="text-sm font-medium text-text-heading">{platform.name}</p>
                   </div>
-                  <ol className="list-decimal space-y-1 pl-4 text-xs text-text-secondary">
+                  <ol className="list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-text-secondary">
                     {platform.steps.map((step) => (
                       <li key={step}>{step}</li>
                     ))}

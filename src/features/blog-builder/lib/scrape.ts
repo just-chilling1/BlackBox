@@ -16,8 +16,27 @@ export interface ScrapedPageInfo {
 
 const SCRAPER_API_TIMEOUT_MS = 30_000;
 const DIRECT_FETCH_TIMEOUT_MS = 10_000;
+/** Initial attempt plus this many retries when scrape/image extraction fails. */
+const SCRAPE_RETRY_COUNT = 3;
+const SCRAPE_RETRY_DELAY_MS = 400;
 export const SCRAPE_USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+
+async function withScrapeRetries<T>(
+  run: () => Promise<T | null>,
+  isSuccess: (value: T | null) => boolean
+): Promise<T | null> {
+  let last: T | null = null;
+  const attempts = 1 + SCRAPE_RETRY_COUNT;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    last = await run();
+    if (isSuccess(last)) return last;
+    if (attempt < attempts) {
+      await new Promise((resolve) => setTimeout(resolve, SCRAPE_RETRY_DELAY_MS * attempt));
+    }
+  }
+  return last;
+}
 
 function getScraperApiKey(): string | undefined {
   return (process.env.SCRAPER_API_KEY || process.env.SCRAPERAPI_KEY)?.trim() || undefined;
@@ -279,6 +298,12 @@ function scoreImageCandidate(params: {
   ).length;
   if (matchCount >= 2) score += matchCount * 6;
 
+  // Content <img> without product terms is often unrelated chrome; keep meta/JSON-LD
+  // product heroes even when the CDN path has no keyword (common on Shopify/CDN).
+  if (params.keywords.length > 0 && matchCount === 0 && params.sourceWeight < 85) {
+    score -= 55;
+  }
+
   return score;
 }
 
@@ -341,6 +366,17 @@ export function rankPageImages(
   return ranked.sort((a, b) => b.score - a.score);
 }
 
+/** Any usable page image when og:image / JSON-LD is missing. */
+export function extractAnyPageImageUrl(html: string, pageUrl: string): string | null {
+  const ranked = rankPageImages(html, pageUrl, []);
+  const usable = ranked.find((candidate) => candidate.score > 0);
+  return usable?.url ?? ranked[0]?.url ?? null;
+}
+
+function imageFromHtml(html: string, pageUrl: string): string | null {
+  return extractPageImageUrl(html, pageUrl) ?? extractAnyPageImageUrl(html, pageUrl);
+}
+
 /** Scrape a page and return image URLs ranked by relevance to keywords and post topic. */
 export async function scrapeRelevantImagesFromUrl(
   url: string,
@@ -358,29 +394,39 @@ export async function scrapeRelevantImagesFromUrl(
     .filter((word) => word.length > 2);
   const limit = options?.limit ?? 6;
 
-  const htmlSources: string[] = [];
-  const direct = await fetchDirectHtml(safeUrl);
-  if (direct) htmlSources.push(direct);
+  const run = async (): Promise<string[]> => {
+    const htmlSources: string[] = [];
+    const direct = await fetchDirectHtml(safeUrl);
+    if (direct) htmlSources.push(direct);
 
-  const rendered = await fetchScraperApiHtml(safeUrl);
-  if (rendered && rendered !== direct) htmlSources.push(rendered);
+    const rendered = await fetchScraperApiHtml(safeUrl);
+    if (rendered && rendered !== direct) htmlSources.push(rendered);
 
-  const ranked: RankedPageImage[] = [];
-  const seen = new Set<string>();
+    const ranked: RankedPageImage[] = [];
+    const seen = new Set<string>();
 
-  for (const html of htmlSources) {
-    for (const candidate of rankPageImages(html, safeUrl, keywords)) {
-      const key = candidate.url.split("?")[0] ?? candidate.url;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      ranked.push(candidate);
+    for (const html of htmlSources) {
+      for (const candidate of rankPageImages(html, safeUrl, keywords)) {
+        const key = candidate.url.split("?")[0] ?? candidate.url;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        ranked.push(candidate);
+      }
     }
-  }
 
-  return ranked
-    .filter((candidate) => candidate.score > 20)
-    .slice(0, limit)
-    .map((candidate) => candidate.url);
+    const minScore = keywords.length > 0 ? 28 : 20;
+    const matched = ranked
+      .filter((candidate) => candidate.score > minScore)
+      .slice(0, limit)
+      .map((candidate) => candidate.url);
+    if (matched.length > 0) return matched;
+
+    // Still scraping — any page image if relevance ranking found nothing.
+    return ranked.slice(0, limit).map((candidate) => candidate.url);
+  };
+
+  const found = await withScrapeRetries(run, (urls) => Boolean(urls && urls.length > 0));
+  return found ?? [];
 }
 
 /** Scrape an affiliate/product page and return its primary image URL, if any. */
@@ -392,21 +438,25 @@ export async function scrapeImageFromUrl(url: string): Promise<string | null> {
     return null;
   }
 
-  const direct = await fetchDirectHtml(safeUrl);
-  if (direct) {
-    const imageUrl = extractPageImageUrl(direct, safeUrl);
-    if (imageUrl) return imageUrl;
-  }
+  const run = async (): Promise<string | null> => {
+    const direct = await fetchDirectHtml(safeUrl);
+    if (direct) {
+      const imageUrl = imageFromHtml(direct, safeUrl);
+      if (imageUrl) return imageUrl;
+    }
 
-  // Many offer pages inject og:image via JS — retry with rendered HTML even when
-  // the direct response already has title/description signals.
-  const rendered = await fetchScraperApiHtml(safeUrl);
-  if (rendered) {
-    const imageUrl = extractPageImageUrl(rendered, safeUrl);
-    if (imageUrl) return imageUrl;
-  }
+    // Many offer pages inject og:image via JS — retry with rendered HTML even when
+    // the direct response already has title/description signals.
+    const rendered = await fetchScraperApiHtml(safeUrl);
+    if (rendered) {
+      const imageUrl = imageFromHtml(rendered, safeUrl);
+      if (imageUrl) return imageUrl;
+    }
 
-  return direct ? extractPageImageUrl(direct, safeUrl) : null;
+    return direct ? imageFromHtml(direct, safeUrl) : null;
+  };
+
+  return withScrapeRetries(run, (imageUrl) => Boolean(imageUrl));
 }
 
 /** Heuristic price sniff from visible text when JSON-LD has none. */
@@ -446,18 +496,20 @@ export async function scrapePage(url: string): Promise<ScrapedPageInfo | null> {
     return null;
   }
 
-  let html = await fetchHtml(safeUrl);
+  const html = await withScrapeRetries(() => fetchHtml(safeUrl), (value) => Boolean(value));
   if (!html) return null;
 
   try {
-    let imageUrl = extractPageImageUrl(html, safeUrl) ?? "";
+    let imageUrl = imageFromHtml(html, safeUrl) ?? "";
     if (!imageUrl) {
-      const rendered = await fetchScraperApiHtml(safeUrl);
+      const rendered = await withScrapeRetries(
+        () => fetchScraperApiHtml(safeUrl),
+        (value) => Boolean(value && imageFromHtml(value, safeUrl))
+      );
       if (rendered) {
-        const renderedImage = extractPageImageUrl(rendered, safeUrl);
+        const renderedImage = imageFromHtml(rendered, safeUrl);
         if (renderedImage) {
           imageUrl = renderedImage;
-          if (!htmlHasOfferSignals(html)) html = rendered;
         }
       }
     }

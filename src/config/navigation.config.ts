@@ -115,11 +115,11 @@ export const upgradeNav: NavItem[] = [
 
 /** Premium section — single source for sidebar, bottom nav, dashboard widget */
 export const premiumNav: NavItem[] = [
-  { path: "/accelerator", label: "Asset Vault", icon: "Zap", feature: "premium-accelerator" },
-  { path: "/dfy-profit", label: "One-Click Asset", icon: "Wallet", feature: "premium-dfy-profit" },
+  { path: "/accelerator", label: "Unlimited", icon: "Zap", feature: "premium-accelerator" },
+  { path: "/dfy-profit", label: "Done-For-You Profit", icon: "Wallet", feature: "premium-dfy-profit" },
   { path: "/social-payouts", label: "Pin Multiplier", icon: "Image", feature: "premium-social" },
   { path: "/autopilot", label: "Pinterest Autopilot", icon: "Rocket", feature: "premium-autopilot" },
-  { path: "/recurring-wealth", label: "Authority Boosters", icon: "Repeat", feature: "premium-recurring" },
+  { path: "/recurring-wealth", label: "Guaranteed High-Ticket Payouts", icon: "Repeat", feature: "premium-recurring" },
   { path: "/protector", label: "Cyber Protection", icon: "ShieldCheck", feature: "protector" },
   { path: "/account#license", label: "Reseller & License Rights", icon: "FileText", feature: "premium-license-rights" },
 ];

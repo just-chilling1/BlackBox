@@ -31,8 +31,9 @@ export async function scrapePageWithCache(
 
     if (row?.fetched_at) {
       const age = Date.now() - new Date(row.fetched_at as string).getTime();
-      if (age < CACHE_TTL_MS && row.context) {
-        const scraped = row.scraped_data as ScrapedPageInfo | null;
+      const scraped = row.scraped_data as ScrapedPageInfo | null;
+      // Cached pages with no image are stale for hero/pin work — scrape again.
+      if (age < CACHE_TTL_MS && row.context && scraped?.imageUrl) {
         return {
           data: scraped?.title ? scraped : null,
           context: String(row.context),

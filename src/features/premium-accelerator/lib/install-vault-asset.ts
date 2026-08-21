@@ -10,6 +10,7 @@ import {
   getAcceleratorCatalogEntry,
   type VaultCatalogEntry,
 } from "./catalog";
+import { resolveVaultHeroImage } from "./vault-images";
 import { buildVaultMoneyPageCopy } from "./vault-copy";
 import { seedVaultPins } from "./seed-vault-pins";
 
@@ -39,7 +40,12 @@ export async function installVaultAsset(params: {
     throw new Error("affiliateUrl is required");
   }
 
-  const copy = buildVaultMoneyPageCopy(entry);
+  const heroImage = await resolveVaultHeroImage({
+    productName: entry.productName,
+    niche: entry.niche,
+    scrapeUrl: affiliateUrl,
+  });
+  const copy = buildVaultMoneyPageCopy(entry, heroImage);
   const armedLinks: ArmedLink[] = [
     {
       label: entry.productName,
@@ -146,6 +152,8 @@ export async function installVaultAsset(params: {
     userId: params.user.id,
     siteId: created.id,
     entry,
+    scrapeUrl: affiliateUrl,
+    heroImage,
     salesPageJson: copy as unknown as Record<string, unknown>,
   });
 

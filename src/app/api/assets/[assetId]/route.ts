@@ -12,6 +12,10 @@ import {
   isMoneyPageColorThemeId,
   withMoneyPageThemeConfig,
 } from "@/features/money-page/lib/themes";
+import {
+  getMoneyPageVariation,
+  isMoneyPageVariationId,
+} from "@/features/money-page/lib/variations";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -74,17 +78,23 @@ export async function PATCH(
 
   const current = moneyPageThemeFromSite(site);
   const colorTheme = isMoneyPageColorThemeId(body.colorTheme) ? body.colorTheme : current.colorTheme;
-  const variationId = current.variationId;
+  const variationId = isMoneyPageVariationId(body.variationId) ? body.variationId : current.variationId;
   const themeConfig = withMoneyPageThemeConfig(site.theme_config, {
     moneyColorTheme: colorTheme,
     moneyVariation: variationId,
   });
 
+  const variation = getMoneyPageVariation(variationId);
+  const allowedCtas = new Set(variation.ctaLabels);
+  const pageCopy = allowedCtas.has(copy.ctaLabel)
+    ? copy
+    : { ...copy, ctaLabel: variation.ctaLabels[0] };
+
   const ctaUrl = armedLinks[0]?.url || site.product_url || "";
   const html = buildMoneyPageHtml({
     siteId: site.id,
     productName: site.product_name || site.title,
-    copy,
+    copy: pageCopy,
     ctaUrl,
     colorTheme,
     variationId,
@@ -93,7 +103,7 @@ export async function PATCH(
   const { data, error } = await supabase
     .from("sites")
     .update({
-      sales_page_json: copy,
+      sales_page_json: pageCopy,
       sales_page_html: html,
       armed_links: armedLinks,
       title: copy.headline.slice(0, 180),
@@ -137,11 +147,12 @@ export async function POST(
   }
 
   const ctaUrl = ctaFromSite(site);
-  if (!ctaUrl) return NextResponse.json({ error: "Add an affiliate or product link first." }, { status: 400 });
 
   const productName = site.product_name || site.title;
   const current = moneyPageThemeFromSite(site);
   const colorTheme = isMoneyPageColorThemeId(body.colorTheme) ? body.colorTheme : current.colorTheme;
+  const explicitVariation = isMoneyPageVariationId(body.variationId) ? body.variationId : null;
+  const existingCopy = isMoneyPageCopy(site.sales_page_json) ? site.sales_page_json : null;
 
   await generateMoneyPageForSite({
     supabase,
@@ -151,7 +162,10 @@ export async function POST(
     niche: inferNiche(productName, site.hobby || ""),
     ctaUrl,
     colorTheme,
-    excludeVariationId: current.variationId,
+    description: typeof site.tagline === "string" ? site.tagline : undefined,
+    heroImage: existingCopy?.heroImage,
+    variationId: explicitVariation,
+    excludeVariationId: explicitVariation ? null : current.variationId,
     existingThemeConfig: site.theme_config,
   });
 

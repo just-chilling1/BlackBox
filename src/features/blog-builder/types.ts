@@ -103,17 +103,12 @@ export interface NicheOption {
   label: string;
 }
 
-export const NICHE_OPTIONS = [
-  { value: "health", label: "Health & Wellness" },
-  { value: "finance", label: "Finance & Investing" },
-  { value: "fitness", label: "Fitness & Sports" },
-  { value: "marketing", label: "Digital Marketing" },
-  { value: "selfhelp", label: "Self-Help & Personal Development" },
-  { value: "beauty", label: "Beauty & Skincare" },
-  { value: "education", label: "Education & Learning" },
-  { value: "business", label: "Business & Entrepreneurship" },
-  { value: "travel", label: "Travel & Lifestyle" },
-] as const satisfies readonly NicheOption[];
+export {
+  NICHE_OPTIONS,
+  PREMIUM_NICHE_OPTIONS,
+  type PremiumNicheLabel,
+  type PremiumNicheValue,
+} from "@/lib/premium-niches";
 
 export const WIZARD_STEPS = [
   { number: 1, title: "Add Your Link", description: "Save your promotional or affiliate link" },

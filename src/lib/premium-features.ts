@@ -15,7 +15,7 @@ export const PREMIUM_SECTION_LABEL = premiumSectionLabel;
 /** One-line descriptions keyed by route — shown in the dashboard Premium Upgrades widget. */
 const PREMIUM_DESCRIPTIONS: Record<string, string> = {
   "/accelerator": "200 pre-made money pages — clone one, then generate pins.",
-  "/dfy-profit": "One click: money page plus 10 Pinterest traffic assets.",
+  "/dfy-profit": "Done-For-You Profit: live sales page, 3 pins, authority article, and 3 Facebook posts.",
   "/social-payouts": "Extra Pinterest pin batches for a live money page.",
   "/autopilot": "Pinterest posting playbook tied to your live money page.",
   "/recurring-wealth": "Authority article sections that strengthen a money page.",

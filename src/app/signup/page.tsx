@@ -9,6 +9,7 @@ import { ONBOARDING_META_KEY } from "@/config/onboarding-content";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { brand } from "@/config/brand.config";
 import { webhooks } from "@/config/webhooks.config";
+import { buildAuthCallbackUrl } from "@/lib/auth-redirect";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +29,7 @@ export default function SignupPage() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/onboarding`,
+          emailRedirectTo: buildAuthCallbackUrl("/onboarding"),
           data: {
             full_name: name,
             [ONBOARDING_META_KEY]: false,

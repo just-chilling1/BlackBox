@@ -11,7 +11,7 @@ import { AffiliateLinkField } from "@/components/premium/AffiliateLinkField";
 import { PremiumErrorAlert } from "@/components/premium/PremiumErrorAlert";
 import { PremiumWorkflowShell } from "@/components/premium/PremiumWorkflowShell";
 import { PostCreateJourney } from "@/components/premium/PostCreateJourney";
-import { ACCELERATOR_NICHES } from "@/features/premium-accelerator/lib/catalog";
+import { PREMIUM_NICHE_FILTER_LABELS } from "@/lib/premium-niches";
 import {
   TemplatePreviewOverlay,
   type VaultTemplatePreview,
@@ -211,7 +211,7 @@ export default function AcceleratorPage() {
   if (loading && templates.length === 0) {
     return (
       <PremiumWorkflowShell
-        title="Asset Vault"
+        title="Unlimited"
         subtitle="200 ready-made money pages — apply your link, install a page, and get 10 pins ready."
       >
         <PageSkeleton cards={6} />
@@ -221,20 +221,20 @@ export default function AcceleratorPage() {
 
   return (
     <PremiumWorkflowShell
-      title="Asset Vault"
+      title="Unlimited"
       subtitle={`${total} ready-made money pages across every niche — apply your link, install a page with 10 pins included.`}
       training={{
         vimeoId: "1215530104",
-        title: "Asset Vault Training",
+        title: "Unlimited Training",
         description:
           "Browse ready-made money pages, apply your affiliate link, install one page, and get 10 Pinterest pins ready to post.",
-        iframeTitle: "Asset Vault training video",
+        iframeTitle: "Unlimited training video",
       }}
       tip={
         <>
           Tip: Preview a page first, then hit <span className="text-text-primary">Use this page</span>{" "}
-          — it installs with your link and 10 ready Pinterest pins. Use{" "}
-          <span className="text-text-primary">AI pins</span> after install for Traffic-quality images.
+          — it installs with your link and 10 Pinterest pins from the offer page. If scrape finds no
+          photo, a stock fallback is used.
         </>
       }
     >
@@ -294,7 +294,7 @@ export default function AcceleratorPage() {
             role="group"
             aria-label="Select niche"
           >
-            {["All", ...ACCELERATOR_NICHES].map((n) => (
+            {PREMIUM_NICHE_FILTER_LABELS.map((n) => (
               <button
                 key={n}
                 type="button"

@@ -66,16 +66,16 @@ export const trainingQuickStartChecklist = [
 export const trainingPremiumVideos = [
   {
     id: "1215530104",
-    badge: "Asset Vault",
-    title: "Asset Vault",
+    badge: "Unlimited",
+    title: "Unlimited",
     description:
       "Install from two hundred ready-made money pages — swap in your affiliate link, get 10 pins, then finish Traffic → Results.",
     duration: "5+ min",
   },
   {
     id: "1215568587",
-    badge: "Authority Boosters",
-    title: "Authority Boosters",
+    badge: "Guaranteed High-Ticket Payouts",
+    title: "Guaranteed High-Ticket Payouts",
     description:
       "Add authority article sections to your money page — CTAs use your /m tracking URL. Copy for external posts is optional.",
     duration: "5+ min",

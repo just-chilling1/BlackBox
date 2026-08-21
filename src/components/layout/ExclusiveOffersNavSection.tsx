@@ -52,7 +52,7 @@ export function ExclusiveOffersNavSection({
             </span>
             <span className="flex-1 leading-snug">{offer.title}</span>
             <ExternalLink
-              className="exclusive-offers-nav-external h-3.5 w-3.5 shrink-0 text-ink-4"
+              className="exclusive-offers-nav-external h-3.5 w-3.5 shrink-0"
               strokeWidth={1.75}
             />
           </motion.a>

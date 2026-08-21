@@ -18,7 +18,8 @@ import {
   buildSiteTitle,
   themeFromConfig,
 } from "@/features/blog-builder/themes";
-import { NICHE_OPTIONS, type ArmedLink } from "@/features/blog-builder/types";
+import { PREMIUM_NICHE_OPTIONS } from "@/lib/premium-niches";
+import type { ArmedLink } from "@/features/blog-builder/types";
 import { pickRandomTemplate } from "@/features/dfy-profit/lib/pick-random-template";
 
 export const dynamic = "force-dynamic";
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const nicheOption = NICHE_OPTIONS.find((n) => n.value === nicheValue);
+  const nicheOption = PREMIUM_NICHE_OPTIONS.find((n) => n.value === nicheValue);
   if (!nicheOption) {
     return NextResponse.json(
       { error: "Select a valid niche" },

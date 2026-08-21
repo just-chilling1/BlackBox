@@ -212,7 +212,6 @@ export function resolveAutopilotNiche(value: string | null | undefined) {
   const normalized = value?.trim().toLowerCase();
   if (!normalized || normalized === "all") return "All";
   if (normalized === "pinterest") return "Pinterest";
-  // Legacy niches from the old mixed catalog collapse to All
   return "All";
 }
 

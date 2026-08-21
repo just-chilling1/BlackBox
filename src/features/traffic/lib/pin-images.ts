@@ -1,67 +1,62 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   collectScrapedImageCandidates,
+  fetchAnyFallbackImage,
   normalizeImageUrl,
   persistExternalImage,
   pickUnusedScrapedImageUrl,
 } from "@/features/blog-builder/lib/images";
 import { SiteImagePool } from "@/features/blog-builder/lib/site-image-pool";
+import { inferNicheKey } from "@/features/money-page/lib/niche";
 import type { PinCopy } from "@/features/traffic/lib/pin-rules";
+import {
+  cleanProductLabel,
+  productSearchTokens,
+} from "@/features/traffic/lib/product-label";
 
-const STOP = new Set([
-  "the",
-  "a",
-  "an",
-  "and",
-  "or",
-  "for",
-  "to",
-  "of",
-  "in",
-  "on",
-  "with",
-  "your",
-  "review",
-  "reviews",
-  "honest",
-  "worth",
-  "product",
-  "featured",
-  "pin",
-  "2024",
-  "2025",
-  "2026",
-]);
+export { cleanProductLabel } from "@/features/traffic/lib/product-label";
 
-function productSearchTokens(productName: string): string[] {
-  return productName
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter((w) => w.length > 2 && !STOP.has(w) && !/^\d+$/.test(w));
-}
+const NICHE_STOCK_QUERIES: Record<string, string[]> = {
+  health: ["sleep supplement", "wellness product", "health supplement bottle", "nighttime wellness"],
+  fitness: ["boxing gloves", "fitness workout gym", "workout product", "sports training"],
+  finance: ["laptop desk productivity", "finance notebook", "investing desk"],
+  marketing: ["laptop app workspace", "digital marketing desk", "software dashboard"],
+  selfhelp: ["journal planner desk", "personal development notebook", "motivation workspace"],
+  beauty: ["skincare product bottle", "serum bottle", "beauty product"],
+  education: ["online course study desk", "learning notebook", "student laptop"],
+  business: ["home office workspace", "entrepreneur desk laptop", "business notebook"],
+  travel: ["pet product", "travel lifestyle photo", "home garden outdoor"],
+};
 
-/** Pixabay queries anchored to the product name — never pin-headline fluff. */
+/** Pixabay queries anchored to the cleaned product name — never pin-headline fluff. */
 function productStockQueries(productName: string, hobby?: string | null): string[] {
-  const tokens = productSearchTokens(productName);
+  const cleaned = cleanProductLabel(productName);
+  const tokens = productSearchTokens(cleaned);
   const base = tokens.length > 0 ? tokens.join(" ") : "";
+  const niche = inferNicheKey(cleaned, hobby || "");
+  const nicheQueries = NICHE_STOCK_QUERIES[niche] ?? [];
 
   if (!base) {
-    const hobbyBits = (hobby || "")
-      .toLowerCase()
-      .replace(/[^a-z0-9\s&]/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length > 2 && !STOP.has(w));
-    return hobbyBits.length
-      ? [`${hobbyBits.slice(0, 4).join(" ")} product`, hobbyBits.slice(0, 3).join(" ")]
-      : [];
+    const hobbyBits = productSearchTokens(hobby || "");
+    return [
+      ...nicheQueries,
+      ...(hobbyBits.length
+        ? [`${hobbyBits.slice(0, 4).join(" ")} product`, hobbyBits.slice(0, 3).join(" ")]
+        : []),
+    ]
+      .filter(Boolean)
+      .slice(0, 8);
   }
 
-  const queries = [`${base} product`, base];
+  const queries = [`${base} product`, `${base} bottle`, base, ...nicheQueries];
 
-  const combat = /box|glove|mma|martial|kick|sparr|punch/i.test(`${productName} ${hobby || ""}`);
+  if (/melatonin/i.test(cleaned)) {
+    queries.unshift("melatonin supplement bottle", "melatonin sleep aid");
+  }
+
+  const combat = /box|glove|mma|martial|kick|sparr|punch/i.test(`${cleaned} ${hobby || ""}`);
   if (combat) {
-    if (/glove/i.test(productName)) {
+    if (/glove/i.test(cleaned)) {
       queries.push("boxing gloves", "mma gloves", "red boxing glove", "sparring gloves");
     } else {
       queries.push("boxing training", "punching bag", "boxing ring");
@@ -71,35 +66,72 @@ function productStockQueries(productName: string, hobby?: string | null): string
   const fitness = /fitness|gym|sport|workout/i.test(hobby || "");
   if (fitness && !combat) queries.push(`${tokens[0]} fitness`);
 
-  return [...new Set(queries.filter(Boolean))].slice(0, 6);
+  return [...new Set(queries.filter(Boolean))].slice(0, 8);
 }
 
 /**
  * Product-tagged Flickr photos via LoremFlickr — works without API keys and
  * stays related to the product (unlike random Picsum).
+ * Rotates tag order/variants by seed so pins do not share the same lock+tags.
  */
 export function productPhotoFallbackUrl(productName: string, seed = 0): string | null {
-  const tags = productSearchTokens(productName).slice(0, 3);
-  if (tags.length === 0) return null;
-  const lock = Math.abs(seed) % 10_000;
+  const cleaned = cleanProductLabel(productName);
+  const baseTags = productSearchTokens(cleaned).slice(0, 3);
+  if (baseTags.length === 0) return null;
+  const variants = [
+    baseTags,
+    [...baseTags].reverse(),
+    [...baseTags, "product"].slice(0, 3),
+    [...baseTags, "lifestyle"].slice(0, 3),
+    [baseTags[0], "photo", "product"].filter(Boolean),
+  ];
+  const tags = variants[Math.abs(seed) % variants.length] ?? baseTags;
+  const lock = Math.abs(seed * 7919 + tags.join("").length * 31) % 100_000;
   return `https://loremflickr.com/1200/675/${encodeURIComponent(tags.join(","))}/all?lock=${lock}`;
 }
 
-function pollinationsProductUrl(
-  productName: string,
-  pinIdx: number,
-  width = 1200,
-  height = 675
-): string {
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    `photorealistic product photo of ${productName}, clean studio lighting, no text, no watermark`
-  )}?width=${width}&height=${height}&nologo=true&seed=${pinIdx * 31 + 7}`;
+function picsumPinFallbackUrl(productName: string, seed: number): string {
+  const safe = Math.abs(seed) || 1;
+  return `https://picsum.photos/seed/np-${encodeURIComponent(productName.slice(0, 24))}-${safe}/1200/675`;
+}
+
+/**
+ * Unique non-AI fallback for a pin slot after scrape retries fail.
+ * LoremFlickr tagged photos first, then any Picsum image.
+ */
+export function uniquePinFallbackUrl(params: {
+  productName: string;
+  pinIdx: number;
+  usedKeys?: Set<string>;
+  hobby?: string | null;
+  headlineLen?: number;
+}): string | null {
+  const productName = cleanProductLabel(params.productName) || params.productName.trim();
+  if (!productName) return picsumPinFallbackUrl("product", params.pinIdx);
+  const used = params.usedKeys ?? new Set<string>();
+  const headlineLen = params.headlineLen ?? 0;
+
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const candidate = productPhotoFallbackUrl(
+      productName,
+      params.pinIdx * 97 + headlineLen * 13 + attempt * 7919 + 42
+    );
+    if (candidate && !used.has(normalizeImageUrl(candidate))) return candidate;
+  }
+  for (let attempt = 0; attempt < 16; attempt++) {
+    const any = picsumPinFallbackUrl(
+      productName,
+      params.pinIdx * 9973 + headlineLen * 131 + attempt * 17 + 1103
+    );
+    if (!used.has(normalizeImageUrl(any))) return any;
+  }
+  return picsumPinFallbackUrl(productName, params.pinIdx + headlineLen + 1);
 }
 
 /**
  * Ordered background candidates for the pin OG image renderer.
- * Per-pin unique fallbacks must come before the shared money-page hero,
- * otherwise every pin collapses to the same photo when source_image_url is missing.
+ * Never fall back to the shared money-page hero for pins after the first —
+ * that caused every pin to show the same unrelated photo when primary URLs failed.
  */
 export function pinRenderBackgroundCandidates(params: {
   sourceImageUrl?: string | null;
@@ -108,35 +140,40 @@ export function pinRenderBackgroundCandidates(params: {
   productName: string;
   pinIdx: number;
   headline: string;
+  hobby?: string | null;
   width?: number;
   height?: number;
 }): string[] {
-  const width = params.width ?? 1200;
-  const height = params.height ?? 675;
+  const cleaned = cleanProductLabel(params.productName) || params.productName;
   const uniqueFallback = productPhotoFallbackUrl(
-    params.productName,
-    params.pinIdx * 17 + params.headline.length
+    cleaned,
+    params.pinIdx * 17 + params.headline.length + 3
   );
-  const aiFallback = params.productName.trim()
-    ? pollinationsProductUrl(params.productName, params.pinIdx, width, height)
-    : null;
+  const anyFallback = picsumPinFallbackUrl(
+    cleaned || "product",
+    params.pinIdx * 17 + params.headline.length + 3
+  );
 
-  return [
+  const candidates = [
     params.sourceImageUrl,
     params.pinImageUrl,
     uniqueFallback,
-    aiFallback,
-    // Shared money-page hero is last — never the default for every pin.
-    params.heroImage,
-  ].filter((u): u is string => Boolean(u?.trim()));
+    anyFallback,
+  ];
+
+  // Shared hero only for pin 0, and only as last resort.
+  if (params.pinIdx === 0) {
+    candidates.push(params.heroImage);
+  }
+
+  return candidates.filter((u): u is string => Boolean(u?.trim()));
 }
 
 /**
  * Resolve unique Pinterest pin backgrounds:
- * one preferred hero (pin 0) → unique scraped affiliate images → Pixabay stock → tagged photos.
+ * unused scraped affiliate images → Pixabay stock → any non-AI photo.
  *
- * Scraped page images are collected once and assigned at most once per batch (normalized URL dedupe).
- * Stock fills remaining slots so pins never collapse to the same affiliate og:image.
+ * Each image URL is assigned at most once per batch.
  */
 export async function resolvePinBackgroundImages(params: {
   pins: PinCopy[];
@@ -153,6 +190,8 @@ export async function resolvePinBackgroundImages(params: {
   const pool = new SiteImagePool();
   const results: (string | null)[] = [];
   const usedKeys = new Set<string>();
+
+  const productName = cleanProductLabel(params.productName) || params.productName.trim();
 
   const collectHttpUrls = (list: (string | null | undefined)[] | undefined) =>
     [
@@ -185,13 +224,11 @@ export async function resolvePinBackgroundImages(params: {
   // hero free so it can be claimed exactly once.
   markUsed(...excluded, ...preferred.slice(1));
   if (heroForFirstPin) {
-    // Still exclude hero aliases from stock/scrape for pins 1+ by seeding the pool
-    // without blocking the explicit pin-0 claim below.
     pool.seed([{ url: heroForFirstPin, stockId: normalizeImageUrl(heroForFirstPin) }]);
   }
 
-  const stockQueries = productStockQueries(params.productName, params.hobby);
-  const productTokens = productSearchTokens(params.productName);
+  const stockQueries = productStockQueries(productName, params.hobby);
+  const productTokens = productSearchTokens(productName);
 
   const hasScrapeTargets = Boolean(
     params.scrapeUrl?.trim() || (params.scrapeUrls?.length ?? 0) > 0
@@ -201,30 +238,26 @@ export async function resolvePinBackgroundImages(params: {
         scrapeUrl: params.scrapeUrl,
         scrapeUrls: params.scrapeUrls,
         scrapeKeywords: productTokens,
+        limit: Math.max(24, params.pins.length * 3),
       })
     : [];
 
   const excludeForImages = () => [...usedKeys];
 
-  const pickUnusedFallback = (pinIdx: number, headlineLen: number): string | null => {
-    for (let attempt = 0; attempt < 12; attempt++) {
-      const candidate = productPhotoFallbackUrl(
-        params.productName,
-        pinIdx * 17 + productTokens.length + headlineLen + attempt * 97
-      );
-      if (candidate && !isUsed(candidate)) return candidate;
-    }
-    const ai = params.productName.trim()
-      ? pollinationsProductUrl(params.productName, pinIdx * 50 + headlineLen + usedKeys.size)
-      : null;
-    return ai && !isUsed(ai) ? ai : null;
-  };
+  const pickUnusedFallback = (pinIdx: number, headlineLen: number): string | null =>
+    uniquePinFallbackUrl({
+      productName,
+      pinIdx,
+      usedKeys,
+      hobby: params.hobby,
+      headlineLen,
+    });
 
   for (let i = 0; i < params.pins.length; i++) {
     const pin = params.pins[i];
     const keywords = [
       ...productTokens,
-      ...(pin.keywords ?? []).flatMap((k) => productSearchTokens(k)),
+      ...(pin.keywords ?? []).flatMap((k) => productSearchTokens(cleanProductLabel(k))),
     ].slice(0, 12);
 
     let chosen: string | null = null;
@@ -248,25 +281,25 @@ export async function resolvePinBackgroundImages(params: {
     // 3) Product-name Pixabay stock (never re-scrape through the pool).
     if (!chosen) {
       const queryList =
-        stockQueries.length > 0 ? stockQueries : [params.productName.trim()].filter(Boolean);
+        stockQueries.length > 0 ? stockQueries : [productName.trim()].filter(Boolean);
       const rotated = [
-        ...queryList.slice(i % queryList.length),
-        ...queryList.slice(0, i % queryList.length),
+        ...queryList.slice(i % Math.max(queryList.length, 1)),
+        ...queryList.slice(0, i % Math.max(queryList.length, 1)),
       ];
       for (let q = 0; q < rotated.length && !chosen; q++) {
         try {
           const resolved = await pool.resolveUnique({
-            title: pin.headline || pin.title || params.productName,
+            title: cleanedTitleForStock(pin, productName),
             subject: [
-              params.productName,
+              productName,
               "Photorealistic product photo matching this exact product",
               "horizontal landscape composition",
               "no text overlay",
             ].join(". "),
             hobby: params.hobby?.trim() || undefined,
             scrapeKeywords: keywords.length ? keywords : productTokens,
-            pickOffset: i * 3 + q,
-            seedBoost: i * 11 + q * 3 + keywords.length + (pin.headline?.length ?? 0) + usedKeys.size,
+            pickOffset: i * 5 + q,
+            seedBoost: i * 19 + q * 5 + keywords.length + (pin.headline?.length ?? 0) + usedKeys.size,
             customQuery: rotated[q],
             orientation: "horizontal",
             preferStock: true,
@@ -281,9 +314,19 @@ export async function resolvePinBackgroundImages(params: {
       }
     }
 
-    // 4) Product-tagged / AI fallback — must be unused.
+    // 4) Any non-AI photo after scrape retries — Pixabay/Picsum, then tagged fallback.
     if (!chosen || isUsed(chosen)) {
-      chosen = pickUnusedFallback(i, pin.headline?.length ?? 0);
+      const anyImage = await fetchAnyFallbackImage({
+        title: productName || pin.title || "product",
+        subject: productName,
+        hobby: params.hobby ?? undefined,
+        seedOffset: i * 19 + (pin.headline?.length ?? 0) + usedKeys.size,
+      });
+      if (anyImage && !isUsed(anyImage)) {
+        chosen = anyImage;
+      } else {
+        chosen = pickUnusedFallback(i, pin.headline?.length ?? 0);
+      }
     }
 
     if (!chosen || isUsed(chosen)) {
@@ -340,4 +383,8 @@ export async function resolvePinBackgroundImages(params: {
   }
 
   return results;
+}
+
+function cleanedTitleForStock(pin: PinCopy, productName: string): string {
+  return productName || pin.title || pin.headline || "product";
 }
