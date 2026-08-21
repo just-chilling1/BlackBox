@@ -10,7 +10,8 @@ function normalizeVimeoId(videoId: string): string | null {
   const trimmed = videoId.trim();
   if (!trimmed) return null;
   const match = trimmed.match(VIMEO_ID_REGEX);
-  return match?.[1] ?? trimmed.replace(/\D/g, "") || null;
+  const id = match?.[1] ?? trimmed.replace(/\D/g, "");
+  return id || null;
 }
 
 /** Lightweight Vimeo poster URL — no API key required. */
